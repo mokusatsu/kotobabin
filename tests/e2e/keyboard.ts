@@ -64,3 +64,22 @@ export async function keyboardWalkPanels(page: Page) {
   }
   throw new Error('Panel navigation did not reach its end within100 pages');
 }
+
+/** Reach a real paginated control using the same visible page controls as a player. */
+export async function keyboardRevealControl(page: Page, target: Locator) {
+  if (await target.isVisible()) return;
+  const host = page.locator('.ipad-page-host:visible').last();
+  await expect(host).toBeVisible();
+  const previous = host.locator('[data-ipad-prev]');
+  for (let pageIndex = 0; pageIndex < 100 && await previous.isEnabled(); pageIndex++) {
+    await tabTo(page, previous); await page.keyboard.press('ArrowLeft');
+    if (await target.isVisible()) return;
+  }
+  const next = host.locator('[data-ipad-next]');
+  for (let pageIndex = 0; pageIndex < 100; pageIndex++) {
+    if (await target.isVisible()) return;
+    await expect(next).toBeEnabled();
+    await tabTo(page, next); await page.keyboard.press('ArrowRight');
+  }
+  throw new Error('Control was not reachable through100 actual display panels');
+}
