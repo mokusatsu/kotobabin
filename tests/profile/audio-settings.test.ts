@@ -27,6 +27,7 @@ describe('selected sound preferences', () => {
   });
   it('normalizes unselected levels and returns independent runtime settings values', async () => {
     const repo = await ProfileRepository.open({ indexedDB: null });
+    await repo.mutateDocument(document => { const settings = { ...document.settings }; delete settings.audioVolume; return { ...document, settings }; });
     const runtime = await createAppRuntime(repo);
     expect(runtime.settings).toMatchObject({ sound: false, audioVolume: defaults });
     const values = runtime.settings; values.audioVolume.master = 0;

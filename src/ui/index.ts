@@ -1,3 +1,5 @@
+import { AudioPlayer } from '../audio/AudioPlayer';
+import { GameAudio, soundStatusText } from './audio';
 import wordsData from '../../spec/initial/data/words.json';
 import { CourseGenerator, GameSession, InputAdapter, type Word, type SessionMode } from '../typing';
 import type { AppRuntime, AppSettings } from '../app/runtime';
@@ -76,6 +78,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   const viewMarkup = new WeakMap<HTMLElement, string>();
   const abort = new AbortController();
   const on = (target: EventTarget, type: string, handler: EventListener) => target.addEventListener(type, handler, { signal: abort.signal });
+  const audio = new GameAudio(new AudioPlayer({ onStatusChange: () => updateAudioStatus() }));
   const course = () => courses.find((item) => item.id === selectedCourse)!;
   const state = () => session!.snapshot(performance.now());
   function renderMarkup(element: HTMLElement, markup: string) {
@@ -106,6 +109,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function ownershipStatus() { return `<aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中 · このタブは閲覧のみです。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer>`; }
   function renderHome() {
+    audio.leaveSession();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
@@ -118,7 +122,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const map = root.querySelector<HTMLElement>('.town-map');
     if (map) map.hidden = false;
   }
+  function updateAudioStatus() {
+    const enabled = runtime.settings.sound;
+    root.querySelectorAll<HTMLElement>('[data-audio-status]').forEach(element => { const text = soundStatusText(enabled, audio.status); if (element.textContent !== text) element.textContent = text; });
+    root.querySelectorAll<HTMLButtonElement>('[data-action="enable-audio"]').forEach(button => { const hidden = !enabled || (audio.status !== 'unavailable' && audio.status !== 'idle'); if (button.hidden !== hidden) button.hidden = hidden; });
+  }
   function applySettings() {
+    audio.configure(runtime.settings); updateAudioStatus();
     root.style.setProperty('--font-scale', String(runtime.settings.fontScale / 100));
     document.body.dataset.reducedMotion = String(runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
     if (screen === 'home') beginHomeMapObservation();
@@ -147,6 +157,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const facts = session.drainEvents();
     sessionContext = { ...sessionContext, guideUsed: snapshot.guideUsed, assisted: snapshot.skips > 0 };
     if (facts.length) runtime.applyFacts(facts, sessionContext);
+    audio.observe(session.sessionId, snapshot, facts);
     if (snapshot.phase === 'RESULT') runtime.endSession(session.sessionId);
   }
   function mutate(snapshot: Snapshot) { commitFacts(snapshot); updateGame(snapshot); }
@@ -186,6 +197,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     }
     sessionUnlocksAtStart = new Set(Object.keys(runtime.achievements.unlocks));
     sessionDestination = runtime.destination; sessionCityAtStart = structuredClone(runtime.city);
+    audio.beginSession(session.sessionId, state()); audio.resumeFromGesture();
     lastMistakes = 0; lastChoiceFocus = ''; renderGame(); focusInput();
   }
   function startMain(preferredWordId: string | null = null) {
@@ -322,10 +334,15 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function openSettings() {
     if (screen === 'game') pause();
     const dialog = document.createElement('dialog'); dialog.className = 'settings-dialog paper-card';
-    dialog.innerHTML = settingsContent(runtime.settings, runtime.achievements.notificationMode); root.append(dialog); dialog.showModal(); updateStorageStatus();
+    dialog.innerHTML = settingsContent(runtime.settings, runtime.achievements.notificationMode, audio.status); root.append(dialog); dialog.showModal(); updateStorageStatus();
     dialog.addEventListener('change', event => {
       if (!runtime.status.writable) return;
       const input = event.target as HTMLInputElement;
+      if (input.name === 'sound') { runtime.updateSettings({ sound: input.checked }); applySettings(); if (input.checked && event.isTrusted) audio.retryFromGesture(); return; }
+      if (['audio-master', 'audio-effects', 'audio-music'].includes(input.name)) {
+        const channel = input.name.slice(6) as keyof AppSettings['audioVolume'];
+        runtime.updateSettings({ audioVolume: { ...runtime.settings.audioVolume, [channel]: Number(input.value) / 100 } }); applySettings(); return;
+      }
       if (input.name === 'achievement-notifications') { runtime.achievementAction({ type: 'notifications', mode: input.value as 'live' | 'result' }); return; }
       if (!['fontScale', 'guide', 'reducedMotion', 'deliveryKeys'].includes(input.name)) return; const patch: Partial<AppSettings> = {};
       if (input.name === 'fontScale') patch.fontScale = Number(input.value) as AppSettings['fontScale'];
@@ -668,8 +685,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function attachGameInput() {
     const input = root.querySelector<HTMLInputElement>('#game-input')!;
     gameInput = new InputAdapter(input, {
-      onCharacter: (key, at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) mutate(session.input(key, at)); },
-      onDeliver: (at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) mutate(session.deliver(at)); },
+      onCharacter: (key, at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) { if (state().phase !== 'PAUSED') audio.resumeFromGesture(); mutate(session.input(key, at)); } },
+      onDeliver: (at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) { if (state().phase !== 'PAUSED') audio.resumeFromGesture(); mutate(session.deliver(at)); } },
       onPause: (reason, at) => {
         if (screen !== 'game' || !session || suppressBlur) return;
         if (reason === 'blur' && session.mode !== 'MAIN' && (state().awaitingWordChoice || state().tutorialDelivered)) {
@@ -705,7 +722,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (target.name === 'purchase-quantity') { purchaseQuantity = target.value === 'max' ? 'max' : Number(target.value) as 1 | 10; updateCityViews(); }
     if (['catalogue-set', 'catalogue-topic', 'catalogue-state'].includes(target.id)) { cataloguePage = 0; updateCatalogue(); }
   });
-  on(root, 'input', event => { if ((event.target as HTMLElement).id === 'catalogue-query') { cataloguePage = 0; updateCatalogue(); } });
+  on(root, 'input', event => {
+    const input = event.target as HTMLInputElement;
+    if (['audio-master', 'audio-effects', 'audio-music'].includes(input.name)) { const channel = input.name.slice(6); const output = root.querySelector<HTMLOutputElement>(`[data-audio-volume="${channel}"]`); if (output) output.textContent = `${input.value}%`; input.setAttribute('aria-valuetext', `${input.value}%`); }
+    if ((event.target as HTMLElement).id === 'catalogue-query') { cataloguePage = 0; updateCatalogue(); } });
   // Keep native input focus until an intended pointer action is handled. Otherwise
   // the adapter's blur pause can make the target inert before its click arrives.
   on(root, 'pointerdown', event => {
@@ -715,6 +735,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(root, 'click', event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target || (target as HTMLButtonElement).disabled) return;
+    if (event.isTrusted) { if (screen !== 'game' || state().phase !== 'PAUSED') audio.resumeFromGesture(); else audio.gesture(); }
     event.preventDefault();
     if (target.dataset.navigation) root.querySelector<HTMLDialogElement>('.navigation-dialog')?.close();
     if ((!runtime.status.writable || runtime.cityBusy) && (target.dataset.action?.startsWith('city-') || target.dataset.action === 'confirm-city-restart')) return;
@@ -735,6 +756,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'achievement-reveal': runtime.achievementAction({ type: 'reveal', id: target.dataset.achievementId! }); updateHandbook(); revealHandbookElement('#achievement-detail .achievement-detail-condition'); break;
       case 'reward-equip': { const slot = target.dataset.equipSlot as EquipmentSlot; const id = target.dataset.rewardId!; runtime.achievementAction({ type: 'equip', slot, id: runtime.achievements.equipped[slot] === id ? null : id }); updateHandbook(); break; }
       case 'settings': openSettings(); break;
+      case 'enable-audio': if (event.isTrusted) audio.retryFromGesture(); break;
       case 'profile-reset': openResetConfirmation(target.dataset.scope as ResetScope); break;
       case 'cancel-profile-operation': root.querySelector<HTMLDialogElement>('.profile-confirm-dialog')?.close(); pendingBackupText = null; break;
       case 'confirm-profile-reset': void performProfileReplacement('reset', target.dataset.scope as ResetScope); break;
@@ -747,6 +769,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
         if (!runtime.status.writable) { updateStorageStatus(); break; }
         if (session!.mode === 'MAIN' && window.innerWidth < 768) break;
         if (!inputConfirmed) { rechecking = true; renderCheck(); break; }
+        if (event.isTrusted) audio.resumeFromGesture();
         isolatePausedContent(false); root.querySelector<HTMLElement>('#paused-layer')!.hidden = true; focusInput();
         if (document.activeElement === root.querySelector('#game-input')) mutate(session!.resume(performance.now())); break;
       }
@@ -865,11 +888,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(root, 'paste', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(root, 'drop', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(window, 'resize', () => { if (screen === 'home') { const button = root.querySelector<HTMLButtonElement>('[data-action="start"]'); if (button) button.disabled = window.innerWidth < 768; const note = root.querySelector<HTMLElement>('.keyboard-note'); if (note) note.textContent = window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'; beginHomeMapObservation(); } else if (screen === 'game' && session?.mode === 'MAIN' && window.innerWidth < 768) { pause(); const title = root.querySelector<HTMLElement>('#pause-title'); if (title) title.textContent = '幅768px以上に画面を広げてください。'; } });
-  on(window, 'blur', () => { pending = undefined; });
-  on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; });
+  on(window, 'blur', () => { pending = undefined; audio.pause(); });
+  on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; audio.visibility(document.hidden); });
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
   const ipadLayout = installIPadPagination(root);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
-  return () => { disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
+  return () => { audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
 }
