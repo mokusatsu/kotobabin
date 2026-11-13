@@ -75,8 +75,7 @@ test('five real practice completions build the first district and fund a packagi
   await expect(page.locator('#purchase-current')).toHaveText('1');
   await expect.poll(async () => (await savedCity(page)).packagingLevel).toBe(1);
   await expect(page.locator('.district-map[data-district-id="residential"] [data-visual-feature="packaging"]')).toHaveAttribute('data-level', '1');
-  // Lv1 retains the initial illustration until the canonical Lv10 appearance band; the capacity rack records every purchase.
-  await expect(page.locator('.district-map[data-district-id="residential"] [data-visual-feature="packaging"] image[href*="equipment_packaging_0.webp"]')).toBeVisible();
+  await expect(page.locator('.district-map[data-district-id="residential"] [data-visual-feature="packaging"] image[href*="equipment_packaging_1.webp"]')).toBeVisible();
   await expect.poll(async () => Number(await rack.getAttribute('width'))).toBeGreaterThan(beforeWidth);
   await assertViewportFits(page);
   const before = BigInt((await savedCity(page)).generatedMicro);
