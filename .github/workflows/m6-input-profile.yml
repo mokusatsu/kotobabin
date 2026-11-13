@@ -1,0 +1,29 @@
+name: M6 native input CPU diagnostic
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/input-performance]
+permissions:
+  contents: read
+concurrency:
+  group: m6-input-profile-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build -- --sourcemap
+      - run: npx vitest run --config=tests/e2e/m6/vitest.fixture.config.ts
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config=scripts/diagnostics/playwright.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-native-input-cpu
+          path: test-results/input-profile/
