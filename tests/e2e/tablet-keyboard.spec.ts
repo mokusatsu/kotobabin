@@ -24,6 +24,29 @@ for (const viewport of [{ width: 1180, height: 720 }, { width: 1180, height: 820
     await page.keyboard.press('Enter');
     await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
     await expect(page.locator('#game-input')).toBeFocused();
+    const ready = {
+      stage: await page.locator('#word-stage').textContent(), time: await page.locator('#time-left').textContent(),
+      score: await page.locator('#score').textContent(), cargo: await page.locator('#cargo-count').textContent(),
+      completed: await page.locator('#completed-count').textContent(), guide: await page.locator('#romaji-guide').textContent(),
+    };
+    await expect(page.locator('#game-panel-shortcuts')).toBeVisible();
+    await page.keyboard.press('PageDown');
+    await expect(page.locator('#game-panel-goal')).toBeVisible();
+    await expect(page.locator('#game-input')).toBeFocused();
+    await expect(page.locator('#paused-layer')).toBeHidden();
+    await page.keyboard.press('PageUp');
+    await expect(page.locator('#game-panel-delivery')).toBeVisible();
+    await page.clock.runFor(1000);
+    expect({
+      stage: await page.locator('#word-stage').textContent(), time: await page.locator('#time-left').textContent(),
+      score: await page.locator('#score').textContent(), cargo: await page.locator('#cargo-count').textContent(),
+      completed: await page.locator('#completed-count').textContent(), guide: await page.locator('#romaji-guide').textContent(),
+    }).toEqual(ready);
+    await expect(page.locator('#time-left')).toHaveText('90');
+    await expect(page.locator('#score')).toHaveText('0');
+    await expect(page.locator('#romaji-guide')).not.toHaveClass(/mistake/);
+    await expect(page.locator('#game-input')).toBeFocused();
+    await expect(page.locator('#paused-layer')).toBeHidden();
     await assertViewportFits(page);
     await page.screenshot({ path: testInfo.outputPath('tablet-main.png') });
     const guide = (await page.locator('#romaji-guide > span:not(.accepted)').allTextContents()).join('');
