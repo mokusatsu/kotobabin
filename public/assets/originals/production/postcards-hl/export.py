@@ -27,3 +27,11 @@ for row,item in enumerate(measurements):
  ImageDraw.Draw(board).text((10,row*190+3),item['id']+' / 240x160 tile',fill='#263D35')
 board.save(production/'minimum-size-verification.png')
 print(json.dumps(measurements,indent=2))
+
+# Specification minimum (160x100), independent of the requested 240x160 inspection tiles.
+small=Image.new('RGB',(360,len(measurements)*124),'#F5F1E7')
+for row,item in enumerate(measurements):
+ im=Image.open(root/f"public/assets/originals/{item['id']}.png").resize((160,100),Image.Resampling.LANCZOS)
+ small.paste(im,(10,row*124+20));small.paste(ImageOps.grayscale(im).convert('RGB'),(190,row*124+20))
+ ImageDraw.Draw(small).text((10,row*124+3),item['id'],fill='#263D35')
+small.save(production/'spec-minimum-160x100.png')

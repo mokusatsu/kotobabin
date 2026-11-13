@@ -1,19 +1,45 @@
 {
-  "method": "Actual imagegen independent new generation, transparent_background:false; existing postcard_a/b and five screen refs visually inspected only, no reference supplied.",
+  "method": "Actual imagegen independent new generation, transparent_background:false; existing postcard_a/b and five screen refs visually inspected only, no reference supplied. Five calls, all selected, no rejected or edited generations.",
   "attempts": [
     {
       "id": "postcard_h",
       "prompt": "Create one original kotobabin collectible postcard SCENE illustration. Horizontal landscape 8:5 composition for 1600x1000 output. OPAQUE full bleed painting covering the entire canvas, no transparent area, no outside paper border or blank margin. Warm Japanese storybook watercolor and gouache, fine handmade pigment, luminous cream, honey ochre timber, forest sage green and restrained terracotta. Soft upper left daylight, natural short lower-right shadows, rich composed scene in the style of a gentle illustrated village travel postcard. Specific large readable subjects with coherent real perspective. Keep critical subjects in the central 90 percent with scenery extending to every edge. Absolutely NO letters, numbers, text, labels, writing, names, signatures, typography, symbols, postage marks, frames, borders or UI. An elevated HILLTOP OBSERVATION DECK looking DOWN over a lovely small riverside town. In the foreground a wooden HANDRAIL and mounted pair of BINOCULARS face the vista, big and obvious. A winding PATH snakes from the hill through the MIDDLE of the scene to groups of cream houses with terracotta roofs, a broad blue RIVER and wooded hills far below. High viewpoint and generous bright pale-blue SKY occupying the upper third with soft white clouds. A complete peaceful overlook landscape, no signboards.",
       "native_generation": "exec-22e6d5fb-33fe-4d54-b7ec-a0b82a2bc2f7.png",
       "selected": true,
-      "rejected": false
+      "rejected": false,
+      "transparent_background": false
     },
     {
       "id": "postcard_i",
       "prompt": "Create one original kotobabin collectible postcard SCENE illustration. Horizontal landscape 8:5 composition for 1600x1000 output. OPAQUE full bleed painting covering the entire canvas, no transparent area, no outside paper border or blank margin. Warm Japanese storybook watercolor and gouache, fine handmade pigment, luminous cream, honey ochre timber, forest sage green and restrained terracotta. Soft upper left daylight, natural short lower-right shadows, rich composed scene in the style of a gentle illustrated village travel postcard. Specific large readable subjects with coherent real perspective. Keep critical subjects in the central 90 percent with scenery extending to every edge. Absolutely NO letters, numbers, text, labels, writing, names, signatures, typography, symbols, postage marks, frames, borders or UI. A DESIGNER'S WOODEN DRAFTING DESK viewed slightly from above fills the painting. In the CENTER an unlettered cream sheet contains a simple LINE-ONLY NEIGHBORHOOD FLOOR PLAN with streets and outlines of house footprints, no annotations, no dimensions, no writing. In the FOREGROUND several small three-dimensional HOUSE MODELS in cream timber and sage/terracotta roofs sit beside the plan, clearly contrasting flat drawing and physical building. A triangular wooden SET SQUARE with no markings, plain ruler with no ticks or numbers, and a natural wood PENCIL rest to the SIDE. At the BACK lie ROLLED DRAWING SHEETS. Soft sunlight from left, cozy architect studio background with a small plant, all key objects comfortably inside canvas.",
       "native_generation": "exec-fda90323-ab2d-4160-a659-e9efd3eedc68.png",
       "selected": true,
-      "rejected": false
+      "rejected": false,
+      "transparent_background": false
+    },
+    {
+      "id": "postcard_j",
+      "prompt": "Create one original kotobabin collectible postcard SCENE illustration. Horizontal landscape 8:5 composition for 1600x1000 output. OPAQUE full bleed painting covering the entire canvas, no transparent area, no outside paper border or blank margin. Warm Japanese storybook watercolor and gouache, fine handmade pigment, luminous cream, honey ochre timber, forest sage green and restrained terracotta. Soft upper left daylight, natural short lower-right shadows, rich composed scene in the style of a gentle illustrated village travel postcard. Specific large readable subjects with coherent real perspective. Keep critical subjects in the central 90 percent with scenery extending to every edge. Absolutely NO letters, numbers, text, labels, writing, names, signatures, typography, symbols, postage marks, frames, borders or UI. A hand-painted ROUTE MAP spread across a WOODEN TABLE is the large main subject, oblique overhead view. The wordless map shows a winding blue RIVER, green HILLS, and SIX DISTINCT REGIONS connected by broad curving ochre ROADS: a cluster of homes, an awning shop street, chimney workshops, a tree-filled park, a station canopy with tracks, and a coastal HARBOR dock with a small boat. Make all six clusters readable as pictures, no labels or abstract colored pins. A small green-and-ochre TOY TRAIN MODEL sits on the bottom-right corner of the map. The surrounding tabletop and a plain pencil create a full composed scene. No letters, station names, numbers or text anywhere.",
+      "native_generation": "exec-16d9b558-a8eb-4990-a8b8-19f02ec00d87.png",
+      "selected": true,
+      "rejected": false,
+      "transparent_background": false
+    },
+    {
+      "id": "postcard_k",
+      "prompt": "Create one original kotobabin collectible postcard SCENE illustration. Horizontal landscape 8:5 composition for 1600x1000 output. OPAQUE full bleed painting covering the entire canvas, no transparent area, no outside paper border or blank margin. Warm Japanese storybook watercolor and gouache, fine handmade pigment, luminous cream, honey ochre timber, forest sage green and restrained terracotta. Soft upper left daylight, natural short lower-right shadows, rich composed scene in the style of a gentle illustrated village travel postcard. Specific large readable subjects with coherent real perspective. Keep critical subjects in the central 90 percent with scenery extending to every edge. Absolutely NO letters, numbers, text, labels, writing, names, signatures, typography, symbols, postage marks, frames, borders or UI. The interior of a SMALL EQUIPMENT EXHIBITION ROOM, complete architectural scene with cream plaster walls, honey wood floor and warm upper-left window light. Exactly THREE separate LOW DISPLAY PLINTHS stand apart with clear floor gaps: LEFT a PACKING WORKBENCH with small parcel, paper roll and twine; MIDDLE a DELIVERY HANDCART with wooden wheels and boxes; RIGHT a miniature SHOP FRONT with forest-green and cream striped awning and little shop entrance. At the BACK a LARGE INTERCONNECTED WOODEN GEAR MODEL is quietly displayed against the wall. Different tool silhouettes and generous spacing express making, transporting, earning. No labels, plaques, lettering or signs.",
+      "native_generation": "exec-bd4966e3-0dfb-4951-97a2-1b85d2fbd5c7.png",
+      "selected": true,
+      "rejected": false,
+      "transparent_background": false
+    },
+    {
+      "id": "postcard_l",
+      "prompt": "Create one original kotobabin collectible postcard SCENE illustration. Horizontal landscape 8:5 composition for 1600x1000 output. OPAQUE full bleed painting covering the entire canvas, no transparent area, no outside paper border or blank margin. Warm Japanese storybook watercolor and gouache, fine handmade pigment, luminous cream, honey ochre timber, forest sage green and restrained terracotta. Soft upper left daylight, natural short lower-right shadows, rich composed scene in the style of a gentle illustrated village travel postcard. Specific large readable subjects with coherent real perspective. Keep critical subjects in the central 90 percent with scenery extending to every edge. Absolutely NO letters, numbers, text, labels, writing, names, signatures, typography, symbols, postage marks, frames, borders or UI. A beautiful WALL-SIZED BOOKCASE seen directly from the FRONT fills a cozy library room. Many books of DIFFERENT HEIGHTS with completely BLANK SAGE, CREAM and TERRACOTTA SPINES, a few volumes visibly PULLED OUT. A long wooden LADDER leans DIAGONALLY across the shelving. At the FOOT of the shelves stands a welcoming cushioned READING CHAIR. Several shelves contain living PLANTS and SMALL MODEL TOWN HOUSES amongst the books, conveying a broad world of language. Cream walls, honey wood, sunlight from upper left, a warm floor and small rug create a complete room; no lettering, numbers or marks on book spines.",
+      "native_generation": "exec-b41bba8b-f326-44d9-b36d-526d01ec5696.png",
+      "selected": true,
+      "rejected": false,
+      "transparent_background": false
     }
   ]
 }
