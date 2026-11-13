@@ -1,0 +1,346 @@
+import {
+  applySessionFact, createProfileProgress,
+  type ProfileProgress, type RecordContext,
+} from './index';
+import type { SessionFact } from '../typing';
+
+export interface ProfileSettings {
+  guide: boolean;
+  fontScale: 100 | 125 | 150;
+  deliveryKeys: ('Space' | 'Enter')[];
+  reducedMotion: boolean;
+  sound: boolean;
+}
+export interface ProfileDocument {
+  settings: ProfileSettings;
+  tutorialSeen: boolean;
+  progress: ProfileProgress;
+  /** Future city/achievement state shares this atomic document, without key logs. */
+  extensions: Record<string, unknown>;
+  metadata: {
+    schemaVersion: 4;
+    ownerTabId: string | null;
+    writeEpoch: number;
+    revision: number;
+    generation: number;
+  };
+}
+export interface RepositoryStatus {
+  storage: 'indexeddb' | 'memory';
+  ownership: 'owner' | 'readonly';
+  saveState: 'saved' | 'pending' | 'unsaved';
+  recoveryRequired: boolean;
+  notice: string;
+}
+export const defaultProfileSettings: ProfileSettings = {
+  guide: true, fontScale: 100, deliveryKeys: ['Space'], reducedMotion: false, sound: false,
+};
+export function createProfileDocument(): ProfileDocument {
+  return { settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] }, tutorialSeen: false, progress: createProfileProgress(),
+    extensions: {}, metadata: { schemaVersion: 4, ownerTabId: null, writeEpoch: 0, revision: 0, generation: 0 } };
+}
+
+const forbiddenKeys = new Set(['__proto__', 'prototype', 'constructor']);
+function object(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).every(key => !forbiddenKeys.has(key));
+}
+function integer(value: unknown): value is number { return Number.isSafeInteger(value) && (value as number) >= 0; }
+function finiteText(value: unknown): value is string { return typeof value === 'string' && value.length > 0; }
+function settings(value: unknown): value is ProfileSettings {
+  return object(value) && typeof value.guide === 'boolean' && [100, 125, 150].includes(value.fontScale as number)
+    && Array.isArray(value.deliveryKeys) && value.deliveryKeys.length > 0 && value.deliveryKeys.length <= 2
+    && value.deliveryKeys.every(key => key === 'Space' || key === 'Enter') && new Set(value.deliveryKeys).size === value.deliveryKeys.length
+    && typeof value.reducedMotion === 'boolean' && typeof value.sound === 'boolean';
+}
+function context(value: unknown): value is RecordContext {
+  return object(value) && ['relaxed', 'standard', 'challenge'].includes(value.courseId as string)
+    && ['planId', 'contentVersion', 'generatorVersion', 'inputRuleVersion', 'scoringVersion'].every(key => finiteText(value[key]))
+    && typeof value.guideUsed === 'boolean' && typeof value.assisted === 'boolean';
+}
+
+/** External persistence/import boundary only. Never used on every keystroke. */
+export function validateProfileDocument(value: unknown): value is ProfileDocument {
+  if (!object(value) || !settings(value.settings) || typeof value.tutorialSeen !== 'boolean'
+    || !object(value.extensions) || !object(value.metadata) || !object(value.progress)) return false;
+  const m = value.metadata;
+  if (m.schemaVersion !== 4 || !(m.ownerTabId === null || finiteText(m.ownerTabId))
+    || !integer(m.writeEpoch) || !integer(m.revision) || !integer(m.generation)) return false;
+  const p = value.progress;
+  if (!object(p.words) || !object(p.factCursors) || !integer(p.totalCompleted)
+    || !Array.isArray(p.recentRounds) || p.recentRounds.length > 30 || !object(p.bestByComparison)) return false;
+  let total = 0;
+  for (const value of Object.values(p.words)) {
+    if (!object(value) || !['completed', 'cleanCompleted', 'practiceCompleted', 'practiceCleanCompleted'].every(key => integer(value[key]))) return false;
+    const { completed, cleanCompleted, practiceCompleted, practiceCleanCompleted } = value as unknown as {
+      completed: number; cleanCompleted: number; practiceCompleted: number; practiceCleanCompleted: number;
+    };
+    if (cleanCompleted > completed || practiceCompleted > completed || practiceCleanCompleted > practiceCompleted || practiceCleanCompleted > cleanCompleted) return false;
+    total += completed;
+  }
+  if (!Number.isSafeInteger(total) || total !== p.totalCompleted || !Object.values(p.factCursors).every(integer)) return false;
+  for (const r of p.recentRounds) {
+    if (!object(r) || !finiteText(r.sessionId) || !context(r.context)
+      || !['score', 'completedWords', 'canonicalLength', 'correctKeys', 'mistakes'].every(key => integer(r[key]))
+      || !Array.isArray(r.wordIds) || !r.wordIds.every(finiteText)) return false;
+  }
+  for (const b of Object.values(p.bestByComparison)) {
+    if (!object(b) || !integer(b.bestScore) || !integer(b.bestCanonicalLength)
+      || !(b.growthBestScore === null || integer(b.growthBestScore))
+      || !(b.growthBestCanonicalLength === null || integer(b.growthBestCanonicalLength))) return false;
+  }
+  return true;
+}
+
+export class OwnershipError extends Error { constructor() { super('別のタブが操作中です。「ここで続ける」で引き継いでください。'); } }
+export class RevisionConflictError extends Error { constructor() { super('保存状態が更新されています。古い状態では上書きしません。'); } }
+export class RecoveryRequiredError extends Error { constructor() { super('保存データを確認できません。元データを保持して今回のみで続けます。'); } }
+
+type Mutation = (document: ProfileDocument) => ProfileDocument;
+const STORE = 'profile';
+const KEY = 'current';
+const MEMORY_NOTICE = 'この回の街と切手は、ページを閉じると残りません。複数ページ間の同期はできません。';
+
+export class ProfileRepository {
+  private document = createProfileDocument();
+  private state: RepositoryStatus = { storage: 'memory', ownership: 'owner', saveState: 'unsaved', recoveryRequired: false, notice: MEMORY_NOTICE };
+  private database: IDBDatabase | null = null;
+  private readonly listeners = new Set<() => void>();
+  private pending: Mutation[] = [];
+  private tail: Promise<unknown> = Promise.resolve();
+  private persistedRevision = 0;
+  private rawRecovery: unknown = undefined;
+  private channel: BroadcastChannel | null = null;
+  private closed = false;
+
+  private constructor(readonly tabId: string, readonly dbName: string) {}
+
+  static async open(options: { dbName?: string; tabId?: string; indexedDB?: IDBFactory | null } = {}): Promise<ProfileRepository> {
+    const repository = new ProfileRepository(options.tabId ?? crypto.randomUUID(), options.dbName ?? 'kotobabin');
+    const factory = options.indexedDB === undefined ? globalThis.indexedDB : options.indexedDB;
+    if (!factory) return repository;
+    try {
+      let legacy = false;
+      const database = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = factory.open(repository.dbName, 4);
+        let rejected = false;
+        request.onblocked = () => { rejected = true; reject(new Error('保存データを使う別のページを閉じてください。')); };
+        request.onerror = () => reject(request.error);
+        request.onupgradeneeded = event => {
+          legacy = event.oldVersion > 0;
+          const store = request.result.objectStoreNames.contains(STORE)
+            ? request.transaction!.objectStore(STORE) : request.result.createObjectStore(STORE);
+          if (legacy) store.put({ fromVersion: event.oldVersion }, 'migrationPending');
+        };
+        request.onsuccess = () => { if (rejected) request.result.close(); else resolve(request.result); };
+      });
+      repository.database = database;
+      database.onversionchange = () => {
+        database.close(); repository.database = null;
+        repository.state = { ...repository.state, storage: 'memory', saveState: 'unsaved', notice: MEMORY_NOTICE };
+        repository.emit();
+      };
+      const marker = await new Promise<unknown>((resolve, reject) => {
+        const transaction = database.transaction(STORE, 'readonly');
+        const request = transaction.objectStore(STORE).get('migrationPending');
+        transaction.oncomplete = () => resolve(request.result);
+        transaction.onabort = () => reject(transaction.error);
+      });
+      if (legacy || marker !== undefined) {
+        repository.rawRecovery = await repository.captureDatabase();
+        repository.state = { ...repository.state, recoveryRequired: true, notice: '旧版の保存データを保持しています。移行未対応のため今回のみで続けます。' };
+        return repository;
+      }
+      await repository.loadOrClaim();
+      if (typeof BroadcastChannel !== 'undefined') {
+        repository.channel = new BroadcastChannel(`${repository.dbName}:ownership`);
+        repository.channel.onmessage = () => { void repository.refresh().catch(() => {}); };
+      }
+    } catch (error) {
+      repository.state = { ...repository.state, notice: `${MEMORY_NOTICE} ${error instanceof Error ? error.message : ''}` };
+    }
+    return repository;
+  }
+
+  private captureDatabase(): Promise<Record<string, unknown>> {
+    const database = this.database!;
+    const names = Array.from(database.objectStoreNames);
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction(names, 'readonly');
+      const records: Record<string, unknown> = {};
+      for (const name of names) {
+        const store = transaction.objectStore(name);
+        const values = store.getAll();
+        const keys = store.getAllKeys();
+        values.onsuccess = () => { records[name] = { values: values.result }; };
+        keys.onsuccess = () => { records[name] = { ...(records[name] as object), keys: keys.result }; };
+      }
+      transaction.oncomplete = () => resolve(records);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  }
+
+  get snapshot(): ProfileDocument { return structuredClone(this.document); }
+  get status(): RepositoryStatus { return { ...this.state }; }
+  subscribe(listener: () => void): () => void { this.listeners.add(listener); return () => this.listeners.delete(listener); }
+  private emit(): void { for (const listener of this.listeners) listener(); }
+  private queue<T>(operation: () => Promise<T>): Promise<T> {
+    const result = this.tail.then(operation);
+    this.tail = result.catch(() => {});
+    return result;
+  }
+
+  /** The callback and put run synchronously within one readwrite transaction. */
+  private transaction(update: (current: unknown) => ProfileDocument | undefined): Promise<ProfileDocument> {
+    const database = this.database;
+    if (!database || this.closed) return Promise.reject(new Error('保存データベースを利用できません。'));
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction(STORE, 'readwrite');
+      let result: ProfileDocument;
+      let failure: unknown;
+      const request = transaction.objectStore(STORE).get(KEY);
+      request.onsuccess = () => {
+        try {
+          const next = update(request.result);
+          result = next ?? request.result;
+          if (next) transaction.objectStore(STORE).put(next, KEY);
+        } catch (error) { failure = error; transaction.abort(); }
+      };
+      transaction.oncomplete = () => resolve(result);
+      transaction.onabort = () => reject(failure ?? transaction.error ?? new Error('保存を完了できませんでした。'));
+      transaction.onerror = () => { /* onabort is the definitive failure event. */ };
+    });
+  }
+
+  private async loadOrClaim(): Promise<void> {
+    try {
+      const loaded = await this.transaction(raw => {
+        const document = raw === undefined ? createProfileDocument() : raw;
+        if (!validateProfileDocument(document)) { this.rawRecovery = raw; throw new RecoveryRequiredError(); }
+        if (document.metadata.ownerTabId === null) {
+          const claimed = structuredClone(document);
+          claimed.metadata.ownerTabId = this.tabId;
+          claimed.metadata.writeEpoch++;
+          claimed.metadata.revision++;
+          return claimed;
+        }
+        return undefined;
+      });
+      this.document = loaded;
+      this.persistedRevision = loaded.metadata.revision;
+      this.state = { storage: 'indexeddb', ownership: loaded.metadata.ownerTabId === this.tabId ? 'owner' : 'readonly', saveState: 'saved', recoveryRequired: false,
+        notice: loaded.metadata.ownerTabId === this.tabId ? '' : '別のタブが操作中です。「ここで続ける」で引き継げます。' };
+    } catch (error) {
+      if (error instanceof RecoveryRequiredError) this.state = { ...this.state, recoveryRequired: true, notice: error.message };
+      else throw error;
+    }
+  }
+
+  private write(mutation: Mutation): Promise<void> {
+    return this.queue(async () => {
+      if (this.closed) throw new Error('保存処理は終了しています。');
+      if (this.state.ownership !== 'owner') throw new OwnershipError();
+      const next = mutation(structuredClone(this.document));
+      // A failing reducer cannot partially change the current in-memory document.
+      this.pending.push(mutation);
+      this.document = next;
+      this.state = { ...this.state, saveState: 'pending' };
+      this.emit();
+      if (!this.database || this.state.recoveryRequired) {
+        this.state = { ...this.state, saveState: 'unsaved', notice: this.state.recoveryRequired ? this.state.notice : MEMORY_NOTICE };
+        this.emit();
+        return;
+      }
+      await this.flush();
+    });
+  }
+
+  private async flush(): Promise<void> {
+    const pending = [...this.pending];
+    if (!pending.length) return;
+    const expected = this.document.metadata;
+    try {
+      const saved = await this.transaction(raw => {
+        if (!validateProfileDocument(raw)) { this.rawRecovery = raw; throw new RecoveryRequiredError(); }
+        if (raw.metadata.ownerTabId !== this.tabId || raw.metadata.writeEpoch !== expected.writeEpoch) throw new OwnershipError();
+        if (raw.metadata.revision !== this.persistedRevision || raw.metadata.generation !== expected.generation) throw new RevisionConflictError();
+        let next = structuredClone(raw);
+        for (const mutation of pending) next = mutation(next);
+        next.metadata.revision++;
+        return next;
+      });
+      this.document = saved;
+      this.persistedRevision = saved.metadata.revision;
+      this.pending.splice(0, pending.length);
+      this.state = { ...this.state, storage: 'indexeddb', saveState: 'saved', notice: '' };
+      this.channel?.postMessage('updated');
+    } catch (error) {
+      this.state = { ...this.state, saveState: 'unsaved', notice: `${error instanceof Error ? error.message : ''} ${MEMORY_NOTICE}` };
+      if (error instanceof OwnershipError) this.state.ownership = 'readonly';
+      if (error instanceof RecoveryRequiredError) this.state.recoveryRequired = true;
+      this.emit();
+      if (error instanceof OwnershipError || error instanceof RevisionConflictError || error instanceof RecoveryRequiredError) throw error;
+      return;
+    }
+    this.emit();
+  }
+
+  commitFacts(facts: readonly SessionFact[], recordContext: RecordContext): Promise<void> {
+    const batch = structuredClone(facts);
+    const context = structuredClone(recordContext);
+    return this.write(document => ({ ...document, progress: batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress) }));
+  }
+  updateSettings(patch: Partial<ProfileSettings>): Promise<void> {
+    const change = structuredClone(patch);
+    if (!settings({ ...this.document.settings, ...change })) return Promise.reject(new Error('設定値を確認してください。'));
+    return this.write(document => ({ ...document, settings: { ...document.settings, ...change } }));
+  }
+  markTutorialSeen(): Promise<void> { return this.write(document => ({ ...document, tutorialSeen: true })); }
+
+  /** Future state modules can commit related facts and extension values atomically. */
+  commitExtension(key: string, value: unknown, facts: readonly SessionFact[] = [], recordContext?: RecordContext): Promise<void> {
+    if (forbiddenKeys.has(key) || !key || (facts.length > 0 && !recordContext)) return Promise.reject(new Error('保存項目を確認してください。'));
+    const extension = structuredClone(value);
+    const batch = structuredClone(facts);
+    const context = recordContext && structuredClone(recordContext);
+    return this.write(document => ({ ...document, extensions: { ...document.extensions, [key]: extension },
+      progress: context ? batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress) : document.progress }));
+  }
+
+  refresh(): Promise<void> {
+    return this.queue(async () => {
+      if (!this.database || this.state.recoveryRequired) return;
+      const raw = await this.transaction(() => undefined);
+      if (!validateProfileDocument(raw)) { this.rawRecovery = raw; this.state = { ...this.state, recoveryRequired: true, saveState: 'unsaved', notice: new RecoveryRequiredError().message }; this.emit(); return; }
+      if (raw.metadata.ownerTabId !== this.tabId || raw.metadata.writeEpoch !== this.document.metadata.writeEpoch) {
+        this.state = { ...this.state, ownership: 'readonly', notice: '別のタブが操作中です。「ここで続ける」で引き継げます。' };
+        // Keep unsaved facts for export, never replay them into the new owner's state.
+        if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; }
+      } else if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; }
+      this.emit();
+    });
+  }
+  takeover(options: { discardUnsaved?: boolean } = {}): Promise<void> {
+    return this.queue(async () => {
+      if (!this.database || this.state.recoveryRequired) throw new RecoveryRequiredError();
+      if (this.pending.length && !options.discardUnsaved) throw new RevisionConflictError();
+      const abandoned = this.pending.length ? structuredClone(this.document) : undefined;
+      const claimed = await this.transaction(raw => {
+        if (!validateProfileDocument(raw)) throw new RecoveryRequiredError();
+        const next = structuredClone(raw);
+        next.metadata.ownerTabId = this.tabId; next.metadata.writeEpoch++; next.metadata.revision++;
+        return next;
+      });
+      if (abandoned) this.rawRecovery = { abandonedUnsavedData: abandoned };
+      this.pending = [];
+      this.document = claimed; this.persistedRevision = claimed.metadata.revision;
+      this.state = { storage: 'indexeddb', ownership: 'owner', saveState: 'saved', recoveryRequired: false, notice: '' };
+      this.channel?.postMessage('ownership'); this.emit();
+    });
+  }
+  retry(): Promise<void> { return this.queue(async () => { if (this.state.ownership !== 'owner') throw new OwnershipError(); await this.flush(); }); }
+  exportData(): string { return JSON.stringify({ current: this.document, status: this.state, originalInvalidData: this.rawRecovery }, (_key, value) => typeof value === 'bigint' ? value.toString() : value, 2); }
+  close(): void {
+    this.closed = true; this.database?.close(); this.channel?.close(); this.listeners.clear();
+  }
+}
