@@ -1,0 +1,23 @@
+name: Sakurai independent black-box E2E
+on:
+  push:
+    branches: [review/sakurai-m7-independent]
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx vite preview --host 127.0.0.1 --port 4173 &
+      - run: npx playwright test --config review-independent/playwright.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: independent-evidence
+          path: review-independent/output
