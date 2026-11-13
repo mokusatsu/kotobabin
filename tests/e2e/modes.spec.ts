@@ -82,6 +82,7 @@ test('rescue skip explains the record change, ships held cargo and stays paused'
 });
 
 test('practice completion choices work with the keyboard and preserve focus for the next attempt', async ({ page }) => {
+  await page.clock.install();
   await page.goto('/');
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('猫');
@@ -99,7 +100,11 @@ test('practice completion choices work with the keyboard and preserve focus for 
   }
   await page.keyboard.press('Tab');
   await expect(page.locator('[data-action="next-practice-word"]')).toBeFocused();
+  await page.clock.runFor(400);
+  await expect(page.locator('[data-action="next-practice-word"]')).toBeFocused();
   await page.keyboard.press('Tab');
+  await expect(page.locator('[data-action="practice-main"]')).toBeFocused();
+  await page.clock.runFor(400);
   await expect(page.locator('[data-action="practice-main"]')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
