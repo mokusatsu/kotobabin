@@ -56,7 +56,16 @@ test('a pre-stage ownership rejection preserves confirmed projection through ref
   repository.subscribe = listener => { notify = listener; return () => {}; };
   const status = { storage: 'indexeddb' as const, ownership: 'owner' as 'owner' | 'readonly', saveState: 'saved' as const, recoveryRequired: false, notice: '' };
   Object.defineProperty(repository, 'status', { get: () => ({ ...status }) });
-  repository.commitFacts = async () => { status.ownership = 'readonly'; notify(); throw new OwnershipError(); };
+  const mutate = repository.mutateDocument.bind(repository);
+  let mutationTail = Promise.resolve();
+  repository.mutateDocument = (reducer, options) => {
+    const result = mutationTail.then(async () => {
+      if (reducer(repository.snapshot).progress.totalCompleted > 0) { status.ownership = 'readonly'; notify(); throw new OwnershipError(); }
+      await mutate(reducer, options);
+    });
+    mutationTail = result.catch(() => {});
+    return result;
+  };
   repository.takeover = async () => { status.ownership = 'owner'; notify(); };
   const runtime = await createAppRuntime(repository);
   try {
