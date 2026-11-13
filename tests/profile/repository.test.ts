@@ -153,3 +153,54 @@ describe('atomic document reducers', () => {
     expect(repository.snapshot.progress.totalCompleted).toBe(0);
   });
 });
+
+describe('explicit deletion scopes and generations', () => {
+  it('resets settings alone while preserving tutorial completion, records, collection and city', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.markTutorialSeen();
+    await repository.updateSettings({guide:false,fontScale:150,deliveryKeys:['Enter'],sound:true});
+    await repository.resetSettings();
+    expect(repository.snapshot.settings).toEqual(createProfileDocument().settings);
+    expect(repository.snapshot.tutorialSeen).toBe(true);
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.progress.recentRounds).toHaveLength(1);
+    expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'123'});
+    expect(repository.snapshot.metadata.generation).toBe(0);
+  });
+
+  it('deletes self-record and growth references without deleting collection or city state', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.resetRecords();
+    expect(repository.snapshot.progress.recentRounds).toEqual([]);
+    expect(repository.snapshot.progress.bestByComparison).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'123'});
+    expect(repository.snapshot.metadata.generation).toBe(1);
+  });
+
+  it('deletes collection and economy while retaining visible records/settings and rejecting delayed old facts', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const oldGeneration = repository.snapshot.metadata.generation;
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.updateSettings({fontScale:125});
+    await repository.resetCollectionAndEconomy();
+    const snapshot = repository.snapshot;
+    expect(snapshot.metadata.generation).toBe(oldGeneration + 1);
+    expect(snapshot.progress.totalCompleted).toBe(0);
+    expect(snapshot.progress.words).toEqual({});
+    expect(snapshot.extensions).toEqual({});
+    expect(snapshot.settings.fontScale).toBe(125);
+    expect(snapshot.progress.recentRounds).toHaveLength(1);
+    expect(Object.values(snapshot.progress.bestByComparison)[0]).toMatchObject({growthBestScore:null,growthBestCanonicalLength:null});
+    const oldFacts = facts().map(fact => ({...fact,sessionId:'late-old-session'}));
+    await expect(repository.commitFacts(oldFacts,context,{generation:oldGeneration})).rejects.toThrow('削除前');
+    await expect(repository.mutateDocument(document => ({...document,extensions:{city:{coinsMicro:'999'}}}),{generation:oldGeneration})).rejects.toThrow('削除前');
+    expect(repository.snapshot.extensions).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(0);
+    await repository.commitFacts(oldFacts,context,{generation:snapshot.metadata.generation});
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(validateProfileDocument(repository.snapshot)).toBe(true);
+  });
+});
