@@ -92,12 +92,7 @@ test('sound opt-in persists independent volumes and confirms native key/word/del
   await page.waitForTimeout(350); // exercise several80ms redraws and asynchronous save completions
   expect((await probe(page)).starts.length).toBe(startsAfterDelivery);
   await page.getByRole('button', { name: '90秒の配達へ →' }).click();
-  const reading = await page.locator('#prompt-reading').textContent();
-  const wrong = await page.evaluate(async text => {
-    const { RomajiEngine } = await import('/src/typing/index.ts');
-    return 'abcdefghijklmnopqrstuvwxyz'.split('').find(key => !new RomajiEngine(text!).input(key).accepted)!;
-  }, reading);
-  await page.locator('#game-input').press(wrong);
+  await page.locator('#game-input').press("'"); // a literal apostrophe cannot begin any accepted word path
   await expect.poll(() => count(page, 100)).toBe(1);
   await page.keyboard.press('Escape');
   await expect(page.locator('#paused-layer')).toBeVisible();

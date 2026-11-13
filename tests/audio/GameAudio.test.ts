@@ -8,7 +8,7 @@ class Output implements SoundOutput {
   status: AudioStatus = 'ready';
   settings = vi.fn();
   play = vi.fn((_kind: AudioKind) => {});
-  pause = vi.fn(() => { this.status = 'paused'; });
+  pause = vi.fn(() => { if (this.status !== 'unavailable') this.status = 'paused'; });
   stopTheme = vi.fn();
   dispose = vi.fn();
   startFromGesture = vi.fn(async () => { this.status = 'ready'; return true; });
@@ -99,7 +99,7 @@ describe('confirmed UI audio feedback', () => {
   });
   it('requires the visible retry control after failure and never retries on every subsequent game input', async () => {
     const { output, audio } = fixture(); output.status = 'unavailable';
-    audio.gesture(); audio.resumeFromGesture(); expect(output.startFromGesture).not.toHaveBeenCalled();
+    audio.gesture(); audio.resumeFromGesture(); audio.pause(); audio.gesture(); expect(output.startFromGesture).not.toHaveBeenCalled();
     audio.retryFromGesture(); await flush(); expect(output.startFromGesture).toHaveBeenCalledTimes(1);
     expect(soundStatusText(true, 'unavailable')).toContain('消音で配達を続けられます');
   });
