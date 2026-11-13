@@ -1,6 +1,7 @@
 import { createProfileDocument, validateProfileDocument } from './repository';
 import catalog from '../../spec/initial/data/achievement_catalog.json';
 import words from '../../spec/initial/data/words.json';
+import economyConfig from '../../spec/initial/data/economy_config.json';
 import type { CityState } from '../economy';
 import type { SessionFact, SessionMode, SessionSnapshot } from '../typing';
 import { applySessionFact, comparisonKey, createProfileProgress, practiceQualifiedWordIds, type ProfileProgress, type RecordBest, type RecordContext } from './index';
@@ -50,6 +51,12 @@ export interface AchievementState {
 const ids = new Set(catalog.achievements.map(a=>a.id));
 const rewardIds = new Set([...catalog.achievements.flatMap(a=>[a.stamp_asset_id,a.title_id]),...catalog.rewards.map(r=>r.id)]);
 const wordById = new Map(words.words.map(word=>[word.id,word]));
+const districtNames:Record<string,string>=Object.fromEntries(economyConfig.districts.map(d=>[d.id,d.name]));
+const slotKinds:Record<EquipmentSlot,string[]>={titleId:['title'],frameId:['frame'],postcardId:['postcard'],boardId:['foil_board','memorial_board'],ornamentId:['ornament','home_panel'],albumId:['album']};
+function rewardFitsSlot(slot:EquipmentSlot,id:string):boolean {
+  const kind=catalog.achievements.some(a=>a.title_id===id)?'title':catalog.rewards.find(r=>r.id===id)?.kind;
+  return !!kind&&slotKinds[slot].includes(kind);
+}
 const courses = ['relaxed','standard','challenge'];
 const topics = [...new Set(words.words.map(word=>word.topicId))];
 export function createAchievementState():AchievementState {
@@ -93,16 +100,20 @@ function acquire(state:AchievementState,id:string,atMs:number,eventId:string,mod
     state.rewards[key]={acquiredAtMs:atMs,evidenceEventId:eventId};state.unreadRewards.push(key);
   }
 }
-function addRewards(state:AchievementState,atMs:number,eventId:string):void {
+function supplementalRewardEligible(state:Pick<AchievementState,'unlocks'>,rewardId:string):boolean {
   const total=Object.keys(state.unlocks).length;
+  let eligible=false;
+  const family=/^reward_family_([a-l])_(postcard|foil_board)$/.exec(rewardId);
+  const totalReward=/^reward_total_(\d+)_/.exec(rewardId);
+  if (family) eligible=Object.keys(state.unlocks).filter(id=>id.startsWith(family[1].toUpperCase())).length >= (family[2]==='postcard'?3:6);
+  else if (totalReward) eligible=total>=Number(totalReward[1]);
+  else if (rewardId.startsWith('reward_first_collection_')) eligible=catalog.achievements.filter(a=>a.family_id<='H').every(a=>!!state.unlocks[a.id]);
+  else if (rewardId.startsWith('reward_complete_72_')) eligible=total===72;
+  return eligible;
+}
+function addRewards(state:AchievementState,atMs:number,eventId:string):void {
   for (const reward of catalog.rewards) {
-    let eligible=false;
-    const family=/^reward_family_([a-l])_(postcard|foil_board)$/.exec(reward.id);
-    const totalReward=/^reward_total_(\d+)_/.exec(reward.id);
-    if (family) eligible=Object.keys(state.unlocks).filter(id=>id.startsWith(family[1].toUpperCase())).length >= (family[2]==='postcard'?3:6);
-    else if (totalReward) eligible=total>=Number(totalReward[1]);
-    else if (reward.id.startsWith('reward_first_collection_')) eligible=catalog.achievements.filter(a=>a.family_id<='H').every(a=>!!state.unlocks[a.id]);
-    else if (reward.id.startsWith('reward_complete_72_')) eligible=total===72;
+    const eligible=supplementalRewardEligible(state,reward.id);
     if (eligible&&!state.rewards[reward.id]) {state.rewards[reward.id]={acquiredAtMs:atMs,evidenceEventId:eventId};state.unreadRewards.push(reward.id);}
   }
 }
@@ -204,10 +215,7 @@ export function applyAchievementAction(state:AchievementState,action:Achievement
       if(!Object.hasOwn(next.equipped,action.slot))throw new Error('Unknown equipment slot');
       if(action.id!==null) {
         if(!next.rewards[action.id])throw new Error('Reward is not owned');
-        const reward=catalog.rewards.find(r=>r.id===action.id);
-        const kinds:Record<EquipmentSlot,string[]>={titleId:['title'],frameId:['frame'],postcardId:['postcard'],boardId:['foil_board','memorial_board'],ornamentId:['ornament','home_panel'],albumId:['album']};
-        const kind=catalog.achievements.some(a=>a.title_id===action.id)?'title':reward?.kind;
-        if(!kind||!kinds[action.slot].includes(kind))throw new Error('Reward does not fit this equipment slot');
+        if(!rewardFitsSlot(action.slot,action.id))throw new Error('Reward does not fit this equipment slot');
       }
       next.equipped[action.slot]=action.id;break;
     }
@@ -252,16 +260,16 @@ function metrics(state:AchievementState,id:string,s?:AchievementSession,live?:Se
     comparison_completed_words:s?.completedWords??0,record_improvement:!!s&&s.completedWords>=10&&baseline?.growthBestScore!=null&&s.score>baseline.growthBestScore,
     speed_improvement:s&&baseline?.growthBestCanonicalLength!=null?(s.canonicalLength-baseline.growthBestCanonicalLength)*60000/90000:0,
     distinct_completed_words:complete.length,first_edition_completed_words:fixed('kotobabin-ja-240-v1'),qualified_topic_count:topics.filter(topic=>complete.filter(wordId=>wordById.get(wordId)?.topicId===topic).length>=5).length,
-    practice_completed_words:practice.reduce((sum,[,v])=>sum+v.practiceCompleted,0),same_word_practice_clean_count:s?.mode==='PRACTICE'&&live?.mode==='PRACTICE'?(p.words[live.currentWord.id]?.practiceCleanCompleted??0):Math.max(0,...practice.map(([,v])=>v.practiceCleanCompleted)),
+    practice_completed_words:practice.reduce((sum,[,v])=>sum+v.practiceCompleted,0),same_word_practice_clean_count:s?.mode==='PRACTICE'&&s.phase==='active'&&live?.mode==='PRACTICE'&&live.phase!=='RESULT'?(p.words[live.currentWord.id]?.practiceCleanCompleted??0):Math.max(0,...practice.map(([,v])=>v.practiceCleanCompleted)),
     element_n:tagged('n'),element_sokuon:tagged('sokuon'),element_youon:tagged('yoon'),element_choon:tagged('long_mark'),
     qualified_element_count:['n','sokuon','yoon','long_mark'].filter(tagged).length,qualified_practice_words:qualified.length,per_word_clean_count:qualified.length?Math.min(...qualified.map(([,v])=>v.practiceCleanCompleted)):0,
     qualified_word_practice_count:s?.qualifiedWordIds.length?3:0,qualified_word_clean_in_round:s?.qualifiedClean??false,qualified_word_set:s?.qualifiedWordIds.map(id=>wordById.get(id)?.display??'ことば').join('、')||'対象語なし',
     lifetime_delivered_cargo:state.deliveredCargo,five_word_completed_rounds:state.fiveWordRounds,manual_two:!!s?.manual[2],manual_four:!!s?.manual[4],full_five:(s?.full??0)>0,guide_never_shown:!!s&&!s.guideUsed,
     highest_district_stage:Math.max(0,...ds.map(d=>d.stage)),residential_stage:city?.districts.residential?.stage??0,qualified_district_count:ds.filter(d=>d.stage>=stage).length,
     arrival_observed:!!city&&BigInt(city.arrivedMicro)>0n,lifetime_arrived_materials:city?Number(BigInt(city.arrivedMicro)/100000n)/10:0,
-    current_city_arrived_materials:city?Number(BigInt(city.cityArrivedMicro)/100000n)/10:0,opened_routes:ds.filter(d=>d.open).length,route_status:city?Object.entries(city.districts).map(([key,d])=>`${key}：${d.open?'開通':'未開通'}`).join('、'):'未開通',
-    rail_route_count:ds.filter(d=>d.railway).length,rail_status:city?Object.entries(city.districts).map(([key,d])=>`${key}：${d.railway?'鉄道':'道路'}`).join('、'):'鉄道なし',
-    paid_equipment_purchase_seen:state.paidEquipmentPurchases>0,packing_level:city?.packagingLevel??0,maximum_shops_in_one_district:Math.max(0,...ds.map(d=>d.shops)),shops_by_district:city?Object.entries(city.districts).map(([key,d])=>`${key}：${d.shops}軒`).join('、'):'店舗なし',
+    current_city_arrived_materials:city?Number(BigInt(city.cityArrivedMicro)/100000n)/10:0,opened_routes:ds.filter(d=>d.open).length,route_status:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.open?'開通':'未開通'}`).join('、'):'未開通',
+    rail_route_count:ds.filter(d=>d.railway).length,rail_status:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.railway?'鉄道':'道路'}`).join('、'):'鉄道なし',
+    paid_equipment_purchase_seen:state.paidEquipmentPurchases>0,packing_level:city?.packagingLevel??0,maximum_shops_in_one_district:Math.max(0,...ds.map(d=>d.shops)),shops_by_district:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.shops}軒`).join('、'):'店舗なし',
     synergy_count:city?.synergies.length??0,city_restart_count:city?.citiesRestarted??0,research_purchase_count:state.researchPurchases,
     fixed_set_completed_words:fixed(id==='L04'?'kotobabin-ja-relaxed-v2':id==='L05'?'kotobabin-ja-standard-v2':id==='L06'?'kotobabin-ja-challenge-v2':'kotobabin-ja-960-v2'),
   };
@@ -288,9 +296,13 @@ export function getAchievementViews(state:AchievementState,liveSession?:SessionS
         `${field.label}：${typeof raw==='boolean'?(raw?'達成':'未達'):`${current}${target===null?'':`/${target}`}${field.unit}`}`;
       return {key:field.key,label:field.label,current,target,unit:field.unit,displayText};
     });
+    if(definition.id==='K03'&&state.city) {
+      const leader=Object.entries(state.city.districts).sort((a,b)=>b[1].shops-a[1].shops)[0];
+      if(leader)progress[0].displayText=`${districtNames[leader[0]]}の店：${leader[1].shops}/10軒`;
+    }
     if(definition.id==='F02') {
       const practice=Object.entries(state.measuredProgress.words).sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
-      const wordId=s?.mode==='PRACTICE'&&liveSession?.mode==='PRACTICE'?liveSession.currentWord.id:practice[0]?.[0];
+      const wordId=s?.mode==='PRACTICE'&&s.phase==='active'&&liveSession?.mode==='PRACTICE'&&liveSession.phase!=='RESULT'?liveSession.currentWord.id:practice[0]?.[0];
       if(wordId)progress[0].displayText=`${wordById.get(wordId)?.display??'ことば'}の無誤打練習：${values.same_word_practice_clean_count}/3回`;
     }
     if(definition.id==='F04') {
@@ -323,12 +335,20 @@ export function validateAchievementState(value:unknown):value is AchievementStat
     ||!list(value.fiveWordCourses,course=>typeof course==='string'&&courses.includes(course))||!list(value.skilledCourses,course=>typeof course==='string'&&courses.includes(course))
     ||!(value.targetId===null||(typeof value.targetId==='string'&&ids.has(value.targetId)))||!['live','result'].includes(value.notificationMode as string))return false;
   const acquisition=(v:unknown)=>isRecord(v)&&nonnegative(v.acquiredAtMs)&&text(v.evidenceEventId);
-  for(const[id,unlock]of Object.entries(value.unlocks))if(!ids.has(id)||!acquisition(unlock)||!isRecord(unlock)||!text(unlock.conditionRevision)||!['MAIN','PRACTICE','TUTORIAL','CITY'].includes(unlock.mode as string))return false;
+  for(const[id,unlock]of Object.entries(value.unlocks)) {
+    if(!ids.has(id)||!acquisition(unlock)||!isRecord(unlock)||!text(unlock.conditionRevision)||!['MAIN','PRACTICE','TUTORIAL','CITY'].includes(unlock.mode as string))return false;
+    const scope=catalog.achievements.find(a=>a.id===id)!.scope;
+    if((scope==='街'&&unlock.mode!=='CITY')||(scope==='練'&&unlock.mode!=='PRACTICE')||((scope==='通常'||scope==='便')&&unlock.mode!=='MAIN')||(scope==='全'&&unlock.mode==='CITY'))return false;
+  }
   for(const id of Object.keys(value.unlocks)) {const a=catalog.achievements.find(a=>a.id===id)!;if(!value.rewards[a.stamp_asset_id]||!value.rewards[a.title_id])return false;}
-  for(const[id,reward]of Object.entries(value.rewards))if(!rewardIds.has(id)||!acquisition(reward))return false;
+  for(const[id,reward]of Object.entries(value.rewards)) {
+    if(!rewardIds.has(id)||!acquisition(reward))return false;
+    const achievement=catalog.achievements.find(a=>a.title_id===id||a.stamp_asset_id===id);
+    if(achievement&&!value.unlocks[achievement.id])return false;
+  }
   for(const slot of ['titleId','frameId','postcardId','boardId','ornamentId','albumId']as const) {
     const id=value.equipped[slot];if(id!==null&&(typeof id!=='string'||!value.rewards[id]))return false;
-    try {applyAchievementAction(value as unknown as AchievementState,{type:'equip',slot,id:id as string|null});}catch{return false;}
+    if(id!==null&&!rewardFitsSlot(slot,id as string))return false;
   }
   for(const[sessionId,session]of Object.entries(value.sessions)) {
     if(!text(sessionId)||!isRecord(session)||session.sessionId!==sessionId||!['MAIN','PRACTICE','TUTORIAL'].includes(session.mode as string)||!['active','completed','aborted'].includes(session.phase as string)||!isRecord(session.context)||!isRecord(session.baselines))return false;
