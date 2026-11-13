@@ -34,3 +34,6 @@
 .delivery-warehouse-art,.delivery-district-art{position:absolute;top:0;width:23%;height:120px;object-fit:contain;filter:drop-shadow(0 8px 3px #36543a22)}.delivery-warehouse-art{left:2%}.delivery-district-art{right:1%}
 
 .delivery-vehicle[data-state=arrived] img{animation:none}.delivery-vehicle[data-state=arrived]{opacity:.7}.delivery-reduced-motion .delivery-vehicle[data-state=in-transit]{left:50%!important}
+
+.delivery-arrival-glow{position:absolute;right:8%;top:58px;width:48px;height:48px;border-radius:50%;background:#fff4a2;color:#326d48;font-size:36px;font-weight:800;text-align:center;line-height:48px;box-shadow:0 0 18px 8px #fff4a288}
+@media(prefers-reduced-motion:reduce){.delivery-scene .delivery-vehicle[data-state=in-transit]{left:50%!important}}

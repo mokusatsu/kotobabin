@@ -120,10 +120,10 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
       <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="#658276" stroke-width="46"/>
       <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="#d9cda6" stroke-width="36"/>
       <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="url(#delivery-road-lines)" stroke-width="8"/>
-      <g class="delivery-arrival-glow" data-arrival-revision="0"><ellipse cx="1060" cy="198" rx="82" ry="22" fill="#fff4a2"/><path d="m1035 163 17 18 35-39" stroke="#326d48" stroke-width="10" fill="none"/></g>
     </svg>
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
     <img class="delivery-district-art" data-delivery-district src="${asset(art.path)}" alt="" aria-hidden="true">
+    <div class="delivery-arrival-glow" data-arrival-revision="0" aria-hidden="true">✓</div>
     <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><div class="delivery-word-letter" data-delivery-effect="word" data-state="issued">✉</div><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
     <div class="delivery-place delivery-origin"><strong>ことば倉庫</strong><span data-scene-cargo>まとめ便 0 / 5</span><span class="delivery-envelope-rack" aria-hidden="true">${'<i>✉</i>'.repeat(5)}</span></div>
     <div class="delivery-place delivery-destination"><strong>${escapeCityText(districtName(destination))}</strong><span data-scene-arrived title="画面を開いてからの到着。開始前の輸送待ちを含みます。">到着 0資材</span></div>
