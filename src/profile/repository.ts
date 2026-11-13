@@ -1,3 +1,4 @@
+import content from '../../spec/initial/data/words.json';
 import {
   applySessionFact, createProfileProgress,
   type ProfileProgress, type RecordContext,
@@ -40,6 +41,7 @@ export function createProfileDocument(): ProfileDocument {
     extensions: {}, metadata: { schemaVersion: 4, ownerTabId: null, writeEpoch: 0, revision: 0, generation: 0 } };
 }
 
+const knownWordIds = new Set(content.words.map(word => word.id));
 const forbiddenKeys = new Set(['__proto__', 'prototype', 'constructor']);
 function object(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -70,8 +72,8 @@ export function validateProfileDocument(value: unknown): value is ProfileDocumen
   if (!object(p.words) || !object(p.factCursors) || !integer(p.totalCompleted)
     || !Array.isArray(p.recentRounds) || p.recentRounds.length > 30 || !object(p.bestByComparison)) return false;
   let total = 0;
-  for (const value of Object.values(p.words)) {
-    if (!object(value) || !['completed', 'cleanCompleted', 'practiceCompleted', 'practiceCleanCompleted'].every(key => integer(value[key]))) return false;
+  for (const [wordId, value] of Object.entries(p.words)) {
+    if (!knownWordIds.has(wordId) || !object(value) || !['completed', 'cleanCompleted', 'practiceCompleted', 'practiceCleanCompleted'].every(key => integer(value[key]))) return false;
     const { completed, cleanCompleted, practiceCompleted, practiceCleanCompleted } = value as unknown as {
       completed: number; cleanCompleted: number; practiceCompleted: number; practiceCleanCompleted: number;
     };
@@ -82,7 +84,7 @@ export function validateProfileDocument(value: unknown): value is ProfileDocumen
   for (const r of p.recentRounds) {
     if (!object(r) || !finiteText(r.sessionId) || !context(r.context)
       || !['score', 'completedWords', 'canonicalLength', 'correctKeys', 'mistakes'].every(key => integer(r[key]))
-      || !Array.isArray(r.wordIds) || !r.wordIds.every(finiteText)) return false;
+      || !Array.isArray(r.wordIds) || !r.wordIds.every(id => typeof id === 'string' && knownWordIds.has(id))) return false;
   }
   for (const b of Object.values(p.bestByComparison)) {
     if (!object(b) || !integer(b.bestScore) || !integer(b.bestCanonicalLength)
@@ -117,9 +119,9 @@ export class ProfileRepository {
 
   static async open(options: { dbName?: string; tabId?: string; indexedDB?: IDBFactory | null } = {}): Promise<ProfileRepository> {
     const repository = new ProfileRepository(options.tabId ?? crypto.randomUUID(), options.dbName ?? 'kotobabin');
-    const factory = options.indexedDB === undefined ? globalThis.indexedDB : options.indexedDB;
-    if (!factory) return repository;
     try {
+      const factory = options.indexedDB === undefined ? globalThis.indexedDB : options.indexedDB;
+      if (!factory) return repository;
       let legacy = false;
       const database = await new Promise<IDBDatabase>((resolve, reject) => {
         const request = factory.open(repository.dbName, 4);
