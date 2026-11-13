@@ -1,5 +1,275 @@
 [
   {
+    "id": "vehicle_box_van_front",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      17,
+      1428,
+      1086
+    ],
+    "native_sha256": "b73a709e7a0c9b758f251d385c340dbdf4ed4bfb230563f54f2fd35890b7743f",
+    "scale": 0.13096351730589337,
+    "resized_full_canvas": [
+      190,
+      142
+    ],
+    "translation": [
+      34,
+      18
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      56,
+      21,
+      203,
+      152
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "c8e83083737f15d23abd75fe846fa5c7d4dcc7b3543c80c19d29c1b9af91151c",
+    "webp_sha256": "eb7c1515e98c9234de698132391e9a1cf5351cd6d11fa86ec073af9f0fe4342c",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_box_van_rear",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      9,
+      1402,
+      1072
+    ],
+    "native_sha256": "876ed85217c9c7f48d84c68c7abaaa55d6be1d5296697f773380faed1bb41f12",
+    "scale": 0.1317027281279398,
+    "resized_full_canvas": [
+      191,
+      143
+    ],
+    "translation": [
+      36,
+      19
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      42,
+      30,
+      204,
+      155
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "f254128bfb9e5025e6b07f4175c153c387945909dc2d5a02bcd2cac9bb5b17ef",
+    "webp_sha256": "a4207cc3f3ce70aeee74e4ee8224672e6003f5e36f659164dfd2820e736bf243",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_train_front",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      33,
+      1434,
+      1086
+    ],
+    "native_sha256": "05ee93dee86f1ebeb25dd39616858227756947e74da81f78c2d4012227f066b8",
+    "scale": 0.13295346628679963,
+    "resized_full_canvas": [
+      193,
+      144
+    ],
+    "translation": [
+      33,
+      16
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      40,
+      31,
+      219,
+      158
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "bf1f297b4883be9e5d9b9b90c0715ed5f5436b154f9fe4cb8abf98f9b24cb16d",
+    "webp_sha256": "f539afe233bf02bb7e5a530796f057465f8d27dc04db5f0775b26b037b5cfdb8",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_train_rear",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      19,
+      1394,
+      1086
+    ],
+    "native_sha256": "943e801de920e954610c323e7e14d08d687462890152c5f1f07afc9a8ccff9b3",
+    "scale": 0.13120899718837864,
+    "resized_full_canvas": [
+      190,
+      142
+    ],
+    "translation": [
+      37,
+      18
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      49,
+      32,
+      214,
+      146
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "6110024ab9c6e71876ba13d449bed8a4e70677aa3b73c369d6b8bd8cc887e0da",
+    "webp_sha256": "52b6a16c4739f3e5e890b6a89e2638bebe2628a2f52c4140c44ebbd1bfe19bf9",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_truck_front",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      9,
+      1444,
+      1086
+    ],
+    "native_sha256": "03ffeb7ebefa3052d5997bc12647f9ac3daf0df22b5bc7449d9e744a608e9fed",
+    "scale": 0.12999071494893222,
+    "resized_full_canvas": [
+      188,
+      141
+    ],
+    "translation": [
+      34,
+      19
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      43,
+      32,
+      219,
+      157
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "51dcbdc6eb4732731e5e6038525942bd5d21921a6ae48b16050ee0efb0e78ab4",
+    "webp_sha256": "6ab89bba2e410566b17eccb99b0742a3893ccea0147dcc2c33f8e777438f8593",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_truck_rear",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      20,
+      1447,
+      1070
+    ],
+    "native_sha256": "52a87c86973e8d0a648ef456dc83946626c1933a81e14c6c6f2cb89769a1f85f",
+    "scale": 0.13333333333333333,
+    "resized_full_canvas": [
+      193,
+      145
+    ],
+    "translation": [
+      32,
+      17
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      44,
+      32,
+      225,
+      147
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "3bcf11c38b0d8e3f4f1c6839c25e6501f1350f4d0c135cf43c077e87c48e5885",
+    "webp_sha256": "44ee595f62ce8837184afb389abad8b1e010010300da98ebc367cf45221b4c2b",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
     "id": "vehicle_van_front",
     "native_size": [
       1448,
