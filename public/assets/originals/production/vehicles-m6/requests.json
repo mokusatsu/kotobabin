@@ -1,0 +1,16 @@
+[
+  {
+    "id": "vehicle_van_front",
+    "prompt": "Create ONE production game sprite, isolated on truly transparent RGBA canvas, 4:3 aspect ratio. Watercolor and matte gouache storybook rendering with warm ivory paper-like pigment within the object only, forest green #24594F body accents, subdued vermilion #B34E39 small accents, ochre trim, soft hand-painted edges and broad readable shapes. A small compact delivery van, short integrated box-shaped body with high roof, cream upper body forest green lower body, two axles, small cargo side window revealing plain tan parcels. No text, logos, letters, numbers, plates, ground, road, rail, cast shadow, contact shadow, smoke or surroundings. Soft diffuse lighting suitable for horizontal flip. Isometric elevated three-quarter FRONT view: van drives to screen RIGHT and DOWN along vector (+2,+1); front grille/bumper visible at lower right, rear upper left; longitudinal axis exactly slope +1/2 in image coordinates, not side view. Vehicle entirely within x=8%-92%, y=10%-86%; wheel contact midpoint around (50%,83.33%) of canvas, broad negative transparent padding. Match warm watercolor storybook Japanese postal town art, avoid glossy 3D/vector/pixel art. One vehicle only. Output native image.",
+    "native_source": "/workspace/generated_images/exec-8c544104-c6bd-45a3-aac2-f5b78f5bd82f.png",
+    "references": []
+  },
+  {
+    "id": "vehicle_van_rear",
+    "prompt": "Create matching second directional sprite of this exact compact delivery van, preserving its cream high integrated roof, forest green lower body, ochre belt and wheel trim, parcel window, small vermilion details and watercolor/gouache texture. ONE vehicle isolated with truly transparent background. Rotate vehicle in 3D, do not mirror existing image. Elevated isometric REAR three-quarter view: driving away to screen RIGHT and UP along vector (+2,-1), longitudinal axis exactly slope -1/2. Nose/front windshield at UPPER RIGHT, rear double cargo doors and tail lamps visible at LOWER LEFT. Show left rear end plane and long near side. No words, logo, license text, ground, cast/contact shadow or scenery. Diffuse flip-safe lighting. 4:3 canvas; entire vehicle safely inside x8%-92% y10%-86%, wheel-contact midpoint around x50% y83.33%. Broad transparent margins, no crop. Keep a clear short integrated van silhouette, not a separate tall box truck.",
+    "native_source": "/workspace/generated_images/exec-0a621fba-03e9-4cdb-aa1d-abfa5fc30dae.png",
+    "references": [
+      "vehicle_van_front.native.png"
+    ]
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "vehicle_van_front",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      4,
+      1420,
+      1086
+    ],
+    "native_sha256": "e08ebac915ff82eed76c14693127046c8fdf133ef58cc1857467b988971748c9",
+    "scale": 0.12939001848428835,
+    "resized_full_canvas": [
+      187,
+      141
+    ],
+    "translation": [
+      36,
+      19
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      53,
+      28,
+      203,
+      155
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "31ca3c34d9b8a0e0a8f401ed85d67251c6c4c5949f6698a2476bd539858dbb78",
+    "webp_sha256": "09119fc2ddce2b196ddbecdddc0db190a3bc195995110fa8ff96ed4f8d1c8613",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "vehicle_van_rear",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_bbox": [
+      0,
+      0,
+      1428,
+      1086
+    ],
+    "native_sha256": "39770b36847042c3202f616da2b64ef029ff95bf5439f8db516717a8b452d5b1",
+    "scale": 0.1289134438305709,
+    "resized_full_canvas": [
+      187,
+      140
+    ],
+    "translation": [
+      36,
+      20
+    ],
+    "export_size": [
+      256,
+      192
+    ],
+    "export_bbox": [
+      52,
+      22,
+      206,
+      159
+    ],
+    "safe_rect_pass": true,
+    "anchor": [
+      128,
+      160
+    ],
+    "png_sha256": "b2d5fad2f4f04ac83e41dc112be76ab3957115ddf1e0666589521ba5e0714bc7",
+    "webp_sha256": "3fcc2cd990e95f246a37d433a223729db46808e5c17804c31f4a067616f7e7bc",
+    "lossless_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  }
+]
