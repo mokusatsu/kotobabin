@@ -1,11 +1,21 @@
 import { test, expect } from '@playwright/test';
 import os from 'node:os';
 import { readFileSync } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import type { TestInfo } from '@playwright/test';
 import type { ProfileDocument } from '../../../src/profile/repository';
 import { beginMain } from '../helpers';
 import { keyboardMenuTo, keyboardRevealControl, tabTo } from '../keyboard';
 
 const percentile = (values: number[], proportion = .95) => [...values].sort((a, b) => a - b)[Math.ceil(values.length * proportion) - 1];
+async function saveReport(info: TestInfo, name: string, report: unknown) {
+  // List reporter does not materialize in-memory attachments into upload-artifact's folder.
+  const file = info.outputPath(name); await mkdir(path.dirname(file), { recursive: true });
+  await writeFile(file, JSON.stringify(report, null, 2));
+  await info.attach(name, { path: file, contentType: 'application/json' });
+}
+
 const hardware = () => ({ os: `${os.platform()} ${os.release()}`, cpu: os.cpus()[0]?.model, logicalCpus: os.cpus().length, memoryBytes: os.totalmem(), node: process.version, physicalTarget: false });
 
 test('cold production transfer and start-ready: 20 uncached 10Mbps/100ms trials', async ({ browser }, info) => {
@@ -27,7 +37,8 @@ test('cold production transfer and start-ready: 20 uncached 10Mbps/100ms trials'
   const report = { hardware: hardware(), browser: browser.version(), viewport: '1180x720', scale: 100,
     method: 'Chromium CDP uncached fresh contexts, actual Network.loadingFinished encoded bytes; identity is NOT described as compressed delivery', trials,
     readyP95: percentile(trials.map(row => row.readyMs)), largestWireBytes: Math.max(...trials.map(row => row.wireBytes)) };
-  await info.attach('cold-load.json', { body: JSON.stringify(report, null, 2), contentType: 'application/json' });
+  await saveReport(info, 'cold-load.json', report);
+  console.log('M6_COLD_SUMMARY', JSON.stringify({ readyP95: report.readyP95, largestWireBytes: report.largestWireBytes, trials: trials.length }));
   expect(report.largestWireBytes, JSON.stringify(report)).toBeLessThanOrEqual(3000000);
   expect(report.readyP95, JSON.stringify(report)).toBeLessThanOrEqual(3000);
 });
@@ -84,7 +95,8 @@ test('960-word progress / 30 records: trusted native input latency and actual ha
     samples: probe, handlerP95: percentile(probe.handlerMs), displayP95: percentile(probe.displayMs), frameP95: percentile(probe.frames),
     handbookDistinctIds: ids.size, familyMs, qualified960FilterMs: performance.now() - filterStarted,
     method: 'Trusted native input capture-to-bubble handler interval and native keydown-to-next-animation-frame DOM feedback proxy; includes browser scheduling, not physical display/IME latency. Catalogue filters all960 data while rendering paginated rows.' };
-  await info.attach('populated-input-ui.json', { body: JSON.stringify(report, null, 2), contentType: 'application/json' });
+  await saveReport(info, 'populated-input-ui.json', report);
+  console.log('M6_INPUT_SUMMARY', JSON.stringify({ handlerP95: report.handlerP95, displayP95: report.displayP95, frameP95: report.frameP95, longTasks: probe.longTasks.length, keys: probe.handlerMs.length, handbookIds: ids.size, filterMs: report.qualified960FilterMs }));
   expect(ids.size).toBe(72); expect(probe.handlerMs.length).toBeGreaterThanOrEqual(240);
   expect(probe.changedFrames).toBe(probe.displayMs.length);
   expect(report.handlerP95, JSON.stringify(report)).toBeLessThanOrEqual(5);
