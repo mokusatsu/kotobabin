@@ -216,11 +216,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const set = (id: string, value: string) => { const el = root.querySelector<HTMLElement>(`#${id}`); if (el && el.textContent !== value) el.textContent = value; };
     set('time-left', String(Math.ceil((snapshot.remainingMs ?? 90000) / 1000)));
     set('score', number(snapshot.score));
-    set('word-stage', snapshot.phase === 'READY' ? '最初の一打で、配達がはじまります' : snapshot.wordStarted ? 'このことばを、届けよう' : '次のことば');
+    set('word-stage', snapshot.mode === 'PRACTICE' && snapshot.awaitingWordChoice ? '完成したことば' : snapshot.phase === 'READY' ? '最初の一打で、配達がはじまります' : snapshot.wordStarted ? 'このことばを、届けよう' : '次のことば');
     set('prompt-word', snapshot.currentWord.display);
     set('prompt-reading', snapshot.currentWord.reading);
     const guide = root.querySelector<HTMLElement>('#romaji-guide')!;
-    const nextGuide = `<span class="accepted">${esc(snapshot.acceptedInput)}</span><span class="next-key">${esc(snapshot.remainingGuide.slice(0, 1))}</span><span>${esc(snapshot.remainingGuide.slice(1))}</span>`;
+    const nextGuide = `<span class="accepted">${esc(snapshot.acceptedInput)}</span>${snapshot.remainingGuide ? `<span class="next-key">${esc(snapshot.remainingGuide.slice(0, 1))}</span><span>${esc(snapshot.remainingGuide.slice(1))}</span>` : ''}`;
     if (guide.innerHTML !== nextGuide) guide.innerHTML = nextGuide;
     guide.style.visibility = snapshot.guideEnabled ? 'visible' : 'hidden';
     set('guide-status', snapshot.guideEnabled ? 'ON' : 'OFF');
@@ -231,8 +231,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const canDeliver = (!snapshot.wordStarted || snapshot.awaitingWordChoice) && snapshot.cargoCount > 0;
     root.querySelector<HTMLButtonElement>('#deliver-button')!.disabled = !canDeliver;
     set('deliver-label', canDeliver ? `いま届ける +${number(snapshot.pendingBonus)}点` : snapshot.wordStarted ? 'このことばを完成すると届けられます' : '次のことばを完成させよう');
-    set('continue-hint', canDeliver ? 'または、打ち始めて続ける' : '無誤打で完成すると、荷物がひとつ増えます');
-    set('risk-hint', canDeliver ? `次も無誤打で完成して届ければ +${number(snapshot.nextBonus)}点 ／ ミスで失う追加点 ${number(snapshot.pendingBonus)}点。完成点は残ります。` : '荷物が5個になると、自動で配達します。');
+    set('continue-hint', snapshot.mode === 'PRACTICE' && snapshot.awaitingWordChoice ? 'もう一度、または次のことばを選ぼう' : canDeliver ? 'または、打ち始めて続ける' : '無誤打で完成すると、荷物がひとつ増えます');
+    set('risk-hint', snapshot.mode === 'PRACTICE' && snapshot.awaitingWordChoice ? (canDeliver ? '持っている荷物を、上の配達ボタンで届けることもできます。' : '完成したことばと練習の成果は、練習を終了しても残ります。') : canDeliver ? `次も無誤打で完成して届ければ +${number(snapshot.nextBonus)}点 ／ ミスで失う追加点 ${number(snapshot.pendingBonus)}点。完成点は残ります。` : '荷物が5個になると、自動で配達します。');
     set('completed-count', `完成 ${snapshot.completedWords}語`);
     set('game-message', snapshot.message);
     updateModeControls(snapshot);
