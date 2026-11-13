@@ -24,7 +24,8 @@ export async function tabTo(page: Page, target: Locator, maximum = 100) {
 export async function assertViewportFits(page: Page) {
   await expect(async () => {
   const report = await page.evaluate(() => {
-    const outside = [...document.querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], summary')]
+    const modal = [...document.querySelectorAll<HTMLDialogElement>('dialog[open]')].at(-1);
+    const outside = [...(modal ?? document).querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], summary')]
       .filter(element => !element.closest('[inert]') && !element.closest('[aria-hidden="true"]'))
       .filter(element => {
         const closed = element.closest('details:not([open])');
