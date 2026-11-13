@@ -44,11 +44,11 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     const explicit = target.dataset.pageItems;
     const add = (node: HTMLElement) => { mark(node); items.push({ nodes: [node] }); };
     if (explicit) {
-      for (const node of target.querySelectorAll<HTMLElement>(explicit)) add(node);
+      for (const node of target.querySelectorAll<HTMLElement>(explicit)) if (!node.closest('[data-ipad-exclude]')) add(node);
     } else {
       const walk = (parent: HTMLElement) => {
         for (const node of Array.from(parent.children)) {
-          if (!(node instanceof HTMLElement) || node.matches('[data-ipad-controls]') || node.matches(fixed)) continue;
+          if (!(node instanceof HTMLElement) || node.matches('[data-ipad-controls],[data-ipad-exclude]') || node.matches(fixed)) continue;
           if (node.hidden && !managed.has(node)) continue;
           const group = grouped.get(node);
           if (group) { group.nodes.forEach(mark); items.push(group); continue; }
@@ -120,7 +120,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     const focusedItem = panel.items.findIndex(item => item.nodes.some(node => node === focused || node.contains(focused)));
     const fits = (candidate: readonly number[]) => {
       show(panel, candidate);
-      return panel.target.getBoundingClientRect().bottom <= bottom;
+      return panel.target.getBoundingClientRect().bottom + (panel.target.closest('dialog') ? 0 : window.scrollY) <= bottom;
     };
     panel.pages = packPages(indices, fits);
     panel.target.dataset.ipadOverflow = String(panel.pages.some(page => !fits(page)));
@@ -138,7 +138,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     for (const target of targets) measure(prepare(target));
   }
   function refresh() { if (!destroyed && !frame) frame = requestAnimationFrame(refreshNow); }
-  const mutations = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element && record.target.closest('[data-ipad-controls]')))) refresh(); }); mutations.observe(root, { childList: true, subtree: true });
+  const mutations = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element && record.target.closest('[data-ipad-controls]')))) refresh(); }); mutations.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-ipad-exclude'] });
   const resize = new ResizeObserver(refresh); resize.observe(root);
   let fontScale = root.style.getPropertyValue('--font-scale');
   const styles = new MutationObserver(() => { const next = root.style.getPropertyValue('--font-scale'); if (next !== fontScale) { fontScale = next; refresh(); } });
@@ -159,7 +159,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     root.removeEventListener('keydown', keys); root.removeEventListener('toggle', refresh, true); window.removeEventListener('resize', refresh);
     window.visualViewport?.removeEventListener('resize', refresh); window.visualViewport?.removeEventListener('scroll', refresh);
     for (const panel of panels.values()) { panel.nav.remove(); panel.target.classList.remove('ipad-page-host'); }
-    for (const element of managed) if (element.isConnected) { element.hidden = false; delete element.dataset.ipadManaged; }
+    for (const element of managed) if (element.isConnected) { if (!element.closest('[data-ipad-exclude]')) element.hidden = false; delete element.dataset.ipadManaged; }
     root.removeAttribute('data-ipad-layout');
   } };
 }
