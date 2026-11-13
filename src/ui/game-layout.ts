@@ -7,6 +7,7 @@ interface Layout {
   panels: Panel[];
   selected: number;
   choiceToken: string;
+  phase: LayoutSnapshot['phase'] | null;
   goalNote: HTMLElement;
   shortcut: HTMLElement;
   show(index: number): void;
@@ -84,7 +85,7 @@ export function installGameLayout(root: HTMLElement): () => void {
   const describedBy = input?.getAttribute('aria-describedby');
   if (input) input.setAttribute('aria-describedby', [describedBy, cue.id].filter(Boolean).join(' '));
   const layout: Layout = {
-    workspace, panels, selected: 0, choiceToken: '', goalNote, shortcut,
+    workspace, panels, selected: 0, choiceToken: '', phase: null, goalNote, shortcut,
     show(index) {
       layout.selected = Math.max(0, Math.min(panels.length - 1, index));
       panels.forEach((panel, i) => { panel.element.hidden = i !== layout.selected; });
@@ -122,7 +123,8 @@ export function installGameLayout(root: HTMLElement): () => void {
     layout.show(layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
-  layout.show(mode === 'MAIN' ? 0 : panels.findIndex(panel => panel.id === 'mode'));
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
+  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'));
   return layout.destroy;
 }
 
@@ -131,7 +133,13 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   const layout = layouts.get(root);
   if (!layout || !layout.workspace.isConnected) return;
   layout.shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
-  layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
+  layout.goalNote.hidden = pinnedGoal;
+  if (snapshot.mode === 'MAIN' && pinnedGoal && layout.phase === 'PAUSED' && (snapshot.phase === 'READY' || snapshot.phase === 'PLAYING')) {
+    const goalPanel = layout.panels.findIndex(panel => panel.id === 'goal');
+    if (goalPanel >= 0) layout.show(goalPanel);
+  }
+  layout.phase = snapshot.phase;
   const choice = snapshot.mode !== 'MAIN' && (snapshot.awaitingWordChoice || snapshot.tutorialDelivered || snapshot.tutorialFallbackAvailable);
   const token = choice ? `${snapshot.mode}:${snapshot.completedWords}:${snapshot.awaitingWordChoice}:${snapshot.tutorialDelivered}:${snapshot.tutorialFallbackAvailable}` : '';
   if (token && token !== layout.choiceToken && snapshot.phase !== 'PAUSED') {
