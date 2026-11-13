@@ -214,21 +214,26 @@ export class DeliverySceneController {
     const nextStage = String(this.city.districts[s.destination].stage);
     if (district && district.getAttribute('data-stage') !== nextStage) { district.innerHTML = renderDistrictCore(this.city, s.destination); district.setAttribute('data-stage', nextStage); }
     // Animation restart only on a new confirmed event, never 80ms UI refresh/replay.
-    const pulse = (selector: string, revision: number) => {
+    const pulse = (selector: string, revision: number, animation: string) => {
       const node = el.querySelector<HTMLElement>(selector);
-      if (node) { node.style.animationName = 'none'; void node.getBoundingClientRect(); node.style.animationName = ''; node.dataset.revision = String(revision); }
+      if (node) {
+        // Equivalent names restart CSS animation without a synchronous layout read.
+        // Toggle per pulse: one observation may confirm several events at once.
+        node.style.animationName = node.style.animationName === animation ? `${animation}-repeat` : animation;
+        node.dataset.revision = String(revision);
+      }
     };
     if (s.words > this.paintedWords) {
-      el.dataset.wordKind = s.wordKind; pulse('.delivery-word-letter', s.words); this.paintedWords = s.words;
+      el.dataset.wordKind = s.wordKind; pulse('.delivery-word-letter', s.words, 'delivery-load'); this.paintedWords = s.words;
       text('[data-scene-confirmation]', s.wordKind === 'clean' ? '資材の便が出発・まとめ便の荷物も追加' : '資材の便が出発・まとめ便の荷物は追加なし');
     }
     if (s.dispatches > this.paintedDispatches) {
-      el.dataset.dispatchRevision = String(s.dispatches); pulse('.delivery-dispatch-cart', s.dispatches); this.paintedDispatches = s.dispatches;
+      el.dataset.dispatchRevision = String(s.dispatches); pulse('.delivery-dispatch-cart', s.dispatches, 'delivery-bonus'); this.paintedDispatches = s.dispatches;
       text('[data-scene-confirmation]', 'まとめ便を発送・追加資材も輸送待ちへ');
     }
     if (s.arrivalRevision > this.paintedArrivals) {
       el.querySelector('.delivery-arrival-glow')?.setAttribute('data-arrival-revision', String(s.arrivalRevision));
-      pulse('.delivery-arrival-glow', s.arrivalRevision); this.paintedArrivals = s.arrivalRevision;
+      pulse('.delivery-arrival-glow', s.arrivalRevision, 'delivery-arrive'); this.paintedArrivals = s.arrivalRevision;
       text('[data-scene-confirmation]', `${districtName(s.destination)}へ ${formatMicro(s.lastArrivalMicro)}資材が到着`);
     }
     this.paintedWords = s.words; this.paintedDispatches = s.dispatches; this.paintedArrivals = s.arrivalRevision;

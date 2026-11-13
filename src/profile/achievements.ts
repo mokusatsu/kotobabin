@@ -77,7 +77,7 @@ export function achievementOrderKey(c:RecordContext):string {
 }
 export function beginAchievementSession(state:AchievementState, options:{sessionId:string;mode:SessionMode;context:RecordContext;atMs:number}):AchievementState {
   if (state.sessions[options.sessionId] || state.measuredProgress.factCursors[options.sessionId]) return state;
-  const next=structuredClone(state);
+  const next={...state,sessions:{...state.sessions}};
   next.sessions[options.sessionId]={sessionId:options.sessionId,mode:options.mode,context:structuredClone(options.context),qualifiedWordIds:practiceQualifiedWordIds(state.measuredProgress),
     baselines:structuredClone(state.measuredProgress.bestByComparison),completedWords:0,canonicalLength:0,correctKeys:0,mistakes:0,score:0,skips:0,guideUsed:options.context.guideUsed,
     currentCleanStreak:0,maxCleanStreak:0,manual:[0,0,0,0,0],full:0,fullAfterTwo:false,fourCandidate:null,fourThenClean:false,qualifiedClean:false,phase:'active'};
@@ -147,11 +147,23 @@ function cityConditions(state:AchievementState):Record<string,boolean> {
     J01:BigInt(city.arrivedMicro)>0n,J02:BigInt(city.arrivedMicro)>=1000_000000n,J03:districts.filter(d=>d.open).length===6,J04:districts.some(d=>d.railway),J05:districts.filter(d=>d.railway).length===6,J06:BigInt(city.cityArrivedMicro)>=100000_000000n,
     K01:state.paidEquipmentPurchases>0,K02:city.packagingLevel>=10,K03:districts.some(d=>d.shops>=10),K04:city.synergies.length>=3,K05:city.citiesRestarted>0,K06:state.researchPurchases>0};
 }
+/** Copy only branches written by acquisition; existing evidence is immutable. */
+function copyAcquisitions(state:AchievementState):AchievementState {
+  return {...state,unlocks:{...state.unlocks},rewards:{...state.rewards},
+    unreadAchievements:[...state.unreadAchievements],unreadRewards:[...state.unreadRewards]};
+}
 export function applyAchievementFacts(state:AchievementState,facts:readonly SessionFact[],context:RecordContext):AchievementState {
-  const next=structuredClone(state);
+  const next={...copyAcquisitions(state),sessions:{...state.sessions},orderCompletions:{...state.orderCompletions},
+    bestAccuracies:{...state.bestAccuracies},fiveWordCourses:[...state.fiveWordCourses],skilledCourses:[...state.skilledCourses]};
+  const copiedSessions=new Set<string>();
   for(const fact of facts) {
     if(fact.factSequence<=(next.measuredProgress.factCursors[fact.sessionId]??0))continue;
     if(!next.sessions[fact.sessionId]) throw new Error('Achievement session must be frozen at READY before applying facts');
+    if(!copiedSessions.has(fact.sessionId)) {
+      const previous=next.sessions[fact.sessionId];
+      next.sessions[fact.sessionId]={...previous,manual:[...previous.manual]};
+      copiedSessions.add(fact.sessionId);
+    }
     const s=next.sessions[fact.sessionId];s.guideUsed ||= fact.guideUsed;
     if(fact.type==='WordCompleted') {
       s.completedWords++;s.canonicalLength+=fact.canonicalLength;s.correctKeys+=fact.acceptedKeys;s.mistakes+=fact.mistakes;s.score+=fact.canonicalLength*10;
@@ -191,7 +203,7 @@ export function applyAchievementFacts(state:AchievementState,facts:readonly Sess
 export function applyAchievementCity(state:AchievementState,event:{eventId:string;atMs:number;city:CityState;paidEquipmentPurchase?:boolean;researchPurchased?:boolean}):AchievementState {
   const city=event.city;
   if(state.city&&(city.citySequence<state.city.sequence||(city.citySequence===state.city.sequence&&city.clockMs<state.city.clockMs)))return state;
-  const next=structuredClone(state);
+  const next={...copyAcquisitions(state),countedCityEvents:[...state.countedCityEvents]};
   next.city={cityId:city.cityId,sequence:city.citySequence,clockMs:city.clockMs,arrivedMicro:city.arrivedMicro.toString(),cityArrivedMicro:city.cityArrivedMicro.toString(),
     districts:Object.fromEntries(Object.entries(city.districts).map(([id,d])=>[id,{stage:d.stage,open:d.open,railway:d.railway,shops:d.shops}])),packagingLevel:city.packagingLevel,synergies:[...city.synergies],citiesRestarted:city.citiesRestarted};
   if((event.paidEquipmentPurchase||event.researchPurchased)&&!next.countedCityEvents.includes(event.eventId)) {
@@ -248,11 +260,36 @@ function viewedSession(state:AchievementState,live?:SessionSnapshot,sessionId?:s
   }
   return s;
 }
-function metrics(state:AchievementState,s?:AchievementSession,live?:SessionSnapshot):Record<string,number|string|boolean> {
-  const p=state.measuredProgress;const complete=Object.keys(p.words).filter(key=>p.words[key].completed>0);const distinct=new Set(complete);
-  const fixed=(key:keyof typeof words.collectionSets)=>words.collectionSets[key].filter(wordId=>distinct.has(wordId)).length;
-  const practice=Object.entries(p.words);const qualified=practice.filter(([,v])=>v.practiceCleanCompleted>=3);
-  const tagged=(tag:string)=>practice.some(([wordId,v])=>v.practiceCleanCompleted>0&&wordById.get(wordId)?.tags.includes(tag));
+interface DisplayWordMetrics {
+  completed:number; topicCounts:Record<string,number>; fixedCounts:Record<string,number>;
+  practiceTotal:number; maxPracticeClean:number; qualified:number; minQualifiedClean:number;
+  practicedTags:Set<string>; practiceEntries:[string,ProfileProgress['words'][string]][];
+}
+const immutableWordMetrics=new WeakMap<ProfileProgress['words'],DisplayWordMetrics>();
+/** Only frozen maps whose counter records are also frozen can be reused safely. */
+function displayWordMetrics(counters:ProfileProgress['words']):DisplayWordMetrics {
+  const cached=immutableWordMetrics.get(counters);if(cached)return cached;
+  const practiceEntries=Object.entries(counters);const completed=new Set<string>();
+  const topicCounts:Record<string,number>={};const practicedTags=new Set<string>();
+  let practiceTotal=0,maxPracticeClean=0,qualified=0,minQualifiedClean=Infinity;
+  for(const[id,value]of practiceEntries) {
+    const word=wordById.get(id);
+    if(value.completed>0) {completed.add(id);if(word)topicCounts[word.topicId]=(topicCounts[word.topicId]??0)+1;}
+    practiceTotal+=value.practiceCompleted;maxPracticeClean=Math.max(maxPracticeClean,value.practiceCleanCompleted);
+    if(value.practiceCleanCompleted>=3) {qualified++;minQualifiedClean=Math.min(minQualifiedClean,value.practiceCleanCompleted);}
+    if(value.practiceCleanCompleted>0)for(const tag of word?.tags??[])practicedTags.add(tag);
+  }
+  const fixedCounts=Object.fromEntries(Object.entries(words.collectionSets).map(([key,ids])=>[key,ids.filter(id=>completed.has(id)).length]));
+  practiceEntries.sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
+  const value={completed:completed.size,topicCounts,fixedCounts,practiceTotal,maxPracticeClean,qualified,
+    minQualifiedClean:qualified?minQualifiedClean:0,practicedTags,practiceEntries};
+  if(Object.isFrozen(counters)&&practiceEntries.every(([,entry])=>Object.isFrozen(entry)))immutableWordMetrics.set(counters,value);
+  return value;
+}
+function metrics(state:AchievementState,aggregate:DisplayWordMetrics,s?:AchievementSession,live?:SessionSnapshot):Record<string,number|string|boolean> {
+  const p=state.measuredProgress;
+  const fixed=(key:keyof typeof words.collectionSets)=>aggregate.fixedCounts[key];
+  const tagged=(tag:string)=>aggregate.practicedTags.has(tag);
   const baseline=s?.baselines[comparisonKey({...s.context,guideUsed:s.guideUsed,assisted:false})];
   const city=state.city;const ds=Object.values(city?.districts??{});
   const accuracy=s&&s.correctKeys+s.mistakes>0?100*s.correctKeys/(s.correctKeys+s.mistakes):0;
@@ -267,10 +304,10 @@ function metrics(state:AchievementState,s?:AchievementSession,live?:SessionSnaps
     score:s?.score??0,comparison_best_score:baseline?.growthBestScore??'比較元なし',comparison_best_speed:baseline?.growthBestCanonicalLength==null?'比較元なし':baseline.growthBestCanonicalLength*60000/90000,
     comparison_completed_words:s?.completedWords??0,record_improvement:!!s&&s.completedWords>=10&&baseline?.growthBestScore!=null&&s.score>baseline.growthBestScore,
     speed_improvement:s&&baseline?.growthBestCanonicalLength!=null?(s.canonicalLength-baseline.growthBestCanonicalLength)*60000/90000:0,
-    distinct_completed_words:complete.length,first_edition_completed_words:fixed('kotobabin-ja-240-v1'),qualified_topic_count:topics.filter(topic=>complete.filter(wordId=>wordById.get(wordId)?.topicId===topic).length>=5).length,
-    practice_completed_words:practice.reduce((sum,[,v])=>sum+v.practiceCompleted,0),same_word_practice_clean_count:s?.mode==='PRACTICE'&&s.phase==='active'&&live?.mode==='PRACTICE'&&live.phase!=='RESULT'?(p.words[live.currentWord.id]?.practiceCleanCompleted??0):Math.max(0,...practice.map(([,v])=>v.practiceCleanCompleted)),
+    distinct_completed_words:aggregate.completed,first_edition_completed_words:fixed('kotobabin-ja-240-v1'),qualified_topic_count:topics.filter(topic=>(aggregate.topicCounts[topic]??0)>=5).length,
+    practice_completed_words:aggregate.practiceTotal,same_word_practice_clean_count:s?.mode==='PRACTICE'&&s.phase==='active'&&live?.mode==='PRACTICE'&&live.phase!=='RESULT'?(p.words[live.currentWord.id]?.practiceCleanCompleted??0):aggregate.maxPracticeClean,
     element_n:tagged('n'),element_sokuon:tagged('sokuon'),element_youon:tagged('yoon'),element_choon:tagged('long_mark'),
-    qualified_element_count:['n','sokuon','yoon','long_mark'].filter(tagged).length,qualified_practice_words:qualified.length,per_word_clean_count:qualified.length?Math.min(...qualified.map(([,v])=>v.practiceCleanCompleted)):0,
+    qualified_element_count:['n','sokuon','yoon','long_mark'].filter(tagged).length,qualified_practice_words:aggregate.qualified,per_word_clean_count:aggregate.minQualifiedClean,
     qualified_word_practice_count:s?.qualifiedWordIds.length?3:0,qualified_word_clean_in_round:s?.qualifiedClean??false,qualified_word_set:s?.qualifiedWordIds.map(id=>wordById.get(id)?.display??'ことば').join('、')||'対象語なし',
     lifetime_delivered_cargo:state.deliveredCargo,five_word_completed_rounds:state.fiveWordRounds,manual_two:!!s?.manual[2],manual_four:!!s?.manual[4],full_five:(s?.full??0)>0,guide_never_shown:!!s&&!s.guideUsed,
     highest_district_stage:Math.max(0,...ds.map(d=>d.stage)),residential_stage:city?.districts.residential?.stage??0,qualified_district_count:ds.filter(d=>d.stage>=1).length,qualified_district_count_3:ds.filter(d=>d.stage>=3).length,qualified_district_count_5:ds.filter(d=>d.stage>=5).length,
@@ -281,7 +318,7 @@ function metrics(state:AchievementState,s?:AchievementSession,live?:SessionSnaps
     synergy_count:city?.synergies.length??0,city_restart_count:city?.citiesRestarted??0,research_purchase_count:state.researchPurchases,
     fixed_set_completed_words:fixed('kotobabin-ja-960-v2'),fixed_set_relaxed:fixed('kotobabin-ja-relaxed-v2'),fixed_set_standard:fixed('kotobabin-ja-standard-v2'),fixed_set_challenge:fixed('kotobabin-ja-challenge-v2'),
   };
-  topics.forEach((topic,i)=>{values[`topic_${i+1}`]=complete.filter(wordId=>wordById.get(wordId)?.topicId===topic).length;});
+  topics.forEach((topic,i)=>{values[`topic_${i+1}`]=aggregate.topicCounts[topic]??0;});
   courses.forEach((course,i)=>{values[`course_${i+1}`]=state.fiveWordCourses.includes(course);});
   for(const[district,d]of Object.entries(city?.districts??{}))values[`district_${district}_stage`]=d.stage;
   ['joint_delivery','sorting_network','tourism_service'].forEach((key,i)=>{values[`synergy_${i+1}`]=city?.synergies.includes(key)??false;});
@@ -306,9 +343,10 @@ export function getAchievementViews(state:AchievementState,liveSession?:SessionS
     conditions.E06=courses.every(course=>state.fiveWordCourses.includes(course)||(course===s.context.courseId&&s.completedWords>=5));
     conditions.H06=courses.every(course=>state.skilledCourses.includes(course)||(course===s.context.courseId&&s.completedWords>=20&&accuracyAtLeast(s.correctKeys,s.mistakes,95)));
   }
-  // No cross-call cache: callers may mutate a fixture or replace live guide/streak state.
-  const values=metrics(state,s,liveSession);
-  const practiceEntries=Object.entries(state.measuredProgress.words).sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
+  // Live guide/streak/key values are always recomputed; only immutable word totals are shared.
+  const aggregate=displayWordMetrics(state.measuredProgress.words);
+  const values=metrics(state,aggregate,s,liveSession);
+  const practiceEntries=aggregate.practiceEntries;
   return catalog.achievements.map(definition=>{
     const earned=!!state.unlocks[definition.id];const normal=definition.scope==='通常';const practice=definition.scope==='練';const route=definition.scope==='街';
     const ineligible=!earned&&((normal&&!!s&&(s.mode!=='MAIN'||s.skips>0||s.phase==='aborted'||(definition.id==='H05'&&s.guideUsed)))||(practice&&!!s&&s.mode!=='PRACTICE'));
