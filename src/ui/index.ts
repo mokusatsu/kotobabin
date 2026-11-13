@@ -359,7 +359,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(root, 'change', event => {
     const target = event.target as HTMLInputElement;
     if (target.name === 'course') selectedCourse = target.value as CourseId;
-    if (target.id.startsWith('catalogue-')) { cataloguePage = 0; updateCatalogue(); }
+    if (['catalogue-set', 'catalogue-topic', 'catalogue-state'].includes(target.id)) { cataloguePage = 0; updateCatalogue(); }
   });
   on(root, 'input', event => { if ((event.target as HTMLElement).id === 'catalogue-query') { cataloguePage = 0; updateCatalogue(); } });
   // Keep native input focus until an intended pointer action is handled. Otherwise
