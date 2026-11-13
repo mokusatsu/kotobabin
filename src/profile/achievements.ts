@@ -77,7 +77,7 @@ export function achievementOrderKey(c:RecordContext):string {
 }
 export function beginAchievementSession(state:AchievementState, options:{sessionId:string;mode:SessionMode;context:RecordContext;atMs:number}):AchievementState {
   if (state.sessions[options.sessionId] || state.measuredProgress.factCursors[options.sessionId]) return state;
-  const next=structuredClone(state);
+  const next={...state,sessions:{...state.sessions}};
   next.sessions[options.sessionId]={sessionId:options.sessionId,mode:options.mode,context:structuredClone(options.context),qualifiedWordIds:practiceQualifiedWordIds(state.measuredProgress),
     baselines:structuredClone(state.measuredProgress.bestByComparison),completedWords:0,canonicalLength:0,correctKeys:0,mistakes:0,score:0,skips:0,guideUsed:options.context.guideUsed,
     currentCleanStreak:0,maxCleanStreak:0,manual:[0,0,0,0,0],full:0,fullAfterTwo:false,fourCandidate:null,fourThenClean:false,qualifiedClean:false,phase:'active'};
@@ -147,11 +147,23 @@ function cityConditions(state:AchievementState):Record<string,boolean> {
     J01:BigInt(city.arrivedMicro)>0n,J02:BigInt(city.arrivedMicro)>=1000_000000n,J03:districts.filter(d=>d.open).length===6,J04:districts.some(d=>d.railway),J05:districts.filter(d=>d.railway).length===6,J06:BigInt(city.cityArrivedMicro)>=100000_000000n,
     K01:state.paidEquipmentPurchases>0,K02:city.packagingLevel>=10,K03:districts.some(d=>d.shops>=10),K04:city.synergies.length>=3,K05:city.citiesRestarted>0,K06:state.researchPurchases>0};
 }
+/** Copy only branches written by acquisition; existing evidence is immutable. */
+function copyAcquisitions(state:AchievementState):AchievementState {
+  return {...state,unlocks:{...state.unlocks},rewards:{...state.rewards},
+    unreadAchievements:[...state.unreadAchievements],unreadRewards:[...state.unreadRewards]};
+}
 export function applyAchievementFacts(state:AchievementState,facts:readonly SessionFact[],context:RecordContext):AchievementState {
-  const next=structuredClone(state);
+  const next={...copyAcquisitions(state),sessions:{...state.sessions},orderCompletions:{...state.orderCompletions},
+    bestAccuracies:{...state.bestAccuracies},fiveWordCourses:[...state.fiveWordCourses],skilledCourses:[...state.skilledCourses]};
+  const copiedSessions=new Set<string>();
   for(const fact of facts) {
     if(fact.factSequence<=(next.measuredProgress.factCursors[fact.sessionId]??0))continue;
     if(!next.sessions[fact.sessionId]) throw new Error('Achievement session must be frozen at READY before applying facts');
+    if(!copiedSessions.has(fact.sessionId)) {
+      const previous=next.sessions[fact.sessionId];
+      next.sessions[fact.sessionId]={...previous,manual:[...previous.manual]};
+      copiedSessions.add(fact.sessionId);
+    }
     const s=next.sessions[fact.sessionId];s.guideUsed ||= fact.guideUsed;
     if(fact.type==='WordCompleted') {
       s.completedWords++;s.canonicalLength+=fact.canonicalLength;s.correctKeys+=fact.acceptedKeys;s.mistakes+=fact.mistakes;s.score+=fact.canonicalLength*10;
@@ -191,7 +203,7 @@ export function applyAchievementFacts(state:AchievementState,facts:readonly Sess
 export function applyAchievementCity(state:AchievementState,event:{eventId:string;atMs:number;city:CityState;paidEquipmentPurchase?:boolean;researchPurchased?:boolean}):AchievementState {
   const city=event.city;
   if(state.city&&(city.citySequence<state.city.sequence||(city.citySequence===state.city.sequence&&city.clockMs<state.city.clockMs)))return state;
-  const next=structuredClone(state);
+  const next={...copyAcquisitions(state),countedCityEvents:[...state.countedCityEvents]};
   next.city={cityId:city.cityId,sequence:city.citySequence,clockMs:city.clockMs,arrivedMicro:city.arrivedMicro.toString(),cityArrivedMicro:city.cityArrivedMicro.toString(),
     districts:Object.fromEntries(Object.entries(city.districts).map(([id,d])=>[id,{stage:d.stage,open:d.open,railway:d.railway,shops:d.shops}])),packagingLevel:city.packagingLevel,synergies:[...city.synergies],citiesRestarted:city.citiesRestarted};
   if((event.paidEquipmentPurchase||event.researchPurchased)&&!next.countedCityEvents.includes(event.eventId)) {
