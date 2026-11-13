@@ -19,3 +19,7 @@
 ## D005: 作業担当
 
 入力/画面/経済/記録/アート/独立QAを別worktreeへ分担。統括が設定・進捗・統合・公開を担当。変更は小さな機能コミットとPRで保存する。
+
+## D006: Sitesソース同期
+
+この実行環境にはSitesパッケージのsource helperスクリプトが存在しなかったため、同じSiteの短期資格情報をecho無効のstdinで受け、メモリー上のGit HTTPヘッダーとしてのみ使用してSite専用リモートへ通常pushした。資格情報をファイル・Git設定・コマンド引数へ保存していない。pushしたHEADからViteをビルドし、hosting.jsonとdistのみのtar.gzをnative private deployへ渡した。次回はhelperが利用可能なら正式helperを使う。
