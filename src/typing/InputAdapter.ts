@@ -2,8 +2,8 @@ export type InputPauseReason = 'escape' | 'blur' | 'hidden' | 'ime' | 'unconfirm
 export interface InputAdapterOptions {
   onCharacter: (key: string, startedAtMs: number) => void;
   onDeliver: (startedAtMs: number) => void;
-  onPause: (reason: InputPauseReason, startedAtMs: number) => void;
-  onInputCheckRequired: (reason: InputPauseReason, startedAtMs: number) => void;
+  onPause: (reason: InputPauseReason, resolvedAtMs: number) => void;
+  onInputCheckRequired: (reason: InputPauseReason, resolvedAtMs: number) => void;
   now?: () => number;
   deliveryKeys?: ('Space' | 'Enter')[];
 }
@@ -45,6 +45,8 @@ export class InputAdapter {
     target.addEventListener(name, listener);
     this.listeners.push(() => target.removeEventListener(name, listener));
   }
+  // Discarded operations never borrow their earlier keydown timestamp: lifecycle
+  // transitions use the classification time so a pending key cannot extend a round.
   private requireCheck(reason: InputPauseReason, atMs: number): void {
     this.pending = null;
     this.input.value = '';
@@ -91,13 +93,13 @@ export class InputAdapter {
     if (!event.isTrusted) return;
     if (event.isComposing || this.composing || event.inputType !== 'insertText' || !event.data || !isCharacter(event.data)) {
       event.preventDefault();
-      this.requireCheck(event.isComposing || this.composing || event.inputType.includes('Composition') ? 'ime' : 'unconfirmed-input', this.pending?.startedAtMs ?? this.now());
+      this.requireCheck(event.isComposing || this.composing || event.inputType.includes('Composition') ? 'ime' : 'unconfirmed-input', this.now());
       return;
     }
     if (this.pending && event.data.toLowerCase() === this.pending.key) this.pending.beforeInputConfirmed = true;
     else {
       event.preventDefault();
-      this.requireCheck('unconfirmed-input', this.pending?.startedAtMs ?? this.now());
+      this.requireCheck('unconfirmed-input', this.now());
     }
   };
   private nativeInput = (raw: Event): void => {
@@ -107,7 +109,7 @@ export class InputAdapter {
     if (!operation || !operation.beforeInputConfirmed || this.composing || this.inputCheckRequired || event.isComposing ||
       event.inputType !== 'insertText' || !event.data || !isCharacter(event.data) || event.data.toLowerCase() !== operation.key ||
       this.input.value.toLowerCase() !== operation.key) {
-      this.requireCheck(event.isComposing || this.composing ? 'ime' : 'unconfirmed-input', operation?.startedAtMs ?? this.now());
+      this.requireCheck(event.isComposing || this.composing ? 'ime' : 'unconfirmed-input', this.now());
       return;
     }
     this.pending = null;
@@ -116,12 +118,12 @@ export class InputAdapter {
   };
   private keyup = (raw: Event): void => {
     const event = raw as KeyboardEvent;
-    if (event.isTrusted && this.pending && event.code === this.pending.code) this.requireCheck('unconfirmed-input', this.pending.startedAtMs);
+    if (event.isTrusted && this.pending && event.code === this.pending.code) this.requireCheck('unconfirmed-input', this.now());
   };
   private compositionstart = (event: Event): void => {
     if (!event.isTrusted) return;
     this.composing = true;
-    this.requireCheck('ime', this.pending?.startedAtMs ?? this.now());
+    this.requireCheck('ime', this.now());
   };
   private compositionend = (event: Event): void => {
     if (!event.isTrusted) return;
@@ -131,20 +133,20 @@ export class InputAdapter {
     // Keep the check requirement until the UI explicitly verifies half-width input.
   };
   private blur = (): void => {
-    const startedAtMs = this.pending?.startedAtMs ?? this.now();
+    const startedAtMs = this.now();
     if (this.pending) this.requireCheck('unconfirmed-input', startedAtMs);
     else this.options.onPause('blur', startedAtMs);
   };
   private visibilitychange = (): void => {
     if (this.input.ownerDocument.hidden) {
-      const startedAtMs = this.pending?.startedAtMs ?? this.now();
+      const startedAtMs = this.now();
       this.pending = null;
       this.options.onPause('hidden', startedAtMs);
     }
   };
   private unsupportedInsertion = (event: Event): void => {
     event.preventDefault();
-    this.requireCheck('unconfirmed-input', this.pending?.startedAtMs ?? this.now());
+    this.requireCheck('unconfirmed-input', this.now());
   };
 
   get hasPendingOperation(): boolean { return this.pending !== null; }
