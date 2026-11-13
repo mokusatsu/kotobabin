@@ -1989,3 +1989,11 @@ body[data-reduced-motion="true"] *::after {
 .achievement-live { position: fixed; z-index: 8; right: 24px; bottom: 12px; border: 2px solid var(--primary); background: var(--surface); color: var(--text); padding: 8px 16px; pointer-events: none; font-size: calc(16px * var(--font-scale)); }
 /* Keep the lower station label within the map's visible paper. */
 .canonical-map [data-district-id="station"] { top: 83% !important; }
+.nav-menu-button { display: none; }
+.site-header:has(.pause-button) .nav-menu-button { display: inline-block; }
+.navigation-dialog { max-width: 540px; width: calc(100% - 36px); color: var(--text); max-height: calc(100dvh - 32px); overflow: auto; }
+.navigation-dialog::backdrop { background: #203d3666; }
+.navigation-dialog h2 { margin: 0 0 12px; }
+.navigation-dialog nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.navigation-dialog .text-button { margin-top: 12px; }
+@media (max-width: 1200px) { .site-header > nav { display: none; } .site-header .nav-menu-button { display: inline-block; margin-left: auto; } .site-header { min-height: 78px; } }

@@ -97,14 +97,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function header(game = false) {
     const mode = session?.mode;
     const location = mode === 'PRACTICE' ? 'ことばの練習' : mode === 'TUTORIAL' ? 'はじめの配達' : `${course().name} ／ ${districtName(sessionDestination)}へ`;
-    return `<header class="site-header">${brand()}${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}</header>`;
+    return `<header class="site-header">${brand()}<button class="button button-small nav-menu-button" data-action="navigation-menu">画面移動 <kbd>F2</kbd></button>${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}</header>`;
   }
-  function footer() { return `<footer class="site-footer"><span>ひとつずつ、ことばを届けよう。</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
+  function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function renderHome() {
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
     root.innerHTML = `${header()}<main id="main" class="home-layout"><section class="home-intro"><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker"><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'}</p><div class="home-subactions"><button class="text-button" data-action="catalogue">ゆっくり練習する →</button><button class="text-button" data-action="help">遊び方を読む</button></div></section><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p id="practice-awards-summary">今回の練習で切手を${practiceAwardCarry.size}枚獲得しました。<button class="text-button" data-action="handbook">配達手帳で見る →</button></p>` : ''}<aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside></main>${footer()}`;
-    beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear();
+    beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear(); focusScreen('[data-action="start"]');
   }
   function beginHomeMapObservation() {
     const map = root.querySelector<HTMLElement>('.town-map');
@@ -195,7 +195,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function renderCatalogue() {
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'catalogue'; cataloguePage = 0;
     root.innerHTML = `${header()}${catalogueShell(runtime.profile)}${footer()}`;
-    updateCatalogue(); updateStorageStatus();
+    updateCatalogue(); updateStorageStatus(); focusScreen();
   }
   function updateCatalogue() {
     const filter = catalogueFilter(root);
@@ -209,6 +209,28 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector<HTMLButtonElement>('[data-action="catalogue-next"]')!.disabled = cataloguePage + 1 >= totalPages;
     root.querySelector<HTMLButtonElement>('[data-action="practice-filtered"]')!.disabled = !words.length;
   }
+  function focusScreen(selector = 'main h1') {
+    const element = root.querySelector<HTMLElement>(selector); if (!element) return;
+    if (!element.matches('button, input, select, a')) element.tabIndex = -1;
+    element.focus({ preventScroll: true });
+  }
+  function openNavigationMenu() {
+    const existing = root.querySelector<HTMLDialogElement>('.navigation-dialog'); if (existing) { existing.close(); return; }
+    if (root.querySelector('dialog[open]')) return;
+    pause();
+    const dialog = document.createElement('dialog'); dialog.className = 'paper-card navigation-dialog';
+    const choices = [['home', 'ホーム'], ['city', '街の開発'], ['equipment', '街の設備'], ['handbook', '配達手帳'], ['catalogue', 'ことば図鑑'], ['settings', '設定'], ['help', '遊び方']];
+    dialog.innerHTML = `<h2>画面を移動する</h2><p>上下キーで選び、Enterで移動。Escで戻れます。</p><nav aria-label="画面の移動">${choices.map(([action, label], index) => `<button type="button" class="button" data-action="${action}" data-navigation="true" ${index === 0 ? 'autofocus' : ''}>${label}</button>`).join('')}</nav><button type="button" class="text-button" data-action="close-navigation">閉じる</button>`;
+    root.append(dialog); dialog.showModal(); dialog.addEventListener('close', () => dialog.remove(), { once: true });
+  }
+  function navigateBack() {
+    if (screen === 'game') { pause(); return; }
+    if (screen === 'handbook') { returnFromHandbook(); return; }
+    if (screen === 'check') { if (rechecking && session) renderGame(); else renderHome(); return; }
+    if (screen === 'catalogue') { if (catalogueOrigin === 'game' && session) renderGame(); else if (catalogueOrigin === 'result' && lastResult) renderResult(lastResult); else renderHome(); return; }
+    if (screen === 'city' || screen === 'equipment') { if (cityOrigin === 'result' && lastResult) renderResult(lastResult); else renderHome(); return; }
+    if (screen === 'result') renderHome();
+  }
   function achievementViews() {
     return getAchievementViews(runtime.achievements, session?.snapshot(performance.now()), session?.sessionId);
   }
@@ -221,7 +243,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.innerHTML = `${header()}${handbookShell()}${footer()}`;
     root.querySelectorAll<HTMLInputElement>('[name="achievement-filter"]').forEach(input => { input.checked = input.value === handbookFilter; });
     root.querySelector<HTMLSelectElement>('#achievement-scope')!.value = handbookScope;
-    updateHandbook(); updateStorageStatus(); markSelectedRead();
+    updateHandbook(); updateStorageStatus(); markSelectedRead(); focusScreen();
   }
   function markSelectedRead() {
     if (runtime.status.writable && runtime.achievements.unreadAchievements.includes(selectedAchievementId)) runtime.achievementAction({ type: 'read', achievementIds: [selectedAchievementId] });
@@ -378,7 +400,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function rememberCityOrigin() { if (screen !== 'city' && screen !== 'equipment') cityOrigin = screen === 'result' ? 'result' : 'home'; }
   function openCityPage(id = selectedDistrict) {
     rememberCityOrigin();
-    confirmReplacement(() => { selectedDistrict = id; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city'; root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); });
+    confirmReplacement(() => { selectedDistrict = id; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city'; root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen(); });
   }
   function openEquipmentPage() {
     rememberCityOrigin();
@@ -389,7 +411,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (!runtime.city.districts[selectedDistrict].open) selectedDistrict = runtime.destination;
     purchaseStructureKey = '';
     root.innerHTML = `${header()}${equipmentShell(runtime.city, selectedDistrict, equipmentTab, purchaseQuantity)}${footer()}`;
-    updateCityViews(); updateStorageStatus();
+    updateCityViews(); updateStorageStatus(); focusScreen();
   }
   function updateCityViews() {
     const city = runtime.city;
@@ -658,11 +680,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target || (target as HTMLButtonElement).disabled) return;
     event.preventDefault();
+    if (target.dataset.navigation) root.querySelector<HTMLDialogElement>('.navigation-dialog')?.close();
     if ((!runtime.status.writable || runtime.cityBusy) && (target.dataset.action?.startsWith('city-') || target.dataset.action === 'confirm-city-restart')) return;
     if (!runtime.status.writable && ['deliver', 'guide', 'confirm-skip', 'repeat-word', 'next-practice-word', 'practice-main', 'tutorial-main', 'tutorial-skip', 'confirm-quit'].includes(target.dataset.action ?? '')) return;
     switch (target.dataset.action) {
       case 'start': seed = newSeed(); launchTarget = { mode: runtime.settings.tutorialSeen ? 'MAIN' : 'TUTORIAL' }; launch(); break;
-      case 'home': if (screen === 'game') { pause(); break; } confirmReplacement(renderHome); break;
+      case 'home': if (screen === 'game' && !target.dataset.navigation) { pause(); break; } confirmReplacement(renderHome); break;
+      case 'navigation-menu': openNavigationMenu(); break;
+      case 'close-navigation': root.querySelector<HTMLDialogElement>('.navigation-dialog')?.close(); break;
       case 'help': help(); break;
       case 'handbook': openHandbook(); break;
       case 'achievement-open': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; openHandbook(); break;
@@ -747,6 +772,16 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   });
   on(root, 'keydown', (raw) => {
     const event = raw as KeyboardEvent;
+    if (event.isTrusted && !event.isComposing && event.keyCode !== 229) {
+      if (event.key === 'F2') { event.preventDefault(); openNavigationMenu(); return; }
+      const menu = root.querySelector<HTMLDialogElement>('.navigation-dialog[open]');
+      if (menu && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault(); const items = [...menu.querySelectorAll<HTMLButtonElement>('button')]; const index = items.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length; items[next]?.focus(); return;
+      }
+      if (!root.querySelector('dialog[open]') && event.key === 'Escape') { event.preventDefault(); navigateBack(); return; }
+      const editing = (event.target as HTMLElement).closest('select, textarea, input[type=text], input[type=search], input[type=file]');
+      if (screen === 'home' && !editing && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); selectedCourse = courses[Number(event.key) - 1].id; const radio = root.querySelector<HTMLInputElement>(`input[name="course"][value="${selectedCourse}"]`); if (radio) { radio.checked = true; radio.focus(); } return; }
+    }
     const modal = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
     if (modal && !root.querySelector('dialog[open]') && event.key === 'Tab') {
       const buttons = [...modal.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
