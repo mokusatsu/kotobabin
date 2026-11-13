@@ -68,7 +68,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const compact = root.querySelector<HTMLElement>('.compact-town');
     const panel = root.querySelector<HTMLElement>('.town-panel');
     if (!map || !compact || !panel) return;
-    const update = () => { const small = panel.getBoundingClientRect().width - 24 < 800; map.hidden = small; compact.hidden = !small; };
+    const update = () => { const small = panel.clientWidth - 24 < 800; map.hidden = small; compact.hidden = !small; };
     mapObserver?.disconnect(); mapObserver = new ResizeObserver(update); mapObserver.observe(panel); update();
   }
   function applySettings() {
@@ -249,6 +249,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
     } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
     syncOwnershipActions();
+    const resume = root.querySelector<HTMLButtonElement>('[data-action="resume"]'); if (resume) resume.disabled = !runtime.status.writable || (snapshot.mode === 'MAIN' && window.innerWidth < 768);
   }
   function renderResult(snapshot: Snapshot) {
     gameInput?.destroy(); gameInput = undefined;
@@ -359,6 +360,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'pause': pause(); break;
       case 'resume': {
         if (!runtime.status.writable) { updateStorageStatus(); break; }
+        if (session!.mode === 'MAIN' && window.innerWidth < 768) break;
         if (!inputConfirmed) { rechecking = true; renderCheck(); break; }
         isolatePausedContent(false); root.querySelector<HTMLElement>('#paused-layer')!.hidden = true; focusInput();
         if (document.activeElement === root.querySelector('#game-input')) mutate(session!.resume(performance.now())); break;
@@ -372,7 +374,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'cancel-quit': redrawPause(); break;
       case 'confirm-quit': closeCurrent('home'); renderHome(); break;
       case 'skip': showSkip(); break;
-      case 'confirm-skip': mutate(session!.skip(performance.now())); redrawPause(); break;
+      case 'confirm-skip': if (session!.mode === 'PRACTICE') chooseNextPracticeWord(); else mutate(session!.skip(performance.now())); redrawPause(); break;
       case 'catalogue': {
         if (screen === 'catalogue') break;
         catalogueOrigin = screen === 'game' || (screen === 'check' && rechecking) ? 'game' : screen === 'result' ? 'result' : 'home';
@@ -445,7 +447,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(root, 'compositionend', () => { if (screen !== 'check') return; composing = false; pending = undefined; });
   on(root, 'paste', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(root, 'drop', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
-  on(window, 'resize', () => { if (screen === 'home') { const button = root.querySelector<HTMLButtonElement>('[data-action="start"]'); if (button) button.disabled = window.innerWidth < 768; beginHomeMapObservation(); } });
+  on(window, 'resize', () => { if (screen === 'home') { const button = root.querySelector<HTMLButtonElement>('[data-action="start"]'); if (button) button.disabled = window.innerWidth < 768; const note = root.querySelector<HTMLElement>('.keyboard-note'); if (note) note.textContent = window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'; beginHomeMapObservation(); } else if (screen === 'game' && session?.mode === 'MAIN' && window.innerWidth < 768) { pause(); const title = root.querySelector<HTMLElement>('#pause-title'); if (title) title.textContent = '幅768px以上に画面を広げてください。'; } });
   on(window, 'blur', () => { pending = undefined; });
   on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; });
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
