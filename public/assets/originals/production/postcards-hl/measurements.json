@@ -1,0 +1,80 @@
+[
+  {
+    "id": "postcard_h",
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "source_alpha": "absent",
+    "output_size": [
+      1600,
+      1000
+    ],
+    "png_mode": "RGB",
+    "webp_mode": "RGB",
+    "decoded_rgb_equal": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "critical_subject_safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "operation": "full canvas LANCZOS resize, no crop or masking",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "crop": false,
+      "padding": false,
+      "color_mode_conversion": "RGB"
+    },
+    "native_sha256": "31f2deb4d12960134fa648b439ceb9e9258454f94bd54c1c5ccf5f037156517a",
+    "png_sha256": "b531ffc3e434422c1f7aa13e49e55f583354196c4398f215a90314f7c6ed3f7e",
+    "webp_sha256": "d590698e1431792c9d6f6a3e936c8fa2158a06fd37da8fd4e9c18eee78f0e576",
+    "png_bytes": 3207788,
+    "webp_bytes": 2560088
+  },
+  {
+    "id": "postcard_i",
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "source_alpha": "absent",
+    "output_size": [
+      1600,
+      1000
+    ],
+    "png_mode": "RGB",
+    "webp_mode": "RGB",
+    "decoded_rgb_equal": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "critical_subject_safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "operation": "full canvas LANCZOS resize, no crop or masking",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "crop": false,
+      "padding": false,
+      "color_mode_conversion": "RGB"
+    },
+    "native_sha256": "fb58a3db36fb32cdb9cdfcaccd8451ff9e021268de541b126a1e5cc38b8eb6a5",
+    "png_sha256": "e210fcf613408323642bdd343fa46e2f406658c50f1a36ba971ef8d2ea195c7d",
+    "webp_sha256": "7c9a82c16badbc0feac99dbc97dd1cb279ea94f102ad6bf04984c99718d41d60",
+    "png_bytes": 3185865,
+    "webp_bytes": 2479334
+  }
+]
