@@ -141,6 +141,17 @@ const KEY = 'current';
 const BACKUPS_KEY = 'restoreBackups';
 const MEMORY_NOTICE = 'この回の街と切手は、ページを閉じると残りません。複数ページ間の同期はできません。';
 
+/** A browser task independent of the game clock and timer throttling. */
+function afterInputTask(): Promise<void> {
+  return new Promise(resolve => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => {
+      channel.port1.close(); channel.port2.close(); resolve();
+    };
+    channel.port2.postMessage(null);
+  });
+}
+
 export class ProfileRepository {
   private document = createProfileDocument();
   private state: RepositoryStatus = { storage: 'memory', ownership: 'owner', saveState: 'unsaved', recoveryRequired: false, notice: MEMORY_NOTICE };
@@ -264,7 +275,7 @@ export class ProfileRepository {
       // Browsers run Promise checkpoints between native event listeners. Keep
       // durable snapshot/replay work in its own task, after confirmed input.
       // The ordered tail and every ownership/revision/generation fence still apply.
-      if (afterInput) await new Promise<void>(resolve => setTimeout(resolve, 0));
+      if (afterInput) await afterInputTask();
       if (this.closed) throw new Error('保存処理は終了しています。');
       if (this.state.ownership !== 'owner') throw new OwnershipError();
       const next = mutation(structuredClone(this.document));
