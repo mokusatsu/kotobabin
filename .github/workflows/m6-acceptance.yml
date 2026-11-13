@@ -1,7 +1,7 @@
 name: M6 game acceptance
 on:
   push:
-    branches: [feat/m5-remaining-art]
+    branches: [feat/m5-remaining-art, review/m6-collection]
   workflow_dispatch:
 permissions:
   contents: read
@@ -31,6 +31,7 @@ jobs:
           name: m6-independent-inventory-${{ matrix.browser }}
           path: test-results/m6-inventory/
   mature-city:
+    if: github.ref_name != 'review/m6-collection'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
