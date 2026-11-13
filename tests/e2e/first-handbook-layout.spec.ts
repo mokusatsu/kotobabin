@@ -1,5 +1,5 @@
 import { expect, test, type Route } from '@playwright/test';
-import { assertViewportFits, keyboardMenuTo } from './keyboard';
+import { assertViewportFits, keyboardMenuTo, keyboardWalkPanels } from './keyboard';
 
 for (const height of [720, 820]) for (const font of [100, 125, 150]) test(`first handbook commit and early frames fit at1180x${height} font${font} before pictures load`, async ({ page }, info) => {
   await page.setViewportSize({ width: 1180, height });
@@ -53,5 +53,9 @@ for (const height of [720, 820]) for (const font of [100, 125, 150]) test(`first
   }
   release = true; await Promise.all(held.map(route => route.continue()));
   await expect(page.locator('.handbook-page img').first()).toHaveJSProperty('complete', true);
+  await assertViewportFits(page);
+  await keyboardWalkPanels(page);
+  await keyboardMenuTo(page, 'home'); await keyboardMenuTo(page, 'handbook');
+  await expect(page.locator('.handbook-title-panel h1')).toBeFocused();
   await assertViewportFits(page);
 });
