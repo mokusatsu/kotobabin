@@ -28,6 +28,25 @@
     ],
     "bytes": 215546,
     "native_sha256": "dd2ba3a3cd5872d5c1c47572c0d0b477b14c4f11c48113fb08b77278cf3a1251",
+    "png_sha256": "fb0f00e9d7fb23ab5267bbb8e13b085abc7ed4edd5f89a11a0d22a974662d87d",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
     "runtime_sha256": "49c36b315696ff9dc5469b2662bb2f6df19fb39338fe3ab7665226ae37d934b9",
     "png_webp_alpha_and_paper_composite_equal": true
   },
@@ -60,6 +79,25 @@
     ],
     "bytes": 159450,
     "native_sha256": "22ab8fb2ccf4313ee4dd806540c993b995a6332e8fe120d874ca23210816ee5b",
+    "png_sha256": "f86bfccffbb06c561691aff78f86e38fa19502c18206ff89f2d2b5991ff1f064",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
     "runtime_sha256": "845d6596ef270b3ead48d77359955d0d989f2c06ec193b428903ae446430693e",
     "png_webp_alpha_and_paper_composite_equal": true
   },
@@ -92,7 +130,179 @@
     ],
     "bytes": 120412,
     "native_sha256": "209a34ed7b9bc54b16c90e2aa6df20b92d1a1ff2075824f31eef8fe68f1b15eb",
+    "png_sha256": "d9b3eec470254ea56f3dea87e1ecd85093ca1d6385ed20dc2228518574b4f813",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
     "runtime_sha256": "e470cd5d098859c66500a44f81dd1db0db8f0de2aeb4778688929397048c2db1",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_l04",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      13,
+      1238,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      50,
+      119,
+      457,
+      423
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 129502,
+    "native_sha256": "7e393f3bcbec4eea18b1796275fcaccc606f3f8344f08fdbe302e7160b014341",
+    "png_sha256": "54263579c8d1c53450a3d028f6eb77581d181914e4061895eaaf0965c1032fc7",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
+    "runtime_sha256": "a3b4930577ced4ae0a0701f9a22eac2cd731b598499f684809ae6825bf42e6f0",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_l05",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      39,
+      1237,
+      1226
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      39,
+      134,
+      473,
+      410
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 124540,
+    "native_sha256": "e31ae6695178b2ec342363072e7e7184a04d38b5801ad5f1a4a09e878e561f88",
+    "png_sha256": "8728c643cbbc237e77287921388ecec9a7a4d4a430f3c9caea21d9cefe8e1cc1",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
+    "runtime_sha256": "617753cd93ed1ecc86ce3314d99e4f98c80ffa0fb14219a593f9201b89f00351",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_l06",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      7,
+      1230,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      48,
+      56,
+      467,
+      451
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 182646,
+    "native_sha256": "10bb9e22c238f6c54996da1df4d90263353dac7f33158d5d6d092880bee9b8d7",
+    "png_sha256": "7b9dd40bbf5b8533a1e6ae32974c355fd944a164d7ba511014d4da8e10a3f233",
+    "transform": {
+      "operation": "full canvas resize then transparent canvas composite",
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "offset": [
+        32,
+        32
+      ],
+      "output_canvas": [
+        512,
+        512
+      ],
+      "crop": false,
+      "mask": false,
+      "threshold": false
+    },
+    "runtime_sha256": "9fd6beb58e24e96cbc52209d16511f3796df0ac632196e5a4f9329920972de6d",
     "png_webp_alpha_and_paper_composite_equal": true
   }
 ]

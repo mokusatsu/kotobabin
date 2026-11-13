@@ -1,0 +1,24 @@
+[
+  {
+    "file": "stamp_l02.rejected-haze.generated.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "sha256": "87119e0fe5ef314c7629d2fe8f482fa67e2053ba6db99557fc1c014723482ac8",
+    "true_defect": false,
+    "reason": "Hidden RGB under alpha0 caused viewer false positive; paper composite clean."
+  },
+  {
+    "file": "stamp_l05.rejected-haze.generated.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "sha256": "d96ef5aa4edbe83e275af34ef77322fa5425942bf4f99ddac300dbd5654b28d5",
+    "true_defect": false,
+    "reason": "Hidden RGB under alpha0 caused viewer false positive; paper composite clean."
+  }
+]

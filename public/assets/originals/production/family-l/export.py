@@ -18,7 +18,7 @@ for native in sorted((root/'public/assets/originals').glob('stamp_l??.generated.
  bg=Image.new('RGBA',p.size,'#F5F1E7')
  assert Image.alpha_composite(bg,p).tobytes()==Image.alpha_composite(bg,w).tobytes()
  assert bbox and bbox[0]>=32 and bbox[1]>=32 and bbox[2]<=480 and bbox[3]<=480
- measurements.append({'id':aid,'native_size':list(n.size),'native_alpha_bbox':list(n.getchannel('A').getbbox()),'output_size':list(w.size),'alpha_bbox':list(bbox),'outside_safe_alpha_max':0,'anchor':[256,256],'bytes':webp.stat().st_size,'native_sha256':hashlib.sha256(native.read_bytes()).hexdigest(),'runtime_sha256':hashlib.sha256(webp.read_bytes()).hexdigest(),'png_webp_alpha_and_paper_composite_equal':True})
+ measurements.append({'id':aid,'native_size':list(n.size),'native_alpha_bbox':list(n.getchannel('A').getbbox()),'output_size':list(w.size),'alpha_bbox':list(bbox),'outside_safe_alpha_max':0,'anchor':[256,256],'bytes':webp.stat().st_size,'native_sha256':hashlib.sha256(native.read_bytes()).hexdigest(),'png_sha256':hashlib.sha256(png.read_bytes()).hexdigest(),'transform':{'operation':'full canvas resize then transparent canvas composite','resized_canvas':[448,448],'offset':[32,32],'output_canvas':[512,512],'crop':False,'mask':False,'threshold':False},'runtime_sha256':hashlib.sha256(webp.read_bytes()).hexdigest(),'png_webp_alpha_and_paper_composite_equal':True})
 (production/'measurements.json').write_text(json.dumps(measurements,indent=2)+'\n')
 print(json.dumps(measurements,indent=2))
 
@@ -33,3 +33,10 @@ for row,item in enumerate(measurements):
   board.paste(variant,(140+col*150,row*110+10),variant)
  ImageDraw.Draw(board).text((10,row*110+45),item['id'],fill='#263D35')
 board.save(production/'minimum-size-verification.png')
+
+# Initial unselected outputs; legacy rejected-haze naming was a viewer false positive.
+unselected=[]
+for path in sorted(production.glob('*.rejected-*.generated.png')):
+ im=Image.open(path)
+ unselected.append({'file':path.name,'size':list(im.size),'mode':im.mode,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'true_defect':False,'reason':'Hidden RGB under alpha0 caused viewer false positive; paper composite clean.'})
+(production/'unselected-measurements.json').write_text(json.dumps(unselected,indent=2)+'\n')
