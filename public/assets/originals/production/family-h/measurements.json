@@ -31,7 +31,7 @@
     "bytes": 99094,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "20d4b0a68f7cd4d364cdb5510dfa73c1b90e76ada8e21b9086a650acc017973f",
-    "png_sha256": "182e0423fb53f5668c309fbba9a6f14eef68e818bbdc7c4426465990d1831f04",
+    "png_sha256": "80ad457e02fddadf0c1c00568158da0fb6f1e4f58b8e1f4c12cd7fab7ce86344",
     "runtime_sha256": "30896e9a501463fef3fdd02ebb1612ca9bee29936139d157cd779b09550b8e25"
   },
   {
@@ -66,7 +66,7 @@
     "bytes": 83920,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "264cbac442928a70b21303b53ce67da213178c65d9b27a6817e29567990fa4cc",
-    "png_sha256": "7f936dc476958428e4924c5a8a91a5d22879a9b1ecfb4982cf7993966a904104",
+    "png_sha256": "06bfd34eb4a2934fb1084e5609f20f3315fcce80506f0c2275b3171d6797a105",
     "runtime_sha256": "d661f272c0de24966f62fb64a0fd69571aaa0765aeb35779b6b13f8d02c010f6"
   },
   {
@@ -101,7 +101,7 @@
     "bytes": 181226,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "5f86e9fd402ab42137264c7dfb70e57f48c44da08eeae576186595f20ed3b4fa",
-    "png_sha256": "6061817d41f267b154d93973d034b8edbdffe0a3510f3392b55c6df12802924f",
+    "png_sha256": "b4000783c0704e8376e6bab1beb5bdc1cb0235a0078ef019d621794a8a1b5564",
     "runtime_sha256": "30b57aea325bcd85fd33d58b36ea3c2bfd500500e8e04732c6a1aded1a227ccb"
   },
   {
@@ -136,7 +136,7 @@
     "bytes": 177544,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "501bfaac4e0a1f62e9edf4cdaed66b28192197350a015a79444aa742027cfb3c",
-    "png_sha256": "66e459ac0532e59b61529aee9b8e7249094b4f603bf3d2d66a510f904c45af98",
+    "png_sha256": "965c500089412b844f0f1bc6ca7c02ede303556e7aedeaeb71828438566fd8cf",
     "runtime_sha256": "527789756f89f1f756404749086f6c65c691f7c417dd7cda08d1d11da9663e65"
   },
   {
@@ -171,7 +171,7 @@
     "bytes": 142008,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "dc6f1e272ee3fa93943a6905dd720b66e48ac1a2adf2ae8b417eae1497b7d26b",
-    "png_sha256": "fa69ac01a0323b4315d3a317e2dd40f079956ec69d5161693af9eabff0d8eccb",
+    "png_sha256": "916870109ad08d92f9a68eabd9496273de3e219a78cee1256bde1cb8f1c792f1",
     "runtime_sha256": "3eae809c8253835ab6a6d722231ca562b5a85d2761faaa6ab6b1e273ccae3168"
   },
   {
@@ -206,7 +206,7 @@
     "bytes": 175602,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "f671e6b7599363467b544bd26a313bf0b4d0ed0216a231882b151f49fcb343f8",
-    "png_sha256": "61d363076e703a62ca936cf1c7f5fa4bea306d052dc36d881609438d63c6dc2f",
+    "png_sha256": "f4321919bb216a64edb649b78ad182011c2a095eb36c7fae3cd0a15dec55f4c8",
     "runtime_sha256": "04b5feb650b5c394c486b9fb578ddddc199ab7914428b228b57198d62bf9b6c0"
   }
 ]

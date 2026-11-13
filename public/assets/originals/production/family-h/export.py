@@ -10,7 +10,7 @@ if extra.exists():r['attempts'].extend(json.loads(extra.read_text())['attempts']
 for item in r['attempts']:
  if not item['selected_id']:continue
  aid=item['selected_id'];native=b/'originals'/f'{aid}.generated.png';png=b/'originals'/f'{aid}.png';web=b/'achievement_stamp'/f'{aid}.webp'
- subprocess.run(['magick','-size','512x512','canvas:none','(',str(native),'-resize','448x448',')','-geometry','+32+32','-composite','-depth','8','png32:'+str(png)],check=True)
+ subprocess.run(['magick','-size','512x512','canvas:none','(',str(native),'-resize','448x448',')','-geometry','+32+32','-composite','-strip','-depth','8','png32:'+str(png)],check=True)
  subprocess.run(['magick',str(png),'-define','webp:lossless=true','-define','webp:alpha-quality=100',str(web)],check=True)
  im=Image.open(web).convert('RGBA');a=im.getchannel('A');p=Image.open(png).convert('RGBA');box=a.getbbox()
  assert im.size==(512,512) and box[0]>=32 and box[1]>=32 and box[2]<=480 and box[3]<=480
