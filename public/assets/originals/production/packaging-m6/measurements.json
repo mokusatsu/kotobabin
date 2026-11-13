@@ -1,0 +1,54 @@
+[
+  {
+    "id": "equipment_packaging_1",
+    "native_size": [
+      1536,
+      1024
+    ],
+    "canvas": [
+      1200,
+      800
+    ],
+    "mode": "RGBA",
+    "anchor": [
+      600,
+      680
+    ],
+    "safe_rect": [
+      60,
+      40,
+      1140,
+      760
+    ],
+    "resize": [
+      1075,
+      717
+    ],
+    "offset": [
+      62,
+      41
+    ],
+    "alpha_bbox": [
+      75,
+      49,
+      1126,
+      758
+    ],
+    "opaque_bbox": [
+      105,
+      163,
+      1093,
+      680
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": {
+      "originals/production/packaging-m6/native/equipment_packaging_1.png": "bafc837200ce35d692ee49023385db5a6051101ff4ff0622b30a121d1d55b2f8",
+      "originals/equipment_packaging_1.png": "c6d7cb426606cf2701c47ffe5918d6d343a010a45cda979c18907710827201cd",
+      "equipment_scene/equipment_packaging_1.webp": "4cdae1102f7086fd81ffa8f7319156e59c8fd8fd08373857d32ad5ce83133368"
+    },
+    "lossless_alpha_and_paper_equal": true
+  }
+]

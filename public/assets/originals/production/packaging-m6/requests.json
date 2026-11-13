@@ -1,0 +1,82 @@
+[
+  {
+    "id": "01-new-watercolor",
+    "prompt": "Create one isolated game equipment sprite: a sturdy warm honey-wood parcel wrapping bench, one single broad horizontal tabletop, four visible simple timber legs, a red-and-cream twine spool on a small wooden holder at the left, a wooden hand stamp, a roll of plain cream wrapping paper, and one small kraft parcel tied with thin terracotta twine at the right. Warm watercolor/gouache hand-painted Japanese postal village game art, delicate brown outlines, readable simple shapes, soft paper texture on objects only, matching cozy illustrated packaging equipment. Front view from slightly above, mild three-quarter tabletop perspective, centered symmetrical composition. Entire object fits in central 85% width and 70% height of landscape 3:2 canvas with generous empty transparent margin, ground baseline near 85% canvas height. Most important: genuine fully transparent RGBA background, absolutely no floor, no backdrop, no beige wash, no painted rectangle, no shadow cloud or ambient halo. All negative spaces between legs and underneath tabletop must be fully transparent, clean sharply readable cutout contours with only normal antialiasing. No words, letters, numbers, price, UI, labels, badges, border, people, or scenery. Produce the bench alone.",
+    "native_file": "exec-e2810b5b-388b-4dbb-8a97-62701522b68a.png",
+    "transparent_background": true,
+    "accepted": true,
+    "reason": "Accepted after correct alpha compositing: hidden RGB glow has alpha zero; clean leg gaps."
+  },
+  {
+    "id": "02-remove-halo",
+    "prompt": "Edit this sprite to REMOVE ALL of the brown/orange cloudy glow around and under the bench. This is a background-removal task. Preserve the wooden bench and objects, but make every background pixel fully transparent with alpha 0, including the large open area between the legs and every hole around the twine holder. Absolutely no soft cast shadows, no ambient occlusion cloud, no floor. The only partially transparent pixels may be the thin one-pixel antialias edge directly touching the physical bench. The result must be a crisp cutout of ONLY solid wooden bench and packing objects against empty transparent canvas. No warm aura. No background wash. No text.",
+    "native_file": "exec-93ccef76-9d40-4ef5-bef8-ea1c18532a80.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded diagnostic attempt. Initial raw viewer showed hidden RGB as a halo; that alone is not an alpha-compositing rejection."
+  },
+  {
+    "id": "03-new-cel",
+    "prompt": "A clean hand painted game item cutout of a wooden parcel-wrapping table. Four wooden legs, a single tabletop, red twine spool, hand stamp, cream paper roll, one kraft parcel. Delicate dark brown outlines, restrained flat cel shading in honey wood, terracotta red and cream. Cozy Japanese storybook game art. View from the front slightly above, landscape 3:2. Small centered entire object with wide empty margins. The spaces between the legs are empty transparent holes. Completely transparent background. Zero shadows outside the object. No glow. No scenery. No text. Sharp silhouette, no soft edges. Objects fully opaque.",
+    "native_file": "exec-66d6c6b2-a9c0-4b98-bd0c-320a2560b416.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded diagnostic attempt. Initial raw viewer showed hidden RGB as a halo; that alone is not an alpha-compositing rejection."
+  },
+  {
+    "id": "04-remove-background",
+    "prompt": "Remove the background from the attached image. Deliver transparent PNG. Remove every brown glow and shadow surrounding the table and all the brown background inside the space between the legs. Keep only the table and items on top. Make a precise object cutout. No shadows.",
+    "native_file": "exec-ec4fad25-1064-49c7-b26d-238aeed0b436.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded diagnostic attempt. Initial raw viewer showed hidden RGB as a halo; that alone is not an alpha-compositing rejection."
+  },
+  {
+    "id": "05-white-control",
+    "prompt": "Product illustration isolated on pure solid white #FFFFFF background, no shadows whatsoever. A sturdy honey-colored wooden parcel wrapping bench seen from front and slightly above, four straight legs, broad single horizontal tabletop. Red twine spool on left, wooden hand stamp, plain cream wrapping paper roll, single tied kraft parcel on right. Soft gouache storybook illustration with crisp delicate brown outline. Warm Japanese village game art. Generous white margins, landscape 3:2. The open space underneath tabletop and between legs is pure white too. No gradients, no glow, no text, no letters, no numbers, no floor.",
+    "native_file": "exec-e8478680-5f11-4387-92a1-35aac0868ead.png",
+    "transparent_background": false,
+    "accepted": false,
+    "reason": "Opaque background control, not a deliverable."
+  },
+  {
+    "id": "06-white-remove",
+    "prompt": "Remove the white background from this image and deliver a transparent PNG of only the illustrated wooden wrapping bench and the objects on its tabletop. All white background outside the silhouette and inside the leg gaps must be fully transparent. Preserve the illustration exactly, no added glow or shadows.",
+    "native_file": "exec-1588d737-af2a-4613-8543-2567f51b50b3.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded diagnostic attempt. Initial raw viewer showed hidden RGB as a halo; that alone is not an alpha-compositing rejection."
+  },
+  {
+    "id": "07-native-alpha-control",
+    "prompt": "Create a PNG with a fully transparent alpha channel background, a precise isolated object cutout with empty transparent negative space: one wooden parcel wrapping bench, four legs, single horizontal tabletop, twine spool, hand stamp, cream paper roll, kraft parcel. Honey wood, muted terracotta twine, storybook watercolor game asset. Front slightly elevated view. No floor, no backdrop, no shadows, no glow, no border, no text. Background is entirely transparent including between legs. Landscape 3:2 composition.",
+    "native_file": "exec-51660c61-04c9-4f81-a99a-134de086dc99.png",
+    "transparent_background": false,
+    "accepted": false,
+    "reason": "Opaque background control, not a deliverable."
+  },
+  {
+    "id": "08-ref0",
+    "prompt": "Use the provided illustration as style and transparency reference. Replace the low cloth with a wooden table having a single broad horizontal honey-wood top and four straight legs, using exactly the same restrained watercolor color palette and delicate brown linework. Keep a cream paper roll, red twine spool in a simple holder, wooden hand stamp, and one parcel on top of the table. Keep the background empty and fully transparent with the same clean cutout edges as the reference. Clear transparent opening between table legs. No ground shadow or glow of any kind. Same front slightly elevated view, landscape sprite, generous margins. No words, numbers, or labels.",
+    "native_file": "exec-16f9b2a6-fb22-403d-92dd-75bda53b0fea.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded diagnostic attempt. Initial raw viewer showed hidden RGB as a halo; that alone is not an alpha-compositing rejection."
+  },
+  {
+    "id": "09-opaque-style",
+    "prompt": "Opaque painted wooden equipment sprite for a cozy postal village game. A single broad wooden workbench with four slim legs, cream wrapping paper roll, red twine spool, wooden hand stamp and a kraft parcel. Viewed frontally from slightly above. Fine brown contour lines and simple muted honey wood painted surfaces. Centered small on a transparent canvas with ample margins. Absolutely no watercolor wash outside object, no paper background, no ground, no shadow, no haze, no glow, no lighting bloom. Open empty transparent space between legs. Crisp clean object silhouette. No words or numbers. All visible physical surfaces fully opaque.",
+    "native_file": "exec-cfaebbbd-c5f1-4004-892f-da26c245702f.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Superseded style control, raw viewer false halo diagnosis corrected."
+  },
+  {
+    "id": "10-green-frame",
+    "prompt": "Game equipment cutout illustration. An old-fashioned parcel wrapping bench with forest-green painted wooden frame and four forest-green legs, a honey-wood single broad horizontal tabletop, a terracotta twine reel, a cream paper roll, a wooden hand stamp and a small kraft parcel. Hard ink object edges. Fine watercolor grain ONLY confined within fully opaque physical objects, simple flat painted shapes. No exterior brushwash. Empty transparent canvas outside the bench, and empty transparent holes between its legs. No floor plane, no background, no cast shadow, no aura, no vignette or bloom. Front view slightly above, small centered entire object in a landscape 3:2 canvas with generous margins. Cozy Japanese village game art, restrained sage green, dark forest green, ochre wood and cream. No writing, no symbols or UI.",
+    "native_file": "exec-e05e9681-3982-4c05-9582-10174da30d0a.png",
+    "transparent_background": true,
+    "accepted": false,
+    "reason": "Clean paper composite but alternate green frame/backboard diverges from accepted simple wood bench."
+  }
+]
