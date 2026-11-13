@@ -34,6 +34,12 @@ jobs:
           const browser=await firefox.launch();
           console.log(JSON.stringify({os:os.platform(),release:os.release(),browser:"Firefox",version:browser.version(),physicalTarget:false}));
           await browser.close();'
+      - name: Diagnose native Firefox audio environment without altering playback
+        if: matrix.suite == 'native-audio'
+        run: |
+          ls -ld /dev/snd || true
+          ps -C pulseaudio -C pipewire || true
+          node tests/e2e/m6/firefox-audio-health.mjs
       - run: npx playwright test --config=${{ matrix.config }} --browser=firefox
       - uses: actions/upload-artifact@v4
         if: always()
