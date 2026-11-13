@@ -27,6 +27,7 @@ export interface RecordContext {
 
 export interface RoundRecord {
   sessionId: string;
+  wordIds: string[];
   context: RecordContext;
   score: number;
   completedWords: number;
@@ -97,7 +98,7 @@ export function applyProfileFact(state: ProfileProgress, fact: ProfileFact): Pro
     } };
     next.totalCompleted = state.totalCompleted + 1;
   } else if (fact.type === 'RoundFinished' && fact.mode === 'MAIN' && fact.completed) {
-    const record = { ...fact.record, context: { ...fact.record.context } };
+    const record = { ...fact.record, wordIds: [...fact.record.wordIds], context: { ...fact.record.context } };
     const key = comparisonKey(record.context);
     const previous = state.bestByComparison[key];
     const eligibleGrowth = !record.context.assisted && record.completedWords >= 10;
@@ -187,7 +188,7 @@ export function applySessionFact(
   if (fact.type === 'RoundFinished') {
     const result = fact.result;
     return applyProfileFact(state, { ...base, type: fact.type, completed: fact.completed, record: {
-      sessionId: fact.sessionId,
+      sessionId: fact.sessionId, wordIds: [...result.wordIds],
       context: { ...context, assisted: context.assisted || result.skips > 0 },
       score: result.score, completedWords: result.completedWords,
       canonicalLength: result.canonicalLengthSum, correctKeys: result.correctKeys, mistakes: result.mistakes,
@@ -195,3 +196,5 @@ export function applySessionFact(
   }
   return applyProfileFact(state, { ...base, type: 'Other' });
 }
+
+export * from './repository';
