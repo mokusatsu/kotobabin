@@ -1,4 +1,4 @@
-import { applySessionFact, ProfileRepository, type ProfileDocument, type ProfileProgress, type RecordContext } from '../profile';
+import { applySessionFact, parseProfileBackup, ProfileRepository, type ProfileDocument, type ProfileProgress, type RecordContext } from '../profile';
 import { CityEconomy, initialCityState, encodeCityState, decodeCityState, executeCityCommand, type CityState, type CityCommand, type DistrictId, type AdvanceResult, type EconomyMode } from '../economy';
 import type { SessionFact, SessionMode } from '../typing';
 import content from '../../spec/initial/data/words.json';
@@ -26,6 +26,7 @@ export interface AppRuntime {
   takeOver(options?: { discardUnsaved?: boolean }): Promise<void>;
   retrySave(): Promise<void>;
   resetProfile(scope: 'settings' | 'records' | 'collection'): Promise<void>;
+  restoreProfile(payload: string): Promise<void>;
   exportData(): string;
   subscribe(listener: () => void): () => void;
   close(): void;
@@ -294,6 +295,20 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
           : scope === 'records' ? repo.resetRecords() : repo.resetCollectionAndEconomy(), false);
         syncSnapshot();
         baseClock = city.clockMs; baseMono = clock.now(); returnSummary = null;
+      } finally { busy = false; emit(); }
+    },
+    async restoreProfile(payload) {
+      if (!runtime.status.writable || busy) throw new Error('操作するタブで、処理が終わってからお試しください。');
+      if (rejectedProjection) throw new Error('未保存の進捗があります。控えを保存してから最新状態へ切り替えてください。');
+      // Validate before ending a session; malformed input cannot alter the city.
+      parseProfileBackup(payload);
+      busy = true; emit();
+      try {
+        if (city.activeSession) runtime.endSession(city.activeSession.sessionId);
+        await persist(() => repo.restoreData(payload, { confirmed: true }), false);
+        syncSnapshot();
+        baseClock = city.clockMs; baseMono = clock.now(); returnSummary = null;
+        initializeCity();
       } finally { busy = false; emit(); }
     },
     exportData() { return JSON.stringify({ repository: JSON.parse(repo.exportData()), currentView: { settings, progress, city: encodeCityState(city), destination }, pendingWrites, rejectedProjection, abandonedProjection, originalCityData: originalCityData && JSON.parse(originalCityData) }, null, 2); },

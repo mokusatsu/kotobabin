@@ -73,6 +73,28 @@ test('collection reset closes the old economic session and rejects its later con
   } finally { runtime.close(); }
 });
 
+test('restore validates before closing a session and replaces data with a fresh local generation', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const backup = runtime.exportData();
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    runtime.beginSession(session.sessionId, 'PRACTICE');
+    await expect(runtime.restoreProfile('{invalid')).rejects.toThrow();
+    expect(runtime.city.activeSession?.sessionId).toBe(session.sessionId);
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    const generation = repository.snapshot.metadata.generation;
+    await runtime.restoreProfile(backup);
+    expect(runtime.profile.totalCompleted).toBe(0);
+    expect(repository.snapshot.metadata.generation).toBe(generation + 1);
+    expect(runtime.city.activeSession).toBeNull();
+    expect(JSON.parse(repository.exportData()).restoreBackups).toHaveLength(1);
+  } finally { runtime.close(); }
+});
+
 
 test('a pre-stage ownership rejection preserves confirmed projection through refresh and requires explicit discard', async () => {
   const repository = await ProfileRepository.open({ indexedDB: null });
