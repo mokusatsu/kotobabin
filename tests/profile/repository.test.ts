@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { GameSession } from '../../src/typing';
 import {
   ProfileRepository, createProfileDocument, filterCatalogue, createProfileProgress,
-  validateProfileDocument, type RecordContext,
+  validateProfileDocument, applySessionFact, type RecordContext,
 } from '../../src/profile';
 
 const context: RecordContext = {courseId:'relaxed', planId:'test', contentVersion:'2', generatorVersion:'1', inputRuleVersion:'romaji-1.0.0', scoringVersion:'1', guideUsed:true, assisted:false};
@@ -109,5 +109,47 @@ describe('functional per-page memory fallback', () => {
     expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'1000000'});
     expect(repository.snapshot.progress.totalCompleted).toBe(1);
     await expect(repository.commitExtension('__proto__',{})).rejects.toThrow('保存項目');
+  });
+});
+
+
+describe('atomic document reducers', () => {
+  it('applies city state and confirmed typing facts together with replay-safe event identities', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const batch = facts();
+    const reduce = (document: ReturnType<typeof createProfileDocument>) => {
+      const alreadyApplied = document.progress.factCursors[batch[0].sessionId] >= batch.at(-1)!.factSequence;
+      return { ...document,
+        progress: batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress),
+        extensions: alreadyApplied ? document.extensions : {...document.extensions, city:{generatedMaterials:'6'}},
+      };
+    };
+    await repository.mutateDocument(reduce);
+    await repository.mutateDocument(reduce);
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.extensions.city).toEqual({generatedMaterials:'6'});
+  });
+
+  it('derives queued operations from the latest document and protects repository metadata', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const increment = (document: ReturnType<typeof createProfileDocument>) => ({
+      ...document, extensions:{...document.extensions, count:Number(document.extensions.count ?? 0)+1},
+      metadata:{...document.metadata, ownerTabId:'intruder', revision:999},
+    });
+    await Promise.all([repository.mutateDocument(increment), repository.mutateDocument(increment)]);
+    expect(repository.snapshot.extensions.count).toBe(2);
+    expect(repository.snapshot.metadata).toEqual(createProfileDocument().metadata);
+  });
+
+  it('does not partially apply city state when a related profile fact fails', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const invalid = {...facts()[0],factSequence:99};
+    await expect(repository.mutateDocument(document => {
+      document.extensions.city = {generatedMaterials:'100'};
+      document.progress = applySessionFact(document.progress,invalid,context);
+      return document;
+    })).rejects.toThrow('gap');
+    expect(repository.snapshot.extensions).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(0);
   });
 });
