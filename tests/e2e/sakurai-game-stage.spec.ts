@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import type { Page, TestInfo } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
+test.use({trace:'off'});
+
 // Independent rendered-UI review. All application input uses the real keyboard.
 // No imports from application code, injected state, focus(), clicks or clock mocks.
 async function activeName(page: Page) {
@@ -102,7 +104,7 @@ async function displayedGuide(page: Page) {
 }
 
 for(const height of [720,820]) test.describe('independent game review '+height,()=>{
-  test.use({trace:'off',viewport:{width:1180,height},reducedMotion:height===820?'reduce':'no-preference'});
+  test.use({viewport:{width:1180,height},reducedMotion:height===820?'reduce':'no-preference'});
   test('world construction delivery score reward retry',async({page},info)=>{
     test.setTimeout(240000);
     await page.goto('/');
