@@ -36,6 +36,14 @@ for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
     const district = page.locator('.district-map[data-district-id="residential"]');
     await expect(district).toBeVisible(); await wholeMap(page, district.locator('[data-map-bounds="district"]'));
     await expect(district.locator('[data-visual-feature="plan"]')).toBeVisible();
+    const controls = await district.locator('[data-action="district-feature"]').evaluateAll(elements => elements.map(element => {
+      const r = element.getBoundingClientRect(); return { feature: element.getAttribute('data-feature'), x: r.x, y: r.y, right: r.right, bottom: r.bottom };
+    }));
+    for (let left = 0; left < controls.length; left++) for (let right = left + 1; right < controls.length; right++) {
+      const a = controls[left], b = controls[right];
+      expect(Math.min(a.right, b.right) - Math.max(a.x, b.x) > 1 && Math.min(a.bottom, b.bottom) - Math.max(a.y, b.y) > 1,
+        JSON.stringify({ left: a, right: b })).toBe(false);
+    }
     for (const feature of ['plan', 'shops', 'crews', 'railway', 'packaging', 'research', 'synergies']) {
       const control = district.locator(`[data-action="district-feature"][data-feature="${feature}"]`);
       await tabTo(page, control); await page.keyboard.press('Enter');

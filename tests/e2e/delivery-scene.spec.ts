@@ -22,11 +22,27 @@ for (const reduced of [false, true]) {
       const control = page.locator('.settings-dialog input[name="reducedMotion"]');
       await keyboardRevealControl(page, control); await tabTo(page, control); await page.keyboard.press('Space'); await expect(control).toBeChecked();
     }
+    const live = page.locator('.settings-dialog input[name="achievement-notifications"][value="live"]');
+    await keyboardRevealControl(page, live); await tabTo(page, live); await page.keyboard.press('Space'); await expect(live).toBeChecked();
     await page.keyboard.press('Escape'); await beginMain(page, { fromHome: true });
     const scene = page.locator('#delivery-scene'); await expect(scene).toBeVisible();
     const districtId = (await scene.getAttribute('data-destination'))!; expect(districtId).toBeTruthy();
     const initial = await economy(page, districtId);
-    for (let word = 0; word < 5; word++) await typeCurrentGuide(page);
+    for (let word = 0; word < 5; word++) {
+      await typeCurrentGuide(page);
+      if (word === 0) {
+        await expect(page.locator('.achievement-live')).toBeVisible();
+        const covered = await page.evaluate(() => {
+          const notice = document.querySelector('.achievement-live')!.getBoundingClientRect();
+          return [...document.querySelectorAll<HTMLElement>('#game-input,#deliver-button,#completed-count,[data-action="guide"],#prompt-word,#prompt-reading,#romaji-guide')]
+            .filter(element => element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden')
+            .map(element => ({ id: element.id || element.dataset.action, r: element.getBoundingClientRect() }))
+            .filter(({ r }) => Math.min(r.right, notice.right) - Math.max(r.left, notice.left) > 1 && Math.min(r.bottom, notice.bottom) - Math.max(r.top, notice.top) > 1)
+            .map(({ id, r }) => ({ id, x: r.x, y: r.y, width: r.width, height: r.height }));
+        });
+        expect(covered, 'The earned-stamp notice must not cover typing, delivery, guide or current progress.').toEqual([]);
+      }
+    }
     await expect(scene).toHaveAttribute('data-words', '5'); await expect(scene).toHaveAttribute('data-dispatches', '1');
     await expect.poll(async () => BigInt((await scene.getAttribute('data-queued-micro'))!)).toBeGreaterThan(0n);
     const moving = scene.locator('[data-delivery-transport][data-state="in-transit"]').first();
