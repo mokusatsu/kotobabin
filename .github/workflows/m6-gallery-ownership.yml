@@ -1,7 +1,7 @@
 name: M6 equipped gallery ownership layout
 on:
   push:
-    branches: [fix/m6-gallery-ownership]
+    branches: [fix/m6-gallery-ownership, test/m6-final-gallery]
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - run: npx playwright test tests/e2e/cosmetics.spec.ts --grep 'four-choice gallery survives readonly' --browser=${{ matrix.browser }}
+      - run: npx playwright test tests/e2e/cosmetics.spec.ts --browser=${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
