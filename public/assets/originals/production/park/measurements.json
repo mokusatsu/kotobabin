@@ -1,0 +1,230 @@
+[
+  {
+    "id": "city_park_s1",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      940,
+      705
+    ],
+    "translate": [
+      35,
+      63
+    ],
+    "alpha_bbox": [
+      423,
+      259,
+      892,
+      620
+    ],
+    "opaque_bbox": [
+      427,
+      319,
+      890,
+      617
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 158304,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "fdfd4bd98f001b0f1107872705b9d9d96eb5c2dafbfb14301d69555629496a34",
+    "normalized_png_sha256": "fec0aebd8aab259db9526e3da7625c1f93b23714716aff726d0cdb7d2b8fbe9d",
+    "runtime_sha256": "9d69a18c1a0c574eaa707a0c3c59328b1c6288e066b9f9900e2fa62fcc64064e"
+  },
+  {
+    "id": "city_park_s2",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      940,
+      705
+    ],
+    "translate": [
+      35,
+      63
+    ],
+    "alpha_bbox": [
+      393,
+      307,
+      943,
+      622
+    ],
+    "opaque_bbox": [
+      396,
+      314,
+      940,
+      621
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 219070,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "de54399f20fee129e6bea87c80f6b577b828c2f01eb397cb42623f32b678206b",
+    "normalized_png_sha256": "895fc1c90e99f00d4397fb61a41b8a66cf903aed3bbc014aed3093335e0bc81f",
+    "runtime_sha256": "3f2b20b4c7ba6d15cbd42f2f43e8c3aa5eec33f6d0602b15b0930e9a37ae5319"
+  },
+  {
+    "id": "city_park_s3",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      940,
+      705
+    ],
+    "translate": [
+      35,
+      63
+    ],
+    "alpha_bbox": [
+      370,
+      180,
+      951,
+      620
+    ],
+    "opaque_bbox": [
+      372,
+      183,
+      947,
+      618
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 282458,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "6bf0e7d64f5569047971b086149c228caa504077a61ee1878022af706ccae433",
+    "normalized_png_sha256": "1f636ee09684fb2456db339d91267f1785ad7f61c53790c762ed719b5c3bef19",
+    "runtime_sha256": "8a145e24b78deb04d2516e728e6089ccb22e94e57ccbc07390c0956b64ab0e69"
+  },
+  {
+    "id": "city_park_s4",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      940,
+      705
+    ],
+    "translate": [
+      35,
+      63
+    ],
+    "alpha_bbox": [
+      355,
+      85,
+      961,
+      622
+    ],
+    "opaque_bbox": [
+      357,
+      175,
+      956,
+      621
+    ],
+    "outside_safe_alpha_max": 1,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 299602,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "1fa5c5cb29e666998db6188158ecd7a68941695ae479531402729561b2a3a47b",
+    "normalized_png_sha256": "fe5a4e678e40f83e781819698f876266539af131d2f3a8a5d1973519ee14b75d",
+    "runtime_sha256": "8cf92d73d6d92d0fd62819ad4564fcfffdfd568172220d3c419daee75a703772"
+  },
+  {
+    "id": "city_park_s5",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      930,
+      698
+    ],
+    "translate": [
+      42,
+      65
+    ],
+    "alpha_bbox": [
+      352,
+      170,
+      958,
+      700
+    ],
+    "opaque_bbox": [
+      355,
+      173,
+      954,
+      698
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 405236,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "fd7d4394391350a7cb919f28eae109071a76b36e792378d7754633ce9c687942",
+    "normalized_png_sha256": "e36647ba4d7e3b05a8ede2bb34e66f9ad4db04b028019c1e6b4347f38171f523",
+    "runtime_sha256": "9e481e13e417083eee5ef74975d9b7a642a08e84513daa39a6b98adc303015ac"
+  },
+  {
+    "id": "shop_park",
+    "native": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "resize": [
+      480,
+      480
+    ],
+    "translate": [
+      24,
+      29
+    ],
+    "alpha_bbox": [
+      115,
+      178,
+      422,
+      449
+    ],
+    "opaque_bbox": [
+      116,
+      180,
+      421,
+      448
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": null,
+    "bytes": 108938,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "f40f46fcc3e5cf75c25c550d59111a047cfc5a7bc1ea30dfebe7a016e9df0dca",
+    "normalized_png_sha256": "e1e2a79ed12890e13bb8c1baf0a0c7a4769e25a3e5c027f6d784fa04f96451c5",
+    "runtime_sha256": "a59e4f0ef7cfc303b235f5b031a12314cc1c05c339b3aec4008bc8d82e6b8f7c"
+  }
+]
