@@ -105,9 +105,41 @@ async function assertHomeHudSeparated(page: Page) {
     const balance = document.querySelector('.home-city-balance')!.getBoundingClientRect();
     const dock = document.querySelector('.world-command-dock')!.getBoundingClientRect();
     const footer = document.querySelector('.site-footer')!.getBoundingClientRect();
+    const help = document.querySelector('.world-map-help')!.getBoundingClientRect();
     const labels = [...document.querySelectorAll('.world-stage .map-label')].map(item => item.getBoundingClientRect());
     const overlaps = (a: DOMRect, b: DOMRect) => Math.min(a.right, b.right) > Math.max(a.left, b.left) && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top);
-    return { warningBalance: overlaps(warning, balance), warningLabels: labels.some(rect => overlaps(warning, rect)), balanceLabels: labels.some(rect => overlaps(balance, rect)), dockFooter: overlaps(dock, footer) };
+    return { warningBalance: overlaps(warning, balance), warningLabels: labels.some(rect => overlaps(warning, rect)), balanceLabels: labels.some(rect => overlaps(balance, rect)), dockFooter: overlaps(dock, footer), helpLabels: labels.some(rect => overlaps(help, rect)) };
   });
-  expect(overlaps).toEqual({ warningBalance: false, warningLabels: false, balanceLabels: false, dockFooter: false });
+  expect(overlaps).toEqual({ warningBalance: false, warningLabels: false, balanceLabels: false, dockFooter: false, helpLabels: false });
 }
+
+
+for (const height of [720, 820] as const) for (const font of [100, 125, 150] as const) for (const owned of [false, true]) test(`postcard ownership stays beside the visible artwork at1180x${height} ${font}% owned${owned}`, async ({ page }, info) => {
+  await page.setViewportSize({ width: 1180, height });
+  // This fixture exercises the gallery; it does not prove normal economic earning of all rewards.
+  await seed(page, font, owned);
+  const before = await equipped(page);
+  await keyboardMenuTo(page, 'handbook');
+  const tab = page.locator('[data-action="handbook-tab"][data-tab="rewards"]');
+  await keyboardRevealControl(page, tab); await tabTo(page, tab); await page.keyboard.press('Enter');
+  await preview(page, 'reward_family_a_postcard');
+  const artwork = page.locator('[data-preview-reward] .reward-view-art');
+  const picture = artwork.locator('[data-reward-asset="postcard_a"]');
+  await keyboardRevealControl(page, picture);
+  await expect(picture).toBeVisible();
+  await expect.poll(() => picture.evaluate(image => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0)).toBe(true);
+  const context = artwork.locator('.reward-art-context');
+  await expect(context).toBeVisible();
+  await expect(context).toHaveText(`郵便局の絵葉書 · ${owned ? '獲得済み' : '未獲得のプレビュー'}`);
+  expect(await context.evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeCloseTo(16 * font / 100, 1);
+  const geometry = await artwork.evaluate(element => {
+    const context = element.querySelector('.reward-art-context')!.getBoundingClientRect();
+    const art = element.querySelector('.reward-framed-content, .reward-postcard')!.getBoundingClientRect();
+    return { context: context.toJSON(), art: art.toJSON(), separated: context.bottom <= art.top };
+  });
+  expect(geometry.separated, JSON.stringify(geometry)).toBe(true);
+  await assertViewportFits(page);
+  expect(await equipped(page)).toEqual(before);
+  await page.screenshot({ path: info.outputPath(`postcard-context-${height}-${font}-${owned}.png`) });
+  await keyboardWalkPanels(page);
+});

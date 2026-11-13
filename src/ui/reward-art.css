@@ -24,6 +24,7 @@
 .reward-view-heading > h2 { font: inherit; font-weight: 700; font-size: 1.25em; }
 .reward-view-heading > p { margin-block: 8px; }
 .reward-view-art { width: min(100%, 640px); margin: 12px auto; }
+.reward-art-context { margin: 0 0 8px; font: inherit; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
 .reward-view-art .reward-postcard { width: 100%; max-width: 640px; }
 .reward-framed-content { position: relative; width: 100%; aspect-ratio: 3 / 2; }
 .reward-frame-window { position: absolute; inset: 12% 8%; display: grid; place-items: center; }
