@@ -72,12 +72,12 @@
     display: grid;
     grid-template-rows: auto auto minmax(0, 1fr);
     align-content: start;
-    row-gap: 6px;
+    row-gap: 4px;
     width: 100%;
     max-width: none;
     min-height: 0;
     margin: 0;
-    padding: 8px 0;
+    padding: 4px 0;
   }
   .game-topline { padding: 0 4px; min-height: 44px; gap: 12px; }
   .game-topline .clock, .game-topline .score { min-width: 0; gap: 8px; line-height: 1.2; }
@@ -93,17 +93,18 @@
     gap: 12px;
     min-height: 0;
   }
-  .game-main-column { display: grid; gap: 6px; align-content: start; }
+  .game-main-column { display: grid; gap: 4px; align-content: start; }
   .game-page .typing-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     align-content: start;
-    gap: 8px;
-    padding: 12px;
+    gap: 6px;
+    padding: 8px;
   }
   .game-page .typing-card > .eyebrow { margin: 0; font-family: inherit; letter-spacing: 0; line-height: 1.2; }
   .game-page .prompt-word {
     font-size: calc(32px * var(--font-scale));
+    min-height: calc(73.6px * var(--font-scale));
     line-height: 1.15;
     letter-spacing: 0;
     margin: 0;
@@ -111,6 +112,7 @@
   }
   .game-page .prompt-reading {
     font-size: calc(22px * var(--font-scale));
+    min-height: calc(52.8px * var(--font-scale));
     line-height: 1.2;
     letter-spacing: 0;
     margin: 0;
@@ -118,7 +120,7 @@
   }
   .game-page .romaji-guide {
     width: 100%;
-    min-height: calc(30px * var(--font-scale));
+    min-height: calc(90px * var(--font-scale));
     font-size: calc(24px * var(--font-scale));
     line-height: 1.25;
     letter-spacing: 0;
