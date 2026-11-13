@@ -1,0 +1,31 @@
+/* The scene is the stage background. The typing console is layered by game-layout. */
+.delivery-scene{position:absolute;inset:0;overflow:hidden;isolation:isolate;pointer-events:none;background:linear-gradient(#c9e6df 0%,#e4edbf 50%,#bbd19a 100%);color:#1c4138}
+.delivery-scene-landscape{position:absolute;inset:0;background-position:center;background-size:cover;opacity:.38}
+.delivery-scene-art{position:absolute;inset:4px 0 auto;width:100%;height:150px;overflow:visible}
+.delivery-action-lane{position:absolute;left:18%;right:16%;top:86px;height:70px}
+.delivery-vehicle{position:absolute;left:clamp(0%,var(--delivery-progress,0%),100%);width:70px;height:52px;transform:translateX(-50%);transition:left .8s linear;filter:drop-shadow(0 8px 3px #244a3830)}
+.delivery-vehicle img{width:100%;height:100%;object-fit:contain;animation:delivery-cart-bob .7s ease-in-out infinite alternate}
+.delivery-vehicle-parcel{position:absolute;top:-6px;left:32px;font-size:24px;color:#fff9de;text-shadow:0 1px 2px #654}
+.delivery-scene[data-transport=idle] .delivery-vehicle-parcel{visibility:hidden}
+.delivery-scene[data-transport=idle] .delivery-vehicle img,.delivery-scene[data-transport=arrived] .delivery-vehicle img{animation:none}
+.delivery-word-letter{position:absolute;left:-6%;top:-10px;font-size:38px;color:#fff8cd;opacity:0;animation:delivery-load .65s ease-out both;animation-name:none}
+.delivery-scene[data-word-kind] .delivery-word-letter{animation-name:delivery-load}
+.delivery-scene[data-word-kind=dirty] .delivery-word-letter{color:#dfc69c}
+.delivery-place{position:absolute;top:110px;display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;font-size:1rem;line-height:1.25;text-shadow:0 1px #ffffd9;max-width:28%}
+.delivery-place strong{font-size:1.1em}.delivery-origin{left:2%;width:23%}.delivery-destination{right:1%;width:23%}
+.delivery-envelope-rack{display:flex;gap:3px}.delivery-envelope-rack i{font-style:normal;opacity:.2;color:#fdf5c7}.delivery-envelope-rack i.loaded{opacity:1;filter:drop-shadow(0 1px 1px #4d5944)}
+.delivery-route-state{position:absolute;left:27%;right:27%;top:144px;margin:0;text-align:center;font-size:.85rem;line-height:1.3}
+.delivery-confirmation{position:absolute;top:4px;left:25%;right:25%;margin:0;text-align:center;font-size:.9rem;font-weight:700;line-height:1.3}
+.delivery-arrival-glow{opacity:0;animation:delivery-arrive 1.2s ease-out both;animation-name:none}.delivery-arrival-glow[data-revision]{animation-name:delivery-arrive}
+@keyframes delivery-cart-bob{from{transform:translateY(-1px) rotate(-1deg)}to{transform:translateY(2px) rotate(1deg)}}
+@keyframes delivery-load{0%{opacity:1;transform:translate(-24px,-10px) scale(.65)}65%{opacity:1}100%{opacity:0;transform:translate(140px,0) scale(1)}}
+@keyframes delivery-arrive{0%{opacity:1;transform:translateY(5px)}100%{opacity:0;transform:translateY(-12px)}}
+.delivery-input-paused .delivery-word-letter{animation-play-state:paused}
+.delivery-reduced-motion *, .delivery-reduced-motion .delivery-vehicle img{animation:none!important;transition:none!important}
+.delivery-reduced-motion .delivery-word-letter{display:none}.delivery-reduced-motion[data-transport=arrived] .delivery-arrival-glow{opacity:1}
+@media(prefers-reduced-motion:reduce){.delivery-scene *, .delivery-scene .delivery-vehicle img{animation:none!important;transition:none!important}.delivery-word-letter{display:none}.delivery-scene[data-transport=arrived] .delivery-arrival-glow{opacity:1}}
+
+.delivery-dispatch-cart{position:absolute;left:0;top:-4px;width:72px;opacity:0;animation:delivery-bonus 1.2s ease-out both;animation-name:none}.delivery-dispatch-cart img{width:100%}.delivery-dispatch-cart span{position:absolute;top:0;left:20px;font-size:18px;color:#fff5b5}.delivery-dispatch-cart[data-revision]{animation-name:delivery-bonus}
+@keyframes delivery-bonus{0%{opacity:1;transform:translateX(0)}70%{opacity:1}100%{opacity:0;transform:translateX(170px)}}
+.delivery-reduced-motion .delivery-dispatch-cart{display:none}
+@media(prefers-reduced-motion:reduce){.delivery-dispatch-cart{display:none}}
