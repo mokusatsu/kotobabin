@@ -118,7 +118,30 @@ test('production keyboard journey finishes all six cities, all railways and rese
   const restored=await saved(page);expect(restored.metadata.generation).toBe(restarted.metadata.generation+1);expect(restored.progress).toEqual(exported.progress);
   const restoredCity=decodeCityState(restored.extensions.city);const expected=new CityEconomy(decodeCityState(exported.extensions.city));expected.advanceTo(restoredCity.clockMs);
   expect(economic(restored.extensions.city)).toEqual(economic(encodeCityState(expected.snapshot())));
-  await page.reload();await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership','owner');
+  const beforeReload=await saved(page);
+  await page.reload();await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership','readonly');
+  // A new document has a new owner identity. Preserve the existing explicit
+  // handoff contract rather than silently claiming the former document's epoch.
+  const reopened=await saved(page);
+  expect(reopened.metadata.ownerTabId).toBe(beforeReload.metadata.ownerTabId);
+  expect(reopened.metadata.writeEpoch).toBe(beforeReload.metadata.writeEpoch);
+  expect(reopened.metadata.generation).toBe(beforeReload.metadata.generation);
+  expect(reopened.progress).toEqual(beforeReload.progress);
+  expect(reopened.extensions.achievements).toEqual(beforeReload.extensions.achievements);
+  const reopenModel=new CityEconomy(decodeCityState(beforeReload.extensions.city));
+  reopenModel.advanceTo(decodeCityState(reopened.extensions.city).clockMs);
+  expect(economic(reopened.extensions.city)).toEqual(economic(encodeCityState(reopenModel.snapshot())));
+  // No forced focus, programmatic repository takeover or pointer operation.
+  await activate(page,page.locator('#ownership-status [data-action="takeover"]'));
+  await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership','owner');
+  const claimed=await saved(page);
+  expect(claimed.metadata.ownerTabId).not.toBe(reopened.metadata.ownerTabId);
+  expect(claimed.metadata.writeEpoch).toBe(reopened.metadata.writeEpoch+1);
+  expect(claimed.metadata.generation).toBe(reopened.metadata.generation);
+  expect(claimed.progress).toEqual(reopened.progress);
+  const handoffModel=new CityEconomy(decodeCityState(reopened.extensions.city));
+  handoffModel.advanceTo(decodeCityState(claimed.extensions.city).clockMs);
+  expect(economic(claimed.extensions.city)).toEqual(economic(encodeCityState(handoffModel.snapshot())));
   for(const id of districts)await artwork(page,'.world-stage',id);await expect(page.locator('.world-stage .city-route.railway')).toHaveCount(6);
   expect(decodeCityState((await saved(page)).extensions.city).research).toEqual({materials:5,logistics:5,commerce:5});await assertViewportFits(page);
 });
