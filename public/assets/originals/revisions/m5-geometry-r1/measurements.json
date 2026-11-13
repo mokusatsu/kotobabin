@@ -1,0 +1,102 @@
+{
+  "warning": "Color-threshold diagnostic of raster candidate, not proof of exact floating-point shoreline compliance or runtime acceptance. Last endpoint samples final raster row.",
+  "classification": "three adjacent pixels B>1.06R and G>1.03R",
+  "runtime_dimensions": [
+    3200,
+    2000
+  ],
+  "rows": [
+    {
+      "canonical_x": 1370,
+      "canonical_y": 0,
+      "sampled_pixel_row": 0,
+      "first_water_x_heuristic": 1370.5,
+      "difference_map_px": 0.5
+    },
+    {
+      "canonical_x": 1365,
+      "canonical_y": 200,
+      "sampled_pixel_row": 400,
+      "first_water_x_heuristic": 1365.0,
+      "difference_map_px": 0.0
+    },
+    {
+      "canonical_x": 1360,
+      "canonical_y": 400,
+      "sampled_pixel_row": 800,
+      "first_water_x_heuristic": 1360.0,
+      "difference_map_px": 0.0
+    },
+    {
+      "canonical_x": 1340,
+      "canonical_y": 550,
+      "sampled_pixel_row": 1100,
+      "first_water_x_heuristic": 1339.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1310,
+      "canonical_y": 640,
+      "sampled_pixel_row": 1280,
+      "first_water_x_heuristic": 1309.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1280,
+      "canonical_y": 695,
+      "sampled_pixel_row": 1390,
+      "first_water_x_heuristic": 1279.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1246.203125,
+      "canonical_y": 737.578125,
+      "sampled_pixel_row": 1475,
+      "first_water_x_heuristic": 1246.0,
+      "difference_map_px": -0.203125
+    },
+    {
+      "canonical_x": 1240,
+      "canonical_y": 770,
+      "sampled_pixel_row": 1540,
+      "first_water_x_heuristic": 1239.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1240,
+      "canonical_y": 820,
+      "sampled_pixel_row": 1640,
+      "first_water_x_heuristic": 1239.0,
+      "difference_map_px": -1.0
+    },
+    {
+      "canonical_x": 1195,
+      "canonical_y": 875,
+      "sampled_pixel_row": 1750,
+      "first_water_x_heuristic": 1194.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1150,
+      "canonical_y": 940,
+      "sampled_pixel_row": 1880,
+      "first_water_x_heuristic": 1149.5,
+      "difference_map_px": -0.5
+    },
+    {
+      "canonical_x": 1130,
+      "canonical_y": 1000,
+      "sampled_pixel_row": 1999,
+      "first_water_x_heuristic": 1129.5,
+      "difference_map_px": -0.5
+    }
+  ],
+  "port_region_source_rect": [
+    2316,
+    1520,
+    2444,
+    1616
+  ],
+  "port_water_pixels": 0,
+  "port_sample_pixels": 12288
+}

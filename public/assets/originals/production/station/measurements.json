@@ -1,0 +1,434 @@
+[
+  {
+    "id": "city_station_s1",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/city_station_s1.generated.png",
+    "nativeSize": [
+      1448,
+      1086
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      0,
+      21,
+      1434,
+      1064
+    ],
+    "masterFile": "public/assets/originals/city_station_s1.png",
+    "runtimeFile": "public/assets/city_stage/city_station_s1.webp",
+    "outputSize": [
+      1024,
+      768
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      896,
+      672
+    ],
+    "translate": [
+      64,
+      64
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      512,
+      640
+    ],
+    "alphaBBox": [
+      359,
+      294,
+      858,
+      721
+    ],
+    "opaqueAlpha128BBox": [
+      408,
+      295,
+      855,
+      567
+    ],
+    "opaqueBottomRow": 566,
+    "safeRect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": 0,
+    "reservedShopNonzeroPixels": 0,
+    "reservedShopOpaquePixels": 0,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 153416,
+    "nativeSHA256": "a7bd8b3f9053c0312ab314acee50e29ac6234906c13a3be54545271230d8f1d3",
+    "masterSHA256": "bca4310f2106377180ac5cbb0762c4520a94fd0e9935c0543c80d88bee3b6f51",
+    "runtimeSHA256": "dd538e55c637b39408a8e812db1a3f714e03ceaf0e85cef5ec8ae18f13d950ac",
+    "strictStaticAlphaPass": true
+  },
+  {
+    "id": "city_station_s2",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/city_station_s2.generated.png",
+    "nativeSize": [
+      1448,
+      1086
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      0,
+      0,
+      1418,
+      1035
+    ],
+    "masterFile": "public/assets/originals/city_station_s2.png",
+    "runtimeFile": "public/assets/city_stage/city_station_s2.webp",
+    "outputSize": [
+      1024,
+      768
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      896,
+      672
+    ],
+    "translate": [
+      64,
+      64
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      512,
+      640
+    ],
+    "alphaBBox": [
+      406,
+      294,
+      930,
+      570
+    ],
+    "opaqueAlpha128BBox": [
+      408,
+      295,
+      929,
+      567
+    ],
+    "opaqueBottomRow": 566,
+    "safeRect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": 0,
+    "reservedShopNonzeroPixels": 0,
+    "reservedShopOpaquePixels": 0,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 176276,
+    "nativeSHA256": "1e74498925142df6ed3c575422131771a5dc65a632d25dafa67ddcbd36b4ab09",
+    "masterSHA256": "a2a294740e3a05267d395292c8fab45070e0f2bc4b89db152907800f52cbaa3d",
+    "runtimeSHA256": "d26468577552c711349eafd4f64bab67d6307a473373be787b8b24b203cb7a62",
+    "strictStaticAlphaPass": true
+  },
+  {
+    "id": "city_station_s3",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/city_station_s3.generated.png",
+    "nativeSize": [
+      1448,
+      1086
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      45,
+      55,
+      1405,
+      981
+    ],
+    "masterFile": "public/assets/originals/city_station_s3.png",
+    "runtimeFile": "public/assets/city_stage/city_station_s3.webp",
+    "outputSize": [
+      1024,
+      768
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      896,
+      672
+    ],
+    "translate": [
+      64,
+      64
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      512,
+      640
+    ],
+    "alphaBBox": [
+      364,
+      99,
+      932,
+      575
+    ],
+    "opaqueAlpha128BBox": [
+      366,
+      100,
+      931,
+      573
+    ],
+    "opaqueBottomRow": 572,
+    "safeRect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": 0,
+    "reservedShopNonzeroPixels": 0,
+    "reservedShopOpaquePixels": 0,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 231160,
+    "nativeSHA256": "7c2cf50f6f6a7ef61aa37a28ce7c298d103223764512c5e1039519524076c82c",
+    "masterSHA256": "6992c6777c680eb489005b6bcde34ace12f20e491de8eabb2fd2991a9fd121d2",
+    "runtimeSHA256": "ebc431458e62357e142cdd6a976a9c808c74a4a3d166552c55813f112c16d774",
+    "strictStaticAlphaPass": true
+  },
+  {
+    "id": "city_station_s4",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/city_station_s4.generated.png",
+    "nativeSize": [
+      1448,
+      1086
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      146,
+      53,
+      1412,
+      938
+    ],
+    "masterFile": "public/assets/originals/city_station_s4.png",
+    "runtimeFile": "public/assets/city_stage/city_station_s4.webp",
+    "outputSize": [
+      1024,
+      768
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      896,
+      672
+    ],
+    "translate": [
+      64,
+      64
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      512,
+      640
+    ],
+    "alphaBBox": [
+      364,
+      98,
+      929,
+      577
+    ],
+    "opaqueAlpha128BBox": [
+      365,
+      100,
+      928,
+      575
+    ],
+    "opaqueBottomRow": 574,
+    "safeRect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": 0,
+    "reservedShopNonzeroPixels": 0,
+    "reservedShopOpaquePixels": 0,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 251716,
+    "nativeSHA256": "62670837b4662f0d4d14ec5706908ea5229043f826ee0ce700ed60b163d568bf",
+    "masterSHA256": "0a808e634113738b3710d18dacb26a6ee67b31a12cd0f5fea1c9eda0ea267256",
+    "runtimeSHA256": "ee1915d834a3ec3eb42a35f8b1cf2731177408a0858f90d2c0b9203ca07dda9d",
+    "strictStaticAlphaPass": true
+  },
+  {
+    "id": "city_station_s5",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/city_station_s5.generated.png",
+    "nativeSize": [
+      1448,
+      1086
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      0,
+      23,
+      1434,
+      1086
+    ],
+    "masterFile": "public/assets/originals/city_station_s5.png",
+    "runtimeFile": "public/assets/city_stage/city_station_s5.webp",
+    "outputSize": [
+      1024,
+      768
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      896,
+      672
+    ],
+    "translate": [
+      64,
+      64
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      512,
+      640
+    ],
+    "alphaBBox": [
+      361,
+      94,
+      931,
+      729
+    ],
+    "opaqueAlpha128BBox": [
+      364,
+      96,
+      930,
+      635
+    ],
+    "opaqueBottomRow": 634,
+    "safeRect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": 0,
+    "reservedShopNonzeroPixels": 0,
+    "reservedShopOpaquePixels": 0,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 299962,
+    "nativeSHA256": "cac58c520517e965eeb48666d9a73c6ff87af5a9e8ac542322db5ab61df2dd7d",
+    "masterSHA256": "7455ba7af2ef1bfe873e946fb0dc41796aee5884a6ee9e9e97f13e5cf1528013",
+    "runtimeSHA256": "4f2b4352125158b7d69f10d50f4767eb7828b78a6b2b95436a8ac83103ae7d71",
+    "strictStaticAlphaPass": true
+  },
+  {
+    "id": "shop_station",
+    "candidateOnly": true,
+    "nativeFile": "public/assets/originals/shop_station.generated.png",
+    "nativeSize": [
+      1254,
+      1254
+    ],
+    "nativeMode": "RGBA",
+    "nativeBitDepth": 8,
+    "nativeAlphaBBox": [
+      0,
+      21,
+      1253,
+      1206
+    ],
+    "masterFile": "public/assets/originals/shop_station.png",
+    "runtimeFile": "public/assets/shop_scene/shop_station.webp",
+    "outputSize": [
+      512,
+      512
+    ],
+    "outputMode": "RGBA",
+    "outputBitDepth": 8,
+    "fullCanvasResize": [
+      432,
+      432
+    ],
+    "translate": [
+      48,
+      63
+    ],
+    "aspectRatioPreserved": true,
+    "sourceCanvasEntirelyInsideExport": true,
+    "geometryClipped": false,
+    "alphaMaskOrThresholdAppliedToExport": false,
+    "nominalProfileAnchor": [
+      256,
+      448
+    ],
+    "alphaBBox": [
+      115,
+      213,
+      413,
+      450
+    ],
+    "opaqueAlpha128BBox": [
+      116,
+      215,
+      412,
+      448
+    ],
+    "opaqueBottomRow": 447,
+    "safeRect": [
+      32,
+      32,
+      480,
+      480
+    ],
+    "outsideSafeAlphaMax": 0,
+    "outsideRequested32MarginAlphaMax": 0,
+    "reservedShopAlphaMax": null,
+    "reservedShopNonzeroPixels": null,
+    "reservedShopOpaquePixels": null,
+    "pngWebpAlphaByteEqual": true,
+    "pngWebpVisibleCompositeEqual": true,
+    "runtimeBytes": 85284,
+    "nativeSHA256": "6846dfab47acdc4a122e3f44978a83606d2a2c861ecdfa645d86c66078a66ec1",
+    "masterSHA256": "c23ca0c34217861522f5497049fb77c75f9e0c0f08ae7d645dd087bba49c009e",
+    "runtimeSHA256": "c9f0ab8ed2d582cea058476a6bdfba7b0c566ae9e9b5cad5fda069eb4d71c12a",
+    "strictStaticAlphaPass": true
+  }
+]

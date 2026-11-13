@@ -1,0 +1,344 @@
+{
+  "warning": "Measurements use decoded RGB color classification; they do not prove exact floating-point geometry or runtime E2E acceptance.",
+  "classify": "three adjacent pixels B>1.06R && G>1.03R",
+  "variants": {
+    "lossless": {
+      "bytes": 4215062,
+      "decoded_dimensions": [
+        3200,
+        2000
+      ],
+      "decoded_mode": "RGB",
+      "rows": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "decoded_first_water_x": 1370.5,
+          "difference_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "decoded_first_water_x": 1365.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "decoded_first_water_x": 1360.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "decoded_first_water_x": 1339.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "decoded_first_water_x": 1309.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "decoded_first_water_x": 1279.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "decoded_first_water_x": 1246.0,
+          "difference_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "decoded_first_water_x": 1239.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "decoded_first_water_x": 1239.0,
+          "difference_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "decoded_first_water_x": 1194.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "decoded_first_water_x": 1149.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "decoded_first_water_x": 1129.5,
+          "difference_map_px": -0.5
+        }
+      ],
+      "port_water_pixels": 0,
+      "port_sample_pixels": 12288,
+      "max_abs_canonical_error_map_px": 1.0,
+      "max_abs_edge_change_vs_lossless_map_px": 0.0
+    },
+    "88": {
+      "bytes": 279412,
+      "decoded_dimensions": [
+        3200,
+        2000
+      ],
+      "decoded_mode": "RGB",
+      "rows": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "decoded_first_water_x": 1370.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "decoded_first_water_x": 1365.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "decoded_first_water_x": 1360.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "decoded_first_water_x": 1339.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "decoded_first_water_x": 1309.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "decoded_first_water_x": 1279.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "decoded_first_water_x": 1246.0,
+          "difference_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "decoded_first_water_x": 1239.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "decoded_first_water_x": 1239.0,
+          "difference_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "decoded_first_water_x": 1194.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "decoded_first_water_x": 1149.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "decoded_first_water_x": 1129.5,
+          "difference_map_px": -0.5
+        }
+      ],
+      "port_water_pixels": 0,
+      "port_sample_pixels": 12288,
+      "max_abs_canonical_error_map_px": 1.0,
+      "max_abs_edge_change_vs_lossless_map_px": 0.5
+    },
+    "92": {
+      "bytes": 406786,
+      "decoded_dimensions": [
+        3200,
+        2000
+      ],
+      "decoded_mode": "RGB",
+      "rows": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "decoded_first_water_x": 1370.5,
+          "difference_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "decoded_first_water_x": 1365.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "decoded_first_water_x": 1360.0,
+          "difference_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "decoded_first_water_x": 1339.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "decoded_first_water_x": 1309.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "decoded_first_water_x": 1279.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "decoded_first_water_x": 1246.0,
+          "difference_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "decoded_first_water_x": 1239.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "decoded_first_water_x": 1239.0,
+          "difference_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "decoded_first_water_x": 1194.5,
+          "difference_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "decoded_first_water_x": 1149.0,
+          "difference_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "decoded_first_water_x": 1129.5,
+          "difference_map_px": -0.5
+        }
+      ],
+      "port_water_pixels": 0,
+      "port_sample_pixels": 12288,
+      "max_abs_canonical_error_map_px": 1.0,
+      "max_abs_edge_change_vs_lossless_map_px": 0.5
+    }
+  },
+  "selected_quality": 92,
+  "selected_runtime": "assets/terrain/terrain_riverside.webp",
+  "selected_bytes": 406786,
+  "lossless_backup": "terrain_riverside.lossless.webp",
+  "encoding_command": "magick public/assets/originals/terrain_riverside.png -quality 92 -define webp:method=6 public/assets/terrain/terrain_riverside.webp",
+  "source_master_sha256": "a3007db3259a768b8a8c9093c5c2f4b22f6c23faf59bcba2fc7ba32e16471ca3",
+  "native_generated_sha256": "c540227270f98483d6996a20e80d30c81c631a1e14c55de84e283d487dafd4a2",
+  "independent_qa": "Candidate encoding approved: bytes, decoded RGB dimensions, dry port and comparison images; formal geometry/runtime acceptance still pending."
+}

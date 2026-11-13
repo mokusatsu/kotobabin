@@ -1,3 +1,4 @@
+import manifest from '../../spec/initial/data/visual_resource_manifest.json';
 import { describe, expect, it, vi } from 'vitest';
 import { AudioPlayer, type AudioKind } from '../../src/audio/AudioPlayer';
 
@@ -72,7 +73,12 @@ describe('optional nonblocking AudioPlayer', () => {
     expect(context.active.filter((source) => source.loop)).toHaveLength(1);
     expect(context.gains.at(-1)!.gain.value).toBeCloseTo(0.5 * 0.25);
     expect(fetched).toContain('/kotobabin/assets/sound_effect/audio_key.wav');
-    expect(fetched).toContain('/kotobabin/assets/sound_effect/audio_theme.ogg');
+    expect(fetched).toContain('/kotobabin/assets/bgm/audio_theme.ogg');
+    const audioAssets = manifest.assets.filter(asset => asset.kind === 'audio');
+    expect(audioAssets).toHaveLength(7);
+    const exports = audioAssets.flatMap(asset => asset.runtime_exports);
+    expect(fetched.every(url => exports.includes(url.slice('/kotobabin/'.length)))).toBe(true);
+    for (const asset of audioAssets) expect(asset.runtime_exports.some(path => fetched.includes(`/kotobabin/${path}`)), asset.id).toBe(true);
     player.settings({ master: 0.8, effects: 0.4, music: 0.2 });
     expect(context.gains[0].gain.value).toBeCloseTo(0.32);
     expect(context.gains[1].gain.value).toBeCloseTo(0.16);
@@ -124,6 +130,8 @@ describe('optional nonblocking AudioPlayer', () => {
       await player.startFromGesture(); await flush(); player.play('theme'); player.play('theme'); await flush();
       expect(fetched.filter((url) => url.endsWith('.ogg'))).toHaveLength(1);
       expect(fetched.filter((url) => url.endsWith('.mp3'))).toHaveLength(1);
+      const theme = manifest.assets.find(asset => asset.id === 'audio_theme')!;
+      expect(fetched.filter(url => url.endsWith('.ogg') || url.endsWith('.mp3')).map(url => url.slice('/kotobabin/'.length))).toEqual(theme.runtime_exports);
       expect(context.active).toHaveLength(1); expect(context.active[0].loop).toBe(true);
       player.dispose();
     });
@@ -170,5 +178,35 @@ describe('optional nonblocking AudioPlayer', () => {
     expect(context.active).toHaveLength(0);
     player.play('word'); expect(context.active).toHaveLength(1);
     player.dispose(); expect(context.active).toHaveLength(0);
+  });
+});
+
+describe('audio lifecycle and retry status', () => {
+  it('stops all voices at pause and needs an explicit gesture before playback resumes', async () => {
+    const { player, context } = await ready();
+    player.play('key'); player.play('theme'); await flush();
+    player.pause();
+    expect(player.status).toBe('paused'); expect(context.active).toHaveLength(0);
+    player.play('word'); player.play('theme'); expect(context.active).toHaveLength(0);
+    expect(await player.startFromGesture()).toBe(true);
+    player.play('theme'); await flush(); expect(context.active.filter(source => source.loop)).toHaveLength(1);
+    player.dispose(); expect(player.status).toBe('disposed');
+  });
+  it('can stop only the background loop while final delivery feedback finishes', async () => {
+    const { player, context } = await ready();
+    player.play('theme'); await flush(); player.play('dispatch_full');
+    const delivery = context.sources.at(-1)!;
+    player.stopTheme();
+    expect(context.active).toEqual([delivery]); delivery.end(); await flush();
+    expect(context.active).toHaveLength(0); player.dispose();
+  });
+  it('reports unavailable feedback after decoding failure and recovers on a fresh explicit gesture', async () => {
+    const { player, context } = fixture();
+    context.decodeAudioData.mockRejectedValueOnce(new Error('Temporary decode failure'));
+    await player.startFromGesture(); await flush();
+    expect(player.status).toBe('unavailable');
+    player.pause(); expect(player.status).toBe('unavailable'); // pausing cannot hide the explicit retry requirement
+    expect(await player.startFromGesture()).toBe(true); await flush();
+    expect(player.status).toBe('ready'); player.play('key'); expect(context.active).toHaveLength(1); player.dispose();
   });
 });

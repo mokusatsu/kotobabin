@@ -1,0 +1,80 @@
+{
+  "clientDate": "2026-11-13 Asia/Tokyo",
+  "status": "generated candidates; strict geometry and runtime acceptance pending",
+  "method": "Actual imagegen editing with viewed stage1 and preceding stage references. Full-canvas resize/placement only; no clipping, painting, alpha removal or masks.",
+  "attempts": [
+    {
+      "key": "city_market_s2",
+      "prompt": "Grow attached MARKETSTAGE1 into STAGE2 asONECOMPLETEreplacementdistrictsprite. KEEPtheexistinglargehippedroofPAVILION atSAMEPOSITIONandSIZE; do NOT shrinkorflattenit. Extend a SHAREDROOFED WALKWAY fromFRONTtowardRIGHTREAR inL-SHAPE. Curvecornerhas slightlyHIGHERHIPPEDROOF; slenderwoodcolumns supportonecontinuousloweave, sharedrestBENCHatcorner, onecompactlowwoodtownmassbehind. No separatecommercialstalls or repeateddoors. Sourcecanvas1024x768 landscape4:3 unchanged. ALLstructureinrightside x360..930,y250..640; preservePRIMARYroofsize ofstage1, additions makegrowthwider/deeperandhigher. LEFTBOTTOMSHOPRESERVEDRECTx64..352,y440..736 must be EXACTLYALPHAZERO; no object,shadow,leaf,plank orfaintnoise there. ALLart within saferect64..960,48..736. Footanchor512640. GapsbetweenCOLUMNSandinsideLareTRUEALPHATRANSPARENT; NO ground,pavement,paintedcourtyard,floorplane,roads,rails,labels,text,numbers,UI,shopcountersorproducts. Existingfrontpavilionwoodedgefinebutkeepwalkwayinteriorsopen. Samecreamtimber/sage/slatebluewatercolorstyle, softhigh-leftlight, no broadhaloshadows. Fullcanvas/scaleandcameraunchanged, completegrownscene notadditionlayer.",
+      "nativeGeneration": "exec-838413cc-4812-4251-b587-e937deb94b85.png",
+      "selectedId": null
+    },
+    {
+      "key": "shop_market",
+      "prompt": "Create shop_market asoneSEPARATE smallFOODSHOP, matchingattachedshop'swatercolorstyleandcommonfront+RIGHTSIDE slightlyelevatedview, but DIFFERENTSHALLOWHIPPEDROOF (notgabledtriangle). Warmhoneytimber, creamwalls, slateblue/sagetilehiproof. BROADFRONTWINDOW containinggroupedROUND FRUITS (softapple/orangecirclesINSIDEwindowonly), notbread. No producebinsoutside, no sale counters, no repeatedstalls. NOBANNERS,SIGNBOARDS,AWNINGS/CANOPIES,letters,numbers,logos,postalsymbols,UI; theseareseparateoverlayslater. SQUARE512x512RGBAcanvas, allvisibleartwithin32..480,frontfacadex128..384,y208..448, footcenter256448. Blankattachmentlocations(256184)sign,(256256)canopy,(416352)bannerhavenoattachedornaments. Roofaroundx96..416,y110..240. TrueALPHA0 background, no ground,grass,tree,people,haloorcastshadow. Mainshopstrongsimplereadable24px. Keepfullsquareframeandclearmargins; onebuildingonly.",
+      "nativeGeneration": "exec-51d30f09-2070-4518-b92d-295ad4a91c9d.png",
+      "selectedId": "shop_market"
+    },
+    {
+      "key": "city_market_s2_cleanup",
+      "prompt": "LOCAL LAYOUT EDIT: Keep theBIG FRONT PAVILION exactlyunchangedinposition,size,cameraandshape. ShortenONLYtheright-recedingarm oftheLwalkway: REMOVEthe TWO FARTHEST RIGHT BAYS andthefar-rightbackhouse, soALLartendsbefore x930 onlogical1024x768canvas. DrawacleancompleteENDPOST/endcapofshortenedcorridor, donotcropanobjectatthecanvasrightedge. Keeponehighercornerhiproofand2compactrecedingbays+cornerbench, transparentgaps, not4longbays. Keepbodylargeassource, do NOTshrinkwholegroup. Full4:3frameunchanged,left35%completelyemptytransparent. Leftbottomshoprect64..352,440..736alpha0. Allvisibleartinside saferect64..960,48..736. No newground,wall,grassplane,shadows,text,productstalls. Removeisolatedfaintalphanoiseoutsideobjects. Samewatercolorstyleunchanged. ThisiscompactL-shapedSHAREDWALKWAY, notstorefronts.",
+      "nativeGeneration": "exec-acf01b7c-5136-4991-bfa3-0c0a9e0e3083.png",
+      "selectedId": "city_market_s2"
+    },
+    {
+      "key": "city_market_s3",
+      "prompt": "Grow thisMARKETSTAGE2 intoSTAGE3 aswhole replacementdistrict, samewatercolorwood/slateblue/sagestyle,cameraandframe. EVOLVE SAME CENTRAL PAVILION intoLARGER COMMUNITYMARKETHALL witha SMOOTH SQUARE-PYRAMIDAL HIPPEDROOF, peakx640,y150 inlogical1024x768canvas. No gabledtriangularfront, no steppedworkshoproof; four roofplanesmeetnearONEpeak. Keep itsfrontfootanchor512640, mainfrontopeningx500..800, broadONEopeningwiththickwoodbeams visible, sharedbenchbeside. Lowcontinuouscoveredwalkways extendleftandright, retainingStage2 L-shapedconnection onRIGHT. No counts of doors; no merchandise,price tags,stalls,shopcountersorproducts. GrowthmustbeLARGER/TALLER thanoldfrontpavilion, notshrunk/flattencollage. ALLstructureonrightx360..930,y130..640. KeepFULL4:3canvasandcamera. LEFTBOTTOMSHOPRECTx64..352,y440..736STRICTALPHA0, no object/shadow/leaf/noise. Saferect64..960,48..736. Cutcolumns/entranceandwalkwaygaps FULLYTRANSPARENT, no paintedfloors,ground,paving,roads,rails,UI,text,numbers,flags. Onlynarrowwoodbasebeamundercolumnsallowed, no filledplazaplane. Don'tspreadbeyondx930orcropends. Completesprite, no addedonlyparts.",
+      "nativeGeneration": "exec-f17a9d67-c862-495f-a888-8c598afb6932.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s3_cleanup",
+      "prompt": "SELECTIVE EDIT ONLY THE OUTER WALKWAY EXTENSIONS, keepcentralhugehippedroofhall anditscolumns,roofpeak,opening,benchpersonEXACTsamepositionandSCALE. REMOVE the LONGLEFTCORRIDOR fromfarleft; replacewithONLY ONE SHORTLOWROOF hint immediatelyBEHINDthehall'sLEFTMAINPOST. Itscolumnsbelowlogicaly440must ALL beRIGHT ofx360. LeftlowerSHOPRECT64..352,440..736MUSTBEPUREALPHA0. Thehall'sleftroofeaveabove y440canremainasitwas. SHORTENtheRIGHTCORRIDORtoo, removingfar2baysandbackhouse, cleancompleteendpointbeforelogicalx930, nocanvasedgecropping. Keep1compactrightcornerbay/bench and a shortroofsectionbehindmainhall. No globalshrinking, no flattening, no movingmainhall, no restyling. Full4:3canvasunchanged, logical1024x768. Actualallstructureinsaferect64..960,48..736, no faintalphanoiseoutsideobjects. No newground,plaza,texturewash,shadow,product,text. Keepnegativegapspaceunderroofsfullytransparent. Mainroofmustremainsquarepyramidalhipped.",
+      "nativeGeneration": "exec-bcd68856-10aa-4fda-9886-48507347b142.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s3_remove_annex",
+      "prompt": "REMOVE the ENTIRE SMALL LEFTMOST PAVILION/ANNEX fromthisimage: its smallroof, itsleftpost, itslowerbeamsandthewholelittlebayleftoftheMAIN LARGE COLUMN must disappear. ReplaceitwithPUREALPHA0, notwithanotherpavilion. KEEPalloftheBIGCENTRALHALL includingitsroofshapeandposition, andkeeprightbayunchanged. A tinyhintoflowroofBEHINDthemainhallleftupper eave isallowedONLY ABOVElogicaly440, but doNOTdrawanypostorbeamleftoflogicalx360below y440. Remove anyisolatedalphanoise. Full4:3frame unchanged,logical1024x768,backgroundtransparent. No newground,objects,text. This is literal removalofthesmallLEFTANNEX, notshorteningitfurther. Mainhallmustnotmoveorrescale.",
+      "nativeGeneration": "exec-9bc84d37-5560-43ff-aa29-eb58db7c7c87.png",
+      "selectedId": "city_market_s3"
+    },
+    {
+      "key": "city_market_s4",
+      "prompt": "Grow attached marketSTAGE3 intoSTAGE4 asfullreplacementart. KEEPtheHUGE SQUARE-PYRAMID HIPPEDROOF HALL preciselysameposition/size/peak andsamebigfrontopeningandthickbeams. FromhallRIGHTSIDE extendLOW COVERED CORRIDOR toRIGHTBACKandfolditbacktoform OPEN C-SHAPED townmass. AddcornerwoodPOSTS WITHVISIBLECROSSBARS carryingSMALL ROUND PLAINLANTERNS (noletterorcrest), slightwarmwindowlightstilldaytime. Showpostsandcrossbarsstructurallyevenwithoutglow. DoNOTblockfrontopening. Keepoldlowerhallbench. Sourcecanvas1024x7684:3 unchanged, allartwithin64..960,48..736. Growthtorightrear staysCOMPACTbeforex930,y250..640. REMOVEthe smallLEFTANNEX bay thatintrudesintoleftlowerarea; onlyshortlowroofhintBEHINDmainhallleftupperedge,NOpost/beamleftofx360belowy440. StrictleftbottomSHOPRECT64..352,440..736 allalpha0. CorridorinteriorandCshapevoidpuretransparent, NO floor/groundplaza/pavement/roads/rails, no shops,salescounters,prices,products,text,numbers,flags,UI. No globalshrinkorflatten, sameprimaryroof/anchoredhall; addstructureonly. Clearisolatedalphanoiseoutsideobjects, no broadhalowash.",
+      "nativeGeneration": "exec-2ffab0b5-d259-432c-930f-1cf2cf49c3dd.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s4_cleanup",
+      "prompt": "LOCALCLEANUP: KeepBIGcentralhippedroofhall andwholeC-shapedrightcorridorpositions/sizesUNCHANGED. Remove ONLY the FARTHEST UPPERRIGHT LANTERNPOST anditscrossbar (atcanvasfar right). Shorten thelastfar-rightcorridorbay soEVERYobjectendsbefore94%ofthecanvaswidth, withcleancompleteendpost, no crop. Other2lanterncrossbarpostsremainandCshapevoidretained. Full4:3frameunchanged; allleftlowerreservedshoprect64..352,440..736alpha0. No object/shadow/noiseoutsideactualstructures. No newground,text,windows,products. Mainhippedroofmaynotshrinkorflatten.",
+      "nativeGeneration": "exec-5894c50e-6d42-45d8-ac69-adecaae9d15e.png",
+      "selectedId": "city_market_s4"
+    },
+    {
+      "key": "city_market_s5",
+      "prompt": "Grow attached MARKETSTAGE4 intoSTAGE5 aswholecomplete replacementdistrict, sameframe/watercolor/view. KEEPMAINHIGHHIPPEDROOFhall andlowC-shapedcorridors atSAMEpositionsandsize, notshrunkenorflat. Openup a LARGE SQUARE-SHAPED SHAREDPLAZA inFRONT, shownONLYbyEMPTYALPHASPACE andsurroundingcolumns/beams/benches, absolutelyNOgroundorfloorpaint. Addone TALLWOODENLANTERN COLUMN WITHSMALLROOF atlogicalx650,y300..590 (1024x768canvas); strongverticalmarkercenterofplaza. Add a BROAD WOODEN TOWN GATE atRIGHTFOREGROUND withSHALLOWLITTLEROOF+DIAGONALCORNERBRACES (NOTaTorii,NOTaShintogate,no curvedtemplecrossbars). Gatepostsaroundx820..930,y480..640, keepcompletesilhouetteinsideframe. Retainhallroofbehind, lowwalkwaysleft/right, simplebenchesaroundplazaedge. No stalls/products/salesplotsorstorecountindicators. RIGHTedgeendbeforelogicalx940; removefarthestrightlanternpostifneededtosaveclearoutermargin, doNOTcroporscalewholecanvas. LEFTBOTTOMSHOPRECTx64..352,y440..736completelyalpha0, no lowleftannexpavilion. Allartwithin64..960,48..736; footanchor512640. Truealpha0background/gaps, no paving,dirt,roads,rails,shadows,halowash,letters,numbers,crest,flags,UI. Sameprimaryroof/hallmustbevisibleabove/behindnewplazapostwithoutbeingreplacedbyaformaltemple.",
+      "nativeGeneration": "exec-d504cc29-869c-41f3-a751-c88770712199.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s5_cleanup",
+      "prompt": "SELECTIVE STAGE5LAYOUTCLEANUP. KEEP CENTRALHUGEHIPPEDROOF HALL andRIGHTGATE atsamepositions,sizeandproportions; no globalshrink. REMOVE ENTIRE FARLEFT WALL/COVEREDCORRIDOR anditswindows/bench. REMOVEtheLEFTMOST FRONTBENCH andLEFTMOSTFRONTFENCEPOSTS. NewleftplazaboundarymuststartRIGHT oflogicalx370 (canvaslogical1024x768). EVERYTHING inSHOPRESERVEDRECTx64..352,y440..736 mustbePUREALPHA0. KeepaSHORTleftwalkway/onepostONLY withinx370..450, notfarleft. Remainingfrontcenterbenchandrightbench+gate canenclosesquarevoidwithoutleftsprawl. MOVE THE TALLROOFEDLANTERNCOLUMN toRIGHT: nowaroundlogicalx480, putitnearx650 (rightsideofmainfrontopening). Keepitsrooftopneary300, SHORTEN itsbase toy590not660; do NOTmovehall/gate. Thecolumnshouldnotoverlapmainleftpillaranymore. PreserveEMPTYALPHAPLAZAFLOOR, no groundorpaint. GateisBRACEDTOWNGATE, noTorii. Allartendsbeforelogicalx940,safe64..960/48..736. Clearisolatedalphanoiseoutsideobjects. Full4:3frame/cameraunchanged. No text/numbers/newobjectsotherthannecessaryposttoreconnectleftboundary.",
+      "nativeGeneration": "exec-e36be1f1-075b-4c94-a8dc-7c8919d85190.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s5_remove_post",
+      "prompt": "REMOVE ONLY the LEFTMOST FOREGROUND FENCEPOST andtheSLANTED WOODRAIL joiningittohall. Itisattheleftendoffrontbenchrow. MakeentireobjectanditsrailALPHA0, notshorterormoved. KeepallBENCHES, allotherfenceposts, centralHALL, roofedlampcolumnandrightGATE preciselyinplaceandsameSIZE. Do notremoveorchangeanythingelse. Mainhallroof/columnsunchanged, full4:3canvasunchanged,nozoom/shrink/crop. Clearanyisolatedfaintbackgroundalphaspecklesoutsideactualobjectsandintheemptyplaza. No paintedgroundorshadowwash. Backgroundandplazafloortruealpha0. Onlyremoveleftmostpost+itsdiagonalrail; preservecandidateartstyle.",
+      "nativeGeneration": "exec-3e278957-c193-4ea6-a525-999027168907.png",
+      "selectedId": null
+    },
+    {
+      "key": "city_market_s5_trim_wood",
+      "prompt": "LOCAL WOOD EDGE CORRECTION ONLY. KEEP roof,gate,lampcolumn,hall,allpositionsandscaleEXACTLYASIS. ThereareTWOprotrusionsLEFT oftheMAINHALL'SLEFTFRONT COLUMN: (1)smallleftprojectingTONGUE ofthehall'shorizontalwoodplatform,(2)theLEFTEND/baseoftheLEFTFRONTBENCH. SHORTENeachfromLEFT so theirnewLEFTEDGESalignwiththeOUTERLEFTOFTHEBIGMAINHALLCOLUMN. Drawcleannewwoodendfaces; do NOTkeepwoodprojectingleftofthatline. Do not moveotherbenchends/centerpost. Donotaddfencepostorrail. AllspaceleftofthebigmaincolumnBELOWrooflevelmustbePUREALPHA0. Criticalshoprectx64..352,y440..736logical1024x768mustcontainZEROstructure/wood/shadow/alphanoise. Mainroof'shigherleftoverhangcanstayunchangedabovey440. No globalresizing, crop,shiftorrestyle; justshortenthesetwoleftwoodprojections. Clearisolatedbackgroundnoise. KeepEMPTYtransparentplazafloorandallotherartunchanged, full4:3frame.",
+      "nativeGeneration": "exec-ad32713d-6d81-4d28-814c-9f830577f403.png",
+      "selectedId": "city_market_s5"
+    }
+  ],
+  "export": "measurements.json records complete canvas resize and translation; lossless WebP, unchanged native originals retained."
+}

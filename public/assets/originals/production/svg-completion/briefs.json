@@ -1,0 +1,2518 @@
+[
+  {
+    "id": "family_a",
+    "name": "はじめの配達の紋章",
+    "kind": "svg",
+    "visual_brief": "切妻屋根の小さな郵便局を正面形で表す。屋根の下に封筒形の投函口、右肩に小さな旗を置く。建物の外形と旗の突出で識別できる単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:A01",
+      "achievement:A02",
+      "achievement:A03",
+      "achievement:A04",
+      "achievement:A05",
+      "achievement:A06",
+      "family:A",
+      "reward:reward_family_a_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_a.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_b",
+    "name": "届け方の発見の紋章",
+    "kind": "svg",
+    "visual_brief": "波形の布庇と、その下に大小の荷箱を積んだ店先。庇の横長の輪郭と左右非対称の箱で郵便局の建物形と区別する単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:B01",
+      "achievement:B02",
+      "achievement:B03",
+      "achievement:B04",
+      "achievement:B05",
+      "achievement:B06",
+      "family:B",
+      "reward:reward_family_b_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_b.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_c",
+    "name": "丁寧なことばの紋章",
+    "kind": "svg",
+    "visual_brief": "細い花瓶から伸びる大きな一輪花と、両側へ開く葉。丸い花冠、縦長の茎、裾が広がる花瓶を一体化した単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:C01",
+      "achievement:C02",
+      "achievement:C03",
+      "achievement:C04",
+      "achievement:C05",
+      "achievement:C06",
+      "family:C",
+      "reward:reward_family_c_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_c.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_d",
+    "name": "速さと成長の紋章",
+    "kind": "svg",
+    "visual_brief": "丸屋根の列車の正面と、その頭上を片側から覆う駅の庇。下端から広がる二本の線路を含め、縦長の進行方向が伝わる単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:D01",
+      "achievement:D02",
+      "achievement:D03",
+      "achievement:D04",
+      "achievement:D05",
+      "achievement:D06",
+      "family:D",
+      "reward:reward_family_d_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_d.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_e",
+    "name": "ことばの旅の紋章",
+    "kind": "svg",
+    "visual_brief": "大きく開いた本を、左右の細い柱と浅い屋根が囲む。中央の見開きの谷と羽のように広がるページが主役の単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:E01",
+      "achievement:E02",
+      "achievement:E03",
+      "achievement:E04",
+      "achievement:E05",
+      "achievement:E06",
+      "family:E",
+      "reward:reward_family_e_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_e.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_f",
+    "name": "練習が実るの紋章",
+    "kind": "svg",
+    "visual_brief": "斜めに交わる木槌と彫刻用の小刀を、低い作業台が支える。丸い木槌頭と鋭い刃先の対照で識別できる単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:F01",
+      "achievement:F02",
+      "achievement:F03",
+      "achievement:F04",
+      "achievement:F05",
+      "achievement:F06",
+      "family:F",
+      "reward:reward_family_f_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_f.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_g",
+    "name": "積み重ねの紋章",
+    "kind": "svg",
+    "visual_brief": "大きな一つのアーチ橋と、その下の二筋の波。橋の上へ小さな荷箱を載せ、横長の橋脚と抜けのあるアーチを主形とする単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:G01",
+      "achievement:G02",
+      "achievement:G03",
+      "achievement:G04",
+      "achievement:G05",
+      "achievement:G06",
+      "family:G",
+      "reward:reward_family_g_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_g.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_h",
+    "name": "熟練の楽しみの紋章",
+    "kind": "svg",
+    "visual_brief": "三脚状の脚を持つ高い展望台と、張り出した観覧デッキ。背後に一つの山の頂を重ね、上部が広く下部が細い塔形の単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:H01",
+      "achievement:H02",
+      "achievement:H03",
+      "achievement:H04",
+      "achievement:H05",
+      "achievement:H06",
+      "family:H",
+      "reward:reward_family_h_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_h.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_i",
+    "name": "建物が育つの紋章",
+    "kind": "svg",
+    "visual_brief": "片端が巻かれた設計図へ直角三角形の定規を斜めに重ねる。巻紙の円筒端と定規の三角形の抜きで識別する単色SVG。図面の数字や文字は含めない。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:I01",
+      "achievement:I02",
+      "achievement:I03",
+      "achievement:I04",
+      "achievement:I05",
+      "achievement:I06",
+      "family:I",
+      "reward:reward_family_i_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_i.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_j",
+    "name": "運ぶ道が広がるの紋章",
+    "kind": "svg",
+    "visual_brief": "一つの荷箱の周囲へ、曲がる路線を三方向に延ばして複数の丸い停留点を結ぶ。路線の枝分かれと中央の四角い荷箱が特徴の単色SVG。地名や路線番号は含めない。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:J01",
+      "achievement:J02",
+      "achievement:J03",
+      "achievement:J04",
+      "achievement:J05",
+      "achievement:J06",
+      "family:J",
+      "reward:reward_family_j_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_j.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_k",
+    "name": "設備がつながるの紋章",
+    "kind": "svg",
+    "visual_brief": "展示台の上でかみ合う大歯車と小歯車、その横に立つ巻き取り輪。歯のある輪と展示台の段差が明瞭な単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:K01",
+      "achievement:K02",
+      "achievement:K03",
+      "achievement:K04",
+      "achievement:K05",
+      "achievement:K06",
+      "family:K",
+      "reward:reward_family_k_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_k.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "family_l",
+    "name": "ことばの世界の紋章",
+    "kind": "svg",
+    "visual_brief": "丸い上端の大きな本棚に背の異なる本を並べ、右外側へはしごを斜めに掛ける。本棚の縦長の外形とはしごの突出で、見開き本を使うEと区別する単色SVG。",
+    "category": "family_emblem",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "achievement:L01",
+      "achievement:L02",
+      "achievement:L03",
+      "achievement:L04",
+      "achievement:L05",
+      "achievement:L06",
+      "family:L",
+      "reward:reward_family_l_foil_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/family_emblem/family_l.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_frame_leaf",
+    "name": "若葉の額縁",
+    "kind": "svg",
+    "visual_brief": "独立SVG。下の両隅から若い枝が伸び、上方へ向いた大きな葉が左右の辺を囲む。上辺は広く開け、葉先が外へ出る柔らかな輪郭にする。中央の切手・名称を覆わず、文字と取得状態は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "collection_outer_frame",
+    "profile_id": "frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_08_frame"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_frame_leaf.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_tree_ornament",
+    "name": "街路樹柄の飾り",
+    "kind": "svg",
+    "visual_brief": "独立SVG。丸い樹冠と細い幹の街路樹をゆるやかな横列にし、足元に小さな植え込みを添える帯状の飾り。葉の額縁と異なり木全体を描く。既存の地形や地区の建物を置き換えない。",
+    "category": "milestone_svg",
+    "source_size": [
+      1024,
+      256
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "home_decoration",
+    "profile_id": "ornament",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_08_ornament"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_tree_ornament.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_frame_plaza",
+    "name": "広場の額縁",
+    "kind": "svg",
+    "visual_brief": "独立SVG。四隅を扇形の敷石で組み、下辺に低い石の縁と左右のベンチの小さな輪郭を添える。幾何学的な石組みと水平な輪郭で、葉や夕日の額縁と区別する。",
+    "category": "milestone_svg",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "collection_outer_frame",
+    "profile_id": "frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_16_frame"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_frame_plaza.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_fountain_ornament",
+    "name": "噴水柄の飾り",
+    "kind": "svg",
+    "visual_brief": "独立SVG。浅い円形の水盤から左右対称の太い水の弧が上がり、中央に雫形を置く。水盤の横長の楕円と上向きの弧を主形にする。街の機能施設としての噴水は生成せず、鑑賞用の飾りとして描く。",
+    "category": "milestone_svg",
+    "source_size": [
+      1024,
+      256
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "home_decoration",
+    "profile_id": "ornament",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_16_ornament"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_fountain_ornament.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_album_24_emblem",
+    "name": "24枚記念アルバムの紋章",
+    "kind": "svg",
+    "visual_brief": "開いた封筒から二枚の大きな若葉が伸び、根元を幅のあるリボンが結ぶ。封筒のV字と上向きの葉を明確にし、数字と名称は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME",
+      "RESULT"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_24_album"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_album_24_emblem.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_frame_sunset",
+    "name": "夕焼けの額縁",
+    "kind": "svg",
+    "visual_brief": "独立SVG。上辺の中央に半円の夕日と短い放射線、左右に平たく伸びる雲、下辺に緩やかな丘の線を置く。大きな半円と水平の雲の組合せで、色がなくても夕景の額縁として区別できる。",
+    "category": "milestone_svg",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "collection_outer_frame",
+    "profile_id": "frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_36_frame"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_frame_sunset.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_board_48_emblem",
+    "name": "48枚の記念台紙の紋章",
+    "kind": "svg",
+    "visual_brief": "外へ広がる円形リボン飾りの中央に、三枚の封筒を扇状に重ねる。円形の放射状輪郭を持たせ、数字と名称は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME",
+      "RESULT"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_48_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_board_48_emblem.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_first_collection_emblem",
+    "name": "第1集完成台紙の紋章",
+    "kind": "svg",
+    "visual_brief": "封蝋を持つ一通の封筒から左右に大きな羽を広げる。横長の翼を主形とし、円形リボンの総数48紋章と形で分ける。数字と名称は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME",
+      "RESULT"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_first_collection_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_first_collection_emblem.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_frame_journey",
+    "name": "旅の額縁",
+    "kind": "svg",
+    "visual_brief": "独立SVG。角を折り畳んだ地図の紙縁を外形にし、左上に小さな方位磁針、右下に鞄の輪郭を置く。左右の辺を細い道の曲線がつなぐ。折れた角と対角の道具で他の三つの額縁と区別する。地名や文字は入れない。",
+    "category": "milestone_svg",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME"
+    ],
+    "render_layer": "collection_outer_frame",
+    "profile_id": "frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_60_frame"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_frame_journey.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_expanded_album_emblem",
+    "name": "増補アルバムの紋章",
+    "kind": "svg",
+    "visual_brief": "厚い本の左右から折り込みページが大きく開き、外へ細い道が延びる。横に広がる段状のページを主形とし、数字と名称は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME",
+      "RESULT"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_60_album"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_expanded_album_emblem.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "reward_complete_72_emblem",
+    "name": "全72枚の完成台紙の紋章",
+    "kind": "svg",
+    "visual_brief": "開いた本から家・駅・塔の輪郭が半円状に立ち上がり、上に大きな光芒を置く。本から上へ広がる街のシルエットを主形とし、数字と名称は含めない。",
+    "category": "milestone_svg",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HANDBOOK",
+      "HOME",
+      "RESULT"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_complete_72_board"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/milestone_svg/reward_complete_72_emblem.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_residential",
+    "name": "住宅地のアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "幅の広い切妻屋根と小さな四角い窓。家の輪郭一つを主形にし、細い家並みへ分解しない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:residential:s0",
+      "district:residential:s1",
+      "district:residential:s2",
+      "district:residential:s3",
+      "district:residential:s4",
+      "district:residential:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_residential.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_market",
+    "name": "商店街のアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "下辺が浅い波形になった一枚の庇と、両端の木柱。商品や店舗数を表す小区画は入れない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:market:s0",
+      "district:market:s1",
+      "district:market:s2",
+      "district:market:s3",
+      "district:market:s4",
+      "district:market:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_market.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_workshop",
+    "name": "工房街のアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "一振りの木槌と大きな山形の梁。刃物や精密な機械部品を主役にしない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:workshop:s0",
+      "district:workshop:s1",
+      "district:workshop:s2",
+      "district:workshop:s3",
+      "district:workshop:s4",
+      "district:workshop:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_workshop.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_park",
+    "name": "公園通りのアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "丸いアーチの下に一枚の大きな葉。葉脈は一本だけにし、小さな花の集合で識別させない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:park:s0",
+      "district:park:s1",
+      "district:park:s2",
+      "district:park:s3",
+      "district:park:s4",
+      "district:park:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_park.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_station",
+    "name": "駅前のアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "短い切妻屋根から伸びる角形の時計塔。数字・地名・線路・車両は入れない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:station:s0",
+      "district:station:s1",
+      "district:station:s2",
+      "district:station:s3",
+      "district:station:s4",
+      "district:station:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_station.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "district_harbor",
+    "name": "港町のアイコン",
+    "category": "district_icon",
+    "kind": "svg",
+    "visual_brief": "斜めに伸びる短い桟橋と一つの丸い係留柱。海にも湖にも通用する輪郭にし、波は入れない。128×128のviewBoxを持つ透過SVG図案。標準24 CSS pxで読める太い輪郭と少数の面でまとめ、文字とビットマップを埋め込まない。",
+    "source_size": [
+      128,
+      128
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "district:harbor:s0",
+      "district:harbor:s1",
+      "district:harbor:s2",
+      "district:harbor:s3",
+      "district:harbor:s4",
+      "district:harbor:s5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/district_icon/district_harbor.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "shop_canopy",
+    "name": "店舗の共通ひさし",
+    "category": "shop_overlay",
+    "kind": "svg",
+    "visual_brief": "店舗の前面上部に深いひさし。10軒以上の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+    "source_size": [
+      512,
+      512
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "shop_overlay",
+    "profile_id": "shop",
+    "status": "planned",
+    "used_by": [
+      "shops:residential:10",
+      "shops:market:10",
+      "shops:workshop:10",
+      "shops:park:10",
+      "shops:station:10",
+      "shops:harbor:10",
+      "shops:residential:11",
+      "shops:market:11",
+      "shops:workshop:11",
+      "shops:park:11",
+      "shops:station:11",
+      "shops:harbor:11",
+      "shops:residential:12",
+      "shops:market:12",
+      "shops:workshop:12",
+      "shops:park:12",
+      "shops:station:12",
+      "shops:harbor:12",
+      "shops:residential:13",
+      "shops:market:13",
+      "shops:workshop:13",
+      "shops:park:13",
+      "shops:station:13",
+      "shops:harbor:13",
+      "shops:residential:14",
+      "shops:market:14",
+      "shops:workshop:14",
+      "shops:park:14",
+      "shops:station:14",
+      "shops:harbor:14",
+      "shops:residential:15",
+      "shops:market:15",
+      "shops:workshop:15",
+      "shops:park:15",
+      "shops:station:15",
+      "shops:harbor:15",
+      "shops:residential:16",
+      "shops:market:16",
+      "shops:workshop:16",
+      "shops:park:16",
+      "shops:station:16",
+      "shops:harbor:16",
+      "shops:residential:17",
+      "shops:market:17",
+      "shops:workshop:17",
+      "shops:park:17",
+      "shops:station:17",
+      "shops:harbor:17",
+      "shops:residential:18",
+      "shops:market:18",
+      "shops:workshop:18",
+      "shops:park:18",
+      "shops:station:18",
+      "shops:harbor:18",
+      "shops:residential:19",
+      "shops:market:19",
+      "shops:workshop:19",
+      "shops:park:19",
+      "shops:station:19",
+      "shops:harbor:19",
+      "shops:residential:20",
+      "shops:market:20",
+      "shops:workshop:20",
+      "shops:park:20",
+      "shops:station:20",
+      "shops:harbor:20",
+      "shops:residential:21",
+      "shops:market:21",
+      "shops:workshop:21",
+      "shops:park:21",
+      "shops:station:21",
+      "shops:harbor:21",
+      "shops:residential:22",
+      "shops:market:22",
+      "shops:workshop:22",
+      "shops:park:22",
+      "shops:station:22",
+      "shops:harbor:22",
+      "shops:residential:23",
+      "shops:market:23",
+      "shops:workshop:23",
+      "shops:park:23",
+      "shops:station:23",
+      "shops:harbor:23",
+      "shops:residential:24",
+      "shops:market:24",
+      "shops:workshop:24",
+      "shops:park:24",
+      "shops:station:24",
+      "shops:harbor:24",
+      "shops:residential:25",
+      "shops:market:25",
+      "shops:workshop:25",
+      "shops:park:25",
+      "shops:station:25",
+      "shops:harbor:25",
+      "shops:residential:26",
+      "shops:market:26",
+      "shops:workshop:26",
+      "shops:park:26",
+      "shops:station:26",
+      "shops:harbor:26",
+      "shops:residential:27",
+      "shops:market:27",
+      "shops:workshop:27",
+      "shops:park:27",
+      "shops:station:27",
+      "shops:harbor:27",
+      "shops:residential:28",
+      "shops:market:28",
+      "shops:workshop:28",
+      "shops:park:28",
+      "shops:station:28",
+      "shops:harbor:28",
+      "shops:residential:29",
+      "shops:market:29",
+      "shops:workshop:29",
+      "shops:park:29",
+      "shops:station:29",
+      "shops:harbor:29",
+      "shops:residential:30",
+      "shops:market:30",
+      "shops:workshop:30",
+      "shops:park:30",
+      "shops:station:30",
+      "shops:harbor:30",
+      "shops:residential:31",
+      "shops:market:31",
+      "shops:workshop:31",
+      "shops:park:31",
+      "shops:station:31",
+      "shops:harbor:31",
+      "shops:residential:32",
+      "shops:market:32",
+      "shops:workshop:32",
+      "shops:park:32",
+      "shops:station:32",
+      "shops:harbor:32",
+      "shops:residential:33",
+      "shops:market:33",
+      "shops:workshop:33",
+      "shops:park:33",
+      "shops:station:33",
+      "shops:harbor:33",
+      "shops:residential:34",
+      "shops:market:34",
+      "shops:workshop:34",
+      "shops:park:34",
+      "shops:station:34",
+      "shops:harbor:34",
+      "shops:residential:35",
+      "shops:market:35",
+      "shops:workshop:35",
+      "shops:park:35",
+      "shops:station:35",
+      "shops:harbor:35",
+      "shops:residential:36",
+      "shops:market:36",
+      "shops:workshop:36",
+      "shops:park:36",
+      "shops:station:36",
+      "shops:harbor:36",
+      "shops:residential:37",
+      "shops:market:37",
+      "shops:workshop:37",
+      "shops:park:37",
+      "shops:station:37",
+      "shops:harbor:37",
+      "shops:residential:38",
+      "shops:market:38",
+      "shops:workshop:38",
+      "shops:park:38",
+      "shops:station:38",
+      "shops:harbor:38",
+      "shops:residential:39",
+      "shops:market:39",
+      "shops:workshop:39",
+      "shops:park:39",
+      "shops:station:39",
+      "shops:harbor:39",
+      "shops:residential:40",
+      "shops:market:40",
+      "shops:workshop:40",
+      "shops:park:40",
+      "shops:station:40",
+      "shops:harbor:40",
+      "shops:residential:41",
+      "shops:market:41",
+      "shops:workshop:41",
+      "shops:park:41",
+      "shops:station:41",
+      "shops:harbor:41",
+      "shops:residential:42",
+      "shops:market:42",
+      "shops:workshop:42",
+      "shops:park:42",
+      "shops:station:42",
+      "shops:harbor:42",
+      "shops:residential:43",
+      "shops:market:43",
+      "shops:workshop:43",
+      "shops:park:43",
+      "shops:station:43",
+      "shops:harbor:43",
+      "shops:residential:44",
+      "shops:market:44",
+      "shops:workshop:44",
+      "shops:park:44",
+      "shops:station:44",
+      "shops:harbor:44",
+      "shops:residential:45",
+      "shops:market:45",
+      "shops:workshop:45",
+      "shops:park:45",
+      "shops:station:45",
+      "shops:harbor:45",
+      "shops:residential:46",
+      "shops:market:46",
+      "shops:workshop:46",
+      "shops:park:46",
+      "shops:station:46",
+      "shops:harbor:46",
+      "shops:residential:47",
+      "shops:market:47",
+      "shops:workshop:47",
+      "shops:park:47",
+      "shops:station:47",
+      "shops:harbor:47",
+      "shops:residential:48",
+      "shops:market:48",
+      "shops:workshop:48",
+      "shops:park:48",
+      "shops:station:48",
+      "shops:harbor:48",
+      "shops:residential:49",
+      "shops:market:49",
+      "shops:workshop:49",
+      "shops:park:49",
+      "shops:station:49",
+      "shops:harbor:49",
+      "shops:residential:50",
+      "shops:market:50",
+      "shops:workshop:50",
+      "shops:park:50",
+      "shops:station:50",
+      "shops:harbor:50"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shop_overlay/shop_canopy.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "shop_banner",
+    "name": "店舗の共通のぼり",
+    "category": "shop_overlay",
+    "kind": "svg",
+    "visual_brief": "文字のない縦長の布を店の右側へ1本。25軒以上の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+    "source_size": [
+      512,
+      512
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "shop_overlay",
+    "profile_id": "shop",
+    "status": "planned",
+    "used_by": [
+      "shops:residential:25",
+      "shops:market:25",
+      "shops:workshop:25",
+      "shops:park:25",
+      "shops:station:25",
+      "shops:harbor:25",
+      "shops:residential:26",
+      "shops:market:26",
+      "shops:workshop:26",
+      "shops:park:26",
+      "shops:station:26",
+      "shops:harbor:26",
+      "shops:residential:27",
+      "shops:market:27",
+      "shops:workshop:27",
+      "shops:park:27",
+      "shops:station:27",
+      "shops:harbor:27",
+      "shops:residential:28",
+      "shops:market:28",
+      "shops:workshop:28",
+      "shops:park:28",
+      "shops:station:28",
+      "shops:harbor:28",
+      "shops:residential:29",
+      "shops:market:29",
+      "shops:workshop:29",
+      "shops:park:29",
+      "shops:station:29",
+      "shops:harbor:29",
+      "shops:residential:30",
+      "shops:market:30",
+      "shops:workshop:30",
+      "shops:park:30",
+      "shops:station:30",
+      "shops:harbor:30",
+      "shops:residential:31",
+      "shops:market:31",
+      "shops:workshop:31",
+      "shops:park:31",
+      "shops:station:31",
+      "shops:harbor:31",
+      "shops:residential:32",
+      "shops:market:32",
+      "shops:workshop:32",
+      "shops:park:32",
+      "shops:station:32",
+      "shops:harbor:32",
+      "shops:residential:33",
+      "shops:market:33",
+      "shops:workshop:33",
+      "shops:park:33",
+      "shops:station:33",
+      "shops:harbor:33",
+      "shops:residential:34",
+      "shops:market:34",
+      "shops:workshop:34",
+      "shops:park:34",
+      "shops:station:34",
+      "shops:harbor:34",
+      "shops:residential:35",
+      "shops:market:35",
+      "shops:workshop:35",
+      "shops:park:35",
+      "shops:station:35",
+      "shops:harbor:35",
+      "shops:residential:36",
+      "shops:market:36",
+      "shops:workshop:36",
+      "shops:park:36",
+      "shops:station:36",
+      "shops:harbor:36",
+      "shops:residential:37",
+      "shops:market:37",
+      "shops:workshop:37",
+      "shops:park:37",
+      "shops:station:37",
+      "shops:harbor:37",
+      "shops:residential:38",
+      "shops:market:38",
+      "shops:workshop:38",
+      "shops:park:38",
+      "shops:station:38",
+      "shops:harbor:38",
+      "shops:residential:39",
+      "shops:market:39",
+      "shops:workshop:39",
+      "shops:park:39",
+      "shops:station:39",
+      "shops:harbor:39",
+      "shops:residential:40",
+      "shops:market:40",
+      "shops:workshop:40",
+      "shops:park:40",
+      "shops:station:40",
+      "shops:harbor:40",
+      "shops:residential:41",
+      "shops:market:41",
+      "shops:workshop:41",
+      "shops:park:41",
+      "shops:station:41",
+      "shops:harbor:41",
+      "shops:residential:42",
+      "shops:market:42",
+      "shops:workshop:42",
+      "shops:park:42",
+      "shops:station:42",
+      "shops:harbor:42",
+      "shops:residential:43",
+      "shops:market:43",
+      "shops:workshop:43",
+      "shops:park:43",
+      "shops:station:43",
+      "shops:harbor:43",
+      "shops:residential:44",
+      "shops:market:44",
+      "shops:workshop:44",
+      "shops:park:44",
+      "shops:station:44",
+      "shops:harbor:44",
+      "shops:residential:45",
+      "shops:market:45",
+      "shops:workshop:45",
+      "shops:park:45",
+      "shops:station:45",
+      "shops:harbor:45",
+      "shops:residential:46",
+      "shops:market:46",
+      "shops:workshop:46",
+      "shops:park:46",
+      "shops:station:46",
+      "shops:harbor:46",
+      "shops:residential:47",
+      "shops:market:47",
+      "shops:workshop:47",
+      "shops:park:47",
+      "shops:station:47",
+      "shops:harbor:47",
+      "shops:residential:48",
+      "shops:market:48",
+      "shops:workshop:48",
+      "shops:park:48",
+      "shops:station:48",
+      "shops:harbor:48",
+      "shops:residential:49",
+      "shops:market:49",
+      "shops:workshop:49",
+      "shops:park:49",
+      "shops:station:49",
+      "shops:harbor:49",
+      "shops:residential:50",
+      "shops:market:50",
+      "shops:workshop:50",
+      "shops:park:50",
+      "shops:station:50",
+      "shops:harbor:50"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shop_overlay/shop_banner.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "shop_signboard",
+    "name": "店舗の共通看板",
+    "category": "shop_overlay",
+    "kind": "svg",
+    "visual_brief": "文字のない丸い飾り看板を正面中央の高い位置に。50軒の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+    "source_size": [
+      512,
+      512
+    ],
+    "placements": [
+      "HOME",
+      "UPGRADES",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "shop_overlay",
+    "profile_id": "shop",
+    "status": "planned",
+    "used_by": [
+      "shops:residential:50",
+      "shops:market:50",
+      "shops:workshop:50",
+      "shops:park:50",
+      "shops:station:50",
+      "shops:harbor:50"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shop_overlay/shop_signboard.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "equipment_packaging_icon",
+    "name": "荷づくり台のアイコン",
+    "category": "equipment_icon",
+    "kind": "svg",
+    "visual_brief": "ひもを巻いた包みと作業台。24pxで識別できる簡潔な輪郭。",
+    "source_size": [
+      32,
+      32
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "packaging:0",
+      "packaging:1",
+      "packaging:2",
+      "packaging:3",
+      "packaging:4",
+      "packaging:5",
+      "packaging:6",
+      "packaging:7",
+      "packaging:8",
+      "packaging:9",
+      "packaging:10",
+      "packaging:11",
+      "packaging:12",
+      "packaging:13",
+      "packaging:14",
+      "packaging:15",
+      "packaging:16",
+      "packaging:17",
+      "packaging:18",
+      "packaging:19",
+      "packaging:20",
+      "packaging:21",
+      "packaging:22",
+      "packaging:23",
+      "packaging:24",
+      "packaging:25",
+      "packaging:26",
+      "packaging:27",
+      "packaging:28",
+      "packaging:29",
+      "packaging:30",
+      "packaging:31",
+      "packaging:32",
+      "packaging:33",
+      "packaging:34",
+      "packaging:35",
+      "packaging:36",
+      "packaging:37",
+      "packaging:38",
+      "packaging:39",
+      "packaging:40",
+      "packaging:41",
+      "packaging:42",
+      "packaging:43",
+      "packaging:44",
+      "packaging:45",
+      "packaging:46",
+      "packaging:47",
+      "packaging:48",
+      "packaging:49",
+      "packaging:50"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/equipment_icon/equipment_packaging_icon.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "equipment_crews_icon",
+    "name": "配送班のアイコン",
+    "category": "equipment_icon",
+    "kind": "svg",
+    "visual_brief": "大小二つの車輪と荷台。24pxで識別できる簡潔な輪郭。",
+    "source_size": [
+      32,
+      32
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "crews:1:road",
+      "crews:2:road",
+      "crews:3:road",
+      "crews:4:road",
+      "crews:5:road",
+      "crews:6:road",
+      "crews:7:road",
+      "crews:8:road",
+      "crews:9:road",
+      "crews:10:road",
+      "crews:10:railway",
+      "crews:11:road",
+      "crews:11:railway",
+      "crews:12:road",
+      "crews:12:railway",
+      "crews:13:road",
+      "crews:13:railway",
+      "crews:14:road",
+      "crews:14:railway",
+      "crews:15:road",
+      "crews:15:railway",
+      "crews:16:road",
+      "crews:16:railway",
+      "crews:17:road",
+      "crews:17:railway",
+      "crews:18:road",
+      "crews:18:railway",
+      "crews:19:road",
+      "crews:19:railway",
+      "crews:20:road",
+      "crews:20:railway",
+      "crews:21:road",
+      "crews:21:railway",
+      "crews:22:road",
+      "crews:22:railway",
+      "crews:23:road",
+      "crews:23:railway",
+      "crews:24:road",
+      "crews:24:railway",
+      "crews:25:road",
+      "crews:25:railway",
+      "crews:26:road",
+      "crews:26:railway",
+      "crews:27:road",
+      "crews:27:railway",
+      "crews:28:road",
+      "crews:28:railway",
+      "crews:29:road",
+      "crews:29:railway",
+      "crews:30:road",
+      "crews:30:railway",
+      "crews:31:road",
+      "crews:31:railway",
+      "crews:32:road",
+      "crews:32:railway",
+      "crews:33:road",
+      "crews:33:railway",
+      "crews:34:road",
+      "crews:34:railway",
+      "crews:35:road",
+      "crews:35:railway",
+      "crews:36:road",
+      "crews:36:railway",
+      "crews:37:road",
+      "crews:37:railway",
+      "crews:38:road",
+      "crews:38:railway",
+      "crews:39:road",
+      "crews:39:railway",
+      "crews:40:road",
+      "crews:40:railway",
+      "crews:41:road",
+      "crews:41:railway",
+      "crews:42:road",
+      "crews:42:railway",
+      "crews:43:road",
+      "crews:43:railway",
+      "crews:44:road",
+      "crews:44:railway",
+      "crews:45:road",
+      "crews:45:railway",
+      "crews:46:road",
+      "crews:46:railway",
+      "crews:47:road",
+      "crews:47:railway",
+      "crews:48:road",
+      "crews:48:railway",
+      "crews:49:road",
+      "crews:49:railway",
+      "crews:50:road",
+      "crews:50:railway"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/equipment_icon/equipment_crews_icon.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "equipment_shops_icon",
+    "name": "店舗のアイコン",
+    "category": "equipment_icon",
+    "kind": "svg",
+    "visual_brief": "正面のひさしと出入口。24pxで識別できる簡潔な輪郭。",
+    "source_size": [
+      32,
+      32
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "shops:residential:0",
+      "shops:market:0",
+      "shops:workshop:0",
+      "shops:park:0",
+      "shops:station:0",
+      "shops:harbor:0",
+      "shops:residential:1",
+      "shops:market:1",
+      "shops:workshop:1",
+      "shops:park:1",
+      "shops:station:1",
+      "shops:harbor:1",
+      "shops:residential:2",
+      "shops:market:2",
+      "shops:workshop:2",
+      "shops:park:2",
+      "shops:station:2",
+      "shops:harbor:2",
+      "shops:residential:3",
+      "shops:market:3",
+      "shops:workshop:3",
+      "shops:park:3",
+      "shops:station:3",
+      "shops:harbor:3",
+      "shops:residential:4",
+      "shops:market:4",
+      "shops:workshop:4",
+      "shops:park:4",
+      "shops:station:4",
+      "shops:harbor:4",
+      "shops:residential:5",
+      "shops:market:5",
+      "shops:workshop:5",
+      "shops:park:5",
+      "shops:station:5",
+      "shops:harbor:5",
+      "shops:residential:6",
+      "shops:market:6",
+      "shops:workshop:6",
+      "shops:park:6",
+      "shops:station:6",
+      "shops:harbor:6",
+      "shops:residential:7",
+      "shops:market:7",
+      "shops:workshop:7",
+      "shops:park:7",
+      "shops:station:7",
+      "shops:harbor:7",
+      "shops:residential:8",
+      "shops:market:8",
+      "shops:workshop:8",
+      "shops:park:8",
+      "shops:station:8",
+      "shops:harbor:8",
+      "shops:residential:9",
+      "shops:market:9",
+      "shops:workshop:9",
+      "shops:park:9",
+      "shops:station:9",
+      "shops:harbor:9",
+      "shops:residential:10",
+      "shops:market:10",
+      "shops:workshop:10",
+      "shops:park:10",
+      "shops:station:10",
+      "shops:harbor:10",
+      "shops:residential:11",
+      "shops:market:11",
+      "shops:workshop:11",
+      "shops:park:11",
+      "shops:station:11",
+      "shops:harbor:11",
+      "shops:residential:12",
+      "shops:market:12",
+      "shops:workshop:12",
+      "shops:park:12",
+      "shops:station:12",
+      "shops:harbor:12",
+      "shops:residential:13",
+      "shops:market:13",
+      "shops:workshop:13",
+      "shops:park:13",
+      "shops:station:13",
+      "shops:harbor:13",
+      "shops:residential:14",
+      "shops:market:14",
+      "shops:workshop:14",
+      "shops:park:14",
+      "shops:station:14",
+      "shops:harbor:14",
+      "shops:residential:15",
+      "shops:market:15",
+      "shops:workshop:15",
+      "shops:park:15",
+      "shops:station:15",
+      "shops:harbor:15",
+      "shops:residential:16",
+      "shops:market:16",
+      "shops:workshop:16",
+      "shops:park:16",
+      "shops:station:16",
+      "shops:harbor:16",
+      "shops:residential:17",
+      "shops:market:17",
+      "shops:workshop:17",
+      "shops:park:17",
+      "shops:station:17",
+      "shops:harbor:17",
+      "shops:residential:18",
+      "shops:market:18",
+      "shops:workshop:18",
+      "shops:park:18",
+      "shops:station:18",
+      "shops:harbor:18",
+      "shops:residential:19",
+      "shops:market:19",
+      "shops:workshop:19",
+      "shops:park:19",
+      "shops:station:19",
+      "shops:harbor:19",
+      "shops:residential:20",
+      "shops:market:20",
+      "shops:workshop:20",
+      "shops:park:20",
+      "shops:station:20",
+      "shops:harbor:20",
+      "shops:residential:21",
+      "shops:market:21",
+      "shops:workshop:21",
+      "shops:park:21",
+      "shops:station:21",
+      "shops:harbor:21",
+      "shops:residential:22",
+      "shops:market:22",
+      "shops:workshop:22",
+      "shops:park:22",
+      "shops:station:22",
+      "shops:harbor:22",
+      "shops:residential:23",
+      "shops:market:23",
+      "shops:workshop:23",
+      "shops:park:23",
+      "shops:station:23",
+      "shops:harbor:23",
+      "shops:residential:24",
+      "shops:market:24",
+      "shops:workshop:24",
+      "shops:park:24",
+      "shops:station:24",
+      "shops:harbor:24",
+      "shops:residential:25",
+      "shops:market:25",
+      "shops:workshop:25",
+      "shops:park:25",
+      "shops:station:25",
+      "shops:harbor:25",
+      "shops:residential:26",
+      "shops:market:26",
+      "shops:workshop:26",
+      "shops:park:26",
+      "shops:station:26",
+      "shops:harbor:26",
+      "shops:residential:27",
+      "shops:market:27",
+      "shops:workshop:27",
+      "shops:park:27",
+      "shops:station:27",
+      "shops:harbor:27",
+      "shops:residential:28",
+      "shops:market:28",
+      "shops:workshop:28",
+      "shops:park:28",
+      "shops:station:28",
+      "shops:harbor:28",
+      "shops:residential:29",
+      "shops:market:29",
+      "shops:workshop:29",
+      "shops:park:29",
+      "shops:station:29",
+      "shops:harbor:29",
+      "shops:residential:30",
+      "shops:market:30",
+      "shops:workshop:30",
+      "shops:park:30",
+      "shops:station:30",
+      "shops:harbor:30",
+      "shops:residential:31",
+      "shops:market:31",
+      "shops:workshop:31",
+      "shops:park:31",
+      "shops:station:31",
+      "shops:harbor:31",
+      "shops:residential:32",
+      "shops:market:32",
+      "shops:workshop:32",
+      "shops:park:32",
+      "shops:station:32",
+      "shops:harbor:32",
+      "shops:residential:33",
+      "shops:market:33",
+      "shops:workshop:33",
+      "shops:park:33",
+      "shops:station:33",
+      "shops:harbor:33",
+      "shops:residential:34",
+      "shops:market:34",
+      "shops:workshop:34",
+      "shops:park:34",
+      "shops:station:34",
+      "shops:harbor:34",
+      "shops:residential:35",
+      "shops:market:35",
+      "shops:workshop:35",
+      "shops:park:35",
+      "shops:station:35",
+      "shops:harbor:35",
+      "shops:residential:36",
+      "shops:market:36",
+      "shops:workshop:36",
+      "shops:park:36",
+      "shops:station:36",
+      "shops:harbor:36",
+      "shops:residential:37",
+      "shops:market:37",
+      "shops:workshop:37",
+      "shops:park:37",
+      "shops:station:37",
+      "shops:harbor:37",
+      "shops:residential:38",
+      "shops:market:38",
+      "shops:workshop:38",
+      "shops:park:38",
+      "shops:station:38",
+      "shops:harbor:38",
+      "shops:residential:39",
+      "shops:market:39",
+      "shops:workshop:39",
+      "shops:park:39",
+      "shops:station:39",
+      "shops:harbor:39",
+      "shops:residential:40",
+      "shops:market:40",
+      "shops:workshop:40",
+      "shops:park:40",
+      "shops:station:40",
+      "shops:harbor:40",
+      "shops:residential:41",
+      "shops:market:41",
+      "shops:workshop:41",
+      "shops:park:41",
+      "shops:station:41",
+      "shops:harbor:41",
+      "shops:residential:42",
+      "shops:market:42",
+      "shops:workshop:42",
+      "shops:park:42",
+      "shops:station:42",
+      "shops:harbor:42",
+      "shops:residential:43",
+      "shops:market:43",
+      "shops:workshop:43",
+      "shops:park:43",
+      "shops:station:43",
+      "shops:harbor:43",
+      "shops:residential:44",
+      "shops:market:44",
+      "shops:workshop:44",
+      "shops:park:44",
+      "shops:station:44",
+      "shops:harbor:44",
+      "shops:residential:45",
+      "shops:market:45",
+      "shops:workshop:45",
+      "shops:park:45",
+      "shops:station:45",
+      "shops:harbor:45",
+      "shops:residential:46",
+      "shops:market:46",
+      "shops:workshop:46",
+      "shops:park:46",
+      "shops:station:46",
+      "shops:harbor:46",
+      "shops:residential:47",
+      "shops:market:47",
+      "shops:workshop:47",
+      "shops:park:47",
+      "shops:station:47",
+      "shops:harbor:47",
+      "shops:residential:48",
+      "shops:market:48",
+      "shops:workshop:48",
+      "shops:park:48",
+      "shops:station:48",
+      "shops:harbor:48",
+      "shops:residential:49",
+      "shops:market:49",
+      "shops:workshop:49",
+      "shops:park:49",
+      "shops:station:49",
+      "shops:harbor:49",
+      "shops:residential:50",
+      "shops:market:50",
+      "shops:workshop:50",
+      "shops:park:50",
+      "shops:station:50",
+      "shops:harbor:50"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/equipment_icon/equipment_shops_icon.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "equipment_railway_icon",
+    "name": "鉄道化のアイコン",
+    "category": "equipment_icon",
+    "kind": "svg",
+    "visual_brief": "二本のレールと貨車の車輪。24pxで識別できる簡潔な輪郭。",
+    "source_size": [
+      32,
+      32
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "railway_residential",
+      "railway_market",
+      "railway_workshop",
+      "railway_park",
+      "railway_station",
+      "railway_harbor"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/equipment_icon/equipment_railway_icon.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "synergy_joint_delivery",
+    "name": "共同配送",
+    "category": "synergy_icon",
+    "kind": "svg",
+    "visual_brief": "二つの地区から伸びたひもが一つの包みに結ばれる。単なる握手の図形にしない。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "synergy:joint_delivery"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/synergy_icon/synergy_joint_delivery.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "synergy_sorting_network",
+    "name": "仕分け連携",
+    "category": "synergy_icon",
+    "kind": "svg",
+    "visual_brief": "三つの仕分け箱を一本の経路がつなぐ。流れの分岐と合流が主役。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "synergy:sorting_network"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/synergy_icon/synergy_sorting_network.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "synergy_tourism_service",
+    "name": "観光便",
+    "category": "synergy_icon",
+    "kind": "svg",
+    "visual_brief": "公園の木と船の間を巡る封筒。輪形の周遊で他の連携と区別。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "HOME",
+      "DISTRICT_DETAIL"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "synergy:tourism_service"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/synergy_icon/synergy_tourism_service.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "research_materials",
+    "name": "荷札設計",
+    "category": "research_icon",
+    "kind": "svg",
+    "visual_brief": "小さな穴のある荷札と鉛筆。ランクの数字や星を図に描かない。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "NEW_CITY"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "research_materials_r0",
+      "research_materials_r1",
+      "research_materials_r2",
+      "research_materials_r3",
+      "research_materials_r4",
+      "research_materials_r5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/research_icon/research_materials.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "research_logistics",
+    "name": "物流設計",
+    "category": "research_icon",
+    "kind": "svg",
+    "visual_brief": "交差しない二本の経路と定規。ランクの数字や星を図に描かない。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "NEW_CITY"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "research_logistics_r0",
+      "research_logistics_r1",
+      "research_logistics_r2",
+      "research_logistics_r3",
+      "research_logistics_r4",
+      "research_logistics_r5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/research_icon/research_logistics.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "research_commerce",
+    "name": "商い設計",
+    "category": "research_icon",
+    "kind": "svg",
+    "visual_brief": "ひさしの下の帳面と一枚の硬貨。ランクの数字や星を図に描かない。",
+    "source_size": [
+      64,
+      64
+    ],
+    "placements": [
+      "UPGRADES",
+      "NEW_CITY"
+    ],
+    "render_layer": "emblem",
+    "profile_id": "emblem",
+    "status": "planned",
+    "used_by": [
+      "research_commerce_r0",
+      "research_commerce_r1",
+      "research_commerce_r2",
+      "research_commerce_r3",
+      "research_commerce_r4",
+      "research_commerce_r5"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/research_icon/research_commerce.svg"
+    ],
+    "production_phase": "P1",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "memorial_frame",
+    "name": "記念切手枠",
+    "category": "shared_frame",
+    "kind": "svg",
+    "visual_brief": "同じ内窓512×512。上端の丸い飾りと下辺の二重罫で、実績切手と輪郭を分ける。",
+    "source_size": [
+      640,
+      640
+    ],
+    "placements": [
+      "HOME",
+      "HANDBOOK",
+      "RESULT"
+    ],
+    "render_layer": "stamp_frame",
+    "profile_id": "memorial_frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_first_collection_stamp",
+      "reward:reward_complete_72_stamp",
+      "component:memorial_frame"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shared_frame/memorial_frame.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "board_base",
+    "name": "共通切手台紙",
+    "category": "shared_frame",
+    "kind": "svg",
+    "visual_brief": "3列×2行の切手を置ける余白と上部の紋章領域。罫線と紙の外形のみ。切手・文字・紋章は合成する。",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HOME",
+      "HANDBOOK",
+      "RESULT"
+    ],
+    "render_layer": "collection_base",
+    "profile_id": "board",
+    "status": "planned",
+    "used_by": [
+      "family:A",
+      "family:B",
+      "family:C",
+      "family:D",
+      "family:E",
+      "family:F",
+      "family:G",
+      "family:H",
+      "family:I",
+      "family:J",
+      "family:K",
+      "family:L",
+      "reward:reward_family_a_foil_board",
+      "reward:reward_family_b_foil_board",
+      "reward:reward_family_c_foil_board",
+      "reward:reward_family_d_foil_board",
+      "reward:reward_family_e_foil_board",
+      "reward:reward_family_f_foil_board",
+      "reward:reward_family_g_foil_board",
+      "reward:reward_family_h_foil_board",
+      "reward:reward_family_i_foil_board",
+      "reward:reward_family_j_foil_board",
+      "reward:reward_family_k_foil_board",
+      "reward:reward_family_l_foil_board",
+      "reward:reward_total_48_board",
+      "reward:reward_first_collection_board",
+      "reward:reward_complete_72_board",
+      "component:board_base"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shared_frame/board_base.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "board_foil",
+    "name": "共通の箔押し仕上げ",
+    "category": "shared_frame",
+    "kind": "svg",
+    "visual_brief": "台紙外周の二重金線と四隅の小さな箔飾り。動く反射を焼き込まず、静止状態で仕上げの違いを出す。",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HOME",
+      "HANDBOOK",
+      "RESULT"
+    ],
+    "render_layer": "collection_finish",
+    "profile_id": "board",
+    "status": "planned",
+    "used_by": [
+      "family:A",
+      "family:B",
+      "family:C",
+      "family:D",
+      "family:E",
+      "family:F",
+      "family:G",
+      "family:H",
+      "family:I",
+      "family:J",
+      "family:K",
+      "family:L",
+      "reward:reward_family_a_foil_board",
+      "reward:reward_family_b_foil_board",
+      "reward:reward_family_c_foil_board",
+      "reward:reward_family_d_foil_board",
+      "reward:reward_family_e_foil_board",
+      "reward:reward_family_f_foil_board",
+      "reward:reward_family_g_foil_board",
+      "reward:reward_family_h_foil_board",
+      "reward:reward_family_i_foil_board",
+      "reward:reward_family_j_foil_board",
+      "reward:reward_family_k_foil_board",
+      "reward:reward_family_l_foil_board",
+      "component:board_foil"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shared_frame/board_foil.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "album_base",
+    "name": "共通の記念アルバム",
+    "category": "shared_frame",
+    "kind": "svg",
+    "visual_brief": "丸みのある布張り表紙と綴じ糸。中央は紋章、下部はDOMの名称を置く余白。枚数は焼き込まない。",
+    "source_size": [
+      1200,
+      800
+    ],
+    "placements": [
+      "HOME",
+      "HANDBOOK",
+      "RESULT"
+    ],
+    "render_layer": "collection_base",
+    "profile_id": "frame",
+    "status": "planned",
+    "used_by": [
+      "reward:reward_total_24_album",
+      "reward:reward_total_60_album",
+      "component:album_base"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/shared_frame/album_base.svg"
+    ],
+    "production_phase": "P0",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_daily",
+    "name": "くらし",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "枕と折りたたんだ布。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_daily"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_daily.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_food",
+    "name": "食べもの",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "湯気のない茶碗と箸。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_food"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_food.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_living",
+    "name": "生きもの",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "小鳥と丸い葉。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_living"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_living.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_town",
+    "name": "まちと道具",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "屋根と小さな道具。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_town"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_town.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_nature",
+    "name": "自然と季節",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "葉と太陽。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_nature"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_nature.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  },
+  {
+    "id": "topic_people",
+    "name": "人とことば",
+    "category": "topic_icon",
+    "kind": "svg",
+    "visual_brief": "向かい合う二つの吹き出し。言葉の単独画像ではなく、分類の入口に使う。",
+    "source_size": [
+      48,
+      48
+    ],
+    "placements": [
+      "DICTIONARY",
+      "HANDBOOK"
+    ],
+    "render_layer": "UI_icon",
+    "profile_id": "icon",
+    "status": "planned",
+    "used_by": [
+      "component:topic_people"
+    ],
+    "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+    "source_master_format": "SVG",
+    "runtime_exports": [
+      "assets/topic_icon/topic_people.svg"
+    ],
+    "production_phase": "P2",
+    "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+  }
+]

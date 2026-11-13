@@ -1,0 +1,89 @@
+/* One fixed game stage, with controls layered around the world rather than an article. */
+#app:has(.game-stage), #app:has(.city-game-stage), #app:has(.result-stage) {
+  height: 100dvh; min-height: 0; width: 100%; max-width: none; padding: 0;
+  display: grid; grid-template-rows: auto minmax(0,1fr) auto;
+  background: #d8e7d7;
+}
+#app:has(.game-stage) .site-header, #app:has(.city-game-stage) .site-header, #app:has(.result-stage) .site-header {
+  height: auto; min-height: 52px; padding: 5px 18px; gap: 16px; flex-wrap: nowrap;
+  border-bottom: 2px solid #476555; background: #f4f0df;
+}
+#app:has(.game-stage) .site-header > nav, #app:has(.city-game-stage) .site-header > nav,
+#app:has(.result-stage) .site-header > nav { display: none; }
+#app:has(.game-stage) .brand small, #app:has(.city-game-stage) .brand small,
+#app:has(.result-stage) .brand small, #app:has(.game-stage) .postmark,
+#app:has(.city-game-stage) .postmark, #app:has(.result-stage) .postmark { display: none; }
+#app:has(.game-stage) .site-footer, #app:has(.city-game-stage) .site-footer, #app:has(.result-stage) .site-footer {
+  padding: 4px 18px; margin: 0; line-height: 1.2; background: #f4f0df;
+}
+#app:has(.game-stage) .nav-menu-button, #app:has(.city-game-stage) .nav-menu-button,
+#app:has(.result-stage) .nav-menu-button { margin-left: auto; }
+.game-stage { min-width: 0; min-height: 0; width: 100%; max-width: none; margin: 0; padding: 0; }
+.world-stage { position: relative; display: block; isolation: isolate; }
+.world-stage .home-city-slot { position: absolute; inset: 0 365px 0 0; }
+.world-command-dock {
+  position: absolute; inset: 12px 12px auto auto; width: 335px; padding: 14px;
+  border: 2px solid #526950; border-radius: 18px; background: #fffbeb;
+  box-shadow: 0 5px 0 #4055432e; display: grid; gap: 10px;
+}
+.world-command-dock > *, .world-command-dock fieldset { margin: 0; }
+.world-command-dock h1 { font-size: 1.3em; line-height: 1.2; letter-spacing: 0; }
+.world-command-dock .eyebrow { letter-spacing: .1em; font-size: .8em; }
+.world-command-dock .course-options { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.world-command-dock .course-option { min-height: 44px; padding: 5px 10px; }
+.world-command-dock .course-option span { display: flex; align-items: baseline; gap: 10px; }
+.world-command-dock .course-option strong { font-size: 1em; }
+.world-command-dock .course-option small { font-size: .75em; }
+.world-command-dock .destination { display: flex; align-items: center; gap: 12px; }
+.world-command-dock .destination-select { min-width: 0; flex: 1; width: auto; padding: 5px; }
+.world-command-dock .start-button { min-height: 48px; padding: 8px; width: 100%; gap: 8px; font-size: 1em; }
+.world-command-dock .start-button svg { width: 30px; height: 24px; }
+.world-command-dock .keyboard-note { font-size: .8em; line-height: 1.2; }
+.world-command-dock .save-status { font-size: .65em; line-height: 1.2; }
+.world-command-dock .text-button { padding: 4px; text-align: center; }
+.dock-key-hint { font-size: .7em; color: #526950; }
+.world-stage .home-city-balance { position: absolute; inset: 10px 377px auto 12px; margin: 0; }
+.world-stage .city-balance { display: flex; flex-wrap: wrap; gap: 5px 16px; padding: 8px 12px; border-radius: 12px; background: #fffbebed; font-size: .8em; }
+.world-stage .home-goal-slot { position: absolute; left: 12px; right: 377px; bottom: 42px; }
+.world-stage .goal-strip { margin: 0; padding: 8px; background: #fffbebed; }
+.world-map-help { position: absolute; left: 12px; bottom: 6px; margin: 0; font-size: .75em; padding: 4px 10px; background: #fffbebed; border-radius: 8px; }
+.practice-awards-hud { position: absolute; right: 12px; bottom: 10px; width: 335px; margin: 0; padding: 6px; background: #fffbeb; }
+.world-stage .town-panel { height: 100%; padding: 0; border: 0; background: none; box-shadow: none; display: grid; place-items: center; }
+.world-stage .town-heading,.world-stage .development-note,.world-stage .compact-town,.world-stage .art-pending { display: none; }
+.world-stage .town-map { width: 100%; height: 100%; aspect-ratio: auto; margin: 0; border: 0; background: #d8e7d7; border-radius: 0; }
+.world-stage .town-map > svg { width: 100%; height: 100%; }
+.world-stage .map-label { font-size: .8em; padding: 4px 8px; min-height: 44px; border: 2px solid #7c8e66; border-radius: 10px; background: #fffbebf0; }
+.world-stage .map-label small { font-size: .7em; }
+.world-stage .map-label:focus-visible { outline: 4px solid #e09324; outline-offset: 3px; }
+@media (max-width: 959px) {
+ .world-stage .home-city-slot { right: 320px; }
+ .world-command-dock { width: 295px; }
+ .world-stage .home-city-balance,.world-stage .home-goal-slot { right: 332px; }
+}
+@media (prefers-reduced-motion: reduce) { .game-stage *, .city-game-stage *, .result-stage * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .city-game-stage *, body[data-reduced-motion=true] .result-stage * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+/* Guidance remains readable at the selected scale; compact spacing buys room. */
+.world-command-dock { gap: 6px; padding: 10px; }
+.world-command-dock .eyebrow { display: none; }
+.world-command-dock h1 { font-size: 1.15em; }
+.world-command-dock .keyboard-note { font-size: 1em; }
+/* The typing surface is a game instrument panel, with stable reserved prompt rows. */
+.game-page .typing-card { background: #fffbed; border: 2px solid #7b9176; border-radius: 18px; box-shadow: 0 4px 0 #4055431f; }
+.game-page .game-topline { border-radius: 12px; background: #e9efdf; }
+.game-page .typing-input { border-radius: 10px; background: #fffef8; }
+.game-page .cargo-slots { padding-inline: 6px; }
+/* Offline progress is an in-world HUD notice, never another flow-layout article. */
+.world-stage > .return-card { position: absolute; z-index: 8; left: 12px; right: 377px; bottom: 48px; margin: 0; padding: 12px; max-width: none; min-width: 0; border: 2px solid #587551; background: #fffbebf5; border-radius: 14px; overflow-wrap: anywhere; }
+.world-stage > .return-card h2 { font: inherit; font-weight: 700; margin: 0; }
+.world-stage > .return-card p { margin: 4px 0; }
+.world-stage > .return-card .button { padding: 4px 10px; min-height: 44px; margin-top: 4px; }
+/* Read-only ownership is a full HUD row; it must not expand a no-wrap header. */
+#app .site-header:has(> .ownership-warning:not([hidden])) { flex-wrap: wrap; }
+#app .site-header > .ownership-warning { flex-basis: 100%; min-width: 0; max-width: 100%; }
+#app .site-header > .ownership-warning p { min-width: 0; overflow-wrap: anywhere; }
+.world-transition-ghost { border: 0; margin: 0; }
+.world-transition-ghost > svg { display: block; width: 100%; height: 100%; }
+@media (max-width: 959px) { .world-stage .home-city-slot { right: 0; } }
+.typing-game-stage .typing-card { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+/* An earned-stamp cue takes the route-label slot instead of covering the playfield. */
+#app .site-header .achievement-live { position: static; inset: auto; transform: none; max-width: none; width: auto; margin: 0; padding: 0; border: 0; box-shadow: none; background: none; color: var(--accent); font: inherit; font-weight: 700; line-height: inherit; }

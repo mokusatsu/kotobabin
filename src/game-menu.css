@@ -1,0 +1,98 @@
+/* Inventory screens share the game's paper-and-wood HUD. Measured panels, native
+   controls and selected font sizes remain responsible for capacity and focus. */
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) {
+  width: 100%; max-width: none;
+  background: radial-gradient(ellipse at 50% 10%, #e9efda, #d9e4d3 80%);
+}
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) > .site-header {
+  height: auto; min-height: 56px; padding: 4px 8px; gap: 12px; flex-wrap: wrap;
+  border-bottom: 2px solid #526f58; background: #f6f1de;
+}
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) > .site-header::after { content: none; }
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) > .site-header > nav { display: none; }
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) .site-header .nav-menu-button {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-left: auto;
+}
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) .site-header .brand { letter-spacing: 0; line-height: 1.1; }
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) .site-header .brand small,
+#app:has(> .catalogue-page, > .handbook-page, > .centered-page .input-check) .site-header .postmark { display: none; }
+
+.catalogue-page, .handbook-page {
+  width: 100%; max-width: none; margin: 8px auto 0; padding: 8px;
+  border: 2px solid #7c906f; border-radius: 12px;
+  background: #fcf8e9; box-shadow: 0 4px 0 #586d4826;
+}
+[data-ipad-layout] .catalogue-page.ipad-page-host,
+[data-ipad-layout] .handbook-page.ipad-page-host { padding: 8px; }
+.catalogue-page .section-heading {
+  margin-bottom: 8px; padding-bottom: 8px; border-bottom: 2px solid #c7d1b6;
+}
+.catalogue-page .section-heading h1, .handbook-title-panel h1 {
+  line-height: 1.2; letter-spacing: 0;
+}
+.handbook-title-panel > .eyebrow { display: none; }
+.catalogue-page .collection-counts {
+  border: 0; border-radius: 8px; background: #e9eedc; padding: 8px;
+}
+.catalogue-page .collection-counts strong { margin-top: 4px; }
+.catalogue-page .catalogue-filters { gap: 8px 16px; }
+.catalogue-page .catalogue-filters :is(input, select) {
+  border: 2px solid #9bac89; border-radius: 7px; background: #fffdf3;
+}
+.catalogue-page .word-list { display: grid; gap: 6px; }
+.catalogue-page .word-list > li {
+  padding: 8px; border: 1px solid #c5ceb7; border-radius: 8px; background: #f1f2e3;
+}
+.catalogue-page .word-list > li:focus-within { border-color: #65825b; background: #e9efda; }
+.catalogue-page .catalogue-pagination { padding-top: 4px; }
+.handbook-page .handbook-summary { border: 0; padding: 4px 0; }
+.handbook-page .handbook-tabs { padding: 4px; border-radius: 9px; background: #dce5ce; }
+.handbook-page .handbook-tabs .button { border-radius: 6px; background: #f8f5e7; }
+.handbook-page .handbook-tabs .button.selected { border-color: #486b4e; background: #c9d9b7; }
+.handbook-page :is(.achievement-card, .achievement-detail-card, .reward-card, .reward-equipment) {
+  border-color: #bdcbaa; border-radius: 9px; background: #fffbed;
+}
+.handbook-page .achievement-card.selected { border-color: #55794c; background: #edf3de; }
+.handbook-page #handbook-families .button { border-radius: 7px; }
+.handbook-page .handbook-suggestions { border-color: #c6d1b5; }
+:is(.catalogue-page, .handbook-page) > .ipad-pagination {
+  padding-top: 6px; margin-top: 6px; border-top: 2px solid #aabf96;
+}
+:is(.catalogue-page, .handbook-page) .ipad-pagination .button { border-radius: 7px; }
+
+/* Input preparation is a game overlay, with the native confirmation field intact. */
+.centered-page:has(.input-check) { padding-block: 8px; }
+.centered-page .input-check {
+  border: 2px solid #758b65; border-radius: 14px; background: #fffbea;
+  box-shadow: 0 5px 0 #526c3a26; padding: 16px;
+}
+.input-check > .eyebrow { display: none; }
+.input-check h1 { line-height: 1.2; letter-spacing: 0; }
+.input-check .check-input { border: 2px solid #779269; border-radius: 8px; background: #fffef7; }
+.input-check .button-primary { border-radius: 8px; }
+
+/* Native dialogs remain on the top layer; their contents still use real panels. */
+:is(.settings-dialog, .navigation-dialog, .help-dialog, .profile-confirm-dialog, .city-confirm-dialog) {
+  border: 2px solid #738963; border-radius: 14px; background: #fffbea; color: #203d36;
+  box-shadow: 0 7px 0 #354f2f33;
+}
+:is(.settings-dialog, .navigation-dialog, .help-dialog, .profile-confirm-dialog, .city-confirm-dialog)::backdrop {
+  background: #1d392d8c;
+}
+:is(.settings-dialog, .help-dialog, .profile-confirm-dialog) > form > .eyebrow { display: none; }
+.settings-dialog :is(fieldset, .audio-settings) { border-color: #b7c8a3; }
+.settings-dialog .setting-options { gap: 6px 20px; }
+.settings-dialog .setting-options label,
+.settings-dialog .setting-check { border-radius: 6px; }
+.settings-dialog :is(.setting-options label, .setting-check):focus-within { background: #e8efdb; }
+.settings-dialog input[type="range"] { accent-color: #527548; }
+.settings-dialog :is(.button, select), .navigation-dialog :is(.button, .text-button) { border-radius: 7px; }
+.navigation-dialog { padding: 16px; }
+.navigation-dialog nav { gap: 8px; }
+.navigation-dialog [data-navigation] {
+  min-height: 44px; border: 1px solid #a9bd94; background: #edf1df; padding: 8px;
+}
+.navigation-dialog [data-navigation]:focus-visible { background: #dbe8c8; outline-color: #8b5b35; }
+:is(.settings-dialog, .navigation-dialog, .help-dialog, .profile-confirm-dialog) .ipad-pagination {
+  border-top: 2px solid #b6c7a1; padding-top: 6px; margin-top: 6px;
+}

@@ -1,0 +1,10 @@
+.sound-volume {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(60px, 2fr) 3em;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-block: 8px;
+}
+.sound-volume input { width: 100%; min-width: 0; height: 44px; accent-color: var(--primary); }
+.sound-volume output { text-align: right; font-variant-numeric: tabular-nums; }

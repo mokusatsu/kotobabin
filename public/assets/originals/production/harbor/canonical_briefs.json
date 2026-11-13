@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "4.1.0",
+  "assets": [
+    {
+      "id": "shop_harbor",
+      "name": "港町の代表店舗",
+      "category": "shop_scene",
+      "kind": "raster",
+      "visual_brief": "港町の代表店は、水辺の暮らしの日用品店。深めの切妻屋根、横板の外壁、窓内の丸い籠の影で識別する。海産物に限定せず、川・海・湖の背景で同じ画像を使う。原画は512×512のRGBA、正面と右側面が見える共通の俯瞰。正面間口x128〜384、壁面y208〜448、足元(256,448)。看板(256,184)、庇(256,256)、のぼり(416,352)の接続位置を空け、これらの重ね部品と文字は描かない。代表外観は地区につき一つだけ置き、所有数・上限・収益はDOMで示す。",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "shop",
+      "profile_id": "shop",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s1",
+        "district:harbor:s2",
+        "district:harbor:s3",
+        "district:harbor:s4",
+        "district:harbor:s5",
+        "shops:harbor:1",
+        "shops:harbor:2",
+        "shops:harbor:3",
+        "shops:harbor:4",
+        "shops:harbor:5",
+        "shops:harbor:6",
+        "shops:harbor:7",
+        "shops:harbor:8",
+        "shops:harbor:9",
+        "shops:harbor:10",
+        "shops:harbor:11",
+        "shops:harbor:12",
+        "shops:harbor:13",
+        "shops:harbor:14",
+        "shops:harbor:15",
+        "shops:harbor:16",
+        "shops:harbor:17",
+        "shops:harbor:18",
+        "shops:harbor:19",
+        "shops:harbor:20",
+        "shops:harbor:21",
+        "shops:harbor:22",
+        "shops:harbor:23",
+        "shops:harbor:24",
+        "shops:harbor:25",
+        "shops:harbor:26",
+        "shops:harbor:27",
+        "shops:harbor:28",
+        "shops:harbor:29",
+        "shops:harbor:30",
+        "shops:harbor:31",
+        "shops:harbor:32",
+        "shops:harbor:33",
+        "shops:harbor:34",
+        "shops:harbor:35",
+        "shops:harbor:36",
+        "shops:harbor:37",
+        "shops:harbor:38",
+        "shops:harbor:39",
+        "shops:harbor:40",
+        "shops:harbor:41",
+        "shops:harbor:42",
+        "shops:harbor:43",
+        "shops:harbor:44",
+        "shops:harbor:45",
+        "shops:harbor:46",
+        "shops:harbor:47",
+        "shops:harbor:48",
+        "shops:harbor:49",
+        "shops:harbor:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/shop_scene/shop_harbor.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_harbor_s1",
+      "name": "港町・段階1 船着きの待合ができる",
+      "category": "city_stage",
+      "kind": "raster",
+      "visual_brief": "水辺の待合小屋を、板張りの壁と低い切妻屋根で描く。右下へ伸びる短い木の桟橋を添え、川・海・湖のどこにも置ける船着きの姿にする。 小屋の前の長椅子／桟橋の低い係留柱と巻いた綱の輪郭／小屋の入口の小さな待ち人。船、水面、魚、海鳥は描かない 待合小屋はx440〜730・y340〜640。桟橋の陸側接点(730,650)と先端(904,716)を守り、水域に重なる部分だけ板張りの構造を描く。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／段階1完成時に無料店1軒を一度だけ得る。店舗代表外観をこの時点から表示し、所有数1/5軒をDOMで示す。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。／港の建物と柱の足元は原画x720以下・y640以下、手前の腰掛けはx680以下・y700以下を基本とする。屋根は張り出せるが、桟橋以外の床と柱を水面へ接地させない。",
+      "source_size": [
+        1024,
+        768
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "render_layer": "district_art",
+      "profile_id": "district",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s1"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s1.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_harbor_s2",
+      "name": "港町・段階2 水辺の回廊がつながる",
+      "category": "city_stage",
+      "kind": "raster",
+      "visual_brief": "待合小屋から岸側へ低い屋根の回廊をL字に伸ばす。小屋と回廊の間の空きが水辺の小さな通りを示し、桟橋自体の長さや数は変えない。 低い板張りの町並みを岸側の奥へ重ねる／回廊の共用ベンチと木の手すり／段階1と同じ係留柱の桟橋。運ぶ荷物や船団は入れない 建物の広がりはx350〜850の陸側へ寄せ、桟橋の接点と先端を動かさない。回廊の隙間は透過とし、岸壁や護岸を描き込まない。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／店舗の所有上限は10軒。段階完成で店は追加付与しない。所有数と営業収益は実際の状態をDOMで示し、代表店を10枚並べない。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。／港の建物と柱の足元は原画x720以下・y640以下、手前の腰掛けはx680以下・y700以下を基本とする。屋根は張り出せるが、桟橋以外の床と柱を水面へ接地させない。",
+      "source_size": [
+        1024,
+        768
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "render_layer": "district_art",
+      "profile_id": "district",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s2"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s2.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_harbor_s3",
+      "name": "港町・段階3 港倉庫が街の顔になる",
+      "category": "city_stage",
+      "kind": "raster",
+      "visual_brief": "岸側の中央に、大きな切妻屋根と幅広い板戸を持つ木造の港倉庫を置く。倉庫は地区を象徴する外観として描き、内部在庫や輸送能力を表す箱の量は見せない。 両側に残る低い待合回廊／屋根の上の低い換気櫓と壁の木組み／同じ位置の桟橋と係留柱。クレーン、貨物線、貨物船は描かない 倉庫はx430〜830・y170〜610に置く。木造の低層建築とし、巨大な近代倉庫やコンテナ群にしない。水際の接点は前段階と同じにする。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／店舗の所有上限は20軒。段階完成で店は追加付与しない。所有数と営業収益は実際の状態をDOMで示し、代表店を20枚並べない。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。／港の建物と柱の足元は原画x720以下・y640以下、手前の腰掛けはx680以下・y700以下を基本とする。屋根は張り出せるが、桟橋以外の床と柱を水面へ接地させない。",
+      "source_size": [
+        1024,
+        768
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "render_layer": "district_art",
+      "profile_id": "district",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s3"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s3.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_harbor_s4",
+      "name": "港町・段階4 灯りの倉庫通りが広がる",
+      "category": "city_stage",
+      "kind": "raster",
+      "visual_brief": "主倉庫の左右に低い岸側の棟と屋根付き回廊を添え、水辺へ開いたコの字の外形を作る。手すりの角に木の灯具を付け、夜の灯りが整ったことを柱の形でも示す。 主倉庫の高い切妻と換気櫓を残す／陸側へ伸びる低い棟と水辺の手すり／係留柱の桟橋は増やさず、同じ長さと位置を保つ 建物の増加は左と奥へ集め、桟橋の接続を覆わない。灯色を消しても段階3との差が分かるよう、回廊と手すりの輪郭を明確にする。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／店舗の所有上限は35軒。段階完成で店は追加付与しない。所有数と営業収益は実際の状態をDOMで示し、代表店を35枚並べない。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。／港の建物と柱の足元は原画x720以下・y640以下、手前の腰掛けはx680以下・y700以下を基本とする。屋根は張り出せるが、桟橋以外の床と柱を水面へ接地させない。",
+      "source_size": [
+        1024,
+        768
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "render_layer": "district_art",
+      "profile_id": "district",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s4"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s4.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_harbor_s5",
+      "name": "港町・段階5 水辺の集い広場が完成する",
+      "category": "city_stage",
+      "kind": "raster",
+      "visual_brief": "港倉庫の手前に、帆を思わせる大きな三角の布屋根を張った共有広場を置く。広場の端を浅い弧を描く木の腰掛けで囲み、川でも湖でも使える落ち着いた船着きの完成景にする。 背景に主倉庫と低い回廊を残す／三角の布屋根を支える素朴な木の柱と綱／同じ位置の桟橋。海専用の灯台、波しぶき、航路標識は描かない 布屋根をx420〜850・y320〜590に置き、倉庫の屋根と水際の接点を残す。広場の木の台は建築部材だけとし、水面や岸の形を含めない。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／店舗の所有上限は50軒。段階完成で店は追加付与しない。所有数と営業収益は実際の状態をDOMで示し、代表店を50枚並べない。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。／港の建物と柱の足元は原画x720以下・y640以下、手前の腰掛けはx680以下・y700以下を基本とする。屋根は張り出せるが、桟橋以外の床と柱を水面へ接地させない。",
+      "source_size": [
+        1024,
+        768
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "render_layer": "district_art",
+      "profile_id": "district",
+      "status": "planned",
+      "used_by": [
+        "district:harbor:s5"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s5.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    }
+  ],
+  "profiles": {
+    "district": {
+      "source_size": [
+        1024,
+        768
+      ],
+      "display_css": [
+        132,
+        99
+      ],
+      "minimum_css": [
+        96,
+        72
+      ],
+      "transparent": true,
+      "anchor": [
+        512,
+        640
+      ],
+      "safe_rect": [
+        64,
+        48,
+        960,
+        736
+      ],
+      "layer": "district_art",
+      "notes": "地図上264×198map_px、店予約枠を透過。段階ごとに原画全体を置換。"
+    },
+    "shop": {
+      "source_size": [
+        512,
+        512
+      ],
+      "display_css": [
+        64,
+        64
+      ],
+      "minimum_css": [
+        24,
+        24
+      ],
+      "transparent": true,
+      "anchor": [
+        256,
+        448
+      ],
+      "safe_rect": [
+        32,
+        32,
+        480,
+        480
+      ],
+      "layer": "shop",
+      "notes": "地図上64×64map_px。詳細では拡大。共通の庇・のぼり・看板の基点をそろえる。"
+    }
+  }
+}

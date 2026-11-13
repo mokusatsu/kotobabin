@@ -1,10 +1,12 @@
 export type AudioKind = 'key' | 'word' | 'mistake' | 'dispatch_small' | 'dispatch_medium' | 'dispatch_full' | 'theme';
+export type AudioStatus = 'idle' | 'ready' | 'paused' | 'unavailable' | 'disposed';
 export interface AudioSettings { enabled: boolean; master: number; effects: number; music: number }
 export interface AudioPlayerOptions {
   baseUrl?: string;
   /** Dependency seams keep deterministic voice/failure tests independent of browser audio hardware. */
   createContext?: () => AudioContext | null;
   fetchAudio?: typeof fetch;
+  onStatusChange?: (status: AudioStatus) => void;
 }
 interface Voice { kind: AudioKind; source: AudioBufferSourceNode; gain: GainNode; order: number }
 const priorities: Record<AudioKind, number> = { theme: 0, key: 1, mistake: 2, word: 3, dispatch_small: 4, dispatch_medium: 4, dispatch_full: 4 };
@@ -27,27 +29,40 @@ export class AudioPlayer {
   private cueGeneration = 0;
   private disposed = false;
   private themeWanted = false;
+  private playbackAllowed = true;
+  private currentStatus: AudioStatus = 'idle';
+  private readonly onStatusChange: (status: AudioStatus) => void;
 
   constructor(options: AudioPlayerOptions = {}) {
     const base = options.baseUrl ?? import.meta.env.BASE_URL;
     this.baseUrl = base.endsWith('/') ? base : `${base}/`;
     this.createContext = options.createContext ?? (() => globalThis.AudioContext ? new globalThis.AudioContext() : null);
+    this.onStatusChange = options.onStatusChange ?? (() => {});
     this.fetchAudio = options.fetchAudio ?? ((input, init) => globalThis.fetch(input, init));
   }
 
   /** Invoke directly from a trusted click/key handler; failure leaves the game usable in silence. */
   async startFromGesture(): Promise<boolean> {
     if (this.disposed) return false;
+    if (this.currentStatus === 'ready' && this.context?.state === 'running' && this.playbackAllowed) return true;
     try {
-      this.context ??= this.createContext();
-      if (!this.context || this.context.state === 'closed') return false;
+      if (!this.context || this.context.state === 'closed') {
+        this.context = this.createContext();
+        if (this.context) this.context.onstatechange = () => {
+          if (!this.disposed && this.currentStatus === 'ready' && this.context?.state !== 'running') this.silence('unavailable');
+        };
+      }
+      if (!this.context) { this.silence('unavailable'); return false; }
       if (this.context.state !== 'running') await this.context.resume();
-      if (this.disposed || this.context.state !== 'running') return false;
+      if (this.disposed) return false;
+      if (this.context.state !== 'running') { this.silence('unavailable'); return false; }
+      this.playbackAllowed = true;
+      this.setStatus('ready');
       // Preload short feedback without making startup or the game wait for decoding.
       if (this.values.enabled) for (const kind of effects) void this.load(kind);
       if (this.themeWanted) this.play('theme');
       return true;
-    } catch { return false; }
+    } catch { this.silence('unavailable'); return false; }
   }
 
   settings(patch: Partial<AudioSettings>): void {
@@ -66,7 +81,7 @@ export class AudioPlayer {
   }
 
   play(kind: AudioKind): void {
-    if (this.disposed) return;
+    if (this.disposed || !this.playbackAllowed) return;
     if (kind === 'theme') this.themeWanted = true;
     if (!this.context || this.context.state !== 'running' || !this.level(kind)) return;
     if (kind === 'theme' && [...this.voices].some((voice) => voice.kind === 'theme')) return;
@@ -79,7 +94,7 @@ export class AudioPlayer {
     void this.load(kind).then((decoded) => {
       this.pendingCues.delete(kind);
       if (generation !== this.cueGeneration) { if (kind === 'theme' && this.themeWanted) this.play('theme'); return; }
-      if (decoded && !this.disposed && this.context?.state === 'running' && this.level(kind)) this.startVoice(kind, decoded);
+      if (decoded && !this.disposed && this.playbackAllowed && (kind !== 'theme' || this.themeWanted) && this.context?.state === 'running' && this.level(kind)) this.startVoice(kind, decoded);
     });
   }
 
@@ -96,7 +111,7 @@ export class AudioPlayer {
       for (const file of files) {
         try {
           if (this.disposed || !this.context) return null;
-          const response = await this.fetchAudio(`${this.baseUrl}assets/sound_effect/${file}`, { signal: this.abort.signal });
+          const response = await this.fetchAudio(`${this.baseUrl}assets/${kind === 'theme' ? 'bgm' : 'sound_effect'}/${file}`, { signal: this.abort.signal });
           if (!response.ok) continue;
           const buffer = await this.context.decodeAudioData(await response.arrayBuffer());
           if (this.disposed) return null;
@@ -104,6 +119,7 @@ export class AudioPlayer {
           return buffer;
         } catch { /* Try the alternate encoding; silence never affects the game. */ }
       }
+      if (this.playbackAllowed && !this.disposed && this.values.enabled) this.silence('unavailable');
       return null;
     })();
     this.loading.set(kind, pending);
@@ -112,7 +128,7 @@ export class AudioPlayer {
   }
   private startVoice(kind: AudioKind, buffer: AudioBuffer): void {
     const context = this.context;
-    if (!context || this.disposed || !this.level(kind)) return;
+    if (!context || this.disposed || !this.playbackAllowed || !this.level(kind)) return;
     if (kind === 'theme' && [...this.voices].some((voice) => voice.kind === 'theme')) return;
     if (this.voices.size >= 8) {
       const eligible = [...this.voices].filter((voice) => priorities[voice.kind] <= priorities[kind]);
@@ -136,7 +152,7 @@ export class AudioPlayer {
         if (this.themeWanted && kind !== 'theme' && this.voices.size < 8) this.play('theme');
       };
       source.start();
-    } catch { if (voice) this.removeVoice(voice); }
+    } catch { if (voice) this.removeVoice(voice); this.silence('unavailable'); }
   }
   private removeVoice(voice: Voice, stop = true): void {
     this.voices.delete(voice);
@@ -144,14 +160,38 @@ export class AudioPlayer {
     if (stop) try { voice.source.stop(); } catch { /* Already ended or interrupted. */ }
     try { voice.source.disconnect(); voice.gain.disconnect(); } catch { /* Interrupted contexts may reject cleanup. */ }
   }
+  get status(): AudioStatus { return this.currentStatus; }
+  private setStatus(status: AudioStatus): void {
+    if (this.currentStatus === status) return;
+    this.currentStatus = status;
+    try { this.onStatusChange(status); } catch { /* Presentation cannot affect game input. */ }
+  }
+  private silence(status: 'paused' | 'unavailable'): void {
+    if (this.disposed) return;
+    this.playbackAllowed = false;
+    this.themeWanted = false;
+    this.cueGeneration++;
+    for (const voice of [...this.voices]) this.removeVoice(voice);
+    this.setStatus(status);
+  }
+  /** Discard all pending feedback; a later explicit gesture can re-enable playback. */
+  pause(): void { this.silence(this.currentStatus === 'unavailable' ? 'unavailable' : 'paused'); }
+  /** Let final delivery feedback finish while stopping the background loop. */
+  stopTheme(): void {
+    this.themeWanted = false;
+    for (const voice of [...this.voices]) if (voice.kind === 'theme') this.removeVoice(voice);
+  }
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
     this.themeWanted = false;
+    this.playbackAllowed = false;
+    this.setStatus('disposed');
     this.abort.abort();
     for (const voice of [...this.voices]) this.removeVoice(voice);
     this.buffers.clear(); this.pendingCues.clear();
     if (this.context) {
+      this.context.onstatechange = null;
       try { void this.context.close().catch(() => {}); } catch { /* Audio is optional. */ }
     }
   }

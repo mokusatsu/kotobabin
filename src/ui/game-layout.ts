@@ -10,7 +10,8 @@ interface Layout {
   phase: LayoutSnapshot['phase'] | null;
   goalNote: HTMLElement;
   shortcut: HTMLElement;
-  show(index: number): void;
+  expanded: boolean;
+  show(index: number, expanded?: boolean): void;
   destroy(): void;
 }
 const layouts = new WeakMap<HTMLElement, Layout>();
@@ -25,6 +26,7 @@ export function installGameLayout(root: HTMLElement): () => void {
   const sidebar = root.querySelector<HTMLElement>('.game-sidebar');
   const mainColumn = root.querySelector<HTMLElement>('.game-main-column');
   if (!workspace || !sidebar || !mainColumn) return () => {};
+  const consoleStage = Boolean(root.querySelector('.typing-game-stage'));
   const abort = new AbortController();
   const panels: Panel[] = [];
   const addPanel = (id: string, label: string, selectors: string[]) => {
@@ -48,13 +50,18 @@ export function installGameLayout(root: HTMLElement): () => void {
     const node = root.querySelector(selector);
     if (node) panels[0]?.element.append(node);
   }
+  if (consoleStage && mode !== 'MAIN') {
+    const notes = document.createElement('div'); notes.className = 'game-mode-notes';
+    const element = document.createElement('section'); element.className = 'game-side-panel'; element.id = 'game-panel-mode-notes'; element.dataset.gamePanel = 'mode-notes'; element.setAttribute('aria-label', '遊び方の案内'); element.append(notes);
+    panels.push({ id: 'mode-notes', label: '遊び方の案内', element });
+  }
   addPanel('goal', '今回の目標', ['#game-goal-slot']);
   addPanel('city', '街へのお届け', ['.play-city-strip']);
   addPanel('save', '保存の状態', ['[data-save-status]']);
   const message = root.querySelector<HTMLElement>('#game-message');
-  if (message) mainColumn.insertBefore(message, mainColumn.querySelector('.play-bottom'));
+  if (message && !consoleStage) mainColumn.insertBefore(message, mainColumn.querySelector('.play-bottom'));
   const cargo = root.querySelector<HTMLElement>('.cargo-area');
-  if (cargo) sidebar.append(cargo);
+  if (cargo && !consoleStage) sidebar.append(cargo);
   const shortcut = document.createElement('span');
   shortcut.className = 'game-delivery-shortcut';
   shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
@@ -68,6 +75,9 @@ export function installGameLayout(root: HTMLElement): () => void {
   const panelBody = document.createElement('div');
   panelBody.className = 'game-panel-body';
   for (const panel of panels) panelBody.append(panel.element);
+  if (consoleStage && mode === 'PRACTICE') {
+    const progress = document.createElement('div'); progress.className = 'game-practice-progress-hud'; sidebar.append(progress);
+  }
   sidebar.append(toolbar, panelBody);
   const goalNote = document.createElement('p');
   goalNote.className = 'game-goal-empty';
@@ -85,19 +95,24 @@ export function installGameLayout(root: HTMLElement): () => void {
   const describedBy = input?.getAttribute('aria-describedby');
   if (input) input.setAttribute('aria-describedby', [describedBy, cue.id].filter(Boolean).join(' '));
   const layout: Layout = {
-    workspace, panels, selected: 0, choiceToken: '', phase: null, goalNote, shortcut,
-    show(index) {
+    workspace, panels, selected: 0, choiceToken: '', phase: null, goalNote, shortcut, expanded: true,
+    show(index, expanded = true) {
+      layout.expanded = expanded;
+      panelBody.hidden = consoleStage && !expanded;
       layout.selected = Math.max(0, Math.min(panels.length - 1, index));
       panels.forEach((panel, i) => { panel.element.hidden = i !== layout.selected; });
       const panel = panels[layout.selected];
       if (!panel) return;
       label.textContent = `${panel.label} ${layout.selected + 1}/${panels.length}`;
-      previous.disabled = layout.selected === 0;
+      previous.disabled = layout.selected === 0 && (!consoleStage || !expanded);
+      previous.textContent = consoleStage && layout.selected === 0 && expanded ? '×' : '←';
+      if (consoleStage && layout.selected === 0 && expanded) previous.setAttribute('aria-label', '情報を閉じる');
       next.disabled = layout.selected === panels.length - 1;
       previous.setAttribute('aria-controls', panel.element.id);
       next.setAttribute('aria-controls', panel.element.id);
       if (panels[layout.selected - 1]) previous.setAttribute('aria-label', `前の表示：${panels[layout.selected - 1].label}`);
-      if (panels[layout.selected + 1]) next.setAttribute('aria-label', `次の表示：${panels[layout.selected + 1].label}`);
+      if (consoleStage && mode === 'PRACTICE' && !expanded) next.setAttribute('aria-label', '練習の操作を開く');
+      else if (panels[layout.selected + 1]) next.setAttribute('aria-label', `次の表示：${panels[layout.selected + 1].label}`);
     },
     destroy() {
       abort.abort();
@@ -111,7 +126,11 @@ export function installGameLayout(root: HTMLElement): () => void {
   }, { signal: abort.signal });
   toolbar.addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-game-panel-step]');
-    if (button && !button.disabled) layout.show(layout.selected + Number(button.dataset.gamePanelStep));
+    if (button && !button.disabled) {
+      const step = Number(button.dataset.gamePanelStep);
+      if (consoleStage && step === -1 && layout.selected === 0 && layout.expanded) layout.show(0, false);
+      else layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
+    }
   }, { signal: abort.signal });
   input?.addEventListener('keydown', event => {
     if (!event.isTrusted || event.defaultPrevented || event.isComposing || event.keyCode === 229 || event.repeat
@@ -120,11 +139,12 @@ export function installGameLayout(root: HTMLElement): () => void {
     if (!step) return;
     // Information paging never leaves confirmed typing focus or mutates the session.
     event.preventDefault();
-    layout.show(layout.selected + step);
+    if (consoleStage && step === -1 && layout.selected === 0 && layout.expanded) layout.show(0, false);
+    else layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
-  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
-  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'));
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
+  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'), !(consoleStage && ((mode === 'MAIN' && !pinnedGoal) || mode === 'PRACTICE')));
   return layout.destroy;
 }
 
@@ -133,8 +153,15 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   const layout = layouts.get(root);
   if (!layout || !layout.workspace.isConnected) return;
   layout.shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
-  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
-  layout.goalNote.hidden = pinnedGoal;
+  const notes = root.querySelector<HTMLElement>('.game-mode-notes');
+  if (notes) {
+    const paragraphs = [...root.querySelectorAll<HTMLElement>(snapshot.mode === 'PRACTICE' ? '#practice-actions > p:not(:first-child)' : '#tutorial-status p')];
+    if (paragraphs.length) notes.replaceChildren(...paragraphs);
+  }
+  const practiceProgress = root.querySelector<HTMLElement>('#practice-actions > #practice-progress');
+  if (practiceProgress) root.querySelector('.game-practice-progress-hud')?.replaceChildren(practiceProgress);
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
+  layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
   if (snapshot.mode === 'MAIN' && pinnedGoal && layout.phase === 'PAUSED' && (snapshot.phase === 'READY' || snapshot.phase === 'PLAYING')) {
     const goalPanel = layout.panels.findIndex(panel => panel.id === 'goal');
     if (goalPanel >= 0) layout.show(goalPanel);
@@ -145,6 +172,10 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   if (token && token !== layout.choiceToken && snapshot.phase !== 'PAUSED') {
     const modePanel = layout.panels.findIndex(panel => panel.id === 'mode');
     if (modePanel >= 0) layout.show(modePanel);
+  }
+  if (!token && layout.choiceToken && snapshot.mode === 'PRACTICE' && root.querySelector('.typing-game-stage')) {
+    const modePanel = layout.panels.findIndex(panel => panel.id === 'mode');
+    if (modePanel >= 0) layout.show(modePanel, false);
   }
   layout.choiceToken = token;
 }

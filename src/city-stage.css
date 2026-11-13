@@ -1,0 +1,97 @@
+/* A city is a persistent game scene. Controls occupy one dock; the map never becomes a page of cards. */
+.city-game-stage {
+  --city-dock-width: 480px;
+  display: grid; grid-template-rows: auto minmax(0,1fr) auto; gap: 8px;
+  block-size: calc(var(--ipad-viewport-height, 100dvh) - 88px);
+  max-width: none; min-block-size: 0; margin: 0; padding: 8px 0;
+}
+.city-stage-hud { display: grid; gap: 6px; min-width: 0; }
+.city-stage-heading { display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+.city-stage-heading h1 { display: flex; gap: 16px; align-items: baseline; margin: 0; font: inherit; }
+.city-stage-heading h1 > strong { color: var(--primary); }
+.city-stage-heading > .button { flex-shrink: 0; }
+.city-stage-hud .city-balance { gap: 8px 24px; padding: 6px 0; justify-content: space-between; border: 0; }
+.city-stage-body { display: grid; grid-template-columns: minmax(0,1fr) minmax(400px,var(--city-dock-width)); gap: 16px; min-height: 0; }
+.city-stage-map { display: grid; grid-template-rows: minmax(0,1fr) auto; min-width: 0; min-height: 0; }
+#district-map-slot { min-width: 0; min-height: 0; height: 100%; }
+.city-stage-panel { align-self: start; min-width: 0; padding: 12px 16px; background: #fffdf7ed; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px #203d3612; }
+.city-stage-panel .paper-card,
+.city-stage-panel .city-control-panel { margin: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
+.city-stage-panel h2, .city-stage-panel h3 { margin: 0 0 8px; font: inherit; font-weight: 700; }
+.city-stage-panel p { margin: 6px 0; }
+.city-control-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.city-control-heading h2 { margin: 0; }
+.city-control-heading .button { padding-inline: 10px; }
+.city-stage-panel .district-resources,
+.city-plan-cost { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px 16px; margin: 10px 0; }
+.city-stage-panel .district-resources > div,
+.city-plan-cost > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; justify-content: space-between; padding: 0; border: 0; }
+.city-stage-panel dt { color: var(--secondary); }
+.city-stage-panel dd { margin: 0; font: inherit; }
+.city-stage-panel .plan-card { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; }
+.city-stage-panel .plan-card progress { display: block; width: 100%; height: 12px; margin: 6px 0; }
+.city-stage-panel .plan-card > .button,
+.city-stage-panel .city-control-panel > .button { width: 100%; margin-top: 8px; }
+.city-map-readout { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 16px; margin: 4px 0 0; }
+.city-map-readout > div { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.city-map-readout dt { color: var(--secondary); }
+.city-map-readout dd { margin: 0; font: inherit; overflow-wrap: anywhere; }
+.city-stage-feedback { display: flex; justify-content: space-between; gap: 16px; min-height: 0; }
+.city-stage-feedback p { margin: 0; }
+.city-stage-feedback p:empty { display: none; }
+.city-stage-panel .equipment-controls { margin: 0 0 8px; }
+.city-quantity { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
+.city-quantity > label { display: flex; min-height: 44px; align-items: center; gap: 6px; }
+.city-quantity input { width: 20px; height: 20px; accent-color: var(--primary); }
+.city-stage-panel .purchase-card { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: center; gap: 6px 12px; }
+.city-stage-panel .purchase-card > * { grid-column: 1 / -1; }
+.city-stage-panel .purchase-card h2 { margin: 0; }
+.city-stage-panel .purchase-card > .packaging-art { display: none; }
+.city-stage-panel .purchase-comparison { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 8px; margin: 0; }
+.city-stage-panel .purchase-comparison > div > strong { margin-top: 4px; }
+.city-stage-panel .purchase-card > #purchase-count,
+.city-stage-panel .purchase-card > #purchase-balance { grid-column: 1; margin: 0; }
+.city-stage-panel .purchase-card > p:has(> #purchase-cost),
+.city-stage-panel .purchase-card > [data-action="city-purchase"] { grid-column: 2; margin: 0; }
+.city-stage-panel #purchase-reason { margin: 0; }
+.city-stage-panel .purchase-card .setting-note { margin: 0; }
+.city-stage-panel .transport-preview { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 8px; padding: 4px 0; }
+.city-stage-panel .transport-preview > p { margin: 0; }
+.city-stage-panel .transport-preview > p:last-child { grid-column: 1 / -1; }
+.city-stage-panel .condition-list { list-style: none; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px 12px; margin: 8px 0; padding: 0; }
+.city-stage-panel .condition-list li { padding: 0; }
+.city-stage-panel select { width: 100%; max-width: 100%; min-height: 44px; padding: 4px 8px; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+.game-world-map { position: relative; display: grid; place-items: center; container-type: size; height: 100%; width: 100%; min-height: 0; padding: 0; border: 0; background: #e7ead9; }
+.game-world-map .world-map-canvas { position: relative; width: min(100cqw,160cqh); height: min(100cqh,62.5cqw); max-width: none; max-height: none; margin: 0; padding: 0; border: 0; aspect-ratio: 8 / 5; }
+.game-world-map .world-map-canvas > svg { display: block; width: 100%; height: 100%; }
+.game-world-map .map-label { min-height: 44px; width: auto; max-width: 30%; padding: 4px 10px; font: inherit; }
+.game-world-map .map-label small { font: inherit; }
+.world-map-status { position: absolute; inset-block-start: 8px; inset-inline-end: 12px; padding: 4px 12px; color: var(--primary); background: #fffdf7de; border-radius: 20px; }
+@media (min-width: 1000px) {
+  .city-game-stage { --city-dock-width: 500px; }
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  .city-game-stage { grid-template-rows: auto minmax(0,1fr) auto; block-size: calc(var(--ipad-viewport-height,100dvh) - 88px); }
+  .city-stage-body { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr) auto; }
+  .city-stage-panel { width: 100%; }
+  .city-stage-heading { gap: 8px; flex-wrap: wrap; }
+  .city-stage-heading h1 { gap: 8px; }
+}
+/* One compact heading contains the category and native quantity controls. */
+.city-stage-panel { padding: 8px 12px; }
+.city-stage-heading > .button,
+.city-stage-panel .button { min-height: 44px; padding: 4px 10px; }
+.city-quantity > h2 { margin: 0; font: inherit; font-weight: 700; }
+.city-stage-panel:has(.city-quantity) .purchase-card > h2 { display: none; }
+.city-stage-panel .condition-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.city-stage-panel .condition-list li > strong { margin: 0; }
+.city-effects-note { margin: 4px 0 0; color: var(--secondary); }
+/* The parent game grid allocates the exact remainder after the scaled HUD. */
+#app .city-game-stage { block-size: 100%; padding: 8px 12px; }
+/* Clear the earlier equipment sidebar's grid-column rule inside the shared map viewport. */
+.city-stage-map > #district-map-slot { grid-column: 1; grid-row: 1; }
+.city-stage-map > #equipment-district-summary { grid-column: 1; grid-row: 2; }
+.game-world-map .world-map-canvas { overflow: visible; }
+/* A quote uses the chosen readable font, without oversized financial-card figures. */
+.city-game-stage, .city-stage-hud .city-balance, .city-map-readout { line-height: 1.2; }
+.city-stage-panel .purchase-comparison > div > strong { font: inherit; font-weight: 700; margin-top: 4px; }

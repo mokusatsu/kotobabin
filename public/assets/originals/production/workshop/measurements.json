@@ -1,0 +1,230 @@
+[
+  {
+    "id": "city_workshop_s1",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      819,
+      614
+    ],
+    "translate": [
+      140,
+      145
+    ],
+    "alpha_bbox": [
+      449,
+      353,
+      921,
+      670
+    ],
+    "opaque_bbox": [
+      450,
+      355,
+      918,
+      633
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 157590,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "690c7796d77404e64604954e355bd3b7dbf21b7f192b775bf544919985b017b1",
+    "normalized_png_sha256": "4be2bd1110bf368c4f9a3366211cada8a1c0e9b98b40f32ee5c5a4f89f3c60a7",
+    "runtime_sha256": "c96544b8da39bc54ba0217eacf14a324d963fd20e5ffe62ae344e345f1bb5c1a"
+  },
+  {
+    "id": "city_workshop_s2",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      819,
+      614
+    ],
+    "translate": [
+      140,
+      145
+    ],
+    "alpha_bbox": [
+      422,
+      350,
+      913,
+      640
+    ],
+    "opaque_bbox": [
+      423,
+      351,
+      912,
+      634
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 173996,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "3292eb25165b6906448d4452602ba24843d8a87e1dea899849c572859ab8ad66",
+    "normalized_png_sha256": "fd489d2d1722fe427d279fff3fba0547acaecb0946b2e8e36f9c1c251a04f4b9",
+    "runtime_sha256": "79450f3a229a1471d693a2e8e61e222f0598f9d5100aa825d48efb00b8cc31ad"
+  },
+  {
+    "id": "city_workshop_s3",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      819,
+      614
+    ],
+    "translate": [
+      140,
+      145
+    ],
+    "alpha_bbox": [
+      427,
+      300,
+      916,
+      745
+    ],
+    "opaque_bbox": [
+      429,
+      302,
+      914,
+      638
+    ],
+    "outside_safe_alpha_max": 1,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 184358,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "d561604416c72b2089f17fca419f5426d62187895c9a8a24fcfaea41df4ae15a",
+    "normalized_png_sha256": "8830bd0a337d0b0f7d093062ba773e5f2c292ef0ef6b42822c62a4d13793ba11",
+    "runtime_sha256": "63622e8a9e24f9a66ff8393b4fdc1de14a1f7112cdb96f3158d6efa10116815e"
+  },
+  {
+    "id": "city_workshop_s4",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      819,
+      614
+    ],
+    "translate": [
+      140,
+      145
+    ],
+    "alpha_bbox": [
+      359,
+      300,
+      950,
+      747
+    ],
+    "opaque_bbox": [
+      362,
+      301,
+      949,
+      639
+    ],
+    "outside_safe_alpha_max": 1,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 223208,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "6684076b03e7bb3e5a37a1e8ab75d4565a35b6916965e9d71701d0bc07251d89",
+    "normalized_png_sha256": "06d45004ccffb45aff0024db1b495c20843a6af03b311854901dc3fa78ed9bcb",
+    "runtime_sha256": "531ccb2c4a6c487b8b72e3daba86be4c2b126da2ff08429bd9ea2c875a75eaa6"
+  },
+  {
+    "id": "city_workshop_s5",
+    "native": [
+      1448,
+      1086
+    ],
+    "output": [
+      1024,
+      768
+    ],
+    "resize": [
+      819,
+      614
+    ],
+    "translate": [
+      140,
+      144
+    ],
+    "alpha_bbox": [
+      359,
+      298,
+      950,
+      645
+    ],
+    "opaque_bbox": [
+      362,
+      299,
+      949,
+      640
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": 0,
+    "bytes": 229450,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "94b449d612e9cf34611a1ebf175b86c23d319b96537e998336c57d9ec80df369",
+    "normalized_png_sha256": "add5414192ff8454302d2b1c08b3722a118d05edbaca42cc8d8dcbf8876768f1",
+    "runtime_sha256": "1a6183131ae375accad1b7f8a512fd0fbd4e86302660fee0eb07ff0b565f68bd"
+  },
+  {
+    "id": "shop_workshop",
+    "native": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "resize": [
+      480,
+      480
+    ],
+    "translate": [
+      24,
+      28
+    ],
+    "alpha_bbox": [
+      69,
+      142,
+      426,
+      452
+    ],
+    "opaque_bbox": [
+      118,
+      178,
+      425,
+      448
+    ],
+    "outside_safe_alpha_max": 0,
+    "reserved_shop_alpha_max": null,
+    "bytes": 99458,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_png_sha256": "b998be994f474223bd43f880c2d05e7f4bd56e0faa7a9951616f9fba07ff824f",
+    "normalized_png_sha256": "d372219b041e1dcc65bf762e7426ba27ae04501beaf49ec8b2ddbc2d10d6a045",
+    "runtime_sha256": "1bfc224c3399e7ce435d63e35fee1d64aedd08ca64992be1d31061fc3b1f657a"
+  }
+]

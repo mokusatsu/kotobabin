@@ -1,11 +1,12 @@
 import catalog from '../../spec/initial/data/achievement_catalog.json';
 import type { AchievementState, AchievementView, EquipmentSlot } from '../profile/achievements';
+import { recommendationFamilies, recommendDeliveryGoal } from './goal-recommendation';
 
 export type HandbookFilter = 'all' | 'locked' | 'earned';
 export type HandbookTab = 'stamps' | 'rewards' | 'history';
 const asset = (path: string) => `${import.meta.env.BASE_URL}assets/${path}`;
 const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
-const availableStampArt = new Set(['stamp_a01', 'stamp_a02', 'stamp_a03', 'stamp_a04', 'stamp_a05', 'stamp_a06', 'stamp_b01', 'stamp_b02', 'stamp_b03', 'stamp_b04', 'stamp_b05', 'stamp_b06', 'stamp_c01', 'stamp_c02', 'stamp_c03', 'stamp_c04', 'stamp_c05', 'stamp_c06']);
+const availableStampArt = new Set(['stamp_a01', 'stamp_a02', 'stamp_a03', 'stamp_a04', 'stamp_a05', 'stamp_a06', 'stamp_b01', 'stamp_b02', 'stamp_b03', 'stamp_b04', 'stamp_b05', 'stamp_b06', 'stamp_c01', 'stamp_c02', 'stamp_c03', 'stamp_c04', 'stamp_c05', 'stamp_c06', 'stamp_d01', 'stamp_d02', 'stamp_d03', 'stamp_d04', 'stamp_d05', 'stamp_d06', 'stamp_e01', 'stamp_e02', 'stamp_e03', 'stamp_e04', 'stamp_e05', 'stamp_e06', 'stamp_f01', 'stamp_f02', 'stamp_f03', 'stamp_f04', 'stamp_f05', 'stamp_f06', 'stamp_g01', 'stamp_g02', 'stamp_g03', 'stamp_g04', 'stamp_g05', 'stamp_g06', 'stamp_h01', 'stamp_h02', 'stamp_h03', 'stamp_h04', 'stamp_h05', 'stamp_h06', 'stamp_i01', 'stamp_i02', 'stamp_i03', 'stamp_i04', 'stamp_i05', 'stamp_i06']);
 const scopes: Record<string, string> = { '全': 'すべての遊び方', '練': '練習・復習', '便': '本編の完走', '通常': '通常の便', '街': '街づくり' };
 const date = (atMs: number) => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(atMs));
 const definition = (id: string) => catalog.achievements.find(achievement => achievement.id === id)!;
@@ -46,14 +47,19 @@ export function achievementDetail(view: AchievementView, state: AchievementState
   const acquisition = state.unlocks[view.id];
   return `<section class="paper-card achievement-detail-card" data-page-children data-state="${achievementStatus(view)}"><p>${view.familyId} ${family.name}</p>${stampArtwork(view)}<h2>${escape(visibleName(view))}</h2><p class="achievement-detail-state">${statusText(view)}${view.unread ? ' · 未読' : ''}</p><p class="achievement-scope">対象：${scopes[view.scope] ?? escape(view.eligibleModes)}</p>${hidden(view) ? `<p>${escape(view.hiddenHint ?? '')}</p><button class="button" data-action="achievement-reveal" data-achievement-id="${view.id}" ${!writable ? 'disabled' : ''}>条件を見る</button><p>条件を見ても不利益はありません。</p>` : `<p class="achievement-detail-condition">${escape(view.condition)}</p>${progressLines(view)}<p class="achievement-confirmation">${escape(definition(view.id).confirm_event)}</p>${view.ineligible ? `<p class="achievement-ineligible">この遊び方・この回では、表示された条件の対象外です。過去に獲得した切手は残ります。</p>` : ''}`}<p>報酬：切手と同名の称号${hidden(view) ? '' : `「${escape(view.name)}」`}</p>${acquisition ? `<p>獲得 ${date(acquisition.acquiredAtMs)}（日本時間）</p>` : ''}<button class="button ${target ? '' : 'button-primary'}" data-action="achievement-target" data-achievement-id="${view.id}" ${!writable || (view.earned && !target) ? 'disabled' : ''}>${target ? '目標から外す' : view.earned ? '獲得済み' : '今回の目標にする'}</button>${target ? '<p>今回の目標に設定中</p>' : ''}<div class="family-reward-preview"><h3>この系統の報酬</h3><p>${escape(family.postcard_name)} · ${familyOwned >= 3 ? '獲得済み' : `この系統であと${3 - familyOwned}枚`}</p><p>${escape(family.foil_board_name)} · ${familyOwned}/6枚</p></div></section>`;
 }
-export function goalStrip(views: readonly AchievementView[], state: AchievementState): string {
+export function goalStrip(views: readonly AchievementView[], state: AchievementState, options: { recommend?: boolean } = {}): string {
   const view = views.find(item => item.id === state.targetId);
-  if (!view) return '';
-  return `<div class="goal-strip" id="goal-strip"><span class="target-mark">今回の目標</span><strong>${escape(visibleName(view))}</strong><span>${view.earned ? '目標達成 · 獲得済み' : view.ineligible ? '今回は対象外' : view.provisional ? '現在は条件内 · 完走時に判定' : view.progress[0] ? escape(view.progress[0].displayText) : '進捗を記録しています'}</span></div>`;
+  if (!view) {
+    const suggestion = options.recommend ? recommendDeliveryGoal(views) : null;
+    if (!suggestion) return '';
+    const { achievement, progress } = suggestion;
+    return `<div class="goal-strip" id="goal-strip" data-goal-kind="recommended" data-achievement-id="${achievement.id}"><span class="target-mark">おすすめの切手</span><strong>${escape(achievement.name)}</strong><span class="goal-condition">${escape(achievement.condition)}</span><span class="goal-progress">${escape(progress.label)} ${progress.current} / ${progress.target}${escape(progress.unit)}</span></div>`;
+  }
+  return `<div class="goal-strip" id="goal-strip" data-goal-kind="pinned" data-achievement-id="${view.id}"><span class="target-mark">今回の目標</span><strong>${escape(visibleName(view))}</strong><span>${view.earned ? '目標達成 · 獲得済み' : view.ineligible ? '今回は対象外' : view.provisional ? '現在は条件内 · 完走時に判定' : view.progress[0] ? escape(view.progress[0].displayText) : '進捗を記録しています'}</span></div>`;
 }
 export function recommendations(views: readonly AchievementView[]): string {
-  const choices = [ ['A', 'B', 'C', 'D'], ['E', 'G', 'L'], ['F'] ].flatMap(families => {
-    const candidate = views.find(view => !view.earned && families.includes(view.familyId)); return candidate ? [candidate] : [];
+  const choices = recommendationFamilies.flatMap(families => {
+    const candidate = views.find(view => !view.earned && (families as readonly string[]).includes(view.familyId)); return candidate ? [candidate] : [];
   });
   if (!choices.length && views.some(view => !view.earned)) return '';
   if (!choices.length) return '<section class="handbook-complete"><h2>72枚の切手がそろいました。</h2><p>配達の記録とコレクションを、いつでも見返せます。</p></section>';

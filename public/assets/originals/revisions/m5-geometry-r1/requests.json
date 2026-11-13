@@ -1,0 +1,114 @@
+{
+  "asset_ids": [
+    "terrain_riverside",
+    "city_residential_s2"
+  ],
+  "unique_asset_delta": 0,
+  "coordinate_source": "spec/initial/docs/resource_implementation.md",
+  "production_geometry_policy": "Actual imagegen edits, then normal scaling/export only. No procedural painted replacements, clipping, shader masks or postgeneration polygon fitting.",
+  "guide_policy": "coordinate-guide.svg is a diagnostic conditioning reference, never imported by runtime.",
+  "attempts": [
+    {
+      "id": "terrain-r1",
+      "asset": "terrain_riverside",
+      "prompt": "EDIT the FIRST IMAGE geometry guide into the watercolor terrain STYLE of SECOND IMAGE, preserving the FIRST IMAGE land/water boundary EXACTLY. First is only a coordinate control guide, second is existing game art. Keep firstimage's shoreline fixedpixel-forpixelrelativetofullcanvas; applypapertextureandpaintdetailINSIDEeachregion, NEVER shift, smooth,erode,round orwarp boundary. Logicalcanvas1600x1000, intendedoutput3200x2000(8:5). Boundarypointsequence:(1370,0),(1365,200),(1360,400),(1340,550),(1310,640),(1280,695),(1246.203125,737.578125),(1240,770),(1240,820),(1195,875),(1150,940),(1130,1000). LANDLEFT,WATERRIGHT. KEEP verticalshoresegmentx1240,y770..820. Keepportdryrectangle x1158..1222,y760..808 completelyLAND; preciseportconnection1246.203125737.578125. Do notpaintrocks,beaches,banks,foam,grassprotrusionsacrossthisboundary. MakeSHARPcleanland/wateredge exactlyasguide, softwatercolortextureswithinregions only. Preserve cozycream/sageflatterrain,broadquietwaterstripes,tinyroundedtreesONLYatouterleft/topedge andfaintlowhillsouterupperleft. Sixdistrictfeet(370,350),(760,280),(1160,350),(370,735),(760,820),(1190,735), centralhub760510 andallcentralarea remainlightflatemptyland. NO roads,rails,buildings,bridges,piers,vehicles,text,numbers,marks,UI. FullyOPAQUERGBterrain, noalpha/checkerboard. No guide linesormarkersinoutput. EXACTGEOMETRY FIRST, watercolorstyle SECOND. Do not reuse original'swrong lowercoastline.",
+      "generated": "../../rejected/m5-geometry-r1/terrain-r1.generated.png",
+      "disposition": "rejected: upper shoreline drift about10map_px"
+    },
+    {
+      "id": "terrain-r2",
+      "asset": "terrain_riverside",
+      "prompt": "PreciseGEOMETRYCORRECTION edit. FIRSTreference isEXACTSHORELINECONTROLGUIDE; SECOND iscurrentwatercolorimagealreadyalmostcorrect. Preserveexistingwatercolorstyle/details. Uppercoast iscurrentlytooFARRIGHT: atlogicaly0 setboundaryEXACTx1370(currentabout1384), aty200EXACTx1365(current1375), aty400EXACTx1360(current1364), aty550EXACTx1340. So moveONLYUPPERboundaryLEFTby14pxatTOP,10pxaty200,4pxaty400,taper0aty550 (logical1600x1000canvas). CopyFIRSTreferenceboundaryEXACTLYratherthansmoothingorrescaling. Lowercoasty550..1000 alreadycorrect, LOCKITUNCHANGED: (1340,550),(1310,640),(1280,695),(1246.203125,737.578125),(1240,770),(1240,820),(1195,875),(1150,940),(1130,1000). Keepverticalsegmentx1240fromy770to820. LANDLEFT,WATERRIGHT. Crispboundary, watercolortexturesINSIDEregionsonly. Portdryrect1158..1222,760..808fullyland, no rocks/grass/foam crossingedge. Full8:5canvas intended3200x2000withlogical1600x1000. Do notcrop,shiftorresizecanvas. Keepemptyflatcreamlandandouterlefttrees. Nohouses,bridges,roads,rails,piers,letters,numbers,guideannotations. FullyopaqueRGB. Exactmatchingofthecontrolguideshorelineistheonlyrequestedchange.",
+      "generated": "../../rejected/m5-geometry-r1/terrain-r2.generated.png",
+      "disposition": "rejected: y400 drift about6.3map_px"
+    },
+    {
+      "id": "terrain-r3",
+      "asset": "terrain_riverside",
+      "prompt": "EDIT ONLY THE TEXTURE/COLOR INTERIOR of this exact map geometry. Keep the SHORELINE boundary EXACTLY unchanged, samefullimagepositions andsame8:5aspectratio; doNOT smooth,warp,move,rescale,erode orroundtheshape. Applysubtlebeautiful Japanese watercolorpapertexture INSIDEthe creamland andbluewater regions. Land isverypalecream withgentlesagewashes, waterhasquietturquoisewatercolorstrokes. Itiscriticaltokeepborderbetweenlandandwaterateveryguidepixel, includingtheV-shapedkinknearbottomright. NO coastlinegrassline/rock/foam/beachthatwouldobscuretheedge. Outputsamecompositionandfullframe, nozoomorcrop. Addtinyroundedtreesandpalelowhills ONLY atfarLEFTEDGE x0..300 andupperleft x0..800,y0..100; NEVER modifyrightedgeoflandinanyway. Centerandalllandrightofx300flatandempty. No skyatupperrightcoast; thatregionmustbeLANDorWATERasguideshows. Logical1600x1000: shorepoints1370,0;1365,200;1360,400;1340,550;1310,640;1280,695;1246.203125,737.578125;1240,770;1240,820;1195,875;1150,940;1130,1000. NOBUILDINGS,ROADS,BRIDGES,PIERS,TEXT,NUMBERS,UI,MARKERS. FullyopaqueRGB terrainart. Requestedsource3200x2000. Thisisaprecisefixed-shapeTEXTUREPASS,notredrawingthemap.",
+      "generated": "../../terrain_riverside.generated.png",
+      "disposition": "selected candidate: coordinate-conditioned texture pass; exact/runtime acceptance pending"
+    },
+    {
+      "id": "house-r1",
+      "asset": "city_residential_s2",
+      "prompt": "EDIT attached STAGE1 district into STAGE2. KEEP its EXISTING MAIN HOUSE at SAME SIZE AND SAME POSITION and SAME ASPECTPROPORTIONS: roof aroundy310, facadeheightunchanged, broadfrontwindow/veranda notshrunk. ThisisGROWTH, so newdistrict mustbe ATLEAST AS TALL AND WIDE asstage1, notflatteror smaller. Existingmainhouse recognizable rightforeground. Add compact LOWER GABLED HOMES BEHIND and LEFTwithin rightside x370..900; differingroofheights, highestnewroofaroundy240. ConnectfrontverandatoRIGHTBACKwith an L-SHAPEDSHAREDVERANDA. PutONE sharedlongbench atLcorner, lowhedgeonlybehind, tinylife silhouettes, noevenlyrepeateddoors. Extendwoodenverandafrontbasegentlyto y640 asdistrictanchor512640, not paintedground. Sourcecanvas1024x768(4:3), preserveFULLFRAME; allartwithin saferect x64..960,y48..736. CRITICALleftbottomSHOPRESERVEDRECTx64..352,y440..736 mustbe FULLYALPHAZERO, noleaf/porch/shadow/noiseinthatrectangle. L-shapedinside spaceALPHATRANSPARENT, no paving,dirt,grass. No roads,rails,groundplane,castshadowoutsidehouse,labels,text,numbers,stateUI,shopsorstorecanopies. Keep watercolorcreamwalls/slatebluegables/honeytimber/sagegreen exactlystage1style. Addhomes/porch around unchangedlarge mainhouse ratherthanresizingwholegroup. Onlylegitimatesceneaddition, noartificialhorizontal/verticalstretching.",
+      "generated": "../../rejected/m5-geometry-r1/house-r1.generated.png",
+      "disposition": "rejected: reserved shop area intrusion"
+    },
+    {
+      "id": "house-r2",
+      "asset": "city_residential_s2",
+      "prompt": "EDIT currentstage2layoutselectively. KEEP MAIN LARGE HOUSE atRIGHTFOREGROUND absolutelyUNCHANGED inPOSITION,SIZE,PROPORTION: itsroofaroundy310andfrontwindowandporchmatchstage1already. Remove ALL SMALL HOUSES AND PORCHES onFARLEFT completely (left35%canvas mustbepuretransparent). MOVE the existing BACK/REAR HOUSE toRIGHT soitsLEFTEDGEisx400inlogical1024x768coordinates; put2compactlowergablesBEHINDmainhouse, notbesideitontheleft. DoNOTshrinkwholegrouporflattenhouses. SharedL-shapedwoodverandaconnectsfronttoRIGHTREAR, withonebench atcorner. Add2low WOODENPORCHSTEPS descendingfrommainfrontverandatox500..780,y600..640 sofootcontactreachesy640; stepsarewoodnotpavingorpaintedground. KeepNEGATIVETRANSPARENTSPACEinsideL. Entire visibleartx370..950,y220..640. CRITICALreservedSHOPRECTx64..352,y440..736completelyalpha0, no buildings/planks/shadow/foliage/noise. Allobjectsinside saferect64..960,48..736. OriginalmainhouseMUSTREMAINASLARGE asnow, roofheightandwindowunchanged; retainexistingrightyoungtree. Backgablesat y220..350makegrowthmoretallandoccupiedthan1. No roads,ground,grassplane,shops,canopies,letters,numbers,UI. Full4:3canvas1024x768 transparentbackground, no cropping. JustremoveleftintrusionsandplaceadditionBEHINDmainhouse.",
+      "generated": "../../rejected/m5-geometry-r1/house-r2.generated.png",
+      "disposition": "rejected: high new foliage and stray alpha1 outside safe area"
+    },
+    {
+      "id": "house-r3",
+      "asset": "city_residential_s2",
+      "prompt": "SELECTIVE EDIT ONLY THE NEW BACKGROUND VEGETATION. Keepallbuildings,roofs,windows,veranda,woodensteps,benches,peoplepositionsandfullcanvasEXACTLYascurrent. REMOVE the TALL TREES BEHIND THE ROOFS (the bigleafycanopiesattop andbackleft): stage2canonicalhasonlyLOWBACKHEDGE, notatallforest. ReplacewithshortlowhedgeBEHINDbuildings, NEVERabovebackroofapices. KeeptheoneoriginalSLENDER YOUNGTREEontheRIGHT ofmainhouse, sameheightasstage1notabovemainroof. LeaveEMPTYTRANSPARENTSKYabovebackgables. Do not shrink orflatten ormovemainhouse. Do not addnewgroundorobjects. RemovefaintisolatedalphaspecklesthatareNOTconnectedtoactualobjects; transparentbackgroundmustbealphazerooutsidesilhouette. Leftbottomreservedrectremainsfullyempty. Preserve4:3canvasandimageframingexactly, do notcroporcenterobject. WarmJapanese watercolorstyleunchanged. Thisisanimagecleanupofvegetationonly, no layoutchanges, no newtextornumbers.",
+      "generated": "../../city_residential_s2.generated.png",
+      "disposition": "selected candidate: meaningful growth, zero-alpha safe and shop reservation; foot582 vs640 remains unresolved"
+    },
+    {
+      "id": "house-r4",
+      "asset": "city_residential_s2",
+      "prompt": "LOCAL EDIT ONLY THE FRONT WOODEN PORCH STEPS. Keepallbuildings,roofpeaks,frontwindow,facade,sideveranda,backgables,benchandtreeEXACTLYASIS, inthesamepositionsandscaleonthis1024x768frame. Currentwoodenstepsendatabouty582. EXTEND thefrontWOODENSTEPS DOWNWARD with3or4shallowwoodentreads untiltheBOTTOMSTEP touches y640, centeredaroundx560, spanningx480..740. Thisisaprojectingwoodenstair fromthecurrentporchaty580, NOT stretchingthehouseandNOT movingthewholegroup. Bottomstepmustreallyextendtoy640intheimage; do not leaveitupaty580. Shortwoodensupportsunderstepsallowed, no dirt,ground,paintedshadoworpath. KeepstepssimpleandnarrowenoughthatLEFTSHOPRESERVEDRECT x64..352,y440..736 stays completelyalpha0. Allartwithin x64..960,y48..736. Fullcanvas4:3exactlyunchanged, no croporzoom. Nochangeinroofheighty310, window-size, rearroofpositionsorhousewidth. No addedtext,signs,letters,objects. Preservegenuinealphazerooutsidetheobjects, no faintnoise. Only extend the small FRONTWOODEN STAIR verticallydown untilfoot640.",
+      "generated": "../../rejected/m5-geometry-r1/house-r4.generated.png",
+      "disposition": "rejected: broad gray haze and failed baseline correction"
+    }
+  ],
+  "selected_export": {
+    "terrain_riverside": {
+      "native": [
+        1586,
+        992
+      ],
+      "output": [
+        3200,
+        2000
+      ],
+      "channels": "RGB",
+      "webp": "lossless"
+    },
+    "city_residential_s2": {
+      "native": [
+        1448,
+        1086
+      ],
+      "output": [
+        1024,
+        768
+      ],
+      "uniform_resize": [
+        963,
+        722
+      ],
+      "translation": [
+        60,
+        18
+      ],
+      "channels": "RGBA8",
+      "webp": "lossless",
+      "opaque_bbox": [
+        381,
+        225,
+        953,
+        582
+      ],
+      "all_alpha_bbox": [
+        379,
+        222,
+        957,
+        588
+      ],
+      "outside_safe_alpha_max": 0,
+      "reserved_shop_alpha_max": 0,
+      "foot_anchor_target": [
+        512,
+        640
+      ],
+      "foot_unresolved": true
+    }
+  }
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "stamp_g01",
+    "attempt": 1,
+    "selected": false,
+    "reason": "Floating golden emphasis rays not specified by the canonical physical still life",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      19,
+      1253,
+      1254
+    ],
+    "native_sha256": "e25f49c21d7abf42b7bf607d5200d50df72cd4ded3f2c537e6b3481e93443e23",
+    "native_bytes": 1144661,
+    "runtime_export": null
+  }
+]

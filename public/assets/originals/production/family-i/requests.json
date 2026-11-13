@@ -1,0 +1,47 @@
+{
+  "method": "Actual imagegen, transparent_background:true. Six independent original generations; F01 inspected for style only, no image reference supplied. No rejected attempts or redrawing.",
+  "attempts": [
+    {
+      "id": "stamp_i01",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A SINGLE SMALL GABLED HOUSE drawn large in a direct FRONT VIEW. A newly built pale-gray STONE FOUNDATION clearly supports the cream-plaster house. Warm terracotta triangular gable roof, one welcoming doorway and simple windows. Beside the doorway a conspicuous YOUNG GREEN PLANT SPROUT grows, two tender leaves. House alone on a small stone footing with a tiny patch of earth, no surrounding town. The stone foundation and sprout express the very first completed building.",
+      "native_generation": "exec-0f9342f4-0448-4cd9-ab50-94760089212f.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_i02",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. TWO ADJACENT HOMES joined by a LOW ARCHED PASSAGE between them; a continuous strip of COBBLESTONE runs at their feet and through the arch. Large prominent windows on both left and right houses, and warm hanging lamps under the eaves. Frontal three-quarter scene, bold two-roof silhouette with low connecting arch visually obvious, not one single house.",
+      "native_generation": "exec-7065ce33-fc8e-4e1c-b312-f938974a5351.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_i03",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. THREE BUILDINGS with THREE VERY DIFFERENT ROOF SHAPES surround a SMALL TRIANGULAR PLAZA. Oblique bird's-eye view. One HOME with a simple rounded wooden doorway; one WORKSHOP with broad double work doors and a short chimney; one SHOP with a striped fabric awning and a wide shop entrance, absolutely no lettering or signs. Exactly three buildings, clear three-sided arrangement and triangular central negative space.",
+      "native_generation": "exec-10cef6f2-d970-44a2-a7d8-25dd42a503ad.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_i04",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LARGE ROUND COURTYARD seen from above, surrounded in a RING by SIX distinct places: a HOME, a SHOP with awning, a WORKSHOP with chimney, a STATION with long platform canopy, a small GROVE of TREES, and a HARBOR building with a little dock and sail. Paths converge inward toward the circular courtyard. Exactly these six varied silhouettes; make the empty round center large and obvious, an open circular urban composition, not a solid pile of roofs.",
+      "native_generation": "exec-3959697b-81f2-40e0-bb93-fc3700069ebe.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_i05",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A TALL CLOCK TOWER stands in the CENTER of a town, with neighboring rooftops aligned and pointing toward the tower. Large welcoming WIDE ENTRANCE at the tower base. Clock face is a plain circle with TWO HANDS ONLY, absolutely no digits, Roman numerals or letters. The tall tower must dominate the composition, surrounded by lower roofs, no frame.",
+      "native_generation": "exec-05d224e2-cf3e-4153-91a6-05f411d830d2.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_i06",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A GROWN TOWN seen THROUGH A LARGE THICK ARCHED GATE in the FOREGROUND. Beyond the broad arch opening are MULTIPLE LAYERS OF ROOFS, short CHIMNEYS, a STATION CANOPY and HARBOR SAILS receding into the distance. The foreground gate is a bold sturdy architectural stone arch with a generous opening so the layered town is visible. Distinct deep view through the arch, no separate border or stamp frame.",
+      "native_generation": "exec-607bead4-053b-412a-b736-f7c8875163ab.png",
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}

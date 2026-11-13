@@ -1,3 +1,4 @@
+import { selectedAudioVolume, type AudioVolume } from '../audio/preferences';
 import { applySessionFact, parseProfileBackup, ProfileRepository, type ProfileDocument, type ProfileProgress, type RecordContext } from '../profile';
 import { CityEconomy, initialCityState, encodeCityState, decodeCityState, executeCityCommand, type CityState, type CityCommand, type DistrictId, type AdvanceResult, type EconomyMode } from '../economy';
 import type { SessionFact, SessionMode } from '../typing';
@@ -6,7 +7,7 @@ import { createAchievementState, beginAchievementSession, applyAchievementFacts,
 
 export interface AppSettings {
   tutorialSeen: boolean; fontScale: 100 | 125 | 150; guide: boolean;
-  deliveryKeys: ('Space' | 'Enter')[]; reducedMotion: boolean;
+  deliveryKeys: ('Space' | 'Enter')[]; reducedMotion: boolean; sound: boolean; audioVolume: AudioVolume;
 }
 export interface RuntimeStatus { storage: 'saved' | 'saving' | 'memory' | 'error'; writable: boolean; message: string }
 export interface AppRuntime {
@@ -49,7 +50,7 @@ function freezeSnapshot<T>(value: T): T {
 export async function createAppRuntime(repository?: ProfileRepository, clock: RuntimeClock = { now: () => performance.now(), wallNow: () => Date.now() }): Promise<AppRuntime> {
   let repo = repository ?? await ProfileRepository.open();
   let progress = repo.snapshot.progress;
-  let settings: AppSettings = { ...repo.snapshot.settings, tutorialSeen: repo.snapshot.tutorialSeen };
+  let settings: AppSettings = { ...repo.snapshot.settings, audioVolume: selectedAudioVolume(repo.snapshot.settings.audioVolume), tutorialSeen: repo.snapshot.tutorialSeen };
   let errorMessage = '';
   let cityRecovery = '';
   let cityAvailable = true;
@@ -118,7 +119,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     const snapshot = repo.snapshot;
     progress = snapshot.progress;
     achievements = readAchievements(snapshot);
-    settings = { ...snapshot.settings, tutorialSeen: snapshot.tutorialSeen };
+    settings = { ...snapshot.settings, audioVolume: selectedAudioVolume(snapshot.settings.audioVolume), tutorialSeen: snapshot.tutorialSeen };
     syncCity();
   };
   const unsubscribe = repo.subscribe(() => {
@@ -178,7 +179,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       };
       return publicAchievements.value;
     },
-    get settings() { return { ...settings, deliveryKeys: [...settings.deliveryKeys] }; },
+    get settings() { return { ...settings, deliveryKeys: [...settings.deliveryKeys], audioVolume: { ...settings.audioVolume } }; },
     get city() { return structuredClone(city); },
     get destination() { return destination; },
     get cityBusy() { return busy; },
@@ -275,8 +276,9 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     },
     updateSettings(patch) {
       if (!runtime.status.writable) return;
-      settings = { ...settings, ...patch, deliveryKeys: [...(patch.deliveryKeys ?? settings.deliveryKeys)] };
-      const { tutorialSeen, ...change } = patch;
+      const fixed = { ...patch, ...(patch.audioVolume ? { audioVolume: { ...patch.audioVolume } } : {}) };
+      settings = { ...settings, ...fixed, deliveryKeys: [...(fixed.deliveryKeys ?? settings.deliveryKeys)] };
+      const { tutorialSeen, ...change } = fixed;
       void persist(async () => {
         if (Object.keys(change).length) await repo.updateSettings(change);
         if (tutorialSeen) await repo.markTutorialSeen();

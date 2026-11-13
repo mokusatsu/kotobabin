@@ -21,9 +21,10 @@ test('sakurai independent full keyboard delivery loop',async({page},testInfo)=>{
  await page.keyboard.press('Escape');await snap('05-main-pause');await page.waitForTimeout(2200);await snap('06-main-pause-stable');await page.keyboard.press('Enter');await snap('07-main-resume');
  await page.waitForTimeout(45000);await snap('08-main-45sec');await page.waitForTimeout(45000);await snap('09-result');
  await expect(page.getByRole('heading',{name:'ことばが、届きました。'})).toBeVisible();
- let visited=1;while(await page.getByRole('button',{name:'次の表示 →',exact:true}).isEnabled()){expect(visited).toBeLessThan(20);await keyButton(/^次の表示 →$/);visited++;await snap('09-result-panel-'+visited);}
- console.log('SAKURAI_RESULT_PANELS '+visited);
- while(await page.getByRole('button',{name:'← 前の表示',exact:true}).isEnabled()){await keyButton(/^← 前の表示$/);}
+ // The unchanged M4 authored journey is archived in docs/development/reviews/m4-keyboard-journey.ts.txt.
+ // M5 replaces result article pages with an independent score / award / summary game stage.
+ await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase','score');
+ await expect(page.locator('.result-stage [data-result-command="advance"]')).toBeEnabled();await page.keyboard.press('s');await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase','summary');await snap('09-result-summary');
  await keyButton(/同じ問題でもう一度/);await expect(page.getByRole('textbox',{name:'ローマ字を入力'})).toBeFocused();await snap('10-result-enter');expect((await page.locator('main').innerText()).match(/確定得点\s*(\d+)/)?.[1]).toBe('0');await expect(page.getByText('完成 0語',{exact:true})).toBeVisible();
  await page.keyboard.press('F2');await snap('11-navigation');await keyButton(/^街の開発$/);await snap('12-town-confirm');await keyButton(/^終了して移動する$/);await expect(page.getByRole('heading',{name:'今の配達を終えて移動しますか？'})).toHaveCount(0);await snap('12-town');
  await page.setViewportSize({width:1180,height:820});await snap('13-town-820');

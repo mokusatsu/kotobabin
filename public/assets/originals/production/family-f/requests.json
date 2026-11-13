@@ -1,0 +1,54 @@
+{
+  "client_date": "2026-11-14 Asia/Tokyo",
+  "method": "Actual imagegen; transparent_background:true; viewed E01 style reference. Six new original generations; no rejected generations or image edits.",
+  "attempts": [
+    {
+      "id": "stamp_f01",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A small BEGINNER PRACTICE NOTEBOOK lying at a diagonal on a low wooden workbench surface, with ONE newly sharpened pencil beside it and ONE curled pencil shaving. The notebook has a plain sage cover, one front corner gently folded, no writing or lines that resemble text. Intimate three-quarter view; notebook and fresh pencil dominate the image. A small freestanding warm wooden tabletop shape below, not a whole room. Preserve simple bold silhouettes.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-95410e12-de43-40a0-8b34-103fbcdbe714.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_f02",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A beautifully hand-worn wooden hand stamp / printing block with a broad ROUND ERGONOMIC BALL HANDLE, sitting upright on a neat stack of blank cream paper. The rounded polished wooden handle must be the dominant tall central silhouette, warm sheen on its large smooth wood surface. The flat rectangular stamp base rests squarely on the layered paper. Absolutely no printed mark or lettering anywhere. Three-quarter view from slightly above. One upright stamp only; not a gavel or hammer.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-3b43fa60-3ac7-46f1-8064-ccfe1e080ce2.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_f03",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A freestanding low wooden work BOARD with FOUR DISTINCT CORD FORMS laid across it, which gently connect and UNRAVEL TOWARD THE CENTER: a large ROUND LOOP on the left, a TIGHT COMPACT KNOT upper middle, a small BRANCHING FORK of cord upper right, and a LONG SMOOTH RIBBON extending down toward the right foreground. Make the four very different curved forms obvious through cream/sage/ochre cord colors and wide negative space, like untying and understanding a tricky thing. These are actual physical cords, not letters or calligraphy; no printed marks. Bold compact round organic composition, distinct from a straight rack of tools.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-5c7dcd3c-adb4-406f-b29d-2d4d5feb11f3.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_f04",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A low wide WOODEN TOOL RACK containing EXACTLY FIVE DISTINCT TOOLS, each individually recognizable and separated: from LEFT TO RIGHT, SCISSORS with two round finger loops; a long flat FILE with rough steel blade and wood handle; a PAINTBRUSH with broad visible cream bristles; a SMALL WOODEN MALLET with a horizontal cylindrical head; a SHARPENED PENCIL with a pointed graphite tip. All five tools stand upright in separate slots. Keep the five very different tops large and clear, not a generic row of identical sticks. Whole rack and tools fill a strong comb-shaped silhouette. No extra tools, no jars, no ruler. Their full silhouettes must remain distinguishable at tiny stamp size.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-2bcfa24c-aaa8-44aa-b54d-d818bc86b542.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_f05",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A LARGE WOODEN SPOOL OF THREAD on the LEFT. One single thread extends from it in a broad smooth uninterrupted ARC toward the RIGHT, passing visibly THROUGH A SMALL ROUND HOLE in a thin blank cream ENVELOPE, then continuing as one graceful strand. Put one small simple sewing needle in the foreground. The thread must clearly connect spool to hole and out, in one confident continuous arc, not a tangled knot. Slightly elevated three-quarter still life. Freestanding composition with no rectangular background, no plants, no lettering or decorative symbols.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-3d3c53a2-94a9-4274-8187-c98576ad34b5.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_f06",
+      "prompt": "Create a NEW original achievement stamp illustration for kotobabin. Use the reference ONLY for watercolor/gouache rendering, not its map/flower/pebble subjects. Warm Japanese storybook watercolor, honey ochre wood, cream paper, forest sage, restrained terracotta, soft paper grain INSIDE painted shapes. Large readable silhouettes at 72px. Square illustration on a genuine transparent background; no opaque rectangular backdrop. Full composition safely inset with generous transparent margins. No frame or perforations; absolutely no text, letters, numbers, title, UI marks, seals, or icon symbols. No existing brand. A storybook view looking OUT THROUGH AN OPEN WOODEN WORKSHOP WINDOW: a folded PAPER BIRD is flying outward carrying ONE cream LETTER toward a small rounded POSTBOX OUTSIDE. Large open square window frame on left/back gives clear inside/outside depth; the flying bird passes across its open center toward the right-side postbox. In the near interior foreground place ONE small wooden practice hand stamp, with a round polished handle. The paper bird, letter and postbox are large simple silhouettes. A little outdoor sage green foliage may connect the scene, but transparent outer margins; no full opaque background, no enclosing stamp border. No postbox writing, numbers, printed marks, symbols or signs.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-25057044-2420-44a7-a5c9-e6e04d7a2482.png",
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}

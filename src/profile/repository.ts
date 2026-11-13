@@ -1,3 +1,4 @@
+import { selectedAudioVolume, validAudioVolume, type AudioVolume } from '../audio/preferences';
 import content from '../../spec/initial/data/words.json';
 import {
   applySessionFact, createProfileProgress, validateAchievementState, resetAchievementRecords,
@@ -12,6 +13,7 @@ export interface ProfileSettings {
   deliveryKeys: ('Space' | 'Enter')[];
   reducedMotion: boolean;
   sound: boolean;
+  audioVolume?: AudioVolume;
 }
 export interface ProfileDocument {
   settings: ProfileSettings;
@@ -35,10 +37,10 @@ export interface RepositoryStatus {
   notice: string;
 }
 export const defaultProfileSettings: ProfileSettings = {
-  guide: true, fontScale: 100, deliveryKeys: ['Space'], reducedMotion: false, sound: false,
+  guide: true, fontScale: 100, deliveryKeys: ['Space'], reducedMotion: false, sound: false, audioVolume: selectedAudioVolume(),
 };
 export function createProfileDocument(): ProfileDocument {
-  return { settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] }, tutorialSeen: false, progress: createProfileProgress(),
+  return { settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys], audioVolume: selectedAudioVolume() }, tutorialSeen: false, progress: createProfileProgress(),
     extensions: {}, metadata: { schemaVersion: 4, ownerTabId: null, writeEpoch: 0, revision: 0, generation: 0 } };
 }
 
@@ -58,7 +60,8 @@ function settings(value: unknown): value is ProfileSettings {
   return object(value) && typeof value.guide === 'boolean' && [100, 125, 150].includes(value.fontScale as number)
     && Array.isArray(value.deliveryKeys) && value.deliveryKeys.length > 0 && value.deliveryKeys.length <= 2
     && value.deliveryKeys.every(key => key === 'Space' || key === 'Enter') && new Set(value.deliveryKeys).size === value.deliveryKeys.length
-    && typeof value.reducedMotion === 'boolean' && typeof value.sound === 'boolean';
+    && typeof value.reducedMotion === 'boolean' && typeof value.sound === 'boolean'
+    && (value.audioVolume === undefined || validAudioVolume(value.audioVolume));
 }
 function context(value: unknown): value is RecordContext {
   return object(value) && ['relaxed', 'standard', 'challenge'].includes(value.courseId as string)
@@ -341,7 +344,7 @@ export class ProfileRepository {
   /** Caller confirms each scope before invoking; never use this for city restart. */
   resetSettings(): Promise<void> {
     return this.mutateDocument(document => ({ ...document,
-      settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] },
+      settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys], audioVolume: selectedAudioVolume() },
       extensions: { ...document.extensions, ...(document.extensions.achievements === undefined ? {} : {
         achievements: { ...document.extensions.achievements as AchievementState, notificationMode: 'live' },
       }) },

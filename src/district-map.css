@@ -1,0 +1,42 @@
+/* The entire local district remains inside one logical canvas; UI text is real DOM. */
+.district-map { width: 100%; height: 100%; min-width: 0; min-height: 0; margin: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; color: var(--text, #24483b); }
+.district-map-canvas { position: relative; container-type: size; min-width: 0; min-height: 0; width: 100%; height: 100%; }
+.dm-map-board { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(100cqw, calc(100cqh * 1200 / 760)); height: min(100cqh, calc(100cqw * 760 / 1200)); }
+.dm-scene { display: block; width: 100%; height: 100%; overflow: visible; }
+.dm-ground { fill: #f0efdc; stroke: #c9d1b6; stroke-width: 3; }
+.dm-walkway { fill: none; stroke: #e1d4b3; stroke-width: 34; stroke-linecap: round; stroke-linejoin: round; }
+.dm-empty-plot { fill: #e7ead5; stroke: #899975; stroke-width: 3; stroke-dasharray: 7 6; }
+.dm-route { fill: none; stroke: #c3b48d; stroke-width: 16; stroke-linejoin: round; }
+.dm-water { fill: #c6dddb; stroke: #88b0a9; stroke-width: 4; }
+.dm-pier { fill: #b49a6e; stroke: #7d7050; stroke-width: 3; }
+.dm-schematic-building, .dm-shop-schematic, .dm-schematic-truck { fill: #e2c7a3; stroke: #647969; stroke-width: 4; stroke-linejoin: round; }
+.dm-schematic-tree { fill: #a9be8e; stroke: #688063; stroke-width: 4; }
+.dm-packaging { fill: #d2b88f; stroke: #786e52; stroke-width: 3; stroke-linejoin: round; }
+.dm-parcel, .dm-waiting-cargo { fill: #d7b981; stroke: #8c7753; stroke-width: 3; }
+.dm-machine { fill: #a6bbb0; stroke: #587b70; }
+.dm-railway { stroke: #6c7d74; fill: #d0d8ca; stroke-width: 4; }
+.dm-train { fill: #94aaa0; }
+.dm-research { fill: #e7dfc2; stroke: #a4ab93; stroke-width: 3; }
+.dm-research .active { fill: #a6c0b3; stroke: #466d61; }
+.dm-synergies { fill: #e3e5d7; stroke: #acb49e; stroke-width: 3; }
+.dm-synergies .active { fill: #b6cda4; stroke: #587648; }
+.dm-active-link { fill: none; stroke: #355c3f; stroke-width: 5; }
+.dm-construction.paused { filter: grayscale(.8); }
+.dm-construction-rope { fill: none; stroke: #bc8f54; stroke-width: 5; stroke-dasharray: 14 7; }
+.dm-feature-layer { position: absolute; inset: 0; pointer-events: none; }
+.dm-feature { position: absolute; left: var(--dm-x); top: var(--dm-y); transform: translate(-50%, -50%); min-height: 44px; max-width: 31%; padding: 4px 10px; border: 1px solid #a5b293; border-radius: 8px; background: #fffdf0ed; color: #254b3d; font: inherit; font-size: calc(16px * var(--font-scale, 1)); line-height: 1.2; text-align: center; pointer-events: auto; box-shadow: 0 2px 0 #899a751f; }
+.dm-feature.selected { outline: 3px solid #527947; outline-offset: 3px; background: #e6efda; }
+.dm-feature:focus-visible { outline: 4px solid #9e5b36; outline-offset: 4px; z-index: 2; }
+.dm-feature:disabled { opacity: .8; }
+.dm-caption { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; padding: 4px 8px; font-size: calc(16px * var(--font-scale, 1)); line-height: 1.2; }
+.dm-art-note { color: var(--secondary, #61775e); }
+@media (prefers-reduced-motion: reduce) { .district-map-canvas { animation: none !important; transition: none !important; } }
+
+.dm-camera-layer { position: absolute; inset: 0; }
+.dm-capacity-rack .dm-rack-empty { fill: #e2ddc9; stroke: #9aab89; stroke-width: 2; }
+.dm-capacity-rack .dm-rack-filled { fill: #6e9274; }
+.dm-capacity-rack path { stroke: #aeb598; stroke-width: 3; }
+.dm-capacity-rack path.reached { stroke: #355e45; }
+.dm-shop-annex { fill: #cdb18b; stroke: #6b806d; stroke-width: 2; }
+/* Short map callouts stay distinct; exact amounts remain in their accessible names and dock. */
+.dm-feature { padding-inline: 6px; }
