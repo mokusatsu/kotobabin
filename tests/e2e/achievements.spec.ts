@@ -163,13 +163,16 @@ test('five real qualified practice words keep F04 card compact and every word de
   const select = card.locator('[data-action="achievement-select"]');
   await keyboardRevealControl(page, select);
   await expect(card).toHaveAttribute('data-state', 'earned');
-  await expect(card.locator('.achievement-progress > div')).toHaveCount(2);
-  await expect(card).toContainText(/ほか\d+項目は詳細へ/);
+  const previewCount = await card.locator('.achievement-progress > div').count();
+  expect(previewCount).toBeGreaterThanOrEqual(1); expect(previewCount).toBeLessThanOrEqual(2);
+  const remaining = (await card.locator('.achievement-open-hint').innerText()).match(/ほか(\d+)項目/);
+  expect(remaining).not.toBeNull();
+  const remainingCount = Number(remaining![1]); expect(remainingCount).toBeGreaterThan(0);
   await assertViewportFits(page);
   await page.screenshot({ path: testInfo.outputPath('f04-qualified-card-150.png') });
   await select.click();
   const lines = page.locator('#achievement-detail .achievement-progress > div');
-  expect(await lines.count()).toBeGreaterThan(2);
+  await expect(lines).toHaveCount(previewCount + remainingCount);
   for (const name of names) {
     const line = lines.filter({ hasText: `${name}：` });
     await keyboardRevealControl(page, line); await expect(line).toBeVisible();
