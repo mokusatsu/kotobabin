@@ -4,18 +4,17 @@ import hashlib,json,shutil
 
 ROOT=Path(__file__).resolve().parent
 ASSETS=ROOT.parents[2]
-SIZE=(608,688)
-OFFSETS={1:(352,44)}
+TRANSFORMS={1:((608,688),(352,44)),2:((608,686),(352,45)),3:((608,656),(352,94)),4:((608,648),(352,100)),5:((608,610),(352,130))}
 POINTS=[(512,640),(730,650),(904,716)]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 rows=[]
-for stage,offset in OFFSETS.items():
+for stage,(size,offset) in TRANSFORMS.items():
     asset=f'city_harbor_s{stage}'
     native=ROOT/'native'/f'{asset}.png'
     src=Image.open(native).convert('RGBA')
     out=Image.new('RGBA',(1024,768))
     # Complete native canvas; no crop, alpha edits, masks or thresholding.
-    out.paste(src.resize(SIZE,Image.Resampling.LANCZOS),offset)
+    out.paste(src.resize(size,Image.Resampling.LANCZOS),offset)
     png=ASSETS/'originals'/f'{asset}.png';generated=ASSETS/'originals'/f'{asset}.generated.png';webp=ASSETS/'city_stage'/f'{asset}.webp'
     out.save(png);shutil.copyfile(native,generated);out.save(webp,lossless=True,exact=True)
     dec=Image.open(webp).convert('RGBA');assert dec.getchannel('A').tobytes()==out.getchannel('A').tobytes()
@@ -25,8 +24,10 @@ for stage,offset in OFFSETS.items():
     outside=[a.crop(r).getextrema()[1] for r in [(0,0,64,768),(960,0,1024,768),(0,0,1024,48),(0,736,1024,768)]]
     reserved=a.crop((64,440,352,736)).getextrema()[1]
     contacts={f'{x},{y}':a.getpixel((x,y)) for x,y in POINTS}
+    pier_segment=[a.getpixel((round(730+174*i/200),round(650+66*i/200))) for i in range(201)]
     assert max(outside)==0 and reserved==0,(asset,outside,reserved)
     assert min(contacts.values())>=128,(asset,contacts)
+    assert min(pier_segment)>=128,(asset,min(pier_segment))
     paper.convert('RGB').save(ROOT/f'{asset}.paper.png')
     overlay=paper.convert('RGB');d=ImageDraw.Draw(overlay);d.rectangle((64,48,959,735),outline='#b34e39',width=2);d.rectangle((64,440,351,735),outline='#b58a3c',width=2)
     for x,y in POINTS:d.ellipse((x-5,y-5,x+5,y+5),outline='#b34e39',width=2)
@@ -39,5 +40,5 @@ for stage,offset in OFFSETS.items():
     terrain.alpha_composite(out.resize((264,198),Image.Resampling.LANCZOS),(1058,570))
     terrain.convert('RGB').resize((800,500),Image.Resampling.LANCZOS).save(ROOT/f'{asset}.riverside-composite.png')
     step=a.crop((480,600,540,670)).point(lambda v:255 if v>=128 else 0).getbbox()
-    rows.append(dict(id=asset,native_size=src.size,output_size=out.size,output_mode=out.mode,whole_canvas_resize=SIZE,offset=offset,scale=[SIZE[0]/src.width,SIZE[1]/src.height],anchor=[512,640],safe_rect=[64,48,960,736],reserved_shop_rect=[64,440,352,736],all_alpha_bbox=b,opaque_bbox=a.point(lambda v:255 if v>=128 else 0).getbbox(),outside_safe_max_alpha=max(outside),reserved_shop_max_alpha=reserved,contact_alphas=contacts,front_step_region=[480,600,540,670],front_step_opaque_bbox_local=step,tip25x25_max_alpha=a.crop((892,704,917,729)).getextrema()[1],sha256={str(p.relative_to(ASSETS)):sha(p) for p in [native,png,generated,webp]},png_webp_alpha_and_paper_equal=True))
+    rows.append(dict(id=asset,native_size=src.size,output_size=out.size,output_mode=out.mode,whole_canvas_resize=size,offset=offset,scale=[size[0]/src.width,size[1]/src.height],vertical_to_horizontal_scale_ratio=(size[1]/src.height)/(size[0]/src.width),anchor=[512,640],safe_rect=[64,48,960,736],reserved_shop_rect=[64,440,352,736],all_alpha_bbox=b,opaque_bbox=a.point(lambda v:255 if v>=128 else 0).getbbox(),outside_safe_max_alpha=max(outside),reserved_shop_max_alpha=reserved,contact_alphas=contacts,pier_segment_sample_count=201,pier_segment_min_alpha=min(pier_segment),front_step_region=[480,600,540,670],front_step_opaque_bbox_local=step,tip25x25_max_alpha=a.crop((892,704,917,729)).getextrema()[1],sha256={str(p.relative_to(ASSETS)):sha(p) for p in [native,png,generated,webp]},png_webp_alpha_and_paper_equal=True))
 (ROOT/'measurements.json').write_text(json.dumps(rows,indent=2)+'\n')

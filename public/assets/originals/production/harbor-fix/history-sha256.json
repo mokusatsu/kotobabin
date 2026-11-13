@@ -25,5 +25,7 @@
   "history/production-harbor/export.py": "cb0cf0c20fe0bbfa47134aa7e8c70dbd2004e3c221f23bd0e02bde79f058d5c7",
   "history/production-harbor/measurements.json": "83ced741131e2d57f3c4f3dc8f5be9ffc8181977084114baf84529d064bb5bcb",
   "history/production-harbor/requests.json": "355b9f5512d00480e1238bcaa50c37b7f72e6c23f4b782628ea35fa27687505f",
-  "history/production-harbor/shop_harbor.paper.jpg": "0d6a9d0de78afc52d66ca5eec6bde20ad8d3527ef5bc8729a0ae124d724dde5f"
+  "history/production-harbor/shop_harbor.paper.jpg": "0d6a9d0de78afc52d66ca5eec6bde20ad8d3527ef5bc8729a0ae124d724dde5f",
+  "history/rejected-harbor/city_harbor_s3_wide.generated.png": "aae73da92d9b3159c0cf19638fec31f5a762c55657a774087fde48d8a09c90df",
+  "history/rejected-harbor/city_harbor_s2_long_wing.generated.png": "8ea422edb7cb52533f74e486675883558bd56936bec13cbec41866e4c2886b8d"
 }
