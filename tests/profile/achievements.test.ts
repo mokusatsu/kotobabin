@@ -185,6 +185,18 @@ describe('reward ownership, actions and inspectable progress',()=>{
     expect(reset.measuredProgress.words).toEqual(next.measuredProgress.words);expect(validateAchievementState(reset)).toBe(true);
   });
 
+  it('explains same-order and separate-course progress without exposing internal plan IDs',()=>{
+    expect(getAchievementViews(createAchievementState()).find(v=>v.id==='C01')!.progress.find(p=>p.key==='accuracy_percent')!.displayText).toContain('計測なし');
+    const active=round(6,{finish:false,course:'relaxed'});
+    const views=getAchievementViews(active.state,active.session.snapshot(0));
+    const order=views.find(v=>v.id==='A06')!.progress.find(p=>p.key==='order_display')!;
+    expect(order.displayText).toContain('この問題順で0/2便完走');expect(order.displayText).not.toContain('achievement-fixture');
+    const relaxed=views.find(v=>v.id==='E06')!.progress.find(p=>p.key==='course_1')!;
+    expect(relaxed.displayText).toContain('6/5語');expect(relaxed.displayText).toContain('90秒完走で確定');
+    const standard=views.find(v=>v.id==='E06')!.progress.find(p=>p.key==='course_2')!;
+    expect(standard.displayText).toContain('適格な完走記録はまだありません');
+  });
+
   it('rejects malformed persisted achievement state and never reinterprets it as an empty successful save',()=>{
     const state=round(5,{mode:'PRACTICE'}).state;expect(validateAchievementState(state)).toBe(true);
     for(const corrupt of [
