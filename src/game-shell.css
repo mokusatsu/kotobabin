@@ -119,3 +119,8 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 .deliver-button > kbd { font-size: 1em; }
 /* Enabled text and background must switch together, without a low-contrast fade. */
 .deliver-button { transition: none; }
+
+/* The gallery has its own full-size band; remove spare dock gaps rather than
+   reducing readable text or repeating the ownership action in its status. */
+#app:has(.cosmetic-home-gallery) .world-command-dock,
+#app:has(.cosmetic-home-gallery):has(.ownership-warning:not([hidden])) .world-command-dock { gap: 2px; }
