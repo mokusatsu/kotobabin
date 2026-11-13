@@ -29,7 +29,12 @@ test('failed terrain vehicles and earned art cannot gate real typing or result n
     aborted.push(new URL(route.request().url()).pathname); return route.abort('failed');
   });
   await page.goto('/'); await expect(page.locator('[data-action="start"]')).toBeEnabled();
-  await finishWithSixWords(page); await retryAndType(page);
+  await finishWithSixWords(page);
+  const failedStamp = page.locator('.result-stage img.stamp-picture[src$="/stamp_a01.webp"]');
+  await expect(failedStamp).toHaveClass(/asset-load-failed/);
+  await expect(failedStamp).toHaveCSS('visibility', 'hidden');
+  await expect(failedStamp.locator('..').locator('.stamp-frame')).toBeVisible();
+  await retryAndType(page);
   expect(aborted.some(path => path.includes('terrain_riverside'))).toBe(true);
   expect(aborted.some(path => path.includes('stamp_a01'))).toBe(true); expect(errors).toEqual([]);
   await info.attach('failed-assets', { body: JSON.stringify({ aborted, applicationErrors: errors }), contentType: 'application/json' });

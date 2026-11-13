@@ -25,3 +25,5 @@
 このローカル診断は正式なSites／GitHub CIプレビュー受入ではない。この作業ブランチの基点には夕景原画など未統合の資材があり、該当画像は404で、診断は宣言された寸法での配置・操作の確認に限られる。正式プレビューに関する制約の連絡を受けてローカルサーバーを停止した。全資材を統合した承認済みプレビューでの画像読込、実iPad、独立sakuraiレビュー、製品受入は親作業の検証に残す。マージ・push・公開は行わない。
 
 別途 `3995a85` はネイティブselectが再描画でフォーカスを失う問題への独立修正。DOMの安定IDと存在する選択値を保存し、`preventScroll:true` で復元する。viewerの変更とは分離して提出した。これ以降profile/achievements.tsは別の性能修正担当へ引き渡して変更していない。
+
+The collection UI fixture derives typing achievements through GameSession facts and uses an explicitly constructed city snapshot to populate view-only ownership through the achievement reducer. It is isolated test data, not proof that a player earned all72 achievements or completed economic progression. The separate mature-city journey uses confirmed economic facts/public commands and tests that progression. Official static-production CI, rather than the development diagnostic run, is the acceptance source.

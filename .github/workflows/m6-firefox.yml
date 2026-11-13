@@ -2,7 +2,7 @@ name: M6 actual Firefox production journeys
 on:
   workflow_dispatch:
   push:
-    branches: [test/m6-firefox-audit]
+    branches: [test/m6-firefox-audit, feat/m5-remaining-art]
 permissions:
   contents: read
 concurrency:

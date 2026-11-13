@@ -1,5 +1,6 @@
 /** Test-only source-aware fixture. Ownership comes from canonical typing facts and city reducer,
- * never manually inserted unlocks/rewards. The UI then exercises real persisted choices. */
+ * never manually inserted unlocks/rewards. City metrics are an explicit synthetic view fixture,
+ * not an economic progression test. The UI then exercises real persisted choices. */
 import content from '../../../spec/initial/data/words.json';
 import { initialCityState } from '../../../src/economy';
 import { GameSession, type Word, type CourseId } from '../../../src/typing';
