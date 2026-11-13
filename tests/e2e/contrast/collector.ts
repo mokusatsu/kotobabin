@@ -18,6 +18,9 @@ export function collectContrast() {
   };
   const visible = (element: Element) => {
     const rect = element.getBoundingClientRect(); const style = window.getComputedStyle(element);
+    // The delivery live-region paragraphs are intentionally clipped to zero visible ink.
+    const clipValues = style.clip.match(/-?[\d.]+/g)?.map(Number);
+    if (style.clip !== 'auto' && clipValues?.length && clipValues.every(value => value === 0)) return false;
     return rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight && style.visibility === 'visible' && style.display !== 'none';
   };
   const intersects = (a: DOMRect, b: DOMRect) => Math.min(a.right, b.right) > Math.max(a.left, b.left) && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top);

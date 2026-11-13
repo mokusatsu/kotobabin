@@ -23,3 +23,38 @@ source `2e777bb`（製品base d0da1aa）、[CI43522125762](https://github.com/mo
 main-playing/practice-completeで有効な `#deliver-label` は白／その瞬間のopaque背景 `rgb(211,219,210)`、**1.4157609506:1**を観測した。初回は語完成の直後2RAFで採取しており、`button`のbackground .15s transition中か定常かを断定しない。次の限定追観測では、native語完成を開始する前から450msを毎RAF観測してdisabled状態・実color/background・比率・transitionを保存し、同じ便の定常状態も採取する。低い瞬間を待って隠す変更ではない。
 
 主な採取済みinputは、確認画面の黒／(255,254,247)が20.77:1、gameの(32,61,54)／(255,254,248)が11.66:1。homeの測定可能最小4.91、停止6.32、設定6.20、手帳4.86、図鑑4.52。これらは当該単色確定標本の最小であり、画像/gradient上の未測定文字を含む画面全体の合格値ではない。結果はopacity/画像/gradientを含み多くが未測定、タイピングの背景画像上HUDも一括合格にはしない。全標本のselectorと不確定理由はJSONに残す。
+
+## 実RAF追試：配達ボタンの遷移原因
+
+source `bc12edd`（同じ未修正製品base）、[43522653028](https://github.com/mokusatsu/kotobabin/actions/runs/43522653028)、job132220519595は14.0秒で監査完走。native `BUTTON_CONTRAST_FRAMES` 28標本を独立取得した。時刻は**録画開始相対**であり、有効化の厳密瞬間からの経過ではない。
+
+| 相対ms | disabled | foreground／background | 比率 |
+|---:|---|---|---:|
+| 47、59 | false | white／(233,236,227) | 1.1951 |
+| 74 | false | white／(211,219,210) | 1.4158 |
+| 106 | false | white／(119,151,142) | 3.1810 |
+| 122 | false | white／(87,127,117) | 4.4701 |
+| 139 | false | white／(65,111,101) | 5.6965 |
+| 202〜459 | false | white／(36,89,79) | 8.0249 |
+
+最初の1標本だけdisabledであり、その標本を通常文字の不合格へ含めていない。有効な文字が背景の0.15秒transition中に白へ先行して変わり、定常では合格するという原因を確認した。MAIN定常captureではこの低値は消えた一方、practice完成直後では同じ1.4158を再観測した。親へ、配達ボタンだけのbackground/color transitionを外して同時に可読色へ切り替える最小修正案を報告した。製品は本担当で変更していない。
+
+cityの6標本はこの追試でも4.017で、transition由来ではない。親は別integrationで局所色修正中であり、その修正後の実測は本追試へ先取りしない。
+
+## 既存標本の補助文字サイズ（追加runなし）
+
+親の依頼により、初回JSONの100%標本だけから16px未満を抽出した。これはcontrastの新しい合否条件を作るものではなく、技術§12.1の補助文字初期16pxと比較する具体的な観測である。
+
+| 実表示selector／場面 | computed px |
+|---|---:|
+| `.world-map-help`／home | 12 |
+| `.world-map-help kbd`／home | 10.8 |
+| `.dock-key-hint`／home | 11.2 |
+| `.course-option small`／homeの3説明 | 12 |
+| `#save-status`／home | 10.4 |
+| `.city-balance span`、`#city-coin/#city-income/#city-warehouse`／home | 12.8 |
+| `.button-small > kbd`／F2・Esc | 14.4 |
+| `#deliver-button > kbd`／有効Space | 14.4 |
+| `#save-status`／結果3phase | 12 |
+
+`.delivery-route-state/.delivery-confirmation` はcomputed14pxだが、現在CSSではclipで可視inkを0にした読み上げ用live regionである。これを可視補助文と混同しない。初回collectorのrange採取にはこの未測定行も入ったため、後続collectorではzero-clipを表示対象から除外する（contrastのlow値を除外する変更ではない）。この表は訪問した状態だけであり、全画面/全状態の文字サイズ網羅監査とはしない。
