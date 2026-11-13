@@ -46,8 +46,28 @@ test('the actual runtime persists confirmed typing once and caps offline city ti
     runtime = await createAppRuntime(repository, { now: () => mono, wallNow: () => wall });
     await repository.refresh();
     const reopened = { clock: runtime.city.clockMs, generated: runtime.city.generatedMicro.toString(), coins: runtime.city.coinsMicro.toString() };
+    const cityId = runtime.city.cityId;
+    await runtime.cityCommand({ type: 'startPlan', districtId: 'residential', cityId, economyEventId: 'plan-start' });
+    const completeOne = (id: string) => {
+      const practice = new GameSession({ mode: 'PRACTICE', words: [word], sessionId: id });
+      runtime.beginSession(id, 'PRACTICE');
+      for (const key of practice.snapshot(0).remainingGuide) practice.input(key, 0);
+      runtime.applyFacts(practice.drainEvents(), context);
+      practice.endPractice(0, 'home'); runtime.applyFacts(practice.drainEvents(), context);
+    };
+    completeOne('plan-reserved-word');
+    mono += 1000; wall += 1000; runtime.advanceWorld();
+    await repository.refresh();
+    await runtime.cityCommand({ type: 'pausePlan', districtId: 'residential', cityId, economyEventId: 'plan-pause' });
+    const reservedBefore = runtime.city.districts.residential.plan.reservedMicro.toString();
+    completeOne('plan-free-word');
+    mono += 1000; wall += 1000; runtime.advanceWorld();
+    await repository.refresh();
+    const paused = { stock: runtime.city.districts.residential.stockMicro.toString(), reserved: runtime.city.districts.residential.plan.reservedMicro.toString() };
+    await runtime.cityCommand({ type: 'resumePlan', districtId: 'residential', cityId, economyEventId: 'plan-resume' });
+    const resumed = { stock: runtime.city.districts.residential.stockMicro.toString(), reserved: runtime.city.districts.residential.plan.reservedMicro.toString() };
     runtime.close(); indexedDB.deleteDatabase(dbName);
-    return { generated, completed, before, after, reopened };
+    return { generated, completed, before, after, reopened, reservedBefore, paused, resumed };
   });
   expect(result.generated).toBe('30000000');
   expect(result.completed).toBe(5);
@@ -58,5 +78,8 @@ test('the actual runtime persists confirmed typing once and caps offline city ti
   expect(result.after.completed).toBe(5);
   expect(result.after.active).toBeNull();
   expect(BigInt(result.after.coins)).toBeGreaterThan(BigInt(result.before.coins));
+  expect(result.reservedBefore).toBe('3000000');
+  expect(result.paused).toEqual({ stock: '3000000', reserved: '3000000' });
+  expect(result.resumed).toEqual({ stock: '0', reserved: '6000000' });
   expect(result.reopened).toEqual({ clock: result.after.clock, generated: result.after.generated, coins: result.after.coins });
 });
