@@ -15,7 +15,7 @@ const completed = (sessionId: string, factSequence: number, wordId: string, mode
 });
 const round = (sessionId: string, factSequence: number, overrides: Partial<RoundRecord> = {}, finished = true): ProfileFact => ({
   sessionId, factSequence, mode: 'MAIN', type: 'RoundFinished', completed: finished,
-  record: {sessionId, context, score: 1000, completedWords: 10, canonicalLength: 60, correctKeys: 60, mistakes: 0, ...overrides},
+  record: {sessionId, wordIds: ['daily_r01'], context, score: 1000, completedWords: 10, canonicalLength: 60, correctKeys: 60, mistakes: 0, ...overrides},
 });
 
 describe('confirmed collection and practice progress', () => {
