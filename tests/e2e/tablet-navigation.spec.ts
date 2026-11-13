@@ -19,6 +19,7 @@ for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
       await page.keyboard.press('Escape');
       await expect(page.locator('.settings-dialog')).toBeHidden();
     }
+    await expect(page.locator('#app')).toHaveCSS('font-size', `${16 * scale / 100}px`);
     await assertViewportFits(page);
     for (const [action, selector] of [
       ['catalogue', '.catalogue-page'], ['handbook', '.handbook-page'], ['city', '.city-page'],
@@ -26,6 +27,8 @@ for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
     ]) {
       await keyboardMenuTo(page, action);
       await expect(page.locator(selector)).toBeVisible();
+      if (action === 'catalogue') await expect(page.locator('.catalogue-filters label').first()).toHaveCSS('font-size', `${16 * scale / 100}px`);
+      if (action === 'handbook') await expect(page.locator('.achievement-progress p').first()).toHaveCSS('font-size', `${16 * scale / 100}px`);
       await keyboardWalkPanels(page);
       await page.screenshot({ path: testInfo.outputPath(`${action}-${scale}.png`) });
       await page.keyboard.press('Escape');
