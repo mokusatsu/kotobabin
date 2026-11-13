@@ -1,3 +1,4 @@
+import { keyboardRevealControl } from './keyboard';
 import { expect, test, type Page } from '@playwright/test';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -23,6 +24,7 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   await page.goto('/');
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('犬');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r02"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r02"]').click();
   await confirmHalfWidthInput(page);
   for (let completion = 0; completion < 5; completion++) {

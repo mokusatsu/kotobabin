@@ -25,6 +25,7 @@ async function savedCity(page: Page) {
 async function practiceDog(page: Page) {
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('犬');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r02"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r02"]').click();
   if (await page.locator('#check-status').count()) await confirmHalfWidthInput(page);
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'PRACTICE');

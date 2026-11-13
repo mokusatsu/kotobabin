@@ -1,3 +1,4 @@
+import { keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { beginMain, beginTutorial, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -41,6 +42,7 @@ test('selected-word practice earns three clean completions and enters a fixed pr
   await page.goto('/');
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('猫');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
   await confirmHalfWidthInput(page);
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'PRACTICE');
@@ -86,6 +88,7 @@ test('practice completion choices work with the keyboard and preserve focus for 
   await page.goto('/');
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('猫');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
   await confirmHalfWidthInput(page);
   for (let completed = 1; completed <= 3; completed++) {

@@ -1,4 +1,4 @@
-import { assertViewportFits, keyboardMenuTo } from './keyboard';
+import { assertViewportFits, keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalOverflow, beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -62,9 +62,13 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await page.goto('/');
   await page.locator('[data-action="settings"]').click();
   const settings = page.locator('.settings-dialog');
+  await keyboardRevealControl(page, settings.locator('input[name="fontScale"][value="150"]'));
   await settings.locator('input[name="fontScale"][value="150"]').check();
+  await keyboardRevealControl(page, settings.locator('input[name="deliveryKeys"][value="Enter"]'));
   await settings.locator('input[name="deliveryKeys"][value="Enter"]').check();
+  await keyboardRevealControl(page, settings.locator('input[name="guide"]'));
   await settings.locator('input[name="guide"]').uncheck();
+  await keyboardRevealControl(page, settings.locator('input[name="reducedMotion"]'));
   await settings.locator('input[name="reducedMotion"]').check();
   await settings.locator('[data-action="close-settings"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-reduced-motion', 'true');
@@ -93,7 +97,9 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#paused-layer')).toBeHidden();
   await page.locator('#game-input').press('Escape');
   await page.locator('#paused-layer [data-action="settings"]').click();
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
   await page.locator('.settings-dialog input[name="guide"]').check();
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
   await page.locator('.settings-dialog input[name="guide"]').uncheck();
   await page.locator('.settings-dialog [data-action="close-settings"]').click();
   await expect(page.locator('#paused-layer')).toBeVisible();

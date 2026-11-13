@@ -1,3 +1,4 @@
+import { keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -7,6 +8,7 @@ test('practice progress reopens from IndexedDB without replaying the last comple
   await page.goto('/');
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('猫');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
   await confirmHalfWidthInput(page);
   await typeCurrentGuide(page);
@@ -25,6 +27,7 @@ test('practice progress reopens from IndexedDB without replaying the last comple
   await page.locator('#catalogue-query').fill('猫');
   const row = page.locator('.word-list li').filter({ has: page.locator('[data-word-id="living_r01"]') });
   await expect(row).toContainText('1 / 3');
+  await keyboardRevealControl(page, row.locator('[data-action="practice-word"]'));
   await row.locator('[data-action="practice-word"]').click();
   await confirmHalfWidthInput(page);
   await expect(page.locator('#practice-progress')).toContainText('1/3');
