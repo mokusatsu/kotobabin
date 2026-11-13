@@ -1,5 +1,5 @@
 {
-  "method": "Actual imagegen; transparent_background:true. F/I originals and all five representative screens inspected for visual style, no image references supplied. Native PNGs unchanged; no rejected attempts so far.",
+  "method": "Six actual independent imagegen calls; transparent_background:true. F/I originals and all five representative screens inspected for visual style, no image references supplied. Native PNGs unchanged. No rejected attempts or image edits.",
   "attempts": [
     {
       "id": "stamp_k01",
@@ -12,6 +12,34 @@
       "id": "stamp_k02",
       "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. An ingenious wooden PACKING WORKBENCH, left-to-right workflow. A LARGE SMOOTH WRAPPING PAPER REEL at left feeds a broad cream strip across the table. A SECOND LARGE SMOOTH GUIDE WHEEL at right guides a thick string. Center stage a small brown parcel held securely by a broad wing-shaped wooden CLAMP JIG. Distinct oversized left and right circular reels and central wing fixture make a tall mechanical silhouette. No gear teeth. Three-quarter front view.",
       "native_generation": "exec-f20d598e-d9b7-4490-b338-0f1ba4da18b6.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_k03",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. A lively small SHOPFRONT with an enormous outward spreading FOREST GREEN AND CREAM STRIPED CANVAS AWNING. Large central wooden doorway beneath the awning. Different small display tables spread outward in a fan at both sides, with simple baskets and plain wares. The broad striped awning and centered door dominate; warm cream walls, wood and rust roof. No shop sign or text.",
+      "native_generation": "exec-5edddd4f-e715-4fd8-b522-b06038279f8c.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_k04",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. A connected sequence of large and small TOOTHED GEARS, with one very LARGE CENTRAL WOODEN COG. Clearly meshing teeth connect a CART WHEEL on the left to a PACKING PAPER REEL below and a tiny SHOP WEATHER VANE at upper right. One clear connected mechanical movement with broad shapes, rich dark forest-green central gear and ochre smaller cogs, wooden cart detail and tiny rust roof supporting vane. Not a generic gear icon: show all three connected equipment motifs.",
+      "native_generation": "exec-51568297-0ce5-4323-9f12-82ac67f8bbd5.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_k05",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. A sturdy brown TRAVEL SUITCASE and TWO ROLLED BLANK BLUEPRINTS very large in foreground before a BRIDGE that recedes strongly in perspective from an OLD TOWN at left toward a NEW GREEN HILL at right distance. On far hill the small stone FOUNDATION OF A FUTURE HOUSE. Wide open composition, small localized landscape with no sky rectangle, isolated painted vignette on transparent background. Suitcase and bridge are distinct heroes, blank blueprints without marks.",
+      "native_generation": "exec-0c36fa5a-eaf5-4c72-855d-36ed68afd10b.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_k06",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. A THICK OPEN RESEARCH NOTEBOOK forming a broad base with blank cream pages and only a few broad plain ruled lines. Rising from the notebook's gutter a SMALL WOODEN ARCHITECTURAL MODEL resembling a growing sprout of new ideas: a miniature timber house structure with two carved green leaf forms. Beside the notebook an obvious brass DRAFTING COMPASS with open legs, and a ROLLED BLANK PLAN. Model stands tall over the open book. Warm wooden, cream and forest green shapes. No writing, diagrams with symbols or numbers.",
+      "native_generation": "exec-5f1f2a3c-4e15-4786-b045-c800a5a0f236.png",
       "selected": true,
       "rejected": false
     }
