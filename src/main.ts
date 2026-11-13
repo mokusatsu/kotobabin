@@ -6,4 +6,6 @@ if (!root) throw new Error('Application root missing');
 root.textContent = '配達の準備をしています。';
 const runtime = await createAppRuntime();
 const dispose = mountApp(root, runtime);
-window.addEventListener('pagehide', () => { dispose(); runtime.close(); }, { once: true });
+window.addEventListener('pagehide', event => {
+  if (!event.persisted) { dispose(); runtime.close(); }
+});
