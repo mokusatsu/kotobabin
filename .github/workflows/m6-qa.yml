@@ -1,0 +1,32 @@
+name: M6 technical audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/recover-startup]
+permissions:
+  contents: read
+concurrency:
+  group: m6-audit-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  resilience:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config=tests/e2e/m6/playwright.config.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-resilience-${{ matrix.browser }}
+          path: test-results/m6/
