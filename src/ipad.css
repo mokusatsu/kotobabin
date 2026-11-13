@@ -69,3 +69,11 @@
 [data-ipad-layout] .handbook-layout { display: block; }
 [data-ipad-layout] #handbook-families { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; }
 [data-ipad-layout] #achievement-detail { grid-column: auto; }
+/* Keep the full quote together by using the available width, preserving every type size. */
+[data-ipad-layout] .purchase-card { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px 20px; align-items: center; }
+[data-ipad-layout] .purchase-card > * { grid-column: 1 / -1; }
+[data-ipad-layout] .purchase-card > #purchase-count,
+[data-ipad-layout] .purchase-card > #purchase-balance { grid-column: 1; margin-block: 0; }
+[data-ipad-layout] .purchase-card > p:has(> #purchase-cost),
+[data-ipad-layout] .purchase-card > [data-action="city-purchase"] { grid-column: 2; margin-block: 0; }
+[data-ipad-layout] .purchase-card > .purchase-comparison { margin-block: 0; }

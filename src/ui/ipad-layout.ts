@@ -4,6 +4,10 @@ interface Panel { target: HTMLElement; nav: HTMLElement; items: PageItem[]; pare
 const focusable = 'button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary,[tabindex="0"]';
 const editing = 'input,select,textarea,[contenteditable="true"],[role="slider"],[role="tablist"]';
 const fixed = '.section-heading,[data-save-status],.city-command-status,.catalogue-pagination,[data-ipad-fixed]';
+const pageContent = 'button,input,select,textarea,a[href],img,svg,canvas,video,audio,iframe,progress,meter,[role="img"]';
+function hasPageContent(node: HTMLElement): boolean {
+  return !!node.textContent?.trim() || node.matches(pageContent) || !!node.querySelector(pageContent);
+}
 const split = '.city-detail-layout,.city-district-nav,#district-detail,.district-detail-card,.district-resources,.plan-card,.unlock-requirements,.city-page-actions,.equipment-layout,.equipment-tabs,.equipment-main,.equipment-controls,#equipment-content,#equipment-district-summary,.equipment-district-card,.purchase-card,.transport-preview,.special-equipment-grid,.special-equipment-grid > article,.collection-counts,.catalogue-filters,#catalogue-results,.word-list,.save-recovery,.profile-management,.backup-preview,.condition-list,ol';
 
 /** Pure page grouping helper, independently testable without viewport or DOM APIs. */
@@ -43,7 +47,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
       if (nodes.length) { const group = { nodes }; grouped.set(nodes[0], group); for (const node of nodes) reserved.add(node); }
     }
     const explicit = target.dataset.pageItems;
-    const add = (node: HTMLElement) => { mark(node); items.push({ nodes: [node] }); };
+    const add = (node: HTMLElement) => { mark(node); if (hasPageContent(node)) items.push({ nodes: [node] }); else node.hidden = true; };
     if (explicit) {
       for (const node of target.querySelectorAll<HTMLElement>(explicit)) if (!node.closest('[data-ipad-exclude]')) add(node);
     } else {
@@ -51,6 +55,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
         for (const node of Array.from(parent.children)) {
           if (!(node instanceof HTMLElement) || node.matches('[data-ipad-controls],[data-ipad-exclude]') || node.matches(fixed)) continue;
           if (node.hidden && !managed.has(node)) continue;
+          if (!hasPageContent(node)) { mark(node); node.hidden = true; continue; }
           const group = grouped.get(node);
           if (group) { group.nodes.forEach(mark); items.push(group); continue; }
           if (reserved.has(node)) continue;
