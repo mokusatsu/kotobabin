@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>ことば便 — 開発比較</title></head>
+<body><div id="dev-app">
+<header><div><h1>ことば便 · 開発比較</h1><p>通常の記録・街・実績には保存しません。条件変更は停止中に、新しい比較セッションへ適用します。</p></div><a href="./">通常版へ</a></header>
+<main>
+<section class="configuration" aria-label="比較条件">
+<nav aria-label="開発情報"><button data-left-tab="conditions" aria-pressed="true">再現条件</button><button data-left-tab="rules" aria-pressed="false">調整値</button><button data-left-tab="catalog" aria-pressed="false">値の対応表</button></nav>
+<form id="dev-form" novalidate>
+<fieldset id="dev-editing"><legend class="sr-only">停止中に変更する比較条件</legend>
+<div data-left-panel="conditions" class="fields">
+<label>コース<select id="dev-course"><option value="relaxed">ゆったり</option><option value="standard">ふつう</option><option value="challenge">挑戦</option></select></label>
+<label>出題の方式<select id="dev-word-mode"><option value="fixed">固定語</option><option value="seed">seedで自動出題</option><option value="custom">カスタム語</option></select></label>
+<label class="wide" id="dev-word-field">任意の収録語<select id="dev-word"></select></label>
+<label data-custom hidden>表示（最大40文字）<input id="dev-custom-display" value="犬" maxlength="40"></label><label data-custom hidden>読み（最大40文字）<input id="dev-custom-reading" value="いぬ" maxlength="40"></label>
+<label>乱数seed<input id="dev-seed" type="number" min="0" max="4294967295" step="1" value="42"></label>
+<label>再現する荷物数<input id="dev-cargo" type="number" min="0" max="5" step="1" value="0"></label>
+<label>残り時間（ms）<input id="dev-remaining" type="number" min="0" max="90000" step="1" value="90000"></label>
+<label>再現する得点イベント<select id="dev-event"><option value="none">追加なし</option><option value="complete">語の完成</option><option value="manual">手動配達</option><option value="full">満載配達</option><option value="mistake">誤打</option><option value="skip">救済スキップ</option><option value="deadline">時間切れ</option></select></label>
+<label class="wide check"><input id="dev-ime" type="checkbox">IME入力確認が必要な停止を再現</label>
+</div>
+<div data-left-panel="rules" class="fields" hidden>
+<label>制限時間 · roundDurationMs<input id="dev-duration" type="number" min="60000" max="120000" step="1000" value="90000"></label>
+<label>基準1打点 · pointPerCanonicalKey<input id="dev-point" type="number" min="1" max="1000" step="1" value="10"></label>
+<label>最大荷物数 · maxCargo<input id="dev-max-cargo" type="number" min="3" max="5" step="1" value="5"></label>
+<label>復習語数上限 · reviewWordLimit<input id="dev-review-limit" type="number" min="3" max="10" step="1" value="10"></label>
+<label class="wide">荷物数係数 · cargoRateNumerators<input id="dev-rates" value="1,2,3,4,5"></label>
+<label>係数の分母 · cargoRateDenominator<input id="dev-denominator" type="number" min="1" max="100" step="1" value="5"></label>
+<p class="wide">最大荷物数を変えると、未適用の係数表と分母も合わせて変更します。満載の係数は1.0です。</p>
+</div>
+</fieldset>
+<button type="submit" id="dev-apply">条件を再生して比較を作り直す</button>
+<p id="dev-status" role="status">荷物は実際の語完成で作ります。最大個数に達すると自動配達されます。</p>
+</form>
+</section>
+<section id="dev-stage" aria-label="開発セッション">
+<nav aria-label="比較表示"><button data-right-tab="play" aria-pressed="true">入力と状態</button><button data-right-tab="facts" aria-pressed="false">事実と書き出し</button></nav>
+<div data-right-panel="play">
+<div class="session-heading"><strong id="dev-phase"></strong><span id="dev-session-label"></span></div>
+<h2 id="dev-word-display"></h2><p id="dev-reading"></p><p id="dev-guide"></p>
+<dl class="stats"><div><dt>得点</dt><dd id="dev-score">0</dd></div><div><dt>完成点</dt><dd id="dev-base">0</dd></div><div><dt>配達点</dt><dd id="dev-bonus">0</dd></div><div><dt>荷物</dt><dd id="dev-cargo-state">0</dd></div><div><dt>残りms</dt><dd id="dev-time">90000</dd></div><div><dt>完成語 / 誤打</dt><dd id="dev-counts">0 / 0</dd></div></dl>
+<div id="dev-input-check" hidden><label>IMEをオフにし、半角aを確認<input id="dev-check-input" autocomplete="off" spellcheck="false" aria-label="開発用の半角入力確認"></label><p id="dev-check-status"></p></div>
+<label id="dev-input-label">開発用のローマ字入力<input id="dev-input" autocomplete="off" spellcheck="false" autocapitalize="off" aria-label="開発用のローマ字入力"></label>
+<div class="actions"><button id="dev-resume" type="button">入力を再開</button><button id="dev-pause" type="button">停止して調整</button></div>
+<p id="dev-message" role="status"></p>
+</div>
+<div data-right-panel="facts" hidden><p id="dev-plan"></p><p id="dev-sequence"></p><p id="dev-preparation"></p><ol id="dev-facts"></ol><div class="actions"><button id="dev-facts-prev" type="button">前の事実</button><span id="dev-facts-page"></span><button id="dev-facts-next" type="button">次の事実</button></div><button id="dev-export" type="button">開発比較JSONを書き出す</button><p>書き出しは開発専用です。通常版の控えや記録として読み込めません。</p></div>
+</section>
+<section id="dev-catalog" aria-label="日本語名と識別子の対応" hidden><h2>仕様の初期値と接続範囲</h2><p>比較用に編集できるのはGameSessionの項目です。演出・音・通知などは接続先と初期値をここで確認できます。</p><div id="dev-parameters"></div><div class="actions" id="dev-parameter-nav"><button type="button" id="dev-parameters-prev">前の設定項目</button><span id="dev-parameters-page"></span><button type="button" id="dev-parameters-next">次の設定項目</button></div></section>
+</main></div><script type="module" src="/src/dev/main.ts"></script></body></html>
