@@ -15,8 +15,10 @@ from scipy.signal import butter, sosfilt
 RATE = 48_000
 OUT = Path('public/assets/sound_effect')
 MASTERS = Path('public/assets/originals/audio')
+BGM = Path('public/assets/bgm')
 OUT.mkdir(parents=True, exist_ok=True)
 MASTERS.mkdir(parents=True, exist_ok=True)
+BGM.mkdir(parents=True, exist_ok=True)
 rng = np.random.default_rng(20261113)
 
 
@@ -98,7 +100,7 @@ for bar, chord in enumerate(chords):
         circular_note(bar * 3 + 2.25, melody[bar] - 2, .043, .15, 1.8)
 wav24(MASTERS / 'audio_theme.wav', theme)
 for extension, args in [('ogg', ['-c:a', 'libvorbis', '-q:a', '4']), ('mp3', ['-c:a', 'libmp3lame', '-b:a', '128k'])]:
-    target = OUT / f'audio_theme.{extension}'
+    target = BGM / f'audio_theme.{extension}'
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(MASTERS / 'audio_theme.wav'), *args, str(target)], check=True)
     decoded = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(target), '-f', 'f32le', '-acodec', 'pcm_f32le', '-'])
     values = np.frombuffer(decoded, dtype='<f4').reshape(-1, 2)
