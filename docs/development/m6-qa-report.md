@@ -14,3 +14,11 @@
 最初の追加は `tests/e2e/m6/resilience.audit.ts` の4件。専用configと `.github/workflows/m6-qa.yml` は本番ビルドに対してChromium/WebKitを使い、`feat/recover-startup` のpushまたはworkflow_dispatchで実行する。`.audit.ts` のため既存通常 `.spec.ts` へ重複登録しない。既存依存関係を参照してESLintとPlaywrightの収集だけをローカル実行し、ローカルサーバー／ブラウザーは起動していない。実行結果はCI後に追記する。
 
 クラウド実行時とSitesのmanaged preview指針を確認した。ローカルで試す場合は公式daemonの経路だけを使い、代替サーバーで迂回しない。今回のブラウザー実行は承認されたGitHub CIに限定する。物理iPad、Windows/macOSの実IME・配列は未検証であり、UAやOS名を変更して合格に数えない。過去互換性は既存ユーザー指示により対象外。
+
+## 第1回の実CI結果
+
+対象 `032bf00`、[M6 CI 43496071029](https://github.com/mokusatsu/kotobabin/actions/runs/43496071029)。独立QA担当がGitHubのネイティブツールで両ジョブの実ログを取得し、Chromium job132129379078は4/4成功（9.8秒）、WebKit job132129378640は4/4成功（28.3秒）を確認した。
+
+実通信の地形・車両・A01絵柄を失敗させても実入力6語・結果・次の便へ進めた。初期読込完了後のnetwork offlineでも同じ経路とIDB保存を維持した。IndexedDBのSecurityErrorを明示的に注入した全UIでは「ページを閉じると残らない」メモリー保存の案内を表示し、便と次の入力を継続した。本番mainハッシュchunkの中断では原因と再読込リンクを表示し、native Tab/Enterで回復後、実際に1語完成した。画像だけの検査ではない。保存拒否の注入は実OSのプライバシーモード確認ではなく、初回オフライン起動の保証も追加していない。
+
+この4件は起動・縮退の受入根拠であり、性能予算の合格根拠には使わない。転送量・低速cold開始・実native入力・960語進捗と72定義の手帳の性能は、別のChromium専用測定で記録する。物理iPad／Windows・macOSのIME、実機性能は引き続き未検証。
