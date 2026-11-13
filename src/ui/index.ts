@@ -221,9 +221,20 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime)
     setTimeout(() => URL.revokeObjectURL(url), 0);
     const message = root.querySelector<HTMLElement>('#recovery-status'); if (message) message.textContent = '保存データの控えを書き出しました。';
   }
+  function ownershipConfirmation(): Promise<boolean> {
+    const dialog = document.createElement('dialog'); dialog.className = 'help-dialog paper-card'; dialog.dataset.role = 'ownership-confirm';
+    dialog.innerHTML = '<form method="dialog"><h2>今の便を終了して、このタブで続けますか？</h2><p>確定済みの成果は残ります。未配達の追加点は確定しません。今の便は途中終了となり、次は新しい便として始めます。</p><button type="button" class="button button-primary" data-action="cancel-ownership" autofocus>取り消して今の画面へ</button><button type="button" class="button" data-action="confirm-ownership">今の便を終了してここで続ける</button></form>';
+    root.append(dialog); dialog.showModal();
+    return new Promise(resolve => { dialog.addEventListener('close', () => { const confirmed = dialog.returnValue === 'confirm'; dialog.remove(); resolve(confirmed); }, { once: true }); });
+  }
   async function takeOver() {
-    try { await runtime.takeOver(); updateStorageStatus(); }
-    catch {
+    const unfinished = Boolean(session && state().phase !== 'RESULT');
+    if (unfinished && !await ownershipConfirmation()) return;
+    try {
+      await runtime.takeOver();
+      if (unfinished) { closeCurrent('replaced'); renderHome(); }
+      updateStorageStatus();
+    } catch {
       updateStorageStatus();
       const dialog = document.createElement('dialog'); dialog.className = 'help-dialog paper-card';
       dialog.innerHTML = '<form method="dialog"><h2>未保存の進捗があります。</h2><p>この画面の未保存の進捗を控えに残し、保存済みの最新状態で続けますか？今の配達は終了します。</p><button class="button button-primary" value="cancel" autofocus>今の画面に戻る</button><button class="button" value="restore">控えを書き出して、最新の状態で続ける</button></form>';
@@ -231,7 +242,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime)
       dialog.addEventListener('close', () => {
         const confirmed = dialog.returnValue === 'restore'; dialog.remove(); if (!confirmed) return;
         downloadBackup();
-        void runtime.takeOver({ discardUnsaved: true }).then(() => { session = undefined; renderHome(); }).catch(updateStorageStatus);
+        void runtime.takeOver({ discardUnsaved: true }).then(() => { if (unfinished) closeCurrent('replaced'); renderHome(); }).catch(updateStorageStatus);
       }, { once: true });
     }
   }
@@ -580,6 +591,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime)
       case 'dismiss-return': returnNoticeDismissed = true; root.querySelector('#return-card')?.remove(); break;
       case 'read-aloud': { if ('speechSynthesis' in window) { speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(state().currentWord.reading); speech.lang = 'ja-JP'; speechSynthesis.speak(speech); } break; }
       case 'takeover': void takeOver(); break;
+      case 'confirm-ownership': root.querySelector<HTMLDialogElement>('[data-role="ownership-confirm"]')?.close('confirm'); break;
+      case 'cancel-ownership': root.querySelector<HTMLDialogElement>('[data-role="ownership-confirm"]')?.close('cancel'); break;
       case 'export-data': downloadBackup(); break;
       case 'retry-save': void runtime.retrySave().then(updateStorageStatus).catch(updateStorageStatus); break;
     }
