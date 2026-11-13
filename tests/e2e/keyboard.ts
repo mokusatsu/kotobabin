@@ -6,13 +6,29 @@ export async function tabTo(page: Page, target: Locator, maximum = 100) {
   for (let step = 0; step < maximum; step++) {
     if (await target.evaluate(element => element === document.activeElement)) {
       await expect(target).toBeFocused();
-      const focusVisible = await target.evaluate(element => element.matches(':focus-visible'));
-      if (!focusVisible) console.log('KEYBOARD_FOCUS_INDICATOR', JSON.stringify(await target.evaluate(element => {
-        const style = getComputedStyle(element); const parent = element.closest('label'); const parentStyle = parent && getComputedStyle(parent);
-        return { element: element.outerHTML, rectangle: element.getBoundingClientRect().toJSON(), focusVisible: element.matches(':focus-visible'), outline: [style.outlineStyle, style.outlineWidth, style.outlineColor], opacity: style.opacity, boxShadow: style.boxShadow,
-          parent: parent && { rectangle: parent.getBoundingClientRect().toJSON(), outline: [parentStyle!.outlineStyle, parentStyle!.outlineWidth, parentStyle!.outlineColor], boxShadow: parentStyle!.boxShadow } };
-      })));
-      expect(focusVisible).toBe(true);
+      const indicator = await target.evaluate(element => {
+        const style = getComputedStyle(element); const dialog = element.closest('.settings-dialog');
+        const rgb = (color: string) => color.match(/[\d.]+/g)?.map(Number) ?? [];
+        const luminance = (color: number[]) => color.slice(0, 3).map(value => { const channel = value / 255; return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4; })
+          .reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+        const color = rgb(style.outlineColor); const background = dialog ? rgb(getComputedStyle(dialog).backgroundColor) : [];
+        const a = luminance(color); const b = luminance(background);
+        return { settingsRadio: element.matches('.settings-dialog input[type="radio"]'), pseudo: element.matches(':focus-visible'),
+          style: style.outlineStyle, width: parseFloat(style.outlineWidth), color: style.outlineColor, alpha: color[3] ?? 1,
+          contrast: (Math.max(a, b) + .05) / (Math.min(a, b) + .05), opacity: Number(style.opacity), visibility: style.visibility,
+          rectangle: element.getBoundingClientRect().toJSON() };
+      });
+      if (indicator.settingsRadio) {
+        // Check the cue the user actually sees, including WebKit's restored radio
+        // focus. A native pseudo-class alone does not guarantee a visible ring.
+        if (!indicator.pseudo) console.log('KEYBOARD_RADIO_FOCUS', JSON.stringify(indicator));
+        expect(indicator.style, JSON.stringify(indicator)).toBe('solid');
+        expect(indicator.width, JSON.stringify(indicator)).toBeGreaterThanOrEqual(2);
+        expect(indicator.alpha, JSON.stringify(indicator)).toBeGreaterThanOrEqual(.95);
+        expect(indicator.contrast, JSON.stringify(indicator)).toBeGreaterThanOrEqual(3);
+        expect(indicator.opacity).toBeGreaterThanOrEqual(.95); expect(indicator.visibility).toBe('visible');
+        expect(indicator.rectangle.width).toBeGreaterThan(0); expect(indicator.rectangle.height).toBeGreaterThan(0);
+      } else expect(indicator.pseudo).toBe(true);
       return;
     }
     const sameRadioGroup = await target.evaluate(element => {
