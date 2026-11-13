@@ -48,6 +48,7 @@ test('confirmed record, collection and settings resets keep their promised separ
   await expect(confirmation).toBeHidden();
   expect((await savedProfile(page)).progress).toEqual(before.progress);
   confirmation = await openReset(page, 'records');
+  await keyboardRevealControl(page, confirmation.locator('[data-action="confirm-profile-reset"]'));
   await confirmation.locator('[data-action="confirm-profile-reset"]').click();
   await expect(confirmation).toBeHidden();
   await expect.poll(async () => (await savedProfile(page)).progress.recentRounds.length).toBe(0);
@@ -69,6 +70,7 @@ test('confirmed record, collection and settings resets keep their promised separ
   confirmation = await openReset(page, 'collection');
   await expect(confirmation).toContainText('自己記録と設定は残ります');
   await page.screenshot({ path: testInfo.outputPath('collection-reset-confirmation.png'), fullPage: true });
+  await keyboardRevealControl(page, confirmation.locator('[data-action="confirm-profile-reset"]'));
   await confirmation.locator('[data-action="confirm-profile-reset"]').click();
   await expect(confirmation).toBeHidden();
   await expect.poll(async () => (await savedProfile(page)).progress.totalCompleted).toBe(0);
@@ -78,6 +80,7 @@ test('confirmed record, collection and settings resets keep their promised separ
   expect(reset.settings.fontScale).toBe(150);
   expect(reset.tutorialSeen).toBe(true);
   confirmation = await openReset(page, 'settings');
+  await keyboardRevealControl(page, confirmation.locator('[data-action="confirm-profile-reset"]'));
   await confirmation.locator('[data-action="confirm-profile-reset"]').click();
   await expect.poll(async () => (await savedProfile(page)).settings.fontScale).toBe(100);
   expect((await savedProfile(page)).progress.recentRounds).toEqual(reset.progress.recentRounds);
