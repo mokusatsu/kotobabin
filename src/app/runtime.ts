@@ -379,7 +379,8 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         if (city.activeSession) runtime.endSession(city.activeSession.sessionId);
         // This explicit replacement retains the old projection in the restore
         // backup, including a memory-only repository's unsaved operations.
-        await persist(() => repo.restoreData(payload, { confirmed: true, discardUnsaved: true }), false);
+        await persist(() => repo.restoreData(payload, { confirmed: true, discardUnsaved: true,
+          replaceProtectedData: repo.status.recoveryRequired }), false);
         syncSnapshot();
         baseClock = city.clockMs; baseMono = clock.now(); returnSummary = null;
         initializeCity();
