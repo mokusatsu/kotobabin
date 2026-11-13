@@ -10,11 +10,11 @@
 
 `beginSession(sessionId, districtId='residential', mode='normal', atMs?)` で、cityId・届け先・資材倍率を固定する。`completeWord`へ `{cityId, sessionId, factSequence, baseLength, mistakes?, completed?, confirmation?, atMs?}`、`shipCargo`へ `{cityId, sessionId, factSequence, scoreSum, cargoCount, reason, atMs?}` を渡す。UIや描画イベントから資源を直接加算しない。
 
-事実識別子の再適用は `applied:false, reason:'duplicate'`、前の街の事実は`stale_city`を返す。同じ識別子で内容が変われば例外。台帳は状態に保持し、snapshotから再構築しても二重適用を防ぐ。フィンガープリントは固定順序のJSONペイロードそのものを保持する。PythonのSHA-256表現とは異なるが、内容一致・衝突拒否の意味は同じである。
+事実識別子の再適用は `applied:false, reason:'duplicate'`、前の街の事実は`stale_city`を返す。同じ識別子で内容が変われば例外。前の街の事実は時刻を処理する前に拒否するため、遅延イベントの未来時刻によって現在の街の輸送・入金が進むこともない。Python参照モデルは時刻を先に進めるが、この拒否境界は技術仕様16.6の「旧cityId宛ての遅延イベントは新しい街へ適用しない」を優先する。台帳は状態に保持し、snapshotから再構築しても二重適用を防ぐ。フィンガープリントは固定順序のJSONペイロードそのものを保持する。PythonのSHA-256表現とは異なるが、内容一致・衝突拒否の意味は同じである。
 
 `endSession(atMs?)`は未配達ボーナスを作らず、当該便の生成量・便中の到着量（前便の待ちも含む）・収益の差分を返す。再呼出しは同じ要約を返す。`generatedMicro`、`arrivedMicro`、配送・営業収益は生涯累積、`cityArrivedMicro`は今回の街の累積である。
 
-投資はセッション終了後に行う。
+投資はセッション終了後に行う。下記の投資・再出発メソッドは単一状態を変更するプリミティブであり、`(cityId,economyEventId)` の操作台帳をまだ持たない。同じ購入要求を再呼出しすればもう一度購入する。技術仕様16.8を満たすには、UI接続前に原子的なコマンドラッパーを追加し、最新状態・cityId・操作ID・revision・所有権epochを確認して重複・旧都市の操作を拒否し、資源・解除・処理済み位置・時計を一つの保存トランザクションに含める必要がある。完成語と配達の事実台帳だけで、経済操作全体の再試行安全性が完成したとは扱わない。
 
 - `quotePurchase(kind, quantity=1, districtId?)` / `purchase(..., atMs?)`：1/10/max、個別価格の合計、資金不足の部分購入、段階別店舗上限、倍率・輸送待ち・営業速度の前後比較。
 - `startPlan` / `pausePlan` / `resumePlan`：停止時も積立を保持、再開時は自由在庫から即時充当。完成後の次計画は自動開始しない。
@@ -35,6 +35,7 @@
 
 ## 残作業
 
+- `(cityId,economyEventId)`による経済操作コマンドの重複防止・旧都市拒否（UIへ投資・再出発を公開する前の必須条件）。
 - IndexedDBでの保存・読込み時の入口検証とトランザクション。コンストラクターは検証済みの`CityState`を受け取り、内部で同じ検証を繰り返さない。
 - ゲームセッション・UI・実績への接続と、確定経済イベントのプロフィール反映。
 - 代表20語の経済状態を使った画面統合検証、実際の放置復帰・再起動E2E。

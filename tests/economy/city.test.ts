@@ -148,3 +148,19 @@ describe('CityEconomy transaction rejection and confirmation boundaries', () => 
     expect(c.state).toEqual(before);
   });
 });
+
+
+it('rejects delayed old-city facts before their timestamps can advance or invalidate the new city', () => {
+  const state = initialCityState(100000);
+  state.cityId = 'city-2'; state.citySequence = 2; state.clockMs = 100000;
+  const district = state.districts.residential;
+  district.stage = 1; district.shops = 1; district.plan = null; district.queueMicro = 100n * MICRO_UNIT;
+  const c = new CityEconomy(state);
+  const before = c.snapshot();
+  for (const atMs of [200000, -1, Number.NaN]) {
+    const identity = {cityId: 'city-1', sessionId: 'delayed', factSequence: 1, atMs};
+    expect(c.completeWord({...identity, baseLength: 10})).toEqual({applied: false, reason: 'stale_city', generatedMicro: 0n});
+    expect(c.shipCargo({...identity, scoreSum: 50, cargoCount: 1, reason: 'manual'})).toEqual({applied: false, reason: 'stale_city', generatedMicro: 0n});
+    expect(c.state).toEqual(before);
+  }
+});
