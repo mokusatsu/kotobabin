@@ -89,7 +89,11 @@ async function expectLargeMap(page: Page) {
 
 async function displayedGuide(page: Page) {
   const input=page.getByRole('textbox',{name:'ローマ字を入力'});
-  return input.evaluate(e=>{
+  // Snapshot only the elements currently rendered; evaluateAll does not wait
+  // for a textbox that may disappear at the natural round deadline.
+  return input.evaluateAll(elements=>{
+    const e=elements[0];
+    if(!e)return '';
     let p=e.parentElement;
     for(let i=0;p&&i<5;i++,p=p.parentElement){
       const lines=(p.innerText||'').split('\n').map(s=>s.trim());
@@ -165,6 +169,9 @@ for(const height of [720,820]) test.describe('independent game review '+height,(
             await record(page,'08-dispatch-'+delivered+'-arrival',info);
             console.log('DISPATCH_OBSERVED_MS',Date.now()-transitionStart);
           }
+        }else if(await page.getByText('ことばが、届きました。',{exact:true}).isVisible()) {
+          console.log('NATURAL_RESULT_DURING_PROMPT_READ');
+          break;
         }else if(delivered===0){await record(page,'08-prompt-unreadable',info);break;}
       }
       await page.waitForTimeout(450);
