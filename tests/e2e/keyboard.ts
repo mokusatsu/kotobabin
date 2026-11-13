@@ -52,7 +52,7 @@ export async function assertViewportFits(page: Page) {
 }
 
 export async function keyboardMenuTo(page: Page, action: string) {
-  await expect(page.locator('.site-header')).toBeVisible();
+  await expect(page.locator('.site-header:visible, .result-stage-topbar:visible').first()).toBeVisible();
   await page.keyboard.press('F2');
   const menu = page.locator('.navigation-dialog');
   await expect(menu).toBeVisible();
