@@ -827,6 +827,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   });
   on(document, 'keydown', (raw) => {
     const event = raw as KeyboardEvent;
+    if (event.defaultPrevented) return;
     if (event.target instanceof Node && !root.contains(event.target) && event.target !== document.body && event.target !== document.documentElement) return;
     if (event.isTrusted && !event.ctrlKey && !event.metaKey && !event.altKey && !event.isComposing && event.keyCode !== 229) {
       if (event.key === 'F2' && !event.shiftKey) { event.preventDefault(); openNavigationMenu(); return; }
@@ -835,6 +836,17 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
         event.preventDefault(); const items = [...menu.querySelectorAll<HTMLButtonElement>('button')]; const index = items.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length; items[next]?.focus({ preventScroll: true }); return;
       }
       if (!root.querySelector('dialog[open]') && event.key === 'Escape') { event.preventDefault(); navigateBack(); return; }
+      const tile = (event.target as HTMLElement).closest<HTMLButtonElement>('.world-stage .map-label');
+      if (tile && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+        const direction = ({ ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] } as Record<string, number[]>)[event.key];
+        const here = tile.getBoundingClientRect(); const x = here.x + here.width / 2, y = here.y + here.height / 2;
+        const next = [...root.querySelectorAll<HTMLButtonElement>('.world-stage .map-label')].filter(candidate => candidate !== tile).map(candidate => {
+          const r = candidate.getBoundingClientRect(); const dx = r.x + r.width / 2 - x, dy = r.y + r.height / 2 - y;
+          const forward = dx * direction[0] + dy * direction[1]; const cross = Math.abs(dx * direction[1] - dy * direction[0]);
+          return { candidate, distance: forward > 0 ? forward + cross * 3 : Infinity };
+        }).sort((a, b) => a.distance - b.distance).find(item => Number.isFinite(item.distance));
+        event.preventDefault(); next?.candidate.focus({ preventScroll: true }); return;
+      }
       const editing = (event.target as HTMLElement).closest('select, textarea, input[type=text], input[type=search], input[type=file]');
       if (screen === 'home' && !editing && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); selectedCourse = courses[Number(event.key) - 1].id; const radio = root.querySelector<HTMLInputElement>(`input[name="course"][value="${selectedCourse}"]`); if (radio) { radio.checked = true; radio.focus({ preventScroll: true }); } return; }
     }
