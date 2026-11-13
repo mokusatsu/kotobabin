@@ -340,7 +340,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const nextCity = reduceCity(city);
       achievements = observeCity(reduceAchievements(achievements), nextCity, time.wallMs);
       progress = nextProgress; city = nextCity;
-      void persist(() => repo.mutateDocument(reduce, { generation: identity.generation }));
+      void persist(() => repo.mutateDocument(reduce, { generation: identity.generation, afterInput: true }));
     },
     async takeOver(options) {
       try {

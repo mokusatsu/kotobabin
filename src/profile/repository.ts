@@ -108,6 +108,8 @@ export class GenerationMismatchError extends Error { constructor() { super('削�
 export interface MutationOptions {
   /** Capture at session READY and reuse for every fact batch from that session. */
   generation?: number;
+  /** Runtime has already confirmed input synchronously; start durable work in a task. */
+  afterInput?: boolean;
 }
 export class BackupValidationError extends Error { constructor() { super('復元するデータの形式・版・整合性を確認できません。元データは変更していません。'); } }
 export interface RestoreOptions {
@@ -257,8 +259,12 @@ export class ProfileRepository {
     }
   }
 
-  private write(mutation: Mutation): Promise<void> {
+  private write(mutation: Mutation, afterInput = false): Promise<void> {
     return this.queue(async () => {
+      // Browsers run Promise checkpoints between native event listeners. Keep
+      // durable snapshot/replay work in its own task, after confirmed input.
+      // The ordered tail and every ownership/revision/generation fence still apply.
+      if (afterInput) await new Promise<void>(resolve => setTimeout(resolve, 0));
       if (this.closed) throw new Error('保存処理は終了しています。');
       if (this.state.ownership !== 'owner') throw new OwnershipError();
       const next = mutation(structuredClone(this.document));
@@ -318,7 +324,7 @@ export class ProfileRepository {
       if (current.metadata.generation !== generation) throw new GenerationMismatchError();
       const metadata = { ...current.metadata };
       return { ...reducer(current), metadata };
-    });
+    }, options.afterInput);
   }
 
   commitFacts(facts: readonly SessionFact[], recordContext: RecordContext, options: MutationOptions = {}): Promise<void> {
