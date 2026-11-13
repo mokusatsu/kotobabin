@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { assertViewportFits, tabTo } from './keyboard';
 
-for (const viewport of [{ width: 1024, height: 680 }, { width: 1194, height: 746 }, { width: 820, height: 1092 }]) {
+for (const viewport of [{ width: 1180, height: 720 }, { width: 1180, height: 820 }, { width: 1024, height: 680 }, { width: 820, height: 1092 }]) {
   test(`keyboard-only round, retry and pause fit without scrolling at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
     await page.clock.install();
