@@ -4,7 +4,7 @@ import type { AppRuntime, AppSettings } from '../app/runtime';
 import type { RecordContext } from '../profile';
 import { catalogueShell, catalogueRows, catalogueFilter, filterCatalogue, cataloguePageSize } from './catalogue';
 import { settingsContent } from './settings';
-import { CityEconomy, type CityState, type DistrictId, type CityCommand, type AdvanceResult, type EquipmentKind } from '../economy';
+import { CityEconomy, type CityState, type DistrictId, type CityCommand, type EquipmentKind } from '../economy';
 import { homeTown, districtName, destinationOptions, balanceStrip, cityShell, districtDetail, equipmentShell, purchaseCard, specialEquipment, districtEquipmentSummary, restartContent, districtFigure, resultEconomy, formatMicro, type EquipmentTab, type PurchaseQuantity } from './city';
 
 type CourseId = 'relaxed' | 'standard' | 'challenge';
@@ -19,18 +19,8 @@ const esc = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp
 const number = (value: number) => value.toLocaleString('ja-JP');
 const envelope = '<svg viewBox="0 0 40 32" fill="none" aria-hidden="true"><rect x="2" y="3" width="36" height="26" rx="2" stroke="currentColor" stroke-width="2"/><path d="m3 5 17 13L37 5" stroke="currentColor" stroke-width="2"/></svg>';
 
-interface CityUiRuntime {
-  readonly city: CityState;
-  readonly destination: DistrictId;
-  readonly cityBusy: boolean;
-  readonly returnSummary: AdvanceResult | null;
-  selectDestination(id: DistrictId): void;
-  beginSession(sessionId: string, mode: SessionMode, destination?: DistrictId): boolean;
-  endSession(sessionId: string): void;
-  cityCommand(command: CityCommand): Promise<void>;
-}
 /** Views only consume session snapshots; scores and input progress belong to GameSession. */
-export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime): () => void {
+export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let selectedCourse: CourseId = 'relaxed';
   let seed = newSeed();
   let session: GameSession | undefined;

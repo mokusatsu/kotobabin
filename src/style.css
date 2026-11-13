@@ -1882,3 +1882,9 @@ body[data-reduced-motion="true"] *::after {
 @media (max-width: 767px) { .district-resources { grid-template-columns: 1fr 1fr; } .purchase-card { padding: 20px; } .purchase-comparison { gap: 12px; flex-wrap: wrap; } .equipment-district-card { display: block; } .equipment-district-card p { margin: 12px 0; } .play-city-strip { align-items: flex-start; } .play-city-values { flex-direction: column; gap: 8px; } .district-figure > img { width: 100%; } }
 .return-card { grid-column: 1/-1; margin: 0 0 24px; padding: 24px; background: #edf1e5; }
 .return-card h2 { margin-top: 0; }
+.district-composite { position: relative; width: min(100%, 360px); aspect-ratio: 4/3; }
+.district-composite > .district-base-art, .district-composite > .district-scaffold-art { display: block; width: 100%; height: 100%; object-fit: contain; }
+.district-composite > .district-scaffold-art { position: absolute; inset: 0; }
+.district-composite > .district-shop-art { position: absolute; left: 8.191287879%; top: 59.217171717%; width: 24.242424242%; height: 32.323232323%; object-fit: contain; }
+.play-city-strip .district-composite { width: 132px; min-width: 132px; height: 99px; }
+.play-city-strip .district-composite > .district-shop-art { width: 24.242424242%; height: 32.323232323%; }
