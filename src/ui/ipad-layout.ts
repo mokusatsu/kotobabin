@@ -36,7 +36,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     const items: PageItem[] = []; const grouped = new Map<HTMLElement, PageItem>(); const reserved = new Set<HTMLElement>();
     // Keep displayed actual quantity, price, balance and the purchase action on the same panel.
     for (const card of target.querySelectorAll<HTMLElement>('.purchase-card')) {
-      const nodes = ['#purchase-count', '#purchase-cost', '#purchase-balance', '[data-action="city-purchase"]']
+      const nodes = ['.purchase-comparison', '#purchase-count', '#purchase-cost', '#purchase-balance', '[data-action="city-purchase"]']
         .map(selector => card.querySelector<HTMLElement>(selector)).map(node => node?.id === 'purchase-cost' ? node.parentElement : node)
         .filter((node): node is HTMLElement => !!node);
       if (nodes.length) { const group = { nodes }; grouped.set(nodes[0], group); for (const node of nodes) reserved.add(node); }
@@ -114,6 +114,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     if (panel.sourceKey !== undefined && sourceKey !== panel.sourceKey) panel.page = 0;
     panel.sourceKey = sourceKey;
     const collected = collect(panel.target); panel.items = collected.items; panel.parents = collected.parents;
+    setText(panel.nav.querySelector('[data-ipad-count]'), `${label(panel.target)} · 表示 ${Math.max(1,panel.items.length)} / ${Math.max(1,panel.items.length)}`);
     const indices = panel.items.map((_, i) => i); const bottom = viewport().bottom - 12;
     const focused = document.activeElement;
     const focusedItem = panel.items.findIndex(item => item.nodes.some(node => node === focused || node.contains(focused)));
@@ -137,7 +138,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     for (const target of targets) measure(prepare(target));
   }
   function refresh() { if (!destroyed && !frame) frame = requestAnimationFrame(refreshNow); }
-  const mutations = new MutationObserver(refresh); mutations.observe(root, { childList: true, subtree: true });
+  const mutations = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element && record.target.closest('[data-ipad-controls]')))) refresh(); }); mutations.observe(root, { childList: true, subtree: true });
   const resize = new ResizeObserver(refresh); resize.observe(root);
   let fontScale = root.style.getPropertyValue('--font-scale');
   const styles = new MutationObserver(() => { const next = root.style.getPropertyValue('--font-scale'); if (next !== fontScale) { fontScale = next; refresh(); } });
