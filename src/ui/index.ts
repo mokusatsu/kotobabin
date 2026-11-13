@@ -466,7 +466,6 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     releaseResultStage();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'equipment';
-    if (!runtime.city.districts[selectedDistrict].open) selectedDistrict = runtime.destination;
     purchaseStructureKey = '';
     root.innerHTML = `${header()}${equipmentShell(runtime.city, selectedDistrict, equipmentTab, purchaseQuantity)}${footer()}`;
     updateCityViews(); updateStorageStatus(); focusScreen();
@@ -650,7 +649,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'result'; lastResult = snapshot;
     const sessionId = session?.sessionId ?? resultStageSessionId;
-    const ids = Object.keys(runtime.achievements.unlocks).filter(id => !sessionUnlocksAtStart.has(id) && !practiceAwardCarry.has(id));
+    const fresh = Object.keys(runtime.achievements.unlocks).filter(id => !sessionUnlocksAtStart.has(id) && !practiceAwardCarry.has(id));
+    const ids = resultStageSessionId === sessionId && resultStageState ? resultStageState.queue : fresh;
     if (resultStageSessionId !== sessionId) { resultStageState = undefined; resultStageSessionId = sessionId; }
     root.innerHTML = `${header()}<main id="main" class="result-page" data-ipad-exclude></main>${footer()}`;
     resultStage = mountResultStage(root.querySelector<HTMLElement>('#main')!, {
