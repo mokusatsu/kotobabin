@@ -35,6 +35,7 @@ for (const reduced of [false, true]) {
     expect(initialVehicle.id).toBeTruthy();
     const transport = scene.locator(`[data-delivery-transport][data-effect-id=${JSON.stringify(initialVehicle.id)}]`);
     const startX = initialVehicle.x;
+    const vehicleNode = await transport.elementHandle();
     await page.clock.runFor(500);
     const progressed = await transport.evaluate(element => ({ state: element.getAttribute('data-state'), x: element.getBoundingClientRect().x }));
     if (reduced && progressed.state === 'in-transit') {
@@ -51,6 +52,10 @@ for (const reduced of [false, true]) {
     await expect.poll(async () => (await economy(page, districtId)).completed).toBe(6);
     const generated = BigInt((await economy(page, districtId)).generated); expect(generated).toBeGreaterThan(BigInt(initial.generated));
     const score = await page.locator('#score').textContent();
+    const wordEffect = scene.locator('[data-delivery-effect="word"]'); const dispatchEffect = scene.locator('[data-delivery-effect="dispatch"]');
+    await expect(wordEffect).toHaveCount(1); await expect(dispatchEffect).toHaveCount(1);
+    const issued = { word: await wordEffect.getAttribute('data-effect-id'), dispatch: await dispatchEffect.getAttribute('data-effect-id') };
+    const wordNode = await wordEffect.elementHandle(); const dispatchNode = await dispatchEffect.elementHandle();
     await page.keyboard.press('Escape'); await expect(page.locator('#paused-layer')).toBeVisible();
     const remaining = await page.locator('#time-left').textContent();
     // City transport uses elapsed wall time even though the typing clock is paused.
@@ -61,6 +66,9 @@ for (const reduced of [false, true]) {
     await expect(scene).toHaveAttribute('data-words', '6'); await expect(scene).toHaveAttribute('data-dispatches', '1');
     const effectIds = await scene.locator('[data-delivery-transport]').evaluateAll(elements => elements.map(element => element.getAttribute('data-effect-id')));
     expect(new Set(effectIds).size).toBe(effectIds.length);
+    await expect(wordEffect).toHaveAttribute('data-effect-id', issued.word!); await expect(dispatchEffect).toHaveAttribute('data-effect-id', issued.dispatch!);
+    expect(await vehicleNode!.evaluate(node => node.isConnected)).toBe(true);
+    expect(await wordNode!.evaluate(node => node.isConnected)).toBe(true); expect(await dispatchNode!.evaluate(node => node.isConnected)).toBe(true);
     await expect(page.locator('#time-left')).toHaveText(remaining!); await expect(page.locator('#score')).toHaveText(score!);
     await expect(page.locator('#completed-count')).toHaveText('完成 6語');
     await expect.poll(async () => (await economy(page, districtId)).queued).toBe('0');
