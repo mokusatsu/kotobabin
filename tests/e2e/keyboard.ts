@@ -9,7 +9,13 @@ export async function tabTo(page: Page, target: Locator, maximum = 100) {
       expect(await target.evaluate(element => element.matches(':focus-visible'))).toBe(true);
       return;
     }
-    await page.keyboard.press('Tab');
+    const sameRadioGroup = await target.evaluate(element => {
+      const active = document.activeElement;
+      return element instanceof HTMLInputElement && element.type === 'radio'
+        && active instanceof HTMLInputElement && active.type === 'radio'
+        && active.name === element.name && active.form === element.form;
+    });
+    await page.keyboard.press(sameRadioGroup ? 'ArrowRight' : 'Tab');
   }
   throw new Error(`Keyboard focus did not reach ${await target.evaluate(element => element.outerHTML.slice(0, 180))}`);
 }
@@ -20,6 +26,10 @@ export async function assertViewportFits(page: Page) {
   const report = await page.evaluate(() => {
     const outside = [...document.querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], summary')]
       .filter(element => !element.closest('[inert]') && !element.closest('[aria-hidden="true"]'))
+      .filter(element => {
+        const closed = element.closest('details:not([open])');
+        return !closed || !!closed.querySelector(':scope > summary')?.contains(element);
+      })
       .filter(element => element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden')
       .map(element => ({ element: element.outerHTML.slice(0, 160), rectangle: element.getBoundingClientRect() }))
       .filter(({ rectangle: r }) => r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1)
@@ -35,6 +45,7 @@ export async function assertViewportFits(page: Page) {
 }
 
 export async function keyboardMenuTo(page: Page, action: string) {
+  await expect(page.locator('.site-header')).toBeVisible();
   await page.keyboard.press('F2');
   const menu = page.locator('.navigation-dialog');
   await expect(menu).toBeVisible();
