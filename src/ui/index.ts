@@ -1,3 +1,4 @@
+import { GAME_PRESENTATION_DEFAULTS } from '../config/game-parameters';
 import './reward-art.css';
 import { equippedDecoration } from './reward-art';
 import { AudioPlayer } from '../audio/AudioPlayer';
@@ -370,12 +371,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const fresh = [...owned].filter(id => !knownUnlocks.has(id)); knownUnlocks = owned;
     if (!profileOperationPending) {
       if (session?.mode === 'PRACTICE') for (const id of fresh) practiceAwardCarry.add(id);
-      if (runtime.achievements.notificationMode === 'live' && performance.now() - lastLiveNoticeAt >= 10000) for (const id of fresh) livePending.add(id);
+      if (runtime.achievements.notificationMode === 'live' && performance.now() - lastLiveNoticeAt >= GAME_PRESENTATION_DEFAULTS.achievementToastIntervalMs) for (const id of fresh) livePending.add(id);
     } else { livePending.clear(); practiceAwardCarry.clear(); }
     updateAchievementDisplays();
   }
   function maybeShowLiveNotice(snapshot: Snapshot) {
-    if (runtime.achievements.notificationMode !== 'live' || snapshot.phase === 'PAUSED' || snapshot.wordStarted || !livePending.size || performance.now() - lastLiveNoticeAt < 10000) return;
+    if (runtime.achievements.notificationMode !== 'live' || snapshot.phase === 'PAUSED' || snapshot.wordStarted || !livePending.size || performance.now() - lastLiveNoticeAt < GAME_PRESENTATION_DEFAULTS.achievementToastIntervalMs) return;
     const count = livePending.size; livePending.clear(); lastLiveNoticeAt = performance.now();
     root.querySelector('.achievement-live')?.remove();
     const notice = document.createElement('aside'); notice.className = 'achievement-live'; notice.setAttribute('role', 'status'); notice.setAttribute('aria-label', `切手を${count}枚獲得しました`); notice.textContent = `切手 +${count}枚`;
@@ -384,7 +385,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     clearTimeout(liveNoticeTimer); liveNoticeTimer = setTimeout(() => {
       if (route?.isConnected && route.contains(notice)) route.textContent = route.dataset.routeOriginal ?? '';
       else notice.remove();
-    }, 1200);
+    }, GAME_PRESENTATION_DEFAULTS.achievementToastMs);
   }
   function openSettings() {
     if (screen === 'game') pause();

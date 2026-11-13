@@ -1,3 +1,4 @@
+import { GAME_PRESENTATION_DEFAULTS } from '../config/game-parameters';
 import type { CityState, DistrictId } from '../economy';
 import type { SessionFact, SessionSnapshot } from '../typing';
 import { districtName, escapeCityText, formatMicro } from './city';
@@ -28,6 +29,7 @@ export interface DeliverySceneState {
   cargoCount: number;
   words: number;
   dispatches: number;
+  lastDispatchCount: number;
   arrivalRevision: number;
   wordKind: 'none' | 'clean' | 'dirty';
   lastReason: string;
@@ -40,7 +42,7 @@ export function createDeliverySceneState(city: CityState, destination: DistrictI
   const district = city.districts[destination];
   return { cityId: city.cityId, sessionId: '', batches: district.queueMicro > 0n ? [{ id: `${city.cityId}:initial`, amountMicro: district.queueMicro, remainingMicro: district.queueMicro, sessionId: '', combined: false }] : [], nextBatchId: 1, lastWordEventId: '', lastDispatchEventId: '', destination, queuedMicro: district.queueMicro,
     arrivedCounterMicro: district.arrivedMicro, arrivedSinceMountMicro: 0n, lastArrivalMicro: 0n,
-    cargoCount: 0, words: 0, dispatches: 0, arrivalRevision: 0, wordKind: 'none', lastReason: '',
+    cargoCount: 0, words: 0, dispatches: 0, lastDispatchCount: 0, arrivalRevision: 0, wordKind: 'none', lastReason: '',
     paused: false, reducedMotion: false, factSequences: {} };
 }
 /** Pure projection only: no wall/game clock, CityEconomy calls, awards or persistence. */
@@ -89,7 +91,7 @@ export function projectDeliveryScene(previous: DeliverySceneState, city: CitySta
       if (fact.sessionId !== sessionId || fact.factSequence <= (sequences[sessionId] ?? -1)) continue;
       sequences[sessionId] = fact.factSequence;
       if (fact.type === 'WordCompleted') { state.words++; state.lastWordEventId = fact.eventId; state.wordKind = fact.clean ? 'clean' : 'dirty'; }
-      if (fact.type === 'DeliveryCommitted') { state.dispatches++; state.lastDispatchEventId = fact.eventId; state.lastReason = fact.reason; }
+      if (fact.type === 'DeliveryCommitted') { state.dispatches++; state.lastDispatchCount = fact.cargoCount; state.lastDispatchEventId = fact.eventId; state.lastReason = fact.reason; }
     }
     state.factSequences = sequences;
     if (snapshot) { state.cargoCount = snapshot.cargoCount; state.paused = snapshot.phase === 'PAUSED'; }
@@ -282,6 +284,14 @@ export class DeliverySceneController {
       text('[data-scene-confirmation]', s.wordKind === 'clean' ? '資材の便が出発・まとめ便の荷物も追加' : '資材の便が出発・まとめ便の荷物は追加なし');
     }
     if (s.dispatches > this.paintedDispatches) {
+      const size = s.lastDispatchCount;
+      const duration = GAME_PRESENTATION_DEFAULTS.deliveryFxMs[size <= 2 ? 0 : size <= 4 ? 1 : 2];
+      if (dispatchEffect) {
+        dispatchEffect.style.animationDuration = `${duration}ms`;
+        dispatchEffect.style.animationDelay = `${size === 5 ? GAME_PRESENTATION_DEFAULTS.deliveryHoldMs : 0}ms`;
+        // Backwards fill holds only the parcel drawing during the full-load beat.
+        dispatchEffect.style.animationFillMode = 'both';
+      }
       el.dataset.dispatchRevision = String(s.dispatches); pulse('.delivery-dispatch-cart', s.dispatches, 'delivery-bonus'); this.paintedDispatches = s.dispatches;
       text('[data-scene-confirmation]', 'まとめ便を発送・追加資材も輸送待ちへ');
     }
