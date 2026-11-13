@@ -394,6 +394,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       if (input.name === 'reducedMotion') patch.reducedMotion = input.checked;
       if (input.name === 'deliveryKeys') patch.deliveryKeys = input.value === 'both' ? ['Space', 'Enter'] : [input.value as 'Space' | 'Enter'];
       runtime.updateSettings(patch); applySettings();
+      if (patch.fontScale !== undefined) ipadLayout.flush();
       if (session && state().phase !== 'RESULT' && patch.guide !== undefined) mutate(session.setGuideEnabled(patch.guide, performance.now()));
     });
     dialog.addEventListener('close', () => { dialog.remove(); if (screen === 'game' && session) { gameInput?.destroy(); attachGameInput(); updateGame(state()); } }, { once: true });
