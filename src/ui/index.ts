@@ -1,5 +1,5 @@
 import { AudioPlayer } from '../audio/AudioPlayer';
-import { GameAudio, soundStatusText } from './audio';
+import { GameAudio, renderAudioStatus } from './audio';
 import wordsData from '../../spec/initial/data/words.json';
 import { CourseGenerator, GameSession, InputAdapter, type Word, type SessionMode } from '../typing';
 import type { AppRuntime, AppSettings } from '../app/runtime';
@@ -122,11 +122,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const map = root.querySelector<HTMLElement>('.town-map');
     if (map) map.hidden = false;
   }
-  function updateAudioStatus() {
-    const enabled = runtime.settings.sound;
-    root.querySelectorAll<HTMLElement>('[data-audio-status]').forEach(element => { const text = soundStatusText(enabled, audio.status); if (element.textContent !== text) element.textContent = text; });
-    root.querySelectorAll<HTMLButtonElement>('[data-action="enable-audio"]').forEach(button => { const hidden = !enabled || (audio.status !== 'unavailable' && audio.status !== 'idle'); if (button.hidden !== hidden) button.hidden = hidden; });
-  }
+  function updateAudioStatus() { renderAudioStatus(root, runtime.settings.sound, audio.status); }
   function applySettings() {
     audio.configure(runtime.settings); updateAudioStatus();
     root.style.setProperty('--font-scale', String(runtime.settings.fontScale / 100));

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { GameAudio, soundStatusText, type SoundOutput } from '../../src/ui/audio';
+import { GameAudio, soundStatusText, renderAudioStatus, type SoundOutput } from '../../src/ui/audio';
 import { GameSession, type SessionMode } from '../../src/typing';
 import { filterCatalogue, createProfileProgress } from '../../src/profile';
 import type { AudioKind, AudioStatus } from '../../src/audio/AudioPlayer';
@@ -109,4 +109,16 @@ describe('confirmed UI audio feedback', () => {
     expect(output.settings).toHaveBeenCalledTimes(1);
     audio.dispose(); audio.gesture(); expect(output.dispose).toHaveBeenCalledTimes(1);
   });
+});
+
+it('does not reveal a pager-hidden retry control on an unrelated settings refresh', () => {
+  const button = { dataset: { audioRetryNeeded: 'true' }, hidden: true, toggleAttribute: vi.fn() };
+  const status = { textContent: soundStatusText(true, 'unavailable') };
+  const root = { querySelectorAll: (selector: string) => selector === '[data-audio-status]' ? [status] : [button] } as unknown as HTMLElement;
+  renderAudioStatus(root, true, 'unavailable');
+  expect(button.hidden).toBe(true); expect(button.toggleAttribute).not.toHaveBeenCalled();
+  renderAudioStatus(root, true, 'ready');
+  expect(button.hidden).toBe(true); expect(button.toggleAttribute).toHaveBeenLastCalledWith('data-ipad-exclude', true);
+  renderAudioStatus(root, true, 'unavailable');
+  expect(button.hidden).toBe(false); expect(button.toggleAttribute).toHaveBeenLastCalledWith('data-ipad-exclude', false);
 });
