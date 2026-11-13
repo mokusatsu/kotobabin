@@ -1804,3 +1804,87 @@ body[data-reduced-motion="true"] *::after {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* M3: city resources and investment remain outside the typing card. */
+.city-page, .equipment-page { max-width: 1320px; margin: auto; padding: 32px 0; }
+.city-balance { display: flex; flex-wrap: wrap; gap: 16px 32px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.city-balance strong { font-family: ui-monospace, monospace; color: var(--accent); margin: 0 6px; }
+.city-detail-layout { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; margin-top: 24px; }
+.city-district-nav, .equipment-tabs { display: flex; flex-direction: column; gap: 10px; }
+.city-district-nav .button, .equipment-tabs .button { text-align: left; }
+.button.selected { border: 2px solid var(--primary); background: #e7eddf; }
+.district-detail-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.district-detail-heading h2 { margin: 0; }
+.district-figure { display: flex; flex-direction: column; align-items: center; margin: 16px 0; background: #eef1e7; border-radius: 4px; padding: 16px; }
+.district-figure > img { width: min(100%, 360px); aspect-ratio: 4/3; object-fit: contain; }
+.district-figure figcaption { text-align: center; }
+.art-pending { display: block; color: var(--secondary); font-size: calc(16px * var(--font-scale)); padding: 8px 12px; }
+.district-resources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 24px 0; }
+.district-resources > div { border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.district-resources dt { color: var(--secondary); }
+.district-resources dd { margin: 8px 0 0; font-family: ui-monospace, monospace; font-size: calc(20px * var(--font-scale)); }
+.plan-card, .unlock-requirements { padding: 20px 0 0; border-top: 1px solid var(--border); }
+.plan-card progress { width: 100%; height: 14px; accent-color: var(--primary); }
+.city-page-actions { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+.equipment-layout { display: grid; grid-template-columns: 170px minmax(0, 1fr) 260px; gap: 24px; margin-top: 24px; align-items: start; }
+.equipment-main { min-width: 0; }
+.equipment-controls { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 16px 24px; margin-bottom: 20px; }
+.equipment-controls > label { display: flex; flex-direction: column; gap: 8px; }
+.equipment-controls fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.equipment-controls legend { margin-bottom: 8px; }
+.equipment-controls select, .destination-select, .landscape-picker select { min-height: 44px; padding: 8px 12px; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; }
+.destination-select { min-width: 0; flex: 1; }
+.purchase-card { padding: 28px; }
+.purchase-card h2 { margin-top: 0; }
+.purchase-comparison { display: flex; gap: 20px; align-items: center; justify-content: space-between; margin: 20px 0; }
+.purchase-comparison > div { min-width: 0; flex: 1; }
+.purchase-comparison > div > span, .purchase-comparison > div > strong { display: block; }
+.purchase-comparison > div > strong { margin-top: 12px; font-size: calc(24px * var(--font-scale)); color: var(--primary); }
+#purchase-cost { font-size: calc(28px * var(--font-scale)); color: var(--accent); font-family: ui-monospace, monospace; }
+.purchase-card > .button { width: 100%; margin-top: 16px; }
+.packaging-art { width: 100%; max-height: 220px; object-fit: contain; }
+.equipment-district-card { padding: 24px; }
+.equipment-district-card h2 { margin-top: 0; }
+.equipment-district-card p { overflow-wrap: anywhere; }
+.transport-preview { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px 0; }
+.special-equipment-grid { display: grid; gap: 20px; }
+.special-equipment-grid .paper-card { padding: 24px; }
+.condition-list { padding-left: 20px; }
+.condition-list li { padding: 6px 0; }
+.condition-list strong { margin-right: 8px; }
+.landscape-picker { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+.restart-dialog { max-height: calc(100dvh - 40px); overflow-y: auto; }
+.restart-dialog .button { width: 100%; margin-top: 16px; }
+.result-city { margin-top: 24px; }
+.result-city details { padding: 16px 0; }
+.result-city summary { cursor: pointer; min-height: 44px; }
+.city-command-status { color: var(--accent); min-height: 26px; }
+.home-city-slot { min-width: 0; }
+.home-city-slot .town-panel { height: 100%; }
+.canonical-map { height: auto; aspect-ratio: 8/5; }
+.canonical-map > svg { width: 100%; height: 100%; display: block; }
+.canonical-map .city-route { fill: none; stroke: #bac5aa; stroke-width: 8; }
+.canonical-map .city-route.locked { stroke-dasharray: 12 10; opacity: .5; }
+.canonical-map .city-route.open { stroke: #fffdf7; }
+.canonical-map .city-route.railway { stroke: #687269; stroke-width: 12; stroke-dasharray: 8 5; }
+.canonical-map .map-label { transform: translateX(-50%); padding: 6px 8px; }
+.canonical-map .map-label.selected { border: 2px solid var(--primary); background: #fffdf7; }
+.selected-district-figure > img { width: min(100%, 320px); }
+.home-city-balance { grid-column: 1/-1; }
+.play-city-strip { display: flex; align-items: center; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.play-city-strip .district-figure { margin: 0; padding: 0; width: 132px; min-width: 132px; background: transparent; }
+.play-city-strip .district-figure img { width: 132px; height: 99px; }
+.play-city-strip figcaption { display: none; }
+.play-city-values { display: flex; gap: 12px 24px; flex-wrap: wrap; }
+.play-city-values p { margin: 0; }
+@media (max-width: 1199px) { .equipment-layout { grid-template-columns: 160px minmax(0, 1fr); } #equipment-district-summary { grid-column: 2; } .equipment-district-card { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; } .equipment-district-card h2 { grid-column: 1/-1; } .equipment-district-card p { margin: 0; } }
+@media (max-width: 959px) { .city-detail-layout { grid-template-columns: 1fr; } .city-district-nav { flex-direction: row; flex-wrap: wrap; } .city-district-nav .button { flex: 1 1 140px; } .equipment-layout { grid-template-columns: 1fr; } .equipment-tabs { flex-direction: row; flex-wrap: wrap; } .equipment-tabs .button { flex: 1 1 140px; } #equipment-district-summary { grid-column: 1; } }
+@media (max-width: 767px) { .district-resources { grid-template-columns: 1fr 1fr; } .purchase-card { padding: 20px; } .purchase-comparison { gap: 12px; flex-wrap: wrap; } .equipment-district-card { display: block; } .equipment-district-card p { margin: 12px 0; } .play-city-strip { align-items: flex-start; } .play-city-values { flex-direction: column; gap: 8px; } .district-figure > img { width: 100%; } }
+.return-card { grid-column: 1/-1; margin: 0 0 24px; padding: 24px; background: #edf1e5; }
+.return-card h2 { margin-top: 0; }
+.district-composite { position: relative; width: min(100%, 360px); aspect-ratio: 4/3; }
+.district-composite > .district-base-art, .district-composite > .district-scaffold-art { display: block; width: 100%; height: 100%; object-fit: contain; }
+.district-composite > .district-scaffold-art { position: absolute; inset: 0; }
+.district-composite > .district-shop-art { position: absolute; left: 8.191287879%; top: 59.217171717%; width: 24.242424242%; height: 32.323232323%; object-fit: contain; }
+.play-city-strip .district-composite { width: 132px; min-width: 132px; height: 99px; }
+.play-city-strip .district-composite > .district-shop-art { width: 24.242424242%; height: 32.323232323%; }

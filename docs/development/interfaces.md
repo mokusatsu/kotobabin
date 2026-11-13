@@ -21,3 +21,9 @@ M1のInputAdapterは後続のIME実機受入を含む完成品ではない。未
 `mountApp(root, runtime)` は `src/app/runtime.ts` のAppRuntimeを使用。設定/プロフィールは即時メモリー投影、耐久保存の状態は別に表示する。`applyFacts(facts, context)` は全事実の順序を渡す。`takeOver({discardUnsaved:true})` は明示確認後のみ使い、古い未保存投影を控えに残す。保存前の拒否でrepoがsavedでも、未保存投影を自動でスナップショット置換しない。
 
 GameSessionのPRACTICEは完成後にrepeatWord/nextPracticeWord/endPracticeを選び、PracticeSessionEndedを一度発行する。TUTORIALは実発送の成功と連続失敗救済を保持し、RoundFinishedを偽造しない。ガイド表示履歴は便内で維持。CityEconomyの投資メソッドはまだ単独プリミティブであり、UI接続前に(cityId,economyEventId)の台帳と原子保存を追加する。
+
+## M3接続
+
+AppRuntimeのcityはBigIntを保持するコピー、destinationは開通済み地区。beginSession(sessionId,mode)は倍率/地区/削除世代を固定し、cityBusy中はfalseを返す。applyFactsはプロフィールと街を同じ最新ドキュメントから更新する。cityCommandはcityId/economyEventIdと固定時刻を持ち、DBでの最新見積確認後に所有数を表示する。cityBusy中に次の便を始めない。endSessionは未配達追加点を作らず、TUTORIALも明示閉鎖する。
+
+コード/metadata/削除世代の境界はProfileRepository、経済命令の重複/価格/保存形式はCityEconomyとcodec、画面は純粋なsnapshot表示。命令失敗時は部分的に時間や残高を進めない。

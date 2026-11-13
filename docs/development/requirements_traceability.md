@@ -124,3 +124,17 @@
 | 全72実績/報酬、街を含む保存 | 未着手 | 次のM3/M4接続 |
 
 第2サイクルの検証CIは43448078577（コード479cbb8）。節全体や製品全体の完了率は算出していない。
+
+## 第3サイクル
+
+| 項目 | 状態 | 実装・根拠 |
+|---|---|---|
+| 投資命令の一意性・見積再確認 | 検証済み | economy/commands.ts、commands.test.ts、city-persistence.spec.ts |
+| 生成/到着/予約/自由在庫/時計の保存 | 検証済み | app/runtime.ts、city-runtime.test.ts、runtime-city.spec.ts |
+| 最初の建物・営業・設備購入 | 検証済み | ui/city.ts、city-ui.spec.ts |
+| 再出発・鉄道・全研究の数値 | 検証済み | city.test.ts、commands.test.ts。全画面検収は未了 |
+| 街とプロフィールの原子更新/削除世代 | 検証済み | mutateDocument、repository.test.ts、reset-persistence.spec.ts |
+| 引継ぎの明示途中終了と新便 | 検証済み | UIとruntime、profile-ui.spec.ts。通常停止復帰は維持 |
+| 残りの全資材・全72実績・実IME | 作業中 | asset_progress・Issue #4、次のM4/M5/M6 |
+
+CI43452776448（d8a5425）で142単体と21 E2E成功。コードの存在だけで製品全件の受入完了とはしていない。
