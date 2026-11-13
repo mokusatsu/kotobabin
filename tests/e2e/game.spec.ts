@@ -46,7 +46,7 @@ test('mistakes preserve completion points and paused time does not consume the r
   await page.clock.install();
   await prepare(page);
   const base = await completeWord(page);
-  await page.locator('#game-input').press('q');
+  await page.locator('#game-input').press("'");
   await expect(page.locator('#cargo-count')).toHaveText('0');
   await expect(page.locator('#score')).toHaveText(String(base));
   await page.locator('#game-input').press('Space');
