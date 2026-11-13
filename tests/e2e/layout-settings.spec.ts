@@ -3,28 +3,27 @@ import { expect, test } from '@playwright/test';
 import { assertNoHorizontalOverflow, beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
 for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 }, { width: 767, height: 900 }]) {
-  test(`readable layout and map fallback at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
+  test(`readable world game layout at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
     await page.goto('/');
     await expect(page.locator('.home-intro')).toBeVisible();
     await assertNoHorizontalOverflow(page);
     const helperSize = await page.locator('.keyboard-note').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
     expect(helperSize).toBeGreaterThanOrEqual(16);
-    if (await page.locator('.town-map').isVisible()) {
-      expect((await page.locator('.town-map').boundingBox())!.width).toBeGreaterThanOrEqual(800);
-      const labels = await page.locator('.town-map .map-label').evaluateAll(elements => elements.map(element => {
-        const { x, y, width, height } = element.getBoundingClientRect();
-        return { name: element.textContent, x, y, width, height };
-      }));
-      for (let left = 0; left < labels.length; left++) for (let right = left + 1; right < labels.length; right++) {
-        const a = labels[left], b = labels[right];
-        const overlaps = a.x < b.x + b.width && b.x < a.x + a.width
-          && a.y < b.y + b.height && b.y < a.y + a.height;
-        expect(overlaps, `${a.name} / ${b.name}`).toBe(false);
-      }
-    } else {
-      await expect(page.locator('.compact-town')).toBeVisible();
-      await expect(page.locator('.compact-town .district-list-button')).toHaveCount(6);
+    await expect(page.locator('.world-stage.game-stage')).toBeVisible();
+    await expect(page.locator('.town-map')).toBeVisible();
+    await expect(page.locator('.town-map .map-label')).toHaveCount(6);
+    await expect(page.locator('.compact-town')).toBeHidden();
+    await assertViewportFits(page);
+    const labels = await page.locator('.town-map .map-label').evaluateAll(elements => elements.map(element => {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      return { name: element.textContent, x, y, width, height };
+    }));
+    for (let left = 0; left < labels.length; left++) for (let right = left + 1; right < labels.length; right++) {
+      const a = labels[left], b = labels[right];
+      const overlaps = a.x < b.x + b.width && b.x < a.x + a.width
+        && a.y < b.y + b.height && b.y < a.y + a.height;
+      expect(overlaps, `${a.name} / ${b.name}`).toBe(false);
     }
     await page.screenshot({ path: testInfo.outputPath(`home-${viewport.width}.png`), fullPage: true });
     if (viewport.width >= 768) {
