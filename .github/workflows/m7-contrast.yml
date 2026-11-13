@@ -1,0 +1,25 @@
+name: M7 computed text contrast audit
+on:
+  push:
+    branches: [test/contrast-m7]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contrast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config=tests/e2e/contrast/playwright.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m7-computed-contrast
+          path: test-results/contrast/
