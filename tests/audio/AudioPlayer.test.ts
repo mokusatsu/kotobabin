@@ -1,3 +1,4 @@
+import manifest from '../../spec/initial/data/visual_resource_manifest.json';
 import { describe, expect, it, vi } from 'vitest';
 import { AudioPlayer, type AudioKind } from '../../src/audio/AudioPlayer';
 
@@ -72,7 +73,9 @@ describe('optional nonblocking AudioPlayer', () => {
     expect(context.active.filter((source) => source.loop)).toHaveLength(1);
     expect(context.gains.at(-1)!.gain.value).toBeCloseTo(0.5 * 0.25);
     expect(fetched).toContain('/kotobabin/assets/sound_effect/audio_key.wav');
-    expect(fetched).toContain('/kotobabin/assets/sound_effect/audio_theme.ogg');
+    expect(fetched).toContain('/kotobabin/assets/bgm/audio_theme.ogg');
+    const exports = manifest.assets.filter(asset => asset.kind === 'audio').flatMap(asset => asset.runtime_exports);
+    expect(fetched.every(url => exports.includes(url.slice('/kotobabin/'.length)))).toBe(true);
     player.settings({ master: 0.8, effects: 0.4, music: 0.2 });
     expect(context.gains[0].gain.value).toBeCloseTo(0.32);
     expect(context.gains[1].gain.value).toBeCloseTo(0.16);

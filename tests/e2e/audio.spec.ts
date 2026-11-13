@@ -61,7 +61,7 @@ test('sound opt-in persists independent volumes and confirms native key/word/del
   await observeNativeAudio(page);
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   const requests: string[] = [];
-  page.on('request', request => { if (request.url().includes('/sound_effect/')) requests.push(request.url()); });
+  page.on('request', request => { if (request.url().includes('/sound_effect/') || request.url().includes('/bgm/')) requests.push(request.url()); });
   await page.goto('/');
   expect((await probe(page)).created).toBe(0); expect(requests).toEqual([]);
   const settings = await openAudioSettings(page);
