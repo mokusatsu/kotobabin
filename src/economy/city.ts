@@ -18,13 +18,13 @@ export interface CityState extends WorldState {
   packagingLevel: number; blueprints: number; generatedMicro: bigint; arrivedMicro: bigint;
   completedWords: number; economicShipments: number; legacyShipments: number; citiesRestarted: number;
   activeSession: EconomySession | null; lastSessionSummary: SessionEconomySummary | null;
-  usedSessionIds: string[]; factLedger: Record<string, string>; constructionHistory: Construction[];
+  usedSessionIds: string[]; factLedger: Record<string, string>; commandLedger: Record<string, string>; constructionHistory: Construction[];
 }
 export function initialCityState(wallMs = 0): CityState {
   return { ...initialWorldState(wallMs), economyVersion: config.economy_version, citySequence: 1, cityId: 'city-1',
     landscape: config.initial.landscape, packagingLevel: config.initial.packaging_level, blueprints: config.initial.blueprints,
     generatedMicro: 0n, arrivedMicro: 0n, completedWords: 0, economicShipments: 0, legacyShipments: 0, citiesRestarted: 0,
-    activeSession: null, lastSessionSummary: null, usedSessionIds: [], factLedger: {}, constructionHistory: [] };
+    activeSession: null, lastSessionSummary: null, usedSessionIds: [], factLedger: {}, commandLedger: {}, constructionHistory: [] };
 }
 interface FactIdentity { cityId: string; sessionId: string; factSequence: number; atMs?: number }
 export interface CompletedWordFact extends FactIdentity { baseLength: number; mistakes?: number; completed?: boolean; confirmation?: boolean }
