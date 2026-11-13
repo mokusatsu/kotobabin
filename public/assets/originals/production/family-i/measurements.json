@@ -30,5 +30,165 @@
     "native_sha256": "ce4b90503c3990b64896de24cee334bff3534e8019fe2637a3e95ecbc135084d",
     "runtime_sha256": "a032d1f6ce2820e70b68b5b8d30836478026a66d62f1b8674786bd3f7f46ddb5",
     "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_i02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1253,
+      1238
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      36,
+      32,
+      473,
+      440
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 220122,
+    "native_sha256": "c975f2fb021336183f03f1663e509155edde03de346ac5df71bd8f0453cd540d",
+    "runtime_sha256": "e635df22f2e9751e39c1aecb5bbaeae35e4e90c678d268d75dcad76480d01c29",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_i03",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      5,
+      1253,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      34,
+      64,
+      475,
+      446
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 189664,
+    "native_sha256": "5da1a26ed9e798405eead85d68d5d522efe4368009f49d4f8b83f8478020ee52",
+    "runtime_sha256": "f6a255cc79c4aafb6a6a723a59dba5ecd7f1155ea457404517f8de90e4baa5be",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_i04",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1253,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      42,
+      39,
+      468,
+      474
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 254184,
+    "native_sha256": "bb0fd4e35d73eec7817a54cd260a8255c320696df90d4ba20320cf9c60ffcf38",
+    "runtime_sha256": "206fcb1c7e19ef7bbe3ee2731aa3498bee996da00278829752cf47b1ae2f2bdf",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_i05",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      8,
+      1250,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      59,
+      35,
+      459,
+      480
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 175538,
+    "native_sha256": "c0be69ccf6d69686beeaa5f694d56c30773bc712c42039cbb6910521cb8df308",
+    "runtime_sha256": "2ba740848bfa9078778262c0bda8bfb5b97bafcdeb47f5520f2941e6f478374f",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_i06",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1246,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      41,
+      52,
+      470,
+      470
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 291998,
+    "native_sha256": "80772c3c58ed1742c611c99a78efb9d2feebce1db341763d6334c010d83d4ab6",
+    "runtime_sha256": "7e18164b699eb4744d15bfb5efe074832cffe38eca87d425135700540125bdde",
+    "png_webp_alpha_and_paper_composite_equal": true
   }
 ]
