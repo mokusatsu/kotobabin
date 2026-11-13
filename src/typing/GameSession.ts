@@ -11,7 +11,9 @@ interface FactBase {
   mode: SessionMode;
   inputRuleVersion: 'romaji-1.0.0';
   confirmedAtMs: number;
+  guideUsed: boolean;
 }
+export type PracticeEndReason = 'home' | 'main' | 'replaced' | 'exit';
 export interface CompletedWord {
   wordId: string;
   topicId: string;
@@ -28,6 +30,7 @@ type FactPayload = (
   | { type: 'DeliveryCommitted'; reason: DeliveryReason; cargoCount: number; bonus: number; position: number; cargoWordIds: string[] }
   | { type: 'WordSkipped'; wordId: string; position: number }
   | { type: 'RoundFinished'; completed: boolean; result: SessionSnapshot }
+  | { type: 'PracticeSessionEnded'; reason: PracticeEndReason; maxCleanStreak: number; result: SessionSnapshot }
 );
 export type SessionFact = FactBase & FactPayload;
 export interface SessionSnapshot {
@@ -59,6 +62,10 @@ export interface SessionSnapshot {
   wordMistakes: number;
   skips: number;
   maxCleanStreak: number;
+  currentCleanStreak: number;
+  awaitingWordChoice: boolean;
+  guideEnabled: boolean;
+  guideUsed: boolean;
   message: string;
 }
 
@@ -89,9 +96,14 @@ export class GameSession {
   private maxCleanStreak = 0;
   private canonicalLengthSum = 0;
   private message = '';
+  private awaitingWordChoice = false;
+  private guideEnabled: boolean;
+  private guideUsed: boolean;
 
-  constructor(options: { words?: Word[]; generator?: CourseGenerator; mode?: SessionMode; sessionId?: string }) {
+  constructor(options: { words?: Word[]; generator?: CourseGenerator; mode?: SessionMode; sessionId?: string; guideEnabled?: boolean }) {
     this.mode = options.mode ?? 'MAIN';
+    this.guideEnabled = options.guideEnabled ?? true;
+    this.guideUsed = this.guideEnabled;
     this.sessionId = options.sessionId ?? crypto.randomUUID();
     if (options.generator) this.nextWord = () => options.generator!.next();
     else {
@@ -114,7 +126,7 @@ export class GameSession {
   private emit(fact: FactPayload, nowMs: number): void {
     const factSequence = ++this.factSequence;
     this.facts.push({ ...fact, sessionId: this.sessionId, factSequence, eventId: `${this.sessionId}:${factSequence}`,
-      mode: this.mode, inputRuleVersion: 'romaji-1.0.0', confirmedAtMs: nowMs } as SessionFact);
+      mode: this.mode, inputRuleVersion: 'romaji-1.0.0', confirmedAtMs: nowMs, guideUsed: this.guideUsed } as SessionFact);
   }
   private deadline(nowMs: number): boolean {
     if (this.phase === 'PLAYING' && this.mode === 'MAIN' && this.elapsed(nowMs) >= 90_000) {
@@ -132,16 +144,17 @@ export class GameSession {
     this.cargo.length = 0;
     this.message = reason === 'deadline' ? '最後の荷物を届けました' : `${bonus}点のボーナスを届けました`;
   }
-  private advanceWord(): void {
-    this.word = this.nextWord();
+  private advanceWord(word = this.nextWord()): void {
+    this.word = word;
     this.wordIds.push(this.word.id);
     this.engine = new RomajiEngine(this.word.reading);
     this.wordStarted = false;
     this.wordMistakes = 0;
+    this.awaitingWordChoice = false;
   }
 
   input(key: string, nowMs: number): SessionSnapshot {
-    if (!/^[A-Za-z'-]$/.test(key) || this.phase === 'PAUSED' || this.deadline(nowMs)) return this.snapshot(nowMs);
+    if (!/^[A-Za-z'-]$/.test(key) || this.phase === 'PAUSED' || this.deadline(nowMs) || this.awaitingWordChoice) return this.snapshot(nowMs);
     if (this.phase === 'READY') {
       this.phase = 'PLAYING';
       this.startedAtMs = nowMs;
@@ -173,7 +186,10 @@ export class GameSession {
           this.cargo.push({ wordId: this.word.id, value: canonicalLength * 10 });
           if (this.cargo.length === 5) this.commitDelivery('full', nowMs);
         }
-        this.advanceWord();
+        if (this.mode === 'PRACTICE') {
+          this.awaitingWordChoice = true;
+          this.wordStarted = false;
+        } else this.advanceWord();
       }
     }
     return this.snapshot(nowMs);
@@ -212,6 +228,7 @@ export class GameSession {
   /** Only call after the pause UI has explained rescue-record consequences. */
   skip(nowMs: number): SessionSnapshot {
     if (this.phase !== 'PAUSED') return this.snapshot(nowMs);
+    if (this.mode === 'PRACTICE') return this.nextPracticeWord(nowMs);
     this.commitDelivery('skip', nowMs);
     this.skips++;
     this.cleanStreak = 0;
@@ -220,14 +237,48 @@ export class GameSession {
     return this.snapshot(nowMs);
   }
 
+  /** A completed practice word remains visible until the player chooses an action. */
+  nextPracticeWord(nowMs: number, word?: Word): SessionSnapshot {
+    if (this.mode !== 'PRACTICE' || this.phase === 'RESULT') return this.snapshot(nowMs);
+    if (!this.awaitingWordChoice) {
+      this.commitDelivery('skip', nowMs);
+      this.skips++;
+      this.cleanStreak = 0;
+      this.emit({ type: 'WordSkipped', wordId: this.word.id, position: this.wordIds.length }, nowMs);
+    }
+    this.advanceWord(word);
+    return this.snapshot(nowMs);
+  }
+
+  repeatWord(nowMs: number): SessionSnapshot {
+    return this.nextPracticeWord(nowMs, this.word);
+  }
+
+  setGuideEnabled(enabled: boolean, nowMs: number): SessionSnapshot {
+    if (this.phase === 'RESULT' || this.deadline(nowMs)) return this.snapshot(nowMs);
+    this.guideEnabled = enabled;
+    this.guideUsed ||= enabled;
+    return this.snapshot(nowMs);
+  }
+
+  endPractice(nowMs: number, reason: PracticeEndReason = 'exit'): SessionSnapshot {
+    if (this.mode !== 'PRACTICE' || this.phase === 'RESULT') return this.snapshot(nowMs);
+    this.accumulatedMs = this.elapsed(nowMs);
+    this.phase = 'RESULT';
+    const result = this.snapshot(nowMs);
+    this.emit({ type: 'PracticeSessionEnded', reason, maxCleanStreak: this.maxCleanStreak, result }, nowMs);
+    return result;
+  }
+
   /** Call only after explicit confirmation for an unfinished round. */
   finish(nowMs: number, completed = false): SessionSnapshot {
     if (this.phase === 'RESULT') return this.snapshot(nowMs);
+    if (this.mode === 'PRACTICE') return this.endPractice(nowMs);
     this.accumulatedMs = this.elapsed(nowMs);
-    if (completed) this.commitDelivery('deadline', nowMs);
+    if (completed && this.mode === 'MAIN') this.commitDelivery('deadline', nowMs);
     this.phase = 'RESULT';
     const result = this.snapshot(nowMs);
-    this.emit({ type: 'RoundFinished', completed, result }, nowMs);
+    if (this.mode === 'MAIN') this.emit({ type: 'RoundFinished', completed, result }, nowMs);
     return result;
   }
 
@@ -246,7 +297,8 @@ export class GameSession {
       accuracy: denominator ? this.correctKeys / denominator * 100 : null,
       canonicalKpm: elapsedMs > 0 ? this.canonicalLengthSum / (elapsedMs / 1000) * 60 : null,
       canonicalLengthSum: this.canonicalLengthSum, wordStarted: this.wordStarted, wordHasMistake: this.wordMistakes > 0,
-      wordMistakes: this.wordMistakes, skips: this.skips, maxCleanStreak: this.maxCleanStreak, message: this.message };
+      wordMistakes: this.wordMistakes, skips: this.skips, maxCleanStreak: this.maxCleanStreak, currentCleanStreak: this.cleanStreak,
+      awaitingWordChoice: this.awaitingWordChoice, guideEnabled: this.guideEnabled, guideUsed: this.guideUsed, message: this.message };
   }
 
   drainEvents(): SessionFact[] { return this.facts.splice(0); }
