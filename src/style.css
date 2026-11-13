@@ -2054,3 +2054,22 @@ body[data-reduced-motion="true"] *::after {
 .handbook-summary .text-button { margin-left: 0; }
 .handbook-tabs { margin-block: 8px; }
 .handbook-tabs .button { min-height: 44px; padding: 8px 12px; }
+/* On landscape tablets, read each stamp beside its labels instead of stacking them. */
+@media (min-width: 960px) {
+  [data-ipad-layout] .achievement-select {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+    column-gap: 16px;
+    row-gap: 8px;
+    text-align: left;
+  }
+  [data-ipad-layout] .achievement-select > .stamp-art,
+  [data-ipad-layout] .achievement-select > .stamp-placeholder {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    align-self: center;
+  }
+  [data-ipad-layout] .achievement-select > :not(.stamp-art):not(.stamp-placeholder) { grid-column: 2; }
+  [data-ipad-layout] .achievement-select > .achievement-badges { justify-content: flex-start; }
+}
