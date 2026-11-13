@@ -27,3 +27,4 @@ await page.waitForFunction(() => globalThis.audioHealth.complete, undefined, { t
 const health = await page.evaluate(() => globalThis.audioHealth);
 process.stdout.write(`${JSON.stringify({ browser: browser.version(), nativeAudioHealth: health, events })}\n`);
 await browser.close();
+if (!health.complete || health.error || health.resumed !== 'running') process.exitCode = 1;
