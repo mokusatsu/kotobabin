@@ -2,6 +2,7 @@ import { applySessionFact, parseProfileBackup, ProfileRepository, type ProfileDo
 import { CityEconomy, initialCityState, encodeCityState, decodeCityState, executeCityCommand, type CityState, type CityCommand, type DistrictId, type AdvanceResult, type EconomyMode } from '../economy';
 import type { SessionFact, SessionMode } from '../typing';
 import content from '../../spec/initial/data/words.json';
+import { createAchievementState, beginAchievementSession, applyAchievementFacts, applyAchievementCity, applyAchievementAction, type AchievementState, type AchievementAction } from '../profile/achievements';
 
 export interface AppSettings {
   tutorialSeen: boolean; fontScale: 100 | 125 | 150; guide: boolean;
@@ -11,12 +12,14 @@ export interface RuntimeStatus { storage: 'saved' | 'saving' | 'memory' | 'error
 export interface AppRuntime {
   readonly settings: AppSettings;
   readonly profile: ProfileProgress;
+  readonly achievements: AchievementState;
   readonly status: RuntimeStatus;
   readonly city: CityState;
   readonly destination: DistrictId;
   readonly cityBusy: boolean;
   readonly returnSummary: AdvanceResult | null;
-  beginSession(sessionId: string, mode: SessionMode, destination?: DistrictId): boolean;
+  beginSession(sessionId: string, mode: SessionMode, destination?: DistrictId, context?: RecordContext): boolean;
+  achievementAction(action: AchievementAction): void;
   endSession(sessionId: string): void;
   selectDestination(id: DistrictId): void;
   cityCommand(command: CityCommand): Promise<void>;
@@ -73,6 +76,12 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     cityRecovery = '街の保存データを確認できません。元データを控えに残し、今回は保存せずに続けます。';
   }
   let destination = readDestination(repo.snapshot, city);
+  const readAchievements = (document: ProfileDocument): AchievementState => document.extensions.achievements === undefined
+    ? createAchievementState() : structuredClone(document.extensions.achievements as AchievementState);
+  let achievements = readAchievements(repo.snapshot);
+  const observeCity = (value: AchievementState, state: CityState, atMs: number) => applyAchievementCity(value, {
+    eventId: `world:${state.cityId}:${state.clockMs}`, atMs, city: state,
+  });
   let baseClock = city.clockMs;
   let baseMono = clock.now();
   const capture = () => ({ atMs: baseClock + Math.max(0, Math.floor(clock.now() - baseMono)), wallMs: wallNow() });
@@ -81,7 +90,8 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     engine.state.savedWallMs = Math.max(engine.state.savedWallMs, time.wallMs);
   };
   const putCity = (document: ProfileDocument, state: CityState, selected = readDestination(document, state)): ProfileDocument => ({
-    ...document, extensions: { ...document.extensions, city: encodeCityState(state), cityDestination: selected },
+    ...document, extensions: { ...document.extensions, city: encodeCityState(state), cityDestination: selected,
+      achievements: observeCity(readAchievements(document), state, wallNow()) },
   });
   const emit = () => { if (!closed) for (const listener of listeners) listener(); };
   const syncCity = () => {
@@ -93,6 +103,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   const syncSnapshot = () => {
     const snapshot = repo.snapshot;
     progress = snapshot.progress;
+    achievements = readAchievements(snapshot);
     settings = { ...snapshot.settings, tutorialSeen: snapshot.tutorialSeen };
     syncCity();
   };
@@ -125,6 +136,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     const returned = engine.restoreAt(wall);
     if (returned.creditedMs >= 1000 || returned.arrivedMicro > 0n || returned.shopCoinsMicro > 0n || returned.completed.length) returnSummary = returned;
     city = engine.snapshot();
+    achievements = observeCity(achievements, city, wall);
     baseClock = city.clockMs; baseMono = clock.now();
     void persist(() => repo.mutateDocument(document => {
       const current = new CityEconomy(readCity(document, wall));
@@ -142,6 +154,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   }, 1500);
   const runtime: AppRuntime = {
     get profile() { return progress; },
+    get achievements() { return structuredClone(achievements); },
     get settings() { return { ...settings, deliveryKeys: [...settings.deliveryKeys] }; },
     get city() { return structuredClone(city); },
     get destination() { return destination; },
@@ -152,7 +165,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const storage: RuntimeStatus['storage'] = state.storage === 'memory' || cityRecovery ? 'memory' : state.saveState === 'pending' || pendingWrites > 0 ? 'saving' : state.saveState === 'unsaved' || errorMessage || rejectedProjection ? 'error' : 'saved';
       return { storage, writable: state.ownership === 'owner', message: cityRecovery || errorMessage || state.notice || (storage === 'saving' ? '保存しています。' : '保存済みです。') };
     },
-    beginSession(sessionId, mode, selected = destination) {
+    beginSession(sessionId, mode, selected = destination, context) {
       if (!runtime.status.writable || busy) return false;
       const time = capture(); const generation = repo.snapshot.metadata.generation;
       const candidate = new CityEconomy(structuredClone(city));
@@ -160,11 +173,14 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       if (candidate.state.activeSession?.sessionId === sessionId) return true;
       candidate.beginSession(sessionId, selected, modes[mode]);
       city = candidate.snapshot();
+      achievements = observeCity(achievements, city, time.wallMs);
+      if (context) achievements = beginAchievementSession(achievements, { sessionId, mode, context, atMs: time.wallMs });
       sessions.set(sessionId, { cityId: city.cityId, generation });
       void persist(() => repo.mutateDocument(document => {
         const current = new CityEconomy(readCity(document, time.wallMs));
         advance(current, time); current.beginSession(sessionId, selected, modes[mode]);
-        return putCity(document, current.state, selected);
+        const started = context ? beginAchievementSession(readAchievements(document), { sessionId, mode, context, atMs: time.wallMs }) : readAchievements(document);
+        return putCity({ ...document, extensions: { ...document.extensions, achievements: started } }, current.state, selected);
       }, { generation }));
       return true;
     },
@@ -172,6 +188,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       if (!runtime.status.writable || city.activeSession?.sessionId !== sessionId) return;
       const time = capture(); const generation = sessions.get(sessionId)?.generation ?? repo.snapshot.metadata.generation;
       const candidate = new CityEconomy(structuredClone(city)); advance(candidate, time); candidate.endSession(); city = candidate.snapshot();
+      achievements = observeCity(achievements, city, time.wallMs);
       void persist(() => repo.mutateDocument(document => {
         const current = new CityEconomy(readCity(document, time.wallMs)); advance(current, time);
         if (current.state.activeSession?.sessionId === sessionId) current.endSession();
@@ -202,11 +219,20 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       try {
         await persist(() => repo.mutateDocument(document => {
           const current = new CityEconomy(readCity(document, time.wallMs));
+          let paidEquipmentPurchase = false;
+          if (fixed.type === 'purchase' && fixed.cityId === current.state.cityId && !current.state.commandLedger[key]) {
+            const quoteAtTime = new CityEconomy(current.snapshot());
+            if (fixed.atMs !== undefined) quoteAtTime.advanceTo(fixed.atMs);
+            paidEquipmentPurchase = quoteAtTime.quotePurchase(fixed.kind, fixed.quantity, fixed.districtId).totalCostMicro > 0n;
+          }
           const receipt = executeCityCommand(current, fixed);
           if (receipt.applied) current.state.savedWallMs = Math.max(current.state.savedWallMs, time.wallMs);
-          return putCity(document, current.state);
+          const updated = applyAchievementCity(readAchievements(document), { eventId: key, atMs: time.wallMs, city: current.state,
+            paidEquipmentPurchase: receipt.applied && paidEquipmentPurchase,
+            researchPurchased: receipt.applied && fixed.type === 'buyResearch' });
+          return putCity({ ...document, extensions: { ...document.extensions, achievements: updated } }, current.state);
         }, { generation }), false);
-        syncCity();
+        syncSnapshot();
       } catch (error) {
         if (error instanceof Error && error.message.includes('quote changed')) throw new Error('購入数や価格が変わりました。表示を確認して、もう一度購入してください。');
         throw error;
@@ -217,6 +243,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const time = capture();
       if (time.atMs <= city.clockMs) return;
       const candidate = new CityEconomy(structuredClone(city)); advance(candidate, time); city = candidate.snapshot();
+      achievements = observeCity(achievements, city, time.wallMs);
       void persist(() => repo.mutateDocument(document => {
         const current = new CityEconomy(readCity(document, time.wallMs)); advance(current, time); return putCity(document, current.state);
       }));
@@ -229,6 +256,14 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         if (Object.keys(change).length) await repo.updateSettings(change);
         if (tutorialSeen) await repo.markTutorialSeen();
       });
+    },
+    achievementAction(action) {
+      if (!runtime.status.writable || busy) return;
+      const fixed = structuredClone(action);
+      const generation = repo.snapshot.metadata.generation;
+      achievements = applyAchievementAction(achievements, fixed);
+      void persist(() => repo.mutateDocument(document => ({ ...document, extensions: { ...document.extensions,
+        achievements: applyAchievementAction(readAchievements(document), fixed) } }), { generation }));
     },
     applyFacts(facts, context) {
       if (!runtime.status.writable || !facts.length) return;
@@ -245,6 +280,16 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const reduceProgress = (current: ProfileProgress) => abandonClosing
         ? { ...current, factCursors: { ...current.factCursors, [first.sessionId]: Math.max(current.factCursors[first.sessionId] ?? 0, ...facts.map(fact => fact.factSequence)) } }
         : facts.reduce((value, fact) => applySessionFact(value, fact, context), current);
+      // Session facts use a monotonic input clock. History uses the wall time
+      // captured here; neither date nor time participates in eligibility.
+      const historyFacts = facts.map(fact => ({ ...fact, confirmedAtMs: time.wallMs }));
+      const reduceAchievements = (current: AchievementState): AchievementState => {
+        if (abandonClosing) return { ...current, measuredProgress: { ...current.measuredProgress, factCursors: {
+          ...current.measuredProgress.factCursors, [first.sessionId]: Math.max(current.measuredProgress.factCursors[first.sessionId] ?? 0, ...facts.map(fact => fact.factSequence)),
+        } } };
+        const started = beginAchievementSession(current, { sessionId: first.sessionId, mode: first.mode, context, atMs: time.wallMs });
+        return applyAchievementFacts(started, historyFacts, context);
+      };
       const reduceCity = (state: CityState) => {
         const engine = new CityEconomy(structuredClone(state)); advance(engine, time);
         for (const fact of facts) {
@@ -259,17 +304,19 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         return engine.state;
       };
       const reduce = (document: ProfileDocument): ProfileDocument => putCity(
-        { ...document, progress: reduceProgress(document.progress) }, reduceCity(readCity(document, time.wallMs)));
+        { ...document, progress: reduceProgress(document.progress), extensions: { ...document.extensions,
+          achievements: reduceAchievements(readAchievements(document)) } }, reduceCity(readCity(document, time.wallMs)));
       if (identity.generation !== repo.snapshot.metadata.generation) { errorMessage = '記録が削除されたため、古い便の成果は保存しません。新しい配達を始めてください。'; emit(); return; }
       const nextProgress = reduceProgress(progress);
       const nextCity = reduceCity(city);
+      achievements = observeCity(reduceAchievements(achievements), nextCity, time.wallMs);
       progress = nextProgress; city = nextCity;
       void persist(() => repo.mutateDocument(reduce, { generation: identity.generation }));
     },
     async takeOver(options) {
       try {
         if (rejectedProjection && !options?.discardUnsaved) throw new Error('この画面には未保存の進捗があります。控えを残して最新状態へ切り替えてください。');
-        if (rejectedProjection) abandonedProjection = structuredClone({ settings, progress, city: encodeCityState(city), destination });
+        if (rejectedProjection) abandonedProjection = structuredClone({ settings, progress, achievements, city: encodeCityState(city), destination });
         await repo.takeover(options);
         if (options?.discardUnsaved) for (const id of sessions.keys()) explicitlyAbandoned.add(id);
         rejectedProjection = false; errorMessage = ''; syncSnapshot(); initializeCity(); emit();
@@ -313,7 +360,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         initializeCity();
       } finally { busy = false; emit(); }
     },
-    exportData() { return JSON.stringify({ repository: JSON.parse(repo.exportData()), currentView: { settings, progress, city: encodeCityState(city), destination }, pendingWrites, rejectedProjection, abandonedProjection, originalCityData: originalCityData && JSON.parse(originalCityData) }, null, 2); },
+    exportData() { return JSON.stringify({ repository: JSON.parse(repo.exportData()), currentView: { settings, progress, achievements, city: encodeCityState(city), destination }, pendingWrites, rejectedProjection, abandonedProjection, originalCityData: originalCityData && JSON.parse(originalCityData) }, null, 2); },
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     close() { closed = true; clearInterval(timer); unsubscribe(); repo.close(); listeners.clear(); },
   };
