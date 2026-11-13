@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { beginMain } from './helpers';
+import { beginMain, summarizeResult } from './helpers';
 
 async function completeWord(page: Page) {
   const guide = (await page.locator('#romaji-guide').textContent())!;
@@ -29,10 +29,11 @@ test('native input, delivery, 90-second finish, and same-plan retry', async ({ p
   const total = base + Math.floor(base / 5);
   await expect(page.locator('#score')).toHaveText(String(total));
   await page.clock.runFor(90001);
-  await expect(page.locator('.result-score')).toContainText(String(total));
-  await expect(page.locator('.result-metrics')).toContainText('100.0');
+  await expect(page.locator('.result-stage-value strong')).toContainText(String(total));
+  await expect(page.locator('.result-stage-metrics')).toContainText('100.0');
   await page.screenshot({ path: testInfo.outputPath('desktop-result.png'), fullPage: true });
-  await page.locator('[data-action="retry"]').click();
+  await summarizeResult(page);
+  await page.locator('[data-result-action="retry"]').click();
   await expect(page.locator('#prompt-word')).toHaveText(firstWord!);
   await expect(page.locator('#score')).toHaveText('0');
   await expect(page.locator('#time-left')).toHaveText('90');

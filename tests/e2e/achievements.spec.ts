@@ -93,7 +93,7 @@ test('a normal delivery achievement stays provisional until completion and becom
   await page.locator('[data-action="handbook-back"]').click();
   await page.locator('#paused-layer [data-action="resume"]').click();
   await page.clock.runFor(90000);
-  await expect(page.locator('.result-page')).toBeVisible();
+  await expect(page.locator('.result-stage')).toBeVisible();
   await expect.poll(async () => !!(await savedAchievements(page)).unlocks.A05).toBe(true);
   const saved = await savedAchievements(page);
   expect(saved.unlocks.A01).toBeDefined(); expect(saved.unlocks.A02).toBeDefined(); expect(saved.unlocks.B01).toBeUndefined();

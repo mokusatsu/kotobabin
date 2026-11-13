@@ -1,3 +1,4 @@
+import { summarizeResult } from './helpers';
 import { expect, test } from '@playwright/test';
 import { assertViewportFits, tabTo } from './keyboard';
 
@@ -60,11 +61,13 @@ for (const viewport of [{ width: 1180, height: 720 }, { width: 1180, height: 820
     await page.keyboard.press('Enter');
     await expect(page.locator('#game-input')).toBeFocused();
     await page.clock.runFor(90000);
-    await expect(page.locator('.result-page')).toBeVisible();
-    await expect(page.locator('.result-metrics')).toContainText('100.0');
+    await expect(page.locator('.result-stage')).toBeVisible();
+    await expect(page.locator('.result-stage-metrics')).toContainText('100.0');
     await assertViewportFits(page);
     await page.screenshot({ path: testInfo.outputPath('tablet-result.png') });
-    await tabTo(page, page.locator('[data-action="retry"]'));
+    await summarizeResult(page);
+    await assertViewportFits(page);
+    await tabTo(page, page.locator('[data-result-action="retry"]'));
     await page.keyboard.press('Enter');
     await expect(page.locator('#game-input')).toBeFocused();
     await expect(page.locator('#score')).toHaveText('0');

@@ -112,7 +112,7 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#paused-layer')).toBeVisible();
   await page.locator('[data-action="resume"]').click();
   await page.clock.runFor(90001);
-  await expect(page.locator('.result-heading')).toContainText('ガイド表示あり');
+  await expect(page.locator('.result-stage-topbar')).toContainText('ガイド表示あり');
   await assertViewportFits(page);
   await page.screenshot({ path: testInfo.outputPath('result-font-150.png'), fullPage: false });
 });

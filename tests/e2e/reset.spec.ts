@@ -39,7 +39,7 @@ test('confirmed record, collection and settings resets keep their promised separ
   await beginMain(page);
   await typeCurrentGuide(page);
   await page.clock.runFor(90000);
-  await expect(page.locator('.result-page')).toBeVisible();
+  await expect(page.locator('.result-stage')).toBeVisible();
   await expect.poll(async () => (await savedProfile(page)).progress.recentRounds.length).toBe(1);
   const before = await savedProfile(page);
   let confirmation = await openReset(page, 'records');

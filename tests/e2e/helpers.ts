@@ -37,3 +37,10 @@ export async function assertNoHorizontalOverflow(page: Page) {
   }));
   expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
 }
+
+/** Compatibility regressions may shorten presentation; individual real awards have their own E2E. */
+export async function summarizeResult(page: Page) {
+  await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'score');
+  await page.keyboard.press('s');
+  await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'summary');
+}
