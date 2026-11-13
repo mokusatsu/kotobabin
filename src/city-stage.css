@@ -125,3 +125,5 @@
   .compact-district-choice:nth-child(n+5) { grid-row: 3; }
   .compact-district-choice:focus-visible { outline: 4px solid #e09324; outline-offset: 2px; }
 }
+/* Keep currency and material figures readable against the city scene's green. */
+.city-stage-hud .city-balance strong { color: #a04431; }
