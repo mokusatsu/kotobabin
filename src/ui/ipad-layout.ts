@@ -1,4 +1,4 @@
-export interface IPadPaginationController { refresh(): void; destroy(): void }
+export interface IPadPaginationController { refresh(): void; reveal(target: HTMLElement): Promise<void>; destroy(): void }
 interface PageItem { nodes: HTMLElement[] }
 interface Panel { target: HTMLElement; nav: HTMLElement; items: PageItem[]; parents: HTMLElement[]; pages: number[][]; page: number; key: string; sourceKey?: string }
 const focusable = 'button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary,[tabindex="0"]';
@@ -25,6 +25,7 @@ export function packPages<T>(items: readonly T[], fits: (candidate: readonly T[]
 export function installIPadPagination(root: HTMLElement): IPadPaginationController {
   const panels = new Map<HTMLElement, Panel>(); const positions = new Map<string, number>();
   const managed = new Set<HTMLElement>(); let frame = 0; let destroyed = false;
+  const pendingReveals: { target: HTMLElement; resolve: () => void }[] = [];
   const viewport = () => {
     const v = window.visualViewport;
     return { bottom: (v?.offsetTop ?? 0) + (v?.height ?? window.innerHeight), height: v?.height ?? window.innerHeight, top: v?.offsetTop ?? 0 };
@@ -128,14 +129,29 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     go(panel, panel.page, false);
   }
   function refreshNow() {
-    frame = 0; if (destroyed || !root.isConnected) return;
+    frame = 0; if (destroyed || !root.isConnected) { for (const pending of pendingReveals.splice(0)) pending.resolve(); return; }
     const v = viewport(); root.style.setProperty('--ipad-viewport-height', `${v.height}px`); root.style.setProperty('--ipad-viewport-top', `${v.top}px`);
     const targets = [...root.querySelectorAll<HTMLElement>('.catalogue-page,.city-page,.equipment-page,dialog[open] > form,[data-paginate]')]
-      .filter(target => !target.closest('.game-page') && !target.parentElement?.closest('.ipad-page-host,[data-paginate]'));
+      .filter(target => !target.closest('[data-ipad-exclude]') && !target.closest('.game-page') && !target.parentElement?.closest('.ipad-page-host,[data-paginate]'));
     root.toggleAttribute('data-ipad-layout', targets.length > 0);
     for (const element of managed) if (!root.contains(element)) managed.delete(element);
     for (const [target, panel] of panels) if (!root.contains(target)) { positions.set(panel.key, panel.page); resize.unobserve(target); panels.delete(target); }
     for (const target of targets) measure(prepare(target));
+    for (const pending of pendingReveals.splice(0)) {
+      const element = pending.target;
+      if (root.contains(element) && !element.closest('[data-ipad-exclude]')) {
+        const panel = [...panels.values()].find(candidate => candidate.target.contains(element));
+        if (panel) {
+          const item = panel.items.findIndex(candidate => candidate.nodes.some(node => node === element || node.contains(element) || element.contains(node)));
+          const page = panel.pages.findIndex(indices => indices.includes(item));
+          if (page >= 0) go(panel, page, false);
+          const heading = element.matches('h1,h2,h3') ? element : element.querySelector<HTMLElement>('h1,h2,h3');
+          const focus = heading ?? element;
+          if (!focus.closest('[hidden]')) { if (!focus.matches(focusable)) focus.tabIndex = -1; focus.focus({ preventScroll: true }); }
+        }
+      }
+      pending.resolve();
+    }
   }
   function refresh() { if (!destroyed && !frame) frame = requestAnimationFrame(refreshNow); }
   const mutations = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element && record.target.closest('[data-ipad-controls]')))) refresh(); }); mutations.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-ipad-exclude'] });
@@ -154,8 +170,13 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
   root.addEventListener('keydown', keys); root.addEventListener('toggle', refresh, true);
   window.addEventListener('resize', refresh); window.visualViewport?.addEventListener('resize', refresh); window.visualViewport?.addEventListener('scroll', refresh);
   void document.fonts?.ready.then(refresh); refresh();
-  return { refresh, destroy() {
-    destroyed = true; cancelAnimationFrame(frame); mutations.disconnect(); resize.disconnect(); styles.disconnect();
+  return { refresh, reveal(target) {
+    return new Promise<void>(resolve => {
+      if (destroyed || !root.contains(target)) { resolve(); return; }
+      pendingReveals.push({ target, resolve }); refresh();
+    });
+  }, destroy() {
+    destroyed = true; for (const pending of pendingReveals.splice(0)) pending.resolve(); cancelAnimationFrame(frame); mutations.disconnect(); resize.disconnect(); styles.disconnect();
     root.removeEventListener('keydown', keys); root.removeEventListener('toggle', refresh, true); window.removeEventListener('resize', refresh);
     window.visualViewport?.removeEventListener('resize', refresh); window.visualViewport?.removeEventListener('scroll', refresh);
     for (const panel of panels.values()) { panel.nav.remove(); panel.target.classList.remove('ipad-page-host'); }
