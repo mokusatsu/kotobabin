@@ -233,28 +233,29 @@ export const setAchievementNotifications=(state:AchievementState,mode:'live'|'re
 function viewedSession(state:AchievementState,live?:SessionSnapshot,sessionId?:string):AchievementSession|undefined {
   const original=sessionId?state.sessions[sessionId]:Object.values(state.sessions).at(-1);
   if(!original)return undefined;
-  const s=structuredClone(original);
+  // Only the scalar display projection below changes; nested session data stays read-only.
+  const s={...original};
   if(live&&live.mode===s.mode&&(!sessionId||state.sessions[sessionId]===original)) {
     s.completedWords=live.completedWords;s.correctKeys=live.correctKeys;s.mistakes=live.mistakes;s.canonicalLength=live.canonicalLengthSum;
     s.score=live.score;s.skips=live.skips;s.guideUsed ||= live.guideUsed;s.currentCleanStreak=live.currentCleanStreak;s.maxCleanStreak=live.maxCleanStreak;
   }
   return s;
 }
-function metrics(state:AchievementState,id:string,s?:AchievementSession,live?:SessionSnapshot):Record<string,number|string|boolean> {
+function metrics(state:AchievementState,s?:AchievementSession,live?:SessionSnapshot):Record<string,number|string|boolean> {
   const p=state.measuredProgress;const complete=Object.keys(p.words).filter(key=>p.words[key].completed>0);const distinct=new Set(complete);
   const fixed=(key:keyof typeof words.collectionSets)=>words.collectionSets[key].filter(wordId=>distinct.has(wordId)).length;
   const practice=Object.entries(p.words);const qualified=practice.filter(([,v])=>v.practiceCleanCompleted>=3);
   const tagged=(tag:string)=>practice.some(([wordId,v])=>v.practiceCleanCompleted>0&&wordById.get(wordId)?.tags.includes(tag));
   const baseline=s?.baselines[comparisonKey({...s.context,guideUsed:s.guideUsed,assisted:false})];
-  const city=state.city;const ds=Object.values(city?.districts??{});const stage=id==='I05'?3:id==='I06'?5:1;
+  const city=state.city;const ds=Object.values(city?.districts??{});
   const accuracy=s&&s.correctKeys+s.mistakes>0?100*s.correctKeys/(s.correctKeys+s.mistakes):0;
   const values:Record<string,number|string|boolean>={
     lifetime_completed_words:p.totalCompleted,manual_delivery_count:state.manualDeliveries,grouped_delivery_count:state.groupedDeliveries,full_delivery_count:state.fullDeliveries,
     completed_rounds:state.completedRounds,completed_words:s?.completedWords??0,same_order_completed_rounds:s?state.orderCompletions[achievementOrderKey(s.context)]??0:Math.max(0,...Object.values(state.orderCompletions)),order_display:s?`この問題順で${state.orderCompletions[achievementOrderKey(s.context)]??0}/2便完走`:'問題順を選んで配達を始めよう',
     small_manual_deliveries:s?(s.manual[1]+s.manual[2]):0,large_manual_deliveries:s?(s.manual[3]+s.manual[4]):0,full_deliveries_in_round:s?.full??0,
     manual_deliveries_in_round:s?s.manual.reduce((a,b)=>a+b,0):0,manual_two_seen:!!s?.manual[2],full_after_manual_two:s?.fullAfterTwo??false,manual_four_seen:!!s?.manual[4],immediate_next_word_clean:s?.fourThenClean??false,
-    normal_completion:s?.phase==='completed'&&s.skips===0,accuracy_percent:accuracy,best_eligible_accuracy:state.bestAccuracies[id]??0,
-    current_clean_streak:s?.currentCleanStreak??0,session_max_clean_streak:s?.maxCleanStreak??0,historical_best_clean_streak:id==='F05'?state.bestPracticeStreak:state.bestNormalStreak,
+    normal_completion:s?.phase==='completed'&&s.skips===0,accuracy_percent:accuracy,best_eligible_accuracy:0,
+    current_clean_streak:s?.currentCleanStreak??0,session_max_clean_streak:s?.maxCleanStreak??0,historical_best_clean_streak:state.bestNormalStreak,
     standard_keystrokes_per_minute:(s?.canonicalLength??0)*60000/90000,historical_best_speed:state.bestNormalCanonicalLength*60000/90000,
     score:s?.score??0,comparison_best_score:baseline?.growthBestScore??'比較元なし',comparison_best_speed:baseline?.growthBestCanonicalLength==null?'比較元なし':baseline.growthBestCanonicalLength*60000/90000,
     comparison_completed_words:s?.completedWords??0,record_improvement:!!s&&s.completedWords>=10&&baseline?.growthBestScore!=null&&s.score>baseline.growthBestScore,
@@ -265,19 +266,32 @@ function metrics(state:AchievementState,id:string,s?:AchievementSession,live?:Se
     qualified_element_count:['n','sokuon','yoon','long_mark'].filter(tagged).length,qualified_practice_words:qualified.length,per_word_clean_count:qualified.length?Math.min(...qualified.map(([,v])=>v.practiceCleanCompleted)):0,
     qualified_word_practice_count:s?.qualifiedWordIds.length?3:0,qualified_word_clean_in_round:s?.qualifiedClean??false,qualified_word_set:s?.qualifiedWordIds.map(id=>wordById.get(id)?.display??'ことば').join('、')||'対象語なし',
     lifetime_delivered_cargo:state.deliveredCargo,five_word_completed_rounds:state.fiveWordRounds,manual_two:!!s?.manual[2],manual_four:!!s?.manual[4],full_five:(s?.full??0)>0,guide_never_shown:!!s&&!s.guideUsed,
-    highest_district_stage:Math.max(0,...ds.map(d=>d.stage)),residential_stage:city?.districts.residential?.stage??0,qualified_district_count:ds.filter(d=>d.stage>=stage).length,
+    highest_district_stage:Math.max(0,...ds.map(d=>d.stage)),residential_stage:city?.districts.residential?.stage??0,qualified_district_count:ds.filter(d=>d.stage>=1).length,qualified_district_count_3:ds.filter(d=>d.stage>=3).length,qualified_district_count_5:ds.filter(d=>d.stage>=5).length,
     arrival_observed:!!city&&BigInt(city.arrivedMicro)>0n,lifetime_arrived_materials:city?Number(BigInt(city.arrivedMicro)/100000n)/10:0,
     current_city_arrived_materials:city?Number(BigInt(city.cityArrivedMicro)/100000n)/10:0,opened_routes:ds.filter(d=>d.open).length,route_status:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.open?'開通':'未開通'}`).join('、'):'未開通',
     rail_route_count:ds.filter(d=>d.railway).length,rail_status:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.railway?'鉄道':'道路'}`).join('、'):'鉄道なし',
     paid_equipment_purchase_seen:state.paidEquipmentPurchases>0,packing_level:city?.packagingLevel??0,maximum_shops_in_one_district:Math.max(0,...ds.map(d=>d.shops)),shops_by_district:city?Object.entries(city.districts).map(([key,d])=>`${districtNames[key]}：${d.shops}軒`).join('、'):'店舗なし',
     synergy_count:city?.synergies.length??0,city_restart_count:city?.citiesRestarted??0,research_purchase_count:state.researchPurchases,
-    fixed_set_completed_words:fixed(id==='L04'?'kotobabin-ja-relaxed-v2':id==='L05'?'kotobabin-ja-standard-v2':id==='L06'?'kotobabin-ja-challenge-v2':'kotobabin-ja-960-v2'),
+    fixed_set_completed_words:fixed('kotobabin-ja-960-v2'),fixed_set_relaxed:fixed('kotobabin-ja-relaxed-v2'),fixed_set_standard:fixed('kotobabin-ja-standard-v2'),fixed_set_challenge:fixed('kotobabin-ja-challenge-v2'),
   };
   topics.forEach((topic,i)=>{values[`topic_${i+1}`]=complete.filter(wordId=>wordById.get(wordId)?.topicId===topic).length;});
-  courses.forEach((course,i)=>{values[`course_${i+1}`]=(id==='H06'?state.skilledCourses:state.fiveWordCourses).includes(course);});
+  courses.forEach((course,i)=>{values[`course_${i+1}`]=state.fiveWordCourses.includes(course);});
   for(const[district,d]of Object.entries(city?.districts??{}))values[`district_${district}_stage`]=d.stage;
   ['joint_delivery','sorting_network','tourism_service'].forEach((key,i)=>{values[`synergy_${i+1}`]=city?.synergies.includes(key)??false;});
   return values;
+}
+/** Only these catalogue fields vary by achievement; shared aggregates are computed once. */
+function achievementMetric(state:AchievementState,id:string,key:string,values:Record<string,number|string|boolean>):number|string|boolean {
+  if(key==='best_eligible_accuracy')return state.bestAccuracies[id]??0;
+  if(key==='historical_best_clean_streak'&&id==='F05')return state.bestPracticeStreak;
+  if(key==='qualified_district_count'&&(id==='I05'||id==='I06'))return values[id==='I05'?'qualified_district_count_3':'qualified_district_count_5'];
+  if(key==='fixed_set_completed_words') {
+    if(id==='L04')return values.fixed_set_relaxed;
+    if(id==='L05')return values.fixed_set_standard;
+    if(id==='L06')return values.fixed_set_challenge;
+  }
+  if(id==='H06'&&/^course_[123]$/.test(key))return state.skilledCourses.includes(courses[Number(key.slice(-1))-1]);
+  return values[key]??0;
 }
 export function getAchievementViews(state:AchievementState,liveSession?:SessionSnapshot,sessionId?:string):AchievementView[] {
   const s=viewedSession(state,liveSession,sessionId);const conditions=s?roundConditions(s):{};
@@ -285,12 +299,14 @@ export function getAchievementViews(state:AchievementState,liveSession?:SessionS
     conditions.E06=courses.every(course=>state.fiveWordCourses.includes(course)||(course===s.context.courseId&&s.completedWords>=5));
     conditions.H06=courses.every(course=>state.skilledCourses.includes(course)||(course===s.context.courseId&&s.completedWords>=20&&accuracyAtLeast(s.correctKeys,s.mistakes,95)));
   }
+  // No cross-call cache: callers may mutate a fixture or replace live guide/streak state.
+  const values=metrics(state,s,liveSession);
+  const practiceEntries=Object.entries(state.measuredProgress.words).sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
   return catalog.achievements.map(definition=>{
     const earned=!!state.unlocks[definition.id];const normal=definition.scope==='通常';const practice=definition.scope==='練';const route=definition.scope==='街';
     const ineligible=!earned&&((normal&&!!s&&(s.mode!=='MAIN'||s.skips>0||s.phase==='aborted'||(definition.id==='H05'&&s.guideUsed)))||(practice&&!!s&&s.mode!=='PRACTICE'));
-    const values=metrics(state,definition.id,s,liveSession);
     const progress=definition.progress_fields.map(field=>{
-      const raw=values[field.key]??0;const current=typeof raw==='number'?Math.floor(raw*10)/10:typeof raw==='boolean'?Number(raw):0;
+      const raw=achievementMetric(state,definition.id,field.key,values);const current=typeof raw==='number'?Math.floor(raw*10)/10:typeof raw==='boolean'?Number(raw):0;
       const target=typeof field.target==='number'?field.target:typeof field.target==='boolean'||(field.target!==null&&typeof field.target==='object')?1:null;
       const displayText=field.key==='accuracy_percent'&&(!s||s.correctKeys+s.mistakes===0)?`${field.label}：計測なし（終了時に${target}%以上）`:typeof raw==='string'?`${field.label}：${raw}`:field.key==='normal_completion'?(ineligible?'今回は対象外':s?.phase==='completed'?'完走で確定':'スキップせず90秒完走で確定'):
         `${field.label}：${typeof raw==='boolean'?(raw?'達成':'未達'):`${current}${target===null?'':`/${target}`}${field.unit}`}`;
@@ -312,12 +328,11 @@ export function getAchievementViews(state:AchievementState,liveSession?:SessionS
       if(leader)progress[0].displayText=`${districtNames[leader[0]]}の店：${leader[1].shops}/10軒`;
     }
     if(definition.id==='F02') {
-      const practice=Object.entries(state.measuredProgress.words).sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
-      const wordId=s?.mode==='PRACTICE'&&s.phase==='active'&&liveSession?.mode==='PRACTICE'&&liveSession.phase!=='RESULT'?liveSession.currentWord.id:practice[0]?.[0];
+      const wordId=s?.mode==='PRACTICE'&&s.phase==='active'&&liveSession?.mode==='PRACTICE'&&liveSession.phase!=='RESULT'?liveSession.currentWord.id:practiceEntries[0]?.[0];
       if(wordId)progress[0].displayText=`${wordById.get(wordId)?.display??'ことば'}の無誤打練習：${values.same_word_practice_clean_count}/3回`;
     }
     if(definition.id==='F04') {
-      const practiced=Object.entries(state.measuredProgress.words).filter(([,v])=>v.practiceCompleted>0).sort((a,b)=>b[1].practiceCleanCompleted-a[1].practiceCleanCompleted);
+      const practiced=practiceEntries.filter(([,v])=>v.practiceCompleted>0);
       const perWord=progress.find(p=>p.key==='per_word_clean_count');
       if(perWord)perWord.displayText=practiced.length?'ことばごとの無誤打練習回数':'まだ練習したことばはありません';
       for(const[id,p]of practiced)progress.push({key:`practice_word_${id}`,label:wordById.get(id)?.display??'ことば',current:p.practiceCleanCompleted,target:3,unit:'回',displayText:`${wordById.get(id)?.display??'ことば'}：${p.practiceCleanCompleted}/3回`});
