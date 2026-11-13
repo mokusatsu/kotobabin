@@ -44,3 +44,15 @@ test('missing district art stays an explicitly identified schematic instead of a
   expect(markup).toContain('data-world-x="1190"');
   expect(markup).not.toContain('city_stage/city_harbor_s5.webp');
 });
+
+test('every equipment unit changes visible rack geometry after representative sprites reach their cap', () => {
+  const city = initialCityState();
+  city.districts.residential.stage = 5; city.districts.residential.shops = 27; city.districts.residential.crews = 17; city.packagingLevel = 22;
+  const before = renderDistrictMap(city, 'residential');
+  city.districts.residential.shops++; city.districts.residential.crews++; city.packagingLevel++;
+  const after = renderDistrictMap(city, 'residential');
+  for (const feature of ['shops', 'crews', 'packaging']) {
+    const geometry = new RegExp(`data-capacity-feature="${feature}"[\\s\\S]*?dm-rack-filled" width="([^"]+)"`);
+    expect(Number(after.match(geometry)![1])).toBeGreaterThan(Number(before.match(geometry)![1]));
+  }
+});

@@ -31,3 +31,10 @@
 .dm-caption { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; padding: 4px 8px; font-size: calc(16px * var(--font-scale, 1)); line-height: 1.2; }
 .dm-art-note { color: var(--secondary, #61775e); }
 @media (prefers-reduced-motion: reduce) { .district-map-canvas { animation: none !important; transition: none !important; } }
+
+.dm-camera-layer { position: absolute; inset: 0; }
+.dm-capacity-rack .dm-rack-empty { fill: #e2ddc9; stroke: #9aab89; stroke-width: 2; }
+.dm-capacity-rack .dm-rack-filled { fill: #6e9274; }
+.dm-capacity-rack path { stroke: #aeb598; stroke-width: 3; }
+.dm-capacity-rack path.reached { stroke: #355e45; }
+.dm-shop-annex { fill: #cdb18b; stroke: #6b806d; stroke-width: 2; }
