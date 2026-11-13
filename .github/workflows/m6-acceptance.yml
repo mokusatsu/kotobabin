@@ -46,6 +46,8 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npx playwright test --config=playwright.m6-city.config.ts --browser=${{ matrix.browser }}
+        env:
+          M6_CITY_BASE_URL: http://127.0.0.1:4173
       - uses: actions/upload-artifact@v4
         if: always()
         with:

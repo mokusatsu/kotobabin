@@ -12,7 +12,6 @@ const bundle=join(mkdtempSync(join(tmpdir(),'kotobabin-m6-')), 'public-api.cjs')
 buildSync({entryPoints:[new URL('./engine.fixture.ts',import.meta.url).pathname],bundle:true,platform:'node',format:'cjs',outfile:bundle});
 const {CityEconomy,decodeCityState,encodeCityState,executeCityCommand,createProfileDocument,districts,finalCityFixture}=createRequire(import.meta.url)(bundle) as typeof import('./engine.fixture');
 
-test.skip(!process.env.M6_CITY_BASE_URL, 'Integration owner must supply an existing production endpoint; no alternate server is started.');
 async function saved(page: Page) {
   return page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => { const r = indexedDB.open('kotobabin', 4);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error); });
