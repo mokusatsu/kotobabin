@@ -106,7 +106,7 @@ async function assertHomeHudSeparated(page: Page) {
     const dock = document.querySelector('.world-command-dock')!.getBoundingClientRect();
     const footer = document.querySelector('.site-footer')!.getBoundingClientRect();
     const help = document.querySelector('.world-map-help')!.getBoundingClientRect();
-    const labels = [...document.querySelectorAll('.world-stage .map-label')].map(item => item.getBoundingClientRect());
+    const labels = [...document.querySelectorAll('.world-stage .map-label,.world-stage .compact-district-choice')].map(item => item.getBoundingClientRect());
     const overlaps = (a: DOMRect, b: DOMRect) => Math.min(a.right, b.right) > Math.max(a.left, b.left) && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top);
     return { warningBalance: overlaps(warning, balance), warningLabels: labels.some(rect => overlaps(warning, rect)), balanceLabels: labels.some(rect => overlaps(balance, rect)), dockFooter: overlaps(dock, footer), helpLabels: labels.some(rect => overlaps(help, rect)), labelsFooter: labels.some(rect => overlaps(rect, footer)) };
   });

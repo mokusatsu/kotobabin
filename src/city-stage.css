@@ -95,3 +95,33 @@
 /* A quote uses the chosen readable font, without oversized financial-card figures. */
 .city-game-stage, .city-stage-hud .city-balance, .city-map-readout { line-height: 1.2; }
 .city-stage-panel .purchase-comparison > div > strong { font: inherit; font-weight: 700; margin-top: 4px; }
+
+/* Below the canonical map's 800 × 500 minimum, retain a game scene with six
+   district controls and one enlarged district drawing (resource contract §3). */
+.compact-world-map { display: none; }
+@container (width < 800px) or (height < 500px) {
+  .game-world-map .world-map-canvas { display: none; }
+  .world-stage .game-world-map > .world-map-help { top: auto; bottom: 6px; }
+  .game-world-map .compact-world-map {
+    position: absolute; inset: 96px 12px 118px; display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(128px,1fr) minmax(0,1fr);
+    grid-template-rows: repeat(3,minmax(44px,1fr)); gap: 8px; align-items: center;
+  }
+  .compact-world-preview { grid-column: 2; grid-row: 1 / 4; min-width: 0; margin: 0; text-align: center; }
+  .compact-world-preview svg { display: block; width: 100%; aspect-ratio: 4 / 3; }
+  .compact-world-preview figcaption { font: inherit; font-size: max(16px,.8em); color: var(--text); }
+  .compact-world-choices { display: contents; }
+  .compact-district-choice {
+    min-width: 0; min-height: 44px; height: 100%; width: 100%; padding: 4px;
+    border: 2px solid #7c8e66; border-radius: 10px; color: var(--text);
+    background: #fffbebf0; font: inherit; font-size: max(16px,.8em); line-height: 1.2;
+  }
+  .compact-district-choice strong, .compact-district-choice span { display: block; }
+  .compact-district-choice.selected { border-color: var(--primary); background: #eff3dc; }
+  .compact-district-choice:nth-child(odd) { grid-column: 1; }
+  .compact-district-choice:nth-child(even) { grid-column: 3; }
+  .compact-district-choice:nth-child(-n+2) { grid-row: 1; }
+  .compact-district-choice:nth-child(n+3):nth-child(-n+4) { grid-row: 2; }
+  .compact-district-choice:nth-child(n+5) { grid-row: 3; }
+  .compact-district-choice:focus-visible { outline: 4px solid #e09324; outline-offset: 2px; }
+}
