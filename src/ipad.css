@@ -65,3 +65,7 @@
 }
 [data-ipad-layout] .ipad-dialog input,
 [data-ipad-layout] .ipad-dialog select { max-inline-size: 100%; min-inline-size: 0; }
+/* A paginated pane must not inherit an empty navigation column when its siblings are hidden. */
+[data-ipad-layout] .handbook-layout { display: block; }
+[data-ipad-layout] #handbook-families { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+[data-ipad-layout] #achievement-detail { grid-column: auto; }
