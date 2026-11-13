@@ -7,8 +7,8 @@ export interface DistrictMapOptions { interactive?: boolean; selectedFeature?: D
 export interface DistrictMapControllerOptions { onSelect?: (feature: DistrictMapFeature, district: DistrictId) => void }
 const asset = (path: string) => `${import.meta.env.BASE_URL}assets/${path}`;
 const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
-const stages = new Set(['city_residential_s1', 'city_residential_s2', 'city_residential_s3', 'city_residential_s4', 'city_residential_s5', 'city_market_s1']);
-const shops = new Set(['residential']);
+const stages = new Set(['city_residential_s1', 'city_residential_s2', 'city_residential_s3', 'city_residential_s4', 'city_residential_s5', 'city_market_s1', 'city_market_s2', 'city_market_s3', 'city_market_s4', 'city_market_s5']);
+const shops = new Set(['residential', 'market']);
 const positions: Record<DistrictMapFeature, readonly [number, number]> = {
   plan: [50, 52], shops: [19, 68], crews: [81, 67], railway: [81, 87], packaging: [19, 24], research: [82, 23], synergies: [48, 88],
 };
