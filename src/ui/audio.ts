@@ -87,8 +87,20 @@ export function soundStatusText(enabled: boolean, status: AudioStatus): string {
   if (status === 'ready') return '音を再生できます。';
   return '操作すると音を開始します。';
 }
+/** Semantic availability must not overwrite hidden flags owned by the panel pager. */
+export function renderAudioStatus(root: HTMLElement, enabled: boolean, status: AudioStatus): void {
+  root.querySelectorAll<HTMLElement>('[data-audio-status]').forEach(element => {
+    const text = soundStatusText(enabled, status); if (element.textContent !== text) element.textContent = text;
+  });
+  root.querySelectorAll<HTMLButtonElement>('[data-action="enable-audio"]').forEach(button => {
+    const needed = enabled && (status === 'unavailable' || status === 'idle');
+    if (button.dataset.audioRetryNeeded !== String(needed)) {
+      button.dataset.audioRetryNeeded = String(needed); button.toggleAttribute('data-ipad-exclude', !needed); button.hidden = !needed;
+    }
+  });
+}
 export function audioSettingsContent(settings: SoundPreferences, status: AudioStatus): string {
   return `<fieldset class="sound-settings" data-page-children><legend>音</legend><label class="setting-check"><input type="checkbox" name="sound" ${settings.sound ? 'checked' : ''}> 音を使う</label>${([
     ['master', '全体音量'], ['effects', '効果音'], ['music', 'BGM'],
-  ] as const).map(([channel, label]) => `<div class="sound-volume"><label for="audio-${channel}">${label}</label><input id="audio-${channel}" name="audio-${channel}" type="range" min="0" max="100" step="1" value="${Math.round(settings.audioVolume[channel] * 100)}" aria-valuetext="${Math.round(settings.audioVolume[channel] * 100)}%"><output for="audio-${channel}" data-audio-volume="${channel}">${Math.round(settings.audioVolume[channel] * 100)}%</output></div>`).join('')}<p class="setting-note" data-audio-status role="status">${soundStatusText(settings.sound, status)}</p><button class="button" type="button" data-action="enable-audio" ${settings.sound && (status === 'unavailable' || status === 'idle') ? '' : 'hidden'}>音をもう一度有効にする</button></fieldset>`;
+  ] as const).map(([channel, label]) => `<div class="sound-volume"><label for="audio-${channel}">${label}</label><input id="audio-${channel}" name="audio-${channel}" type="range" min="0" max="100" step="1" value="${Math.round(settings.audioVolume[channel] * 100)}" aria-valuetext="${Math.round(settings.audioVolume[channel] * 100)}%"><output for="audio-${channel}" data-audio-volume="${channel}">${Math.round(settings.audioVolume[channel] * 100)}%</output></div>`).join('')}<p class="setting-note" data-audio-status role="status">${soundStatusText(settings.sound, status)}</p><button class="button" type="button" data-action="enable-audio" data-audio-retry-needed="${settings.sound && (status === 'unavailable' || status === 'idle')}" ${settings.sound && (status === 'unavailable' || status === 'idle') ? '' : 'hidden data-ipad-exclude'}>音をもう一度有効にする</button></fieldset>`;
 }
