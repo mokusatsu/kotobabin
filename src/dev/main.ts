@@ -67,13 +67,14 @@ function prepare() {
   } catch (error) { text('dev-status', error instanceof Error ? error.message : '比較条件を確認してください。'); }
 }
 function paintFacts(state: SessionSnapshot) {
+  const focused = document.activeElement;
   const count = Math.max(1, Math.ceil(comparison.facts.length / 3));
   factPage = Math.min(factPage, count - 1);
   element('dev-facts').innerHTML = comparison.facts.slice(factPage * 3, factPage * 3 + 3).map(fact => `<li>${escape(factSummary(fact))}</li>`).join('') || '<li>まだ確定した事実はありません。</li>';
   text('dev-facts-page', `${factPage + 1} / ${count}`);
   element<HTMLButtonElement>('dev-facts-prev').disabled = factPage === 0;
   element<HTMLButtonElement>('dev-facts-next').disabled = factPage === count - 1;
-  handOffDisabledPager('dev-facts-prev', 'dev-facts-next');
+  handOffDisabledPager('dev-facts-prev', 'dev-facts-next', focused);
   text('dev-plan', comparison.planId); text('dev-sequence', `出題列（末尾3語）: ${state.wordIds.slice(-3).join(' → ')}`);
   text('dev-preparation', `準備操作${comparison.operations.length}件。すべての操作・事実は開発比較JSONに含まれます。`);
 }
@@ -143,16 +144,17 @@ element('dev-export').addEventListener('click', () => {
   const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'kotobabin-development-comparison.json'; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
 });
 // WebKit can strand Tab navigation on a focused button when that button disables itself.
-function handOffDisabledPager(previousId: string, nextId: string) {
+function handOffDisabledPager(previousId: string, nextId: string, focused: Element | null) {
   const previous = element<HTMLButtonElement>(previousId), next = element<HTMLButtonElement>(nextId);
-  if (document.activeElement === previous && previous.disabled && !next.disabled) next.focus({ preventScroll: true });
-  if (document.activeElement === next && next.disabled && !previous.disabled) previous.focus({ preventScroll: true });
+  if (focused === previous && previous.disabled && !next.disabled) next.focus({ preventScroll: true });
+  if (focused === next && next.disabled && !previous.disabled) previous.focus({ preventScroll: true });
 }
 function paintParameters() {
+  const focused = document.activeElement;
   document.querySelectorAll<HTMLElement>('#dev-parameters > article').forEach((card, index) => { card.hidden = Math.floor(index / 7) !== parameterPage; });
   element<HTMLButtonElement>('dev-parameters-prev').disabled = parameterPage === 0;
   element<HTMLButtonElement>('dev-parameters-next').disabled = parameterPage === 1;
-  handOffDisabledPager('dev-parameters-prev', 'dev-parameters-next');
+  handOffDisabledPager('dev-parameters-prev', 'dev-parameters-next', focused);
   text('dev-parameters-page', `${parameterPage + 1} / 2`);
 }
 element('dev-parameters-prev').addEventListener('click', () => { parameterPage = 0; paintParameters(); });
