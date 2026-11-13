@@ -2045,3 +2045,12 @@ body[data-reduced-motion="true"] *::after {
 .site-header > .ownership-warning[hidden] { display: none; }
 .site-header > .ownership-warning p { flex: 1; min-width: 0; margin: 0; }
 .site-header > .ownership-warning .button { width: auto; min-height: 44px; padding: 6px 12px; white-space: nowrap; font-size: calc(16px * var(--font-scale)); }
+/* The persistent handbook row is concise; explanatory sections are real panels. */
+.handbook-title-panel h1 { margin: 0; font-size: calc(32px * var(--font-scale)); line-height: 1.25; }
+.handbook-title-panel > p { margin-block: 8px; }
+.handbook-summary { padding-block: 4px; gap: 8px 20px; }
+.handbook-summary #handbook-count { line-height: 1.15; }
+.handbook-summary .save-status { margin: 0 0 0 auto; }
+.handbook-summary .text-button { margin-left: 0; }
+.handbook-tabs { margin-block: 8px; }
+.handbook-tabs .button { min-height: 44px; padding: 8px 12px; }
