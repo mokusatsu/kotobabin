@@ -1,0 +1,5 @@
+{
+  "name": "kotobabin", "private": true, "version": "0.1.0", "type": "module",
+  "scripts": {"dev":"vite --host 0.0.0.0", "build":"tsc --noEmit && vite build", "typecheck":"tsc --noEmit", "test":"vitest run", "lint":"eslint .", "test:spec":"python3 spec/initial/tools/validate_resources.py && python3 spec/initial/tools/build_resource_docs.py --check && python3 spec/initial/tools/validate_content.py && python3 spec/initial/tools/economy_model.py validate", "test:e2e":"playwright test"},
+  "devDependencies": {"@eslint/js":"^9.39.1", "@playwright/test":"^1.56.1", "eslint":"^9.39.1", "typescript":"^5.9.3", "typescript-eslint":"^8.46.4", "vite":"^7.2.2", "vitest":"^4.0.9"}
+}
