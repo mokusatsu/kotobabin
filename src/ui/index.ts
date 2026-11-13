@@ -163,6 +163,27 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     });
     dialog.addEventListener('close', () => { dialog.remove(); if (screen === 'game' && session) { gameInput?.destroy(); attachGameInput(); updateGame(state()); } }, { once: true });
   }
+  function downloadBackup() {
+    const blob = new Blob([runtime.exportData()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
+    anchor.href = url; anchor.download = 'kotobabin-backup.json'; anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    const message = root.querySelector<HTMLElement>('#recovery-status'); if (message) message.textContent = '保存データの控えを書き出しました。';
+  }
+  async function takeOver() {
+    try { await runtime.takeOver(); updateStorageStatus(); }
+    catch {
+      updateStorageStatus();
+      const dialog = document.createElement('dialog'); dialog.className = 'help-dialog paper-card';
+      dialog.innerHTML = '<form method="dialog"><h2>未保存の進捗があります。</h2><p>この画面の未保存の進捗を控えに残し、保存済みの最新状態で続けますか？今の配達は終了します。</p><button class="button button-primary" value="cancel" autofocus>今の画面に戻る</button><button class="button" value="restore">控えを書き出して、最新の状態で続ける</button></form>';
+      root.append(dialog); dialog.showModal();
+      dialog.addEventListener('close', () => {
+        const confirmed = dialog.returnValue === 'restore'; dialog.remove(); if (!confirmed) return;
+        downloadBackup();
+        void runtime.takeOver({ discardUnsaved: true }).then(() => { session = undefined; renderHome(); }).catch(updateStorageStatus);
+      }, { once: true });
+    }
+  }
   function renderCheck() {
     gameInput?.destroy(); gameInput = undefined;
     screen = 'check'; checkPassed = false; pending = undefined;
@@ -236,7 +257,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     practice.hidden = snapshot.mode !== 'PRACTICE';
     if (snapshot.mode === 'PRACTICE') {
       const clean = Math.min(3, runtime.profile.words[snapshot.currentWord.id]?.practiceCleanCompleted ?? 0);
-      const markup = `<p id="practice-progress">このことばの練習 · 無誤打 <strong>${clean}/3</strong></p><p>${snapshot.awaitingWordChoice ? '完成しました。もう一度でも、次のことばでも。' : '途中で次のことばへ進むと、現在の連続成功は途切れます。'}</p><div>${snapshot.awaitingWordChoice ? '<button class="button button-primary" data-action="repeat-word">もう一度</button>' : ''}<button class="button" data-action="next-practice-word">次のことば</button><button class="button" data-action="practice-main">このことばを本編で試す</button><button class="text-button" data-action="practice-end">練習を終える</button><button class="text-button" data-action="read-aloud">ことばを読み上げる</button></div>`;
+      const markup = `<p id="practice-progress">このことばの練習 · 無誤打 <strong>${clean}/3</strong></p><p>${snapshot.awaitingWordChoice ? '完成しました。もう一度でも、次のことばでも。' : '途中で次のことばへ進むと、現在の連続成功は途切れます。'}</p><div>${snapshot.awaitingWordChoice ? '<button class="button button-primary" data-action="repeat-word">もう一度</button>' : ''}<button class="button" data-action="next-practice-word">次のことば</button><button class="button" data-action="practice-main" ${window.innerWidth < 768 ? 'disabled' : ''}>このことばを本編で試す</button>${window.innerWidth < 768 ? '<p>本編には幅768px以上の画面と物理キーボードが必要です。</p>' : ''}<button class="text-button" data-action="practice-end">練習を終える</button><button class="text-button" data-action="read-aloud">ことばを読み上げる</button></div>`;
       if (practice.innerHTML !== markup) practice.innerHTML = markup;
       root.querySelector<HTMLElement>('#input-indicator')!.textContent = snapshot.awaitingWordChoice ? '完成しました' : '入力できます';
     }
@@ -278,9 +299,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function attachGameInput() {
     const input = root.querySelector<HTMLInputElement>('#game-input')!;
     gameInput = new InputAdapter(input, {
-      onCharacter: (key, at) => { if (screen === 'game' && session && runtime.status.writable) mutate(session.input(key, at)); },
-      onDeliver: (at) => { if (screen === 'game' && session && runtime.status.writable) mutate(session.deliver(at)); },
-      onPause: (_reason, at) => { if (screen === 'game' && session && !suppressBlur) mutate(session.pause(at)); },
+      onCharacter: (key, at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) mutate(session.input(key, at)); },
+      onDeliver: (at) => { if (screen === 'game' && session && !root.querySelector('dialog[open]') && runtime.status.writable) mutate(session.deliver(at)); },
+      onPause: (reason, at) => {
+        if (screen !== 'game' || !session || suppressBlur) return;
+        if (reason === 'blur' && session.mode !== 'MAIN' && (state().awaitingWordChoice || state().tutorialDelivered)) {
+          queueMicrotask(() => { const focusedChoice = root.querySelector('#practice-actions')?.contains(document.activeElement) || root.querySelector('#tutorial-status')?.contains(document.activeElement); if (screen === 'game' && session && (!document.hasFocus() || !focusedChoice)) mutate(session.pause(at)); });
+        } else mutate(session.pause(at));
+      },
       deliveryKeys: runtime.settings.deliveryKeys,
       onInputCheckRequired: () => { inputConfirmed = false; },
     });
@@ -304,7 +330,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (target.id.startsWith('catalogue-')) { cataloguePage = 0; updateCatalogue(); }
   });
   on(root, 'input', event => { if ((event.target as HTMLElement).id === 'catalogue-query') { cataloguePage = 0; updateCatalogue(); } });
-  on(root, 'pointerdown', event => { if ((event.target as HTMLElement).closest('[data-action="deliver"], [data-action="guide"], [data-action="repeat-word"], [data-action="next-practice-word"]')) event.preventDefault(); });
+  on(root, 'pointerdown', event => { if ((event.target as HTMLElement).closest('[data-action="deliver"], [data-action="guide"], [data-action="repeat-word"], [data-action="next-practice-word"], [data-action="practice-main"], [data-action="practice-end"], [data-action="tutorial-main"], [data-action="tutorial-skip"], [data-action="tutorial-practice"]')) event.preventDefault(); });
   on(root, 'click', event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target || (target as HTMLButtonElement).disabled) return;
@@ -358,13 +384,15 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'tutorial-practice': { const wordId = state().currentWord.id; closeCurrent('replaced'); launchTarget = { mode: 'PRACTICE', wordIds: [wordId] }; launch(); break; }
       case 'district-info': districtInfo(target.dataset.district!, Number(target.dataset.threshold)); break;
       case 'read-aloud': { if ('speechSynthesis' in window) { speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(state().currentWord.reading); speech.lang = 'ja-JP'; speechSynthesis.speak(speech); } break; }
-      case 'takeover': void runtime.takeOver().then(updateStorageStatus).catch(() => updateStorageStatus()); break;
+      case 'takeover': void takeOver(); break;
+      case 'export-data': downloadBackup(); break;
+      case 'retry-save': void runtime.retrySave().then(updateStorageStatus).catch(updateStorageStatus); break;
     }
   });
   on(root, 'keydown', (raw) => {
     const event = raw as KeyboardEvent;
     const modal = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
-    if (modal && event.key === 'Tab') {
+    if (modal && !root.querySelector('dialog[open]') && event.key === 'Tab') {
       const buttons = [...modal.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
       const first = buttons[0], last = buttons[buttons.length - 1];
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
