@@ -808,10 +808,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'retry-save': void runtime.retrySave().then(updateStorageStatus).catch(updateStorageStatus); break;
     }
   });
-  on(root, 'keydown', (raw) => {
+  on(document, 'keydown', (raw) => {
     const event = raw as KeyboardEvent;
-    if (event.isTrusted && !event.isComposing && event.keyCode !== 229) {
-      if (event.key === 'F2') { event.preventDefault(); openNavigationMenu(); return; }
+    if (event.target instanceof Node && !root.contains(event.target) && event.target !== document.body && event.target !== document.documentElement) return;
+    if (event.isTrusted && !event.ctrlKey && !event.metaKey && !event.altKey && !event.isComposing && event.keyCode !== 229) {
+      if (event.key === 'F2' && !event.shiftKey) { event.preventDefault(); openNavigationMenu(); return; }
       const menu = root.querySelector<HTMLDialogElement>('.navigation-dialog[open]');
       if (menu && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
         event.preventDefault(); const items = [...menu.querySelectorAll<HTMLButtonElement>('button')]; const index = items.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length; items[next]?.focus({ preventScroll: true }); return;
@@ -820,6 +821,9 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       const editing = (event.target as HTMLElement).closest('select, textarea, input[type=text], input[type=search], input[type=file]');
       if (screen === 'home' && !editing && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); selectedCourse = courses[Number(event.key) - 1].id; const radio = root.querySelector<HTMLInputElement>(`input[name="course"][value="${selectedCourse}"]`); if (radio) { radio.checked = true; radio.focus({ preventScroll: true }); } return; }
     }
+  });
+  on(root, 'keydown', (raw) => {
+    const event = raw as KeyboardEvent;
     const modal = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
     if (modal && !root.querySelector('dialog[open]') && event.key === 'Tab') {
       const buttons = [...modal.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
