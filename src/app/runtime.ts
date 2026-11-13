@@ -82,6 +82,12 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   const observeCity = (value: AchievementState, state: CityState, atMs: number) => applyAchievementCity(value, {
     eventId: `world:${state.cityId}:${state.clockMs}`, atMs, city: state,
   });
+  const interruptAchievements = (value: AchievementState, id: string | undefined): AchievementState => {
+    if (!id || value.sessions[id]?.phase !== 'active') return value;
+    const next = structuredClone(value);
+    next.sessions[id].phase = 'aborted';
+    return next;
+  };
   let baseClock = city.clockMs;
   let baseMono = clock.now();
   const capture = () => ({ atMs: baseClock + Math.max(0, Math.floor(clock.now() - baseMono)), wallMs: wallNow() });
@@ -89,9 +95,9 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     engine.advanceTo(time.atMs);
     engine.state.savedWallMs = Math.max(engine.state.savedWallMs, time.wallMs);
   };
-  const putCity = (document: ProfileDocument, state: CityState, selected = readDestination(document, state)): ProfileDocument => ({
+  const putCity = (document: ProfileDocument, state: CityState, acquiredAtMs: number, selected = readDestination(document, state)): ProfileDocument => ({
     ...document, extensions: { ...document.extensions, city: encodeCityState(state), cityDestination: selected,
-      achievements: observeCity(readAchievements(document), state, wallNow()) },
+      achievements: observeCity(readAchievements(document), state, acquiredAtMs) },
   });
   const emit = () => { if (!closed) for (const listener of listeners) listener(); };
   const syncCity = () => {
@@ -132,6 +138,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     const wall = wallNow();
     const engine = new CityEconomy(structuredClone(city));
     // An interrupted round is never resumed or awarded a deadline bonus on reload.
+    achievements = interruptAchievements(achievements, engine.state.activeSession?.sessionId);
     if (engine.state.activeSession) engine.endSession();
     const returned = engine.restoreAt(wall);
     if (returned.creditedMs >= 1000 || returned.arrivedMicro > 0n || returned.shopCoinsMicro > 0n || returned.completed.length) returnSummary = returned;
@@ -140,9 +147,10 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     baseClock = city.clockMs; baseMono = clock.now();
     void persist(() => repo.mutateDocument(document => {
       const current = new CityEconomy(readCity(document, wall));
+      const interrupted = interruptAchievements(readAchievements(document), current.state.activeSession?.sessionId);
       if (current.state.activeSession) current.endSession();
       current.restoreAt(wall);
-      return putCity(document, current.state);
+      return putCity({ ...document, extensions: { ...document.extensions, achievements: interrupted } }, current.state, wall);
     }));
   };
   const timer = setInterval(() => {
@@ -180,7 +188,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         const current = new CityEconomy(readCity(document, time.wallMs));
         advance(current, time); current.beginSession(sessionId, selected, modes[mode]);
         const started = context ? beginAchievementSession(readAchievements(document), { sessionId, mode, context, atMs: time.wallMs }) : readAchievements(document);
-        return putCity({ ...document, extensions: { ...document.extensions, achievements: started } }, current.state, selected);
+        return putCity({ ...document, extensions: { ...document.extensions, achievements: started } }, current.state, time.wallMs, selected);
       }, { generation }));
       return true;
     },
@@ -188,11 +196,13 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       if (!runtime.status.writable || city.activeSession?.sessionId !== sessionId) return;
       const time = capture(); const generation = sessions.get(sessionId)?.generation ?? repo.snapshot.metadata.generation;
       const candidate = new CityEconomy(structuredClone(city)); advance(candidate, time); candidate.endSession(); city = candidate.snapshot();
+      achievements = interruptAchievements(achievements, sessionId);
       achievements = observeCity(achievements, city, time.wallMs);
       void persist(() => repo.mutateDocument(document => {
         const current = new CityEconomy(readCity(document, time.wallMs)); advance(current, time);
         if (current.state.activeSession?.sessionId === sessionId) current.endSession();
-        return putCity(document, current.state);
+        return putCity({ ...document, extensions: { ...document.extensions,
+          achievements: interruptAchievements(readAchievements(document), sessionId) } }, current.state, time.wallMs);
       }, { generation }));
     },
     selectDestination(id) {
@@ -203,7 +213,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       void persist(() => repo.mutateDocument(document => {
         const current = readCity(document, wall);
         if (current.activeSession || !current.districts[id]?.open) throw new Error('配達を終えてから、開通済みの届け先を選んでください。');
-        return putCity(document, current, id);
+        return putCity(document, current, wall, id);
       }));
     },
     async cityCommand(command) {
@@ -230,7 +240,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
           const updated = applyAchievementCity(readAchievements(document), { eventId: key, atMs: time.wallMs, city: current.state,
             paidEquipmentPurchase: receipt.applied && paidEquipmentPurchase,
             researchPurchased: receipt.applied && fixed.type === 'buyResearch' });
-          return putCity({ ...document, extensions: { ...document.extensions, achievements: updated } }, current.state);
+          return putCity({ ...document, extensions: { ...document.extensions, achievements: updated } }, current.state, time.wallMs);
         }, { generation }), false);
         syncSnapshot();
       } catch (error) {
@@ -245,7 +255,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const candidate = new CityEconomy(structuredClone(city)); advance(candidate, time); city = candidate.snapshot();
       achievements = observeCity(achievements, city, time.wallMs);
       void persist(() => repo.mutateDocument(document => {
-        const current = new CityEconomy(readCity(document, time.wallMs)); advance(current, time); return putCity(document, current.state);
+        const current = new CityEconomy(readCity(document, time.wallMs)); advance(current, time); return putCity(document, current.state, time.wallMs);
       }));
     },
     updateSettings(patch) {
@@ -284,7 +294,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       // captured here; neither date nor time participates in eligibility.
       const historyFacts = facts.map(fact => ({ ...fact, confirmedAtMs: time.wallMs }));
       const reduceAchievements = (current: AchievementState): AchievementState => {
-        if (abandonClosing) return { ...current, measuredProgress: { ...current.measuredProgress, factCursors: {
+        if (abandonClosing) return { ...interruptAchievements(current, first.sessionId), measuredProgress: { ...current.measuredProgress, factCursors: {
           ...current.measuredProgress.factCursors, [first.sessionId]: Math.max(current.measuredProgress.factCursors[first.sessionId] ?? 0, ...facts.map(fact => fact.factSequence)),
         } } };
         const started = beginAchievementSession(current, { sessionId: first.sessionId, mode: first.mode, context, atMs: time.wallMs });
@@ -305,7 +315,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       };
       const reduce = (document: ProfileDocument): ProfileDocument => putCity(
         { ...document, progress: reduceProgress(document.progress), extensions: { ...document.extensions,
-          achievements: reduceAchievements(readAchievements(document)) } }, reduceCity(readCity(document, time.wallMs)));
+          achievements: reduceAchievements(readAchievements(document)) } }, reduceCity(readCity(document, time.wallMs)), time.wallMs);
       if (identity.generation !== repo.snapshot.metadata.generation) { errorMessage = '記録が削除されたため、古い便の成果は保存しません。新しい配達を始めてください。'; emit(); return; }
       const nextProgress = reduceProgress(progress);
       const nextCity = reduceCity(city);
