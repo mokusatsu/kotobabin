@@ -29,8 +29,11 @@
 .delivery-arrival-glow[data-revision] { animation-name: delivery-arrive; }
 @keyframes delivery-cart-bob { from { transform: translateY(-1px) rotate(-1deg); } to { transform: translateY(2px) rotate(1deg); } }
 @keyframes delivery-load { 0% { opacity: 1; transform: translate(-24px,-70px) scale(.65); } 65% { opacity: 1; } 100% { opacity: 0; transform: translate(70px,-60px) scale(1); } }
+@keyframes delivery-load-repeat { 0% { opacity: 1; transform: translate(-24px,-70px) scale(.65); } 65% { opacity: 1; } 100% { opacity: 0; transform: translate(70px,-60px) scale(1); } }
 @keyframes delivery-bonus { 0% { opacity: 1; transform: translate(-50%,-100%); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(70px,-140px); } }
+@keyframes delivery-bonus-repeat { 0% { opacity: 1; transform: translate(-50%,-100%); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(70px,-140px); } }
 @keyframes delivery-arrive { 0% { opacity: 1; transform: translateY(5px); } 100% { opacity: 0; transform: translateY(-12px); } }
+@keyframes delivery-arrive-repeat { 0% { opacity: 1; transform: translateY(5px); } 100% { opacity: 0; transform: translateY(-12px); } }
 .delivery-input-paused .delivery-word-letter { animation-play-state: paused; }
 .delivery-reduced-motion *, .delivery-reduced-motion .delivery-vehicle img { animation: none !important; transition: none !important; }
 .delivery-reduced-motion .delivery-word-letter, .delivery-reduced-motion .delivery-dispatch-cart { display: none; }
