@@ -17,7 +17,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
     }
     await page.screenshot({ path: testInfo.outputPath(`home-${viewport.width}.png`), fullPage: true });
     if (viewport.width >= 768) {
-      await beginMain(page);
+      await beginMain(page, { fromHome: true });
       await assertNoHorizontalOverflow(page);
       for (const selector of ['.continue-hint', '.risk-hint', '.typing-input-label']) {
         const size = await page.locator(selector).evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));

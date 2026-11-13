@@ -7,15 +7,15 @@ export async function confirmHalfWidthInput(page: Page) {
   await expect(page.locator('#game-input')).toBeFocused();
 }
 
-export async function beginTutorial(page: Page) {
-  await page.goto('/');
+export async function beginTutorial(page: Page, options: { fromHome?: boolean } = {}) {
+  if (!options.fromHome) await page.goto('/');
   await page.locator('[data-action="start"]').click();
   await confirmHalfWidthInput(page);
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'TUTORIAL');
 }
 
-export async function beginMain(page: Page) {
-  await beginTutorial(page);
+export async function beginMain(page: Page, options: { fromHome?: boolean } = {}) {
+  await beginTutorial(page, options);
   await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
   await expect(page.locator('#game-input')).toBeFocused();
