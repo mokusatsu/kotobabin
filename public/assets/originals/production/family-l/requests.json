@@ -1,0 +1,47 @@
+{
+  "method": "Actual imagegen transparent_background:true; F/I and all five screen refs inspected visually only. L02 initial rejected for surrounding brown haze; imagegen edit selected. No masking, thresholds, alpha trimming or cropping.",
+  "attempts": [
+    {
+      "id": "stamp_l01",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A THIN OPEN BOOK STANDS UPRIGHT like a welcoming DOUBLE DOOR GATE, its two covers and cream page thickness clearly visible. Through the broad central doorway a NEW SMALL PATH recedes into a tiny green garden of UNUSUAL SHAPED FLOWERS. Make the book-gate and path entrance large and clear. A compact self-contained vignette, no shelf, no book pile.",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_l02",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A symmetrical TWO-DOOR WOODEN BOOKCASE opens sideways like a hinged cabinet. The LEFT WING holds orderly rows of cream, sage, and terracotta books. The RIGHT WING reveals an airy small READING ALCOVE with one welcoming wooden CHAIR. Clear central brass HINGE and generous central open space. Wide balanced double-wing silhouette, visible wood thickness, no text on any books.",
+      "selected": false,
+      "rejected": true
+    },
+    {
+      "id": "stamp_l03",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A TALL ROUND-ARCH TOP BOOKCASE with large simple orderly books rises vertically, with short broad STEPS at its foot and a HIGH LADDER leaning up along the front. A small green-and-ochre GLOBE sits above its rounded top, visibly spherical with no labels. Strong tall silhouette, big arch and ladder, little ground footprint, no other furniture.",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_l04",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LOW WIDE SHALLOW WOODEN BOX holds several SHORT ROUNDED-COVER BOOKLETS arranged like an open FAN. Beside the box a SMALL BIRD leans forward to PECK one booklet. Honey wood, cream pages, sage and terracotta covers, tiny brown-and-cream bird. Make the low box, fan of short booklets, and bird distinct large simple shapes. No full bookcase or tall book.",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_l05",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LARGE WIDE OPEN ENCYCLOPEDIA with a clear CENTRAL BINDING and stepped FOLDOUT PAGES extending sideways. From the cream paper rises a small charming POPUP SCENE of a HOUSE, a TREE, and a BRIDGE. Large legible paper folds, a broad horizontal silhouette, sage house roof and terracotta bridge, no printing or text anywhere on the blank pages.",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_l06",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LONG BLANK PARCHMENT SCROLL flows in a continuous broad S CURVE down from a small WOODEN DESK, then its lower end curls upward like a little BRIDGE. Beside it stands a LARGE DEEP FOREST-GREEN INK POT holding one CREAM FEATHER QUILL. The flowing S-shaped paper and prominent round ink pot are the main identifying shapes. Show empty cream paper with absolutely no writing, strokes, symbols or letters.",
+      "selected": true,
+      "rejected": false
+    }
+  ],
+  "edit": {
+    "id": "stamp_l02",
+    "prompt": "Edit this artwork to preserve the hinged bookcase, books, and reading chair composition and watercolor style, but REMOVE ALL brown surrounding glow, haze, background paint, vignette and shadow. Outside the wooden cabinet must be genuine fully transparent empty space, with clean natural watercolor object edges. Place the whole object comfortably centered inside a SQUARE transparent canvas with 12 percent empty transparent margin. No cropping, lettering, symbols or frames. The two panels retain the clear central hinges; left books and right chair.",
+    "selected": true,
+    "rejected": false
+  }
+}

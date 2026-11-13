@@ -1,0 +1,98 @@
+[
+  {
+    "id": "stamp_l01",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1253,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      60,
+      41,
+      435,
+      474
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 215546,
+    "native_sha256": "dd2ba3a3cd5872d5c1c47572c0d0b477b14c4f11c48113fb08b77278cf3a1251",
+    "runtime_sha256": "49c36b315696ff9dc5469b2662bb2f6df19fb39338fe3ab7665226ae37d934b9",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_l02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      41,
+      45,
+      1204,
+      1214
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      50,
+      123,
+      462,
+      384
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 159450,
+    "native_sha256": "22ab8fb2ccf4313ee4dd806540c993b995a6332e8fe120d874ca23210816ee5b",
+    "runtime_sha256": "845d6596ef270b3ead48d77359955d0d989f2c06ec193b428903ae446430693e",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_l03",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      16,
+      1250,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      117,
+      38,
+      393,
+      475
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 120412,
+    "native_sha256": "209a34ed7b9bc54b16c90e2aa6df20b92d1a1ff2075824f31eef8fe68f1b15eb",
+    "runtime_sha256": "e470cd5d098859c66500a44f81dd1db0db8f0de2aeb4778688929397048c2db1",
+    "png_webp_alpha_and_paper_composite_equal": true
+  }
+]
