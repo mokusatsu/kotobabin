@@ -1,7 +1,7 @@
 name: M7 first handbook early layout
 on:
   push:
-    branches: [fix/m7-first-handbook-layout, test/m7-webkit-focus]
+    branches: [fix/m7-first-handbook-layout, test/m7-webkit-focus, feat/m7-integration, main]
   workflow_dispatch:
 permissions:
   contents: read

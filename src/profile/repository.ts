@@ -263,7 +263,7 @@ export class ProfileRepository {
       this.persistedRevision = loaded.metadata.revision;
       this.persistedGeneration = loaded.metadata.generation;
       this.state = { storage: 'indexeddb', ownership: loaded.metadata.ownerTabId === this.tabId ? 'owner' : 'readonly', saveState: 'saved', recoveryRequired: false,
-        notice: loaded.metadata.ownerTabId === this.tabId ? '' : '別のタブが操作中です。「ここで続ける」で引き継げます。' };
+        notice: loaded.metadata.ownerTabId === this.tabId ? '' : '別のタブで操作中です。' };
     } catch (error) {
       if (error instanceof RecoveryRequiredError) this.state = { ...this.state, recoveryRequired: true, notice: error.message };
       else throw error;
@@ -402,7 +402,7 @@ export class ProfileRepository {
       const raw = await this.transaction(() => undefined);
       if (!validateProfileDocument(raw)) { this.rawRecovery = raw; this.state = { ...this.state, recoveryRequired: true, saveState: 'unsaved', notice: new RecoveryRequiredError().message }; this.emit(); return; }
       if (raw.metadata.ownerTabId !== this.tabId || raw.metadata.writeEpoch !== this.document.metadata.writeEpoch) {
-        this.state = { ...this.state, ownership: 'readonly', notice: '別のタブが操作中です。「ここで続ける」で引き継げます。' };
+        this.state = { ...this.state, ownership: 'readonly', notice: '別のタブで操作中です。' };
         // Keep unsaved facts for export, never replay them into the new owner's state.
         if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; this.persistedGeneration = raw.metadata.generation; }
       } else if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; this.persistedGeneration = raw.metadata.generation; }
