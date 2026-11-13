@@ -66,9 +66,11 @@ test('independent real-key E2E with natural 90-second game', async ({page}, info
     await focusByTab('ローマ字を入力');
     const gameStart=Date.now();let count=0;let completed=0;let previousWord='';let shipmentObserved=false;let checkpoint=0;
     while(Date.now()-gameStart<100000) {
-      const next=await page.locator('.next-key').first().textContent({timeout:300}).catch(()=>null);
+      const visiblePrompt=await page.evaluate(()=>({next:document.querySelector('.next-key')?.textContent?.trim(),word:(document.querySelector('.prompt-word') as HTMLElement)?.innerText}));
+      const next=visiblePrompt.next;
       if(!next || !/^[a-z-]$/.test(next.trim())) {await page.waitForTimeout(150);if(Date.now()-gameStart>88000)break;continue;}
-      const word=await page.locator('.prompt-word').innerText();
+      const word=visiblePrompt.word;
+      if(!word){await page.waitForTimeout(100);if(Date.now()-gameStart>88000)break;continue;}
       if(previousWord && word!==previousWord){completed++;log('completed word',previousWord);
         if(!shipmentObserved){await key('Space');await shot('shipment-at-dispatch150');await page.waitForTimeout(700);await shot('shipment-moving150');await page.waitForTimeout(1600);await shot('shipment-arrival150');shipmentObserved=true;}
       }

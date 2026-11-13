@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'.',timeout:300000,workers:3,reporter:'line',use:{baseURL:'http://127.0.0.1:4173'},projects:[{name:'latest-short-chromium-960x720',testMatch:'short.spec.ts',use:{browserName:'chromium',viewport:{width:960,height:720}}},{name:'latest-short-webkit-960x720',testMatch:'short.spec.ts',use:{browserName:'webkit',viewport:{width:960,height:720}}},{name:'latest-natural-webkit-1180x820',testMatch:'observe.spec.ts',use:{browserName:'webkit',viewport:{width:1180,height:820}}}]});

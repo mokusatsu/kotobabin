@@ -15,7 +15,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium webkit
       - run: npx vite preview --host 127.0.0.1 --port 4173 &
-      - run: npx playwright test --config review-independent/playwright.config.ts
+      - run: npx playwright test --config review-independent/playwright.followup.config.ts
       - uses: actions/upload-artifact@v4
         if: always()
         with:
