@@ -250,7 +250,7 @@ function metrics(state:AchievementState,id:string,s?:AchievementSession,live?:Se
   const accuracy=s&&s.correctKeys+s.mistakes>0?100*s.correctKeys/(s.correctKeys+s.mistakes):0;
   const values:Record<string,number|string|boolean>={
     lifetime_completed_words:p.totalCompleted,manual_delivery_count:state.manualDeliveries,grouped_delivery_count:state.groupedDeliveries,full_delivery_count:state.fullDeliveries,
-    completed_rounds:state.completedRounds,completed_words:s?.completedWords??0,same_order_completed_rounds:s?state.orderCompletions[achievementOrderKey(s.context)]??0:Math.max(0,...Object.values(state.orderCompletions)),order_display:s?.context.planId??'未選択',
+    completed_rounds:state.completedRounds,completed_words:s?.completedWords??0,same_order_completed_rounds:s?state.orderCompletions[achievementOrderKey(s.context)]??0:Math.max(0,...Object.values(state.orderCompletions)),order_display:s?`この問題順で${state.orderCompletions[achievementOrderKey(s.context)]??0}/2便完走`:'問題順を選んで配達を始めよう',
     small_manual_deliveries:s?(s.manual[1]+s.manual[2]):0,large_manual_deliveries:s?(s.manual[3]+s.manual[4]):0,full_deliveries_in_round:s?.full??0,
     manual_deliveries_in_round:s?s.manual.reduce((a,b)=>a+b,0):0,manual_two_seen:!!s?.manual[2],full_after_manual_two:s?.fullAfterTwo??false,manual_four_seen:!!s?.manual[4],immediate_next_word_clean:s?.fourThenClean??false,
     normal_completion:s?.phase==='completed'&&s.skips===0,accuracy_percent:accuracy,best_eligible_accuracy:state.bestAccuracies[id]??0,
@@ -292,10 +292,21 @@ export function getAchievementViews(state:AchievementState,liveSession?:SessionS
     const progress=definition.progress_fields.map(field=>{
       const raw=values[field.key]??0;const current=typeof raw==='number'?Math.floor(raw*10)/10:typeof raw==='boolean'?Number(raw):0;
       const target=typeof field.target==='number'?field.target:typeof field.target==='boolean'||(field.target!==null&&typeof field.target==='object')?1:null;
-      const displayText=typeof raw==='string'?`${field.label}：${raw}`:field.key==='normal_completion'?(ineligible?'今回は対象外':s?.phase==='completed'?'完走で確定':'スキップせず90秒完走で確定'):
+      const displayText=field.key==='accuracy_percent'&&(!s||s.correctKeys+s.mistakes===0)?`${field.label}：計測なし（終了時に${target}%以上）`:typeof raw==='string'?`${field.label}：${raw}`:field.key==='normal_completion'?(ineligible?'今回は対象外':s?.phase==='completed'?'完走で確定':'スキップせず90秒完走で確定'):
         `${field.label}：${typeof raw==='boolean'?(raw?'達成':'未達'):`${current}${target===null?'':`/${target}`}${field.unit}`}`;
       return {key:field.key,label:field.label,current,target,unit:field.unit,displayText};
     });
+    if(definition.id==='E06'||definition.id==='H06') {
+      const required=definition.id==='E06'?5:20;
+      const achieved=definition.id==='E06'?state.fiveWordCourses:state.skilledCourses;
+      courses.forEach((course,index)=>{
+        const line=progress.find(p=>p.key===`course_${index+1}`);if(!line)return;
+        const threshold=`${required}語以上${definition.id==='H06'?'・正確率95%以上':''}で完走`;
+        const active=s?.context.courseId===course&&s.phase==='active'&&s.mode==='MAIN';
+        const current=active?`今回 ${s.completedWords}/${required}語${definition.id==='H06'?`・正確率${Math.floor(1000*s.correctKeys/Math.max(1,s.correctKeys+s.mistakes))/10}%`:''}。90秒完走で確定`:'適格な完走記録はまだありません';
+        line.displayText=`${line.label}：${achieved.includes(course)?'条件を満たして完走済み':`${threshold}。${current}`}`;
+      });
+    }
     if(definition.id==='K03'&&state.city) {
       const leader=Object.entries(state.city.districts).sort((a,b)=>b[1].shops-a[1].shops)[0];
       if(leader)progress[0].displayText=`${districtNames[leader[0]]}の店：${leader[1].shops}/10軒`;
