@@ -86,16 +86,9 @@ for (const height of [720, 820] as const) for (const font of [100, 125, 150] as 
   expect(await equipped(page)).toEqual(before);
   await page.screenshot({ path: info.outputPath(`readonly-gallery-1180x${height}-${font}.png`) });
   console.log('GALLERY_READONLY_LAYOUT', JSON.stringify(await page.evaluate(() => ({ width: innerWidth, height: innerHeight, documentHeight: document.documentElement.scrollHeight,
-    parts: ['.site-header', '#ownership-status', '.cosmetic-home-gallery', '.home-city-balance', '.world-command-dock', '.home-city-slot'].map(selector => ({ selector, rectangle: document.querySelector(selector)?.getBoundingClientRect().toJSON() })) }))));
+    parts: ['.site-header', '#ownership-status', '.cosmetic-home-gallery', '.home-city-balance', '.world-command-dock', '.home-city-slot', '.site-footer'].map(selector => ({ selector, rectangle: document.querySelector(selector)?.getBoundingClientRect().toJSON() })) }))));
   await assertViewportFits(page);
-  const overlaps = await warning.evaluate(element => {
-    const warningRect = element.getBoundingClientRect();
-    const balance = document.querySelector('.home-city-balance')!.getBoundingClientRect();
-    const labels = [...document.querySelectorAll('.world-stage .map-label')].map(item => item.getBoundingClientRect());
-    const overlaps = (a: DOMRect, b: DOMRect) => Math.min(a.right, b.right) > Math.max(a.left, b.left) && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top);
-    return { warningBalance: overlaps(warningRect, balance), warningLabels: labels.some(rect => overlaps(warningRect, rect)), balanceLabels: labels.some(rect => overlaps(balance, rect)) };
-  });
-  expect(overlaps).toEqual({ warningBalance: false, warningLabels: false, balanceLabels: false });
+  await assertHomeHudSeparated(page);
   const takeover = warning.locator('[data-action="takeover"]');
   await tabTo(page, takeover); await page.keyboard.press('Enter');
   await expect(warning).toHaveAttribute('data-ownership', 'owner');
@@ -103,4 +96,18 @@ for (const height of [720, 820] as const) for (const font of [100, 125, 150] as 
   expect(await equipped(page)).toEqual(before);
   await expect(page.locator('.cosmetic-home-gallery')).toBeVisible();
   await assertViewportFits(page);
+  await assertHomeHudSeparated(page);
 });
+
+async function assertHomeHudSeparated(page: Page) {
+  const overlaps = await page.evaluate(() => {
+    const warning = document.querySelector('#ownership-status')!.getBoundingClientRect();
+    const balance = document.querySelector('.home-city-balance')!.getBoundingClientRect();
+    const dock = document.querySelector('.world-command-dock')!.getBoundingClientRect();
+    const footer = document.querySelector('.site-footer')!.getBoundingClientRect();
+    const labels = [...document.querySelectorAll('.world-stage .map-label')].map(item => item.getBoundingClientRect());
+    const overlaps = (a: DOMRect, b: DOMRect) => Math.min(a.right, b.right) > Math.max(a.left, b.left) && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top);
+    return { warningBalance: overlaps(warning, balance), warningLabels: labels.some(rect => overlaps(warning, rect)), balanceLabels: labels.some(rect => overlaps(balance, rect)), dockFooter: overlaps(dock, footer) };
+  });
+  expect(overlaps).toEqual({ warningBalance: false, warningLabels: false, balanceLabels: false, dockFooter: false });
+}
