@@ -287,8 +287,9 @@ export class DeliverySceneController {
       const size = s.lastDispatchCount;
       const duration = GAME_PRESENTATION_DEFAULTS.deliveryFxMs[size <= 2 ? 0 : size <= 4 ? 1 : 2];
       if (dispatchEffect) {
-        dispatchEffect.style.animationDuration = `${duration}ms`;
-        dispatchEffect.style.animationDelay = `${size === 5 ? GAME_PRESENTATION_DEFAULTS.deliveryHoldMs : 0}ms`;
+        const hold = size === 5 ? GAME_PRESENTATION_DEFAULTS.deliveryHoldMs : 0;
+        dispatchEffect.style.animationDuration = `${duration - hold}ms`;
+        dispatchEffect.style.animationDelay = `${hold}ms`;
         // Backwards fill holds only the parcel drawing during the full-load beat.
         dispatchEffect.style.animationFillMode = 'both';
       }
