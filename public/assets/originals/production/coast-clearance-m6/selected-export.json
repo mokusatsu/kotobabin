@@ -1,0 +1,114 @@
+[
+  {
+    "asset": "terrain_seaside",
+    "attempt": "seaside-r4",
+    "native_size": [
+      1586,
+      992
+    ],
+    "whole_canvas_output": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "native_aspect_difference_from_8_5_percent": -0.07560483870967527,
+    "crop": false,
+    "geometry_mask": false,
+    "runtime_encoding": {
+      "quality": 92,
+      "method": 6
+    },
+    "outputs": [
+      {
+        "path": "public/assets/originals/terrain_seaside.generated.png",
+        "size": [
+          1586,
+          992
+        ],
+        "mode": "RGB",
+        "bytes": 2113908,
+        "sha256": "e8c0986fba3963808e4e2aaa33a7d4803b85169205cf47727f20736df138d03b"
+      },
+      {
+        "path": "public/assets/originals/terrain_seaside.png",
+        "size": [
+          3200,
+          2000
+        ],
+        "mode": "RGB",
+        "bytes": 5592818,
+        "sha256": "b9a765bb384d70f73e6ef0eeeda973a724178460228f5aeeb0216bdbf8559567"
+      },
+      {
+        "path": "public/assets/terrain/terrain_seaside.webp",
+        "size": [
+          3200,
+          2000
+        ],
+        "mode": "RGB",
+        "bytes": 410106,
+        "sha256": "84e2de3db6bf26863a3ff243dd660ff4b498b2084cabc5f6af2ee4541eeec7a0"
+      }
+    ],
+    "acceptance": "Improved art candidate with diagnostic clearance/dry/non-worsening checks; strict geometric identity and E2E are unproven."
+  },
+  {
+    "asset": "terrain_highland",
+    "attempt": "highland-r1",
+    "native_size": [
+      1585,
+      992
+    ],
+    "whole_canvas_output": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "native_aspect_difference_from_8_5_percent": -0.138608870967738,
+    "crop": false,
+    "geometry_mask": false,
+    "runtime_encoding": {
+      "quality": 92,
+      "method": 6
+    },
+    "outputs": [
+      {
+        "path": "public/assets/originals/terrain_highland.generated.png",
+        "size": [
+          1585,
+          992
+        ],
+        "mode": "RGB",
+        "bytes": 1785255,
+        "sha256": "cebf4e86dc44e2073a29b92389f937734ff3a8a9cc44964830e9755564a5e00b"
+      },
+      {
+        "path": "public/assets/originals/terrain_highland.png",
+        "size": [
+          3200,
+          2000
+        ],
+        "mode": "RGB",
+        "bytes": 4388138,
+        "sha256": "17e9ed57c4bee3af24998da5cb7db6d1c65de1073d3827a21b20fb3a230824c7"
+      },
+      {
+        "path": "public/assets/terrain/terrain_highland.webp",
+        "size": [
+          3200,
+          2000
+        ],
+        "mode": "RGB",
+        "bytes": 272538,
+        "sha256": "a3e9974558fe38b9581a1a4c6eda65dc45706c35ff660e5c7960c0d839c50f38"
+      }
+    ],
+    "acceptance": "Improved art candidate with diagnostic clearance/dry/non-worsening checks; strict geometric identity and E2E are unproven."
+  }
+]

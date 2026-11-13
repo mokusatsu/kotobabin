@@ -1004,6 +1004,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
   const disposeDistrictMap = installDistrictMap(root);
   const ipadLayout = installIPadPagination(root);
+  on(matchMedia('(prefers-reduced-motion: reduce)'), 'change', applySettings);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
   return () => { releaseScreenPresentation(); disposeDistrictMap(); audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };

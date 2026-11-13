@@ -2,7 +2,7 @@ name: M6 technical audit
 on:
   workflow_dispatch:
   push:
-    branches: [feat/recover-startup, feat/m5-remaining-art]
+    branches: [feat/recover-startup, feat/m5-remaining-art, feat/m6-final-validation]
 permissions:
   contents: read
 concurrency:
