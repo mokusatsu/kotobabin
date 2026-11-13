@@ -6,7 +6,13 @@ export async function tabTo(page: Page, target: Locator, maximum = 100) {
   for (let step = 0; step < maximum; step++) {
     if (await target.evaluate(element => element === document.activeElement)) {
       await expect(target).toBeFocused();
-      expect(await target.evaluate(element => element.matches(':focus-visible'))).toBe(true);
+      const focusVisible = await target.evaluate(element => element.matches(':focus-visible'));
+      if (!focusVisible) console.log('KEYBOARD_FOCUS_INDICATOR', JSON.stringify(await target.evaluate(element => {
+        const style = getComputedStyle(element); const parent = element.closest('label'); const parentStyle = parent && getComputedStyle(parent);
+        return { element: element.outerHTML, rectangle: element.getBoundingClientRect().toJSON(), focusVisible: element.matches(':focus-visible'), outline: [style.outlineStyle, style.outlineWidth, style.outlineColor], opacity: style.opacity, boxShadow: style.boxShadow,
+          parent: parent && { rectangle: parent.getBoundingClientRect().toJSON(), outline: [parentStyle!.outlineStyle, parentStyle!.outlineWidth, parentStyle!.outlineColor], boxShadow: parentStyle!.boxShadow } };
+      })));
+      expect(focusVisible).toBe(true);
       return;
     }
     const sameRadioGroup = await target.evaluate(element => {
