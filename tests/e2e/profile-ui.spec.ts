@@ -71,6 +71,9 @@ test('a second tab is read-only and a paused owner can reclaim control using the
   await expect(takeover).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(confirmation).toBeVisible();
+  await expect(confirmation.locator('[data-action="cancel-ownership"]')).toBeFocused();
+  await keyboardRevealControl(page, confirmation.locator('[data-action="confirm-ownership"]'));
+  await expect(confirmation.locator('[data-action="cancel-ownership"]')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(confirmation.locator('[data-action="confirm-ownership"]')).toBeFocused();
   await page.keyboard.press('Enter');
