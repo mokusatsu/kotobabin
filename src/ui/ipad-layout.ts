@@ -4,7 +4,7 @@ interface Panel { target: HTMLElement; nav: HTMLElement; items: PageItem[]; pare
 const focusable = 'button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary,[tabindex="0"]';
 const editing = 'input,select,textarea,[contenteditable="true"],[role="slider"],[role="tablist"]';
 const fixed = '.section-heading,[data-save-status],.city-command-status,.catalogue-pagination,[data-ipad-fixed]';
-const split = '.city-detail-layout,.city-district-nav,#district-detail,.district-detail-card,.district-resources,.plan-card,.unlock-requirements,.city-page-actions,.equipment-layout,.equipment-tabs,.equipment-main,.equipment-controls,#equipment-content,#equipment-district-summary,.equipment-district-card,.purchase-card,.transport-preview,.special-equipment-grid,.special-equipment-grid > article,.collection-counts,.catalogue-filters,#catalogue-results,.word-list,.save-recovery,.profile-management,.backup-preview,.condition-list';
+const split = '.city-detail-layout,.city-district-nav,#district-detail,.district-detail-card,.district-resources,.plan-card,.unlock-requirements,.city-page-actions,.equipment-layout,.equipment-tabs,.equipment-main,.equipment-controls,#equipment-content,#equipment-district-summary,.equipment-district-card,.purchase-card,.transport-preview,.special-equipment-grid,.special-equipment-grid > article,.collection-counts,.catalogue-filters,#catalogue-results,.word-list,.save-recovery,.profile-management,.backup-preview,.condition-list,ol';
 
 /** Pure page grouping helper, independently testable without viewport or DOM APIs. */
 export function packPages<T>(items: readonly T[], fits: (candidate: readonly T[]) => boolean): T[][] {
@@ -81,7 +81,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     const previous = panel.nav.querySelector<HTMLButtonElement>('[data-ipad-prev]')!;
     const next = panel.nav.querySelector<HTMLButtonElement>('[data-ipad-next]')!;
     previous.disabled = panel.page === 0; next.disabled = panel.page === panel.pages.length - 1;
-    setText(panel.nav.querySelector('[data-ipad-count]'), `${label(panel.target)} · 表示 ${panel.page + 1} / ${panel.pages.length}`);
+    setText(panel.nav.querySelector('[data-ipad-count]'), `表示 ${panel.page + 1} / ${panel.pages.length}`);
     panel.target.dataset.ipadPage = String(panel.page + 1); panel.target.dataset.ipadPages = String(panel.pages.length);
   }
   function go(panel: Panel, page: number, focus: boolean) {
@@ -114,7 +114,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     if (panel.sourceKey !== undefined && sourceKey !== panel.sourceKey) panel.page = 0;
     panel.sourceKey = sourceKey;
     const collected = collect(panel.target); panel.items = collected.items; panel.parents = collected.parents;
-    setText(panel.nav.querySelector('[data-ipad-count]'), `${label(panel.target)} · 表示 ${Math.max(1,panel.items.length)} / ${Math.max(1,panel.items.length)}`);
+    setText(panel.nav.querySelector('[data-ipad-count]'), `表示 ${Math.max(1,panel.items.length)} / ${Math.max(1,panel.items.length)}`);
     const indices = panel.items.map((_, i) => i); const bottom = viewport().bottom - 12;
     const focused = document.activeElement;
     const focusedItem = panel.items.findIndex(item => item.nodes.some(node => node === focused || node.contains(focused)));
