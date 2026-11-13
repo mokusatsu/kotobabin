@@ -84,3 +84,4 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 .world-transition-ghost { border: 0; margin: 0; }
 .world-transition-ghost > svg { display: block; width: 100%; height: 100%; }
 @media (max-width: 959px) { .world-stage .home-city-slot { right: 0; } }
+.typing-game-stage .typing-card { background: transparent; border: 0; border-radius: 0; box-shadow: none; }

@@ -1,6 +1,7 @@
 import type { CityState, DistrictId } from '../economy';
 import type { SessionFact, SessionSnapshot } from '../typing';
-import { districtArtwork, districtName, escapeCityText, formatMicro } from './city';
+import { districtName, escapeCityText, formatMicro } from './city';
+import { renderDistrictCore } from './district-map';
 import '../delivery-scene.css';
 
 export interface DeliveryBatch {
@@ -111,7 +112,7 @@ function sceneStatus(state: DeliverySceneState): string {
 }
 export function renderDeliveryScene(city: CityState, destination: DistrictId): string {
   const state = createDeliverySceneState(city, destination);
-  const art = districtArtwork(city, destination);
+
   return `<div id="delivery-scene" class="delivery-scene" data-transport="${state.queuedMicro > 0n ? 'waiting' : 'idle'}" aria-label="倉庫から${escapeCityText(districtName(destination))}への配送風景">
     <div class="delivery-scene-landscape" style="background-image:linear-gradient(180deg,#d8eee66b,#e6edc987),url('${asset('terrain/terrain_riverside.webp')}')" aria-hidden="true"></div>
     <svg class="delivery-scene-art" viewBox="0 0 1200 280" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -122,7 +123,7 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
       <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="url(#delivery-road-lines)" stroke-width="8"/>
     </svg>
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
-    <img class="delivery-district-art" data-delivery-district src="${asset(art.path)}" alt="" aria-hidden="true">
+    <svg class="delivery-district-art" data-delivery-district data-stage="${city.districts[destination].stage}" viewBox="330 70 540 405" aria-hidden="true">${renderDistrictCore(city, destination)}</svg>
     <div class="delivery-arrival-glow" data-arrival-revision="0" aria-hidden="true">✓</div>
     <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><div class="delivery-word-letter" data-delivery-effect="word" data-state="issued">✉</div><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
     <div class="delivery-place delivery-origin"><strong>ことば倉庫</strong><span data-scene-cargo>まとめ便 0 / 5</span><span class="delivery-envelope-rack" aria-hidden="true">${'<i>✉</i>'.repeat(5)}</span></div>
@@ -188,7 +189,8 @@ export class DeliverySceneController {
     text('[data-scene-arrived]', `到着 ${formatMicro(s.arrivedSinceMountMicro)}資材`);
     text('[data-scene-status]', sceneStatus(s));
     const district = el.querySelector('[data-delivery-district]');
-    district?.setAttribute('src', asset(districtArtwork(this.city, s.destination).path));
+    const nextStage = String(this.city.districts[s.destination].stage);
+    if (district && district.getAttribute('data-stage') !== nextStage) { district.innerHTML = renderDistrictCore(this.city, s.destination); district.setAttribute('data-stage', nextStage); }
     // Animation restart only on a new confirmed event, never 80ms UI refresh/replay.
     const pulse = (selector: string, revision: number) => {
       const node = el.querySelector<HTMLElement>(selector);

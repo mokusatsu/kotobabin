@@ -8,6 +8,8 @@ import { catalogueShell, catalogueRows, catalogueFilter, filterCatalogue, catalo
 import { settingsContent } from './settings';
 import { resetConfirmation, restoreConfirmation, type ResetScope } from './profile';
 import { getAchievementViews, type EquipmentSlot } from '../profile/achievements';
+import { gameStageShell } from './game-stage';
+import { DeliverySceneController } from './delivery-scene';
 import { renderDistrictMap, installDistrictMap, animateDistrictEntry, type DistrictMapFeature } from './district-map';
 import { mountResultStage, type ResultStageController, type ResultStageState } from './result-stage';
 import { installIPadPagination } from './ipad-layout';
@@ -34,6 +36,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let seed = newSeed();
   let session: GameSession | undefined;
   let gameInput: InputAdapter | undefined;
+  let deliveryScene: DeliverySceneController | undefined;
+  let processingDeliveryFacts = false;
   let disposeGameLayout: (() => void) | undefined;
   let screen: 'home' | 'check' | 'game' | 'result' | 'catalogue' | 'city' | 'equipment' | 'handbook' = 'home';
   let launchTarget: { mode: SessionMode; wordIds?: string[]; preferredWordId?: string | null } = { mode: 'MAIN' };
@@ -56,7 +60,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let resultStage: ResultStageController | undefined;
   let resultStageState: ResultStageState | undefined;
   let resultStageSessionId = '';
-  function releaseScreenPresentation() { document.querySelectorAll('.world-transition-ghost').forEach(element => element.remove()); if (resultStage) { resultStageState = resultStage.snapshot(); resultStage.destroy(); resultStage = undefined; } }
+  function releaseScreenPresentation() { deliveryScene?.detach(); document.querySelectorAll('.world-transition-ghost').forEach(element => element.remove()); if (resultStage) { resultStageState = resultStage.snapshot(); resultStage.destroy(); resultStage = undefined; } }
   let displayedPurchaseQuote: ReturnType<CityEconomy['quotePurchase']> | undefined;
   let purchaseStructureKey = '';
   let returnNoticeDismissed = false;
@@ -135,6 +139,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     audio.configure(runtime.settings); updateAudioStatus();
     root.style.setProperty('--font-scale', String(runtime.settings.fontScale / 100));
     document.body.dataset.reducedMotion = String(runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
+    deliveryScene?.setReducedMotion(document.body.dataset.reducedMotion === 'true');
     if (screen === 'home') beginHomeMapObservation();
     ipadLayout.refresh();
   }
@@ -160,7 +165,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (!session || !sessionContext) return;
     const facts = session.drainEvents();
     sessionContext = { ...sessionContext, guideUsed: snapshot.guideUsed, assisted: snapshot.skips > 0 };
-    if (facts.length) runtime.applyFacts(facts, sessionContext);
+    processingDeliveryFacts = true;
+    try {
+      if (facts.length) runtime.applyFacts(facts, sessionContext);
+      deliveryScene?.observe(session.sessionId, facts, snapshot, runtime.city);
+    } finally { processingDeliveryFacts = false; }
     audio.observe(session.sessionId, snapshot, facts);
     if (snapshot.phase === 'RESULT') runtime.endSession(session.sessionId);
   }
@@ -475,6 +484,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   }
   function updateCityViews() {
     const city = runtime.city;
+    if (!processingDeliveryFacts) deliveryScene?.updateCity(city);
     if (screen === 'city' || screen === 'equipment') {
       const map = root.querySelector<HTMLElement>('#district-map-slot');
       if (map) renderMarkup(map, renderDistrictMap(city, selectedDistrict, { selectedFeature: screen === 'city' ? 'plan' : equipmentTab }));
@@ -579,28 +589,16 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.innerHTML = `${header()}<main id="main" class="centered-page" data-paginate="入力確認"><section class="paper-card input-check" data-page-children><p class="eyebrow">BEFORE WE GO</p><h1>キーボードを準備しましょう。</h1><p>IMEをオフにして、<strong>半角英字の a</strong> を1回入力してください。<br>確認の入力は、得点に数えません。</p><div class="check-field-group" data-ipad-fixed><label class="check-label" for="game-input">入力の確認</label><input id="game-input" class="check-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="check-status"><p id="check-status" role="status">半角英字で a を入力してください</p></div><button class="button button-primary" data-ipad-fixed data-action="confirm" disabled>${rechecking ? '一時停止へ戻る' : '準備できました →'}</button><button class="text-button" data-ipad-fixed data-action="check-back">戻る</button></section></main>${footer()}`;
     focusInput();
   }
-  function prepareGameWorkspace() {
-    const card = root.querySelector<HTMLElement>('.typing-card')!;
-    const workspace = document.createElement('div'); workspace.className = 'game-workspace';
-    const main = document.createElement('div'); main.className = 'game-main-column';
-    const sidebar = document.createElement('aside'); sidebar.className = 'game-sidebar';
-    const primary = document.createElement('section'); primary.className = 'game-sidebar-primary';
-    const details = document.createElement('section'); details.className = 'game-sidebar-details';
-    card.before(workspace); workspace.append(main, sidebar); main.append(card);
-    const entry = document.createElement('div'); entry.className = 'typing-entry-row';
-    card.querySelector('.typing-input-label')!.before(entry);
-    for (const selector of ['.typing-input-label', '#game-input', '#input-instructions']) entry.append(root.querySelector(selector)!);
-    for (const selector of ['#tutorial-status', '.cargo-area', '.delivery-area', '#game-message', '#practice-actions']) primary.append(root.querySelector(selector)!);
-    for (const selector of ['#game-goal-slot', '.play-city-strip', '.game-page > [data-save-status]']) details.append(root.querySelector(selector)!);
-    sidebar.append(primary, details); main.append(root.querySelector('.play-bottom')!);
-  }
   function renderGame() {
     releaseScreenPresentation();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'game';
-    root.innerHTML = `${header(true)}<main id="main" class="game-page" data-mode="${session!.mode}"><div class="game-topline"><div class="clock">${session!.mode === 'MAIN' ? '<span>のこり</span><strong id="time-left">90</strong><span>秒</span>' : '<strong class="untimed-clock">時間制限なし</strong>'}</div><p class="game-route">ことばの配達便 <span>${districtName(sessionDestination)}ゆき</span></p><div class="score"><span>確定得点</span><strong id="score">0</strong><span>点</span></div></div><div class="time-track" aria-hidden="true"><div id="time-bar"></div></div><section id="tutorial-status" class="tutorial-status" hidden aria-live="polite"></section><section class="typing-card" aria-labelledby="prompt-word"><p id="word-stage" class="eyebrow">最初の一打で、配達がはじまります</p><h1 id="prompt-word" class="prompt-word"></h1><p id="prompt-reading" class="prompt-reading"></p><div id="romaji-guide" class="romaji-guide" aria-hidden="true"></div><label class="typing-input-label" for="game-input">キーボード入力<span id="input-indicator">入力できます</span></label><input id="game-input" class="typing-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-instructions" aria-label="ローマ字を入力"><p id="input-instructions" class="sr-only">表示されたことばを半角ローマ字で入力してください。語の境目にSpaceで配達できます。Escapeで一時停止します。</p><div class="cargo-area"><span class="cargo-caption">荷物 <strong id="cargo-count">0</strong> / 5</span><div class="cargo-slots" id="cargo-slots" aria-hidden="true"></div></div><div class="delivery-area"><button id="deliver-button" class="button button-primary deliver-button" data-action="deliver"><kbd>Space</kbd><span id="deliver-label">次のことばを完成させよう</span></button><p id="continue-hint" class="continue-hint"></p><p id="risk-hint" class="risk-hint"></p></div><p id="game-message" class="game-message" role="status" aria-live="polite"></p><div id="practice-actions" class="practice-actions" hidden></div></section><div class="play-bottom"><span>届け先 <strong>${districtName(sessionDestination)}</strong></span><span id="completed-count">完成 0語</span><button class="text-button" data-action="guide">ローマ字ガイド <span id="guide-status">ON</span></button></div><p class="save-status" data-save-status data-save-state="${runtime.status.storage}"></p><div id="game-goal-slot">${goalStrip(achievementViews(), runtime.achievements, { recommend: true })}</div><div class="play-city-strip">${districtFigure(sessionCityAtStart!, sessionDestination)}<div class="play-city-values" id="play-city-values"></div></div><div class="paused-layer" id="paused-layer" hidden></div>${session!.mode === 'MAIN' ? '<p class="narrow-note">本編は幅768px以上の画面と物理キーボードで遊べます。</p>' : ''}</main>${footer()}`;
-    prepareGameWorkspace();
+    const city = runtime.city;
+    if (!deliveryScene || deliveryScene.view().destination !== sessionDestination || deliveryScene.view().cityId !== city.cityId) deliveryScene = new DeliverySceneController(city, sessionDestination);
+    deliveryScene.setReducedMotion(runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
+    root.innerHTML = `${header(true)}${gameStageShell({ mode: session!.mode, destinationLabel: districtName(sessionDestination), sceneHtml: deliveryScene.render(), goalHtml: goalStrip(achievementViews(), runtime.achievements, { recommend: true }), cityHtml: districtFigure(sessionCityAtStart!, sessionDestination), saveState: runtime.status.storage })}${footer()}`;
+    deliveryScene.attach(root);
     disposeGameLayout = installGameLayout(root);
     attachGameInput();
     updateGame(state()); updateStorageStatus();
