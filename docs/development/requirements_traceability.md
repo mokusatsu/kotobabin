@@ -100,7 +100,11 @@
 | 960語の最短入力長とガイド完了 | 検証済み | tests/typing、QA独立全件照合 |
 | 仕様20語2070点・42秒境界 | 検証済み | tests/typing、QA独立リプレイ |
 | 価格644件・資材生成24組 | 検証済み | tests/economy/reference_fixtures.json、Pythonモデル |
-| ブラウザーでM1操作・再挑戦 | 作業中 | UI統合後にE2E/視覚確認 |
+| ブラウザーでM1操作・再挑戦 | 統合済み | tests/e2e/game.spec.ts、CI E2E3件、4画像独立確認 |
 | Windows/macOS OS IME・JIS/US配列 | 未着手 | 実機確認必要 |
 | 全72実績・報酬の永続化 | 未着手 | M4 |
 | 241画像/SVG・音源7点 | 作業中 | asset_progressを参照 |
+
+## 未完了の表示契約
+
+補助文字16px、地図幅800未満の6地区一覧、文字125/150%・1366×768・中間幅はIssue #4へ登録。全仕様の完成扱いにしない。
