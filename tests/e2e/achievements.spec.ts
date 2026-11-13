@@ -22,7 +22,7 @@ async function savedAchievements(page: Page) {
 
 test('practice earns stamps without opening the handbook or choosing a goal and titles require explicit equipment', async ({ page }, testInfo) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await keyboardMenuTo(page, 'catalogue');
   await page.locator('#catalogue-query').fill('犬');
   await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r02"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r02"]').click();
@@ -42,7 +42,7 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   await page.locator('[data-action="practice-end"]').click();
   await expect(page.locator('.home-intro')).toBeVisible();
   await expect(page.locator('#practice-awards-summary')).toContainText('枚獲得');
-  await page.locator('nav [data-action="handbook"]').click();
+  await keyboardMenuTo(page, 'handbook');
   await expect(page.locator('#handbook-count')).toContainText('/72');
   await expect(page.locator('article[data-achievement-id="A01"]')).toHaveAttribute('data-state', 'earned');
   await page.screenshot({ path: testInfo.outputPath('handbook-earned-stamps.png'), fullPage: false });
@@ -59,7 +59,7 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   for (const [id, reward] of Object.entries(before.rewards)) expect(after.rewards[id]).toEqual(reward);
   expect(Object.keys(after.unlocks).filter(id => !before.unlocks[id]).every(id => ['I01', 'J01'].includes(id))).toBe(true);
   await page.locator('[data-action="handbook-back"]').click();
-  await page.locator('nav [data-action="handbook"]').click();
+  await keyboardMenuTo(page, 'handbook');
   await keyboardRevealControl(page, page.locator('[data-action="handbook-tab"][data-tab="rewards"]'));
   await page.locator('[data-action="handbook-tab"][data-tab="rewards"]').click();
   await keyboardRevealControl(page, page.locator('select[data-equip-slot="titleId"]'));

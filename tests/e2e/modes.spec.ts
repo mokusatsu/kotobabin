@@ -1,4 +1,4 @@
-import { keyboardRevealControl } from './keyboard';
+import { keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { beginMain, beginTutorial, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -40,7 +40,7 @@ test('three unsuccessful tutorial words offer practice without restarting the in
 
 test('selected-word practice earns three clean completions and enters a fixed preferred-word MAIN plan', async ({ page }, testInfo) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await keyboardMenuTo(page, 'catalogue');
   await page.locator('#catalogue-query').fill('猫');
   await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
@@ -86,7 +86,7 @@ test('rescue skip explains the record change, ships held cargo and stays paused'
 test('practice completion choices work with the keyboard and preserve focus for the next attempt', async ({ page }) => {
   await page.clock.install();
   await page.goto('/');
-  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await keyboardMenuTo(page, 'catalogue');
   await page.locator('#catalogue-query').fill('猫');
   await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();

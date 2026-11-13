@@ -1,4 +1,4 @@
-import { keyboardRevealControl } from './keyboard';
+import { keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -6,7 +6,7 @@ test.use({ viewport: { width: 1366, height: 768 } });
 
 test('practice progress reopens from IndexedDB without replaying the last completion', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await keyboardMenuTo(page, 'catalogue');
   await page.locator('#catalogue-query').fill('猫');
   await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r01"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
@@ -23,7 +23,7 @@ test('practice progress reopens from IndexedDB without replaying the last comple
     await page.locator('[data-action="takeover"]').click();
   }
   await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
-  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await keyboardMenuTo(page, 'catalogue');
   await page.locator('#catalogue-query').fill('猫');
   const row = page.locator('.word-list li').filter({ has: page.locator('[data-word-id="living_r01"]') });
   await expect(row).toContainText('1 / 3');

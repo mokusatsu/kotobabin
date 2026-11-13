@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { keyboardRevealControl } from './keyboard';
+import { keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
 test.use({ viewport: { width: 1366, height: 768 } });
@@ -22,7 +22,7 @@ async function savedProfile(page: Page) {
   });
 }
 async function openReset(page: Page, scope: 'settings' | 'records' | 'collection') {
-  if (!await page.locator('.settings-dialog').isVisible()) await page.locator('nav [data-action="settings"]').click();
+  if (!await page.locator('.settings-dialog').isVisible()) await keyboardMenuTo(page, 'settings');
   const settings = page.locator('.settings-dialog');
   await keyboardRevealControl(page, settings.locator('.profile-management > summary'));
   if (await settings.locator('.profile-management').getAttribute('open') === null) await settings.locator('.profile-management > summary').click();
@@ -56,13 +56,13 @@ test('confirmed record, collection and settings resets keep their promised separ
   expect((await savedProfile(page)).metadata.generation).toBeGreaterThan(before.metadata.generation);
 
   if (await page.locator('.settings-dialog').isVisible()) await page.locator('.settings-dialog [data-action="close-settings"]').click();
-  await page.locator('nav [data-action="home"]').click();
+  await keyboardMenuTo(page, 'home');
   await page.locator('[data-action="start"]').click();
   if (await page.locator('#check-status').count()) await confirmHalfWidthInput(page);
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
   await typeCurrentGuide(page); await page.clock.runFor(90000);
   await expect.poll(async () => (await savedProfile(page)).progress.recentRounds.length).toBe(1);
-  await page.locator('nav [data-action="settings"]').click();
+  await keyboardMenuTo(page, 'settings');
   await keyboardRevealControl(page, page.locator('.settings-dialog input[name="fontScale"][value="150"]'));
   await page.locator('.settings-dialog input[name="fontScale"][value="150"]').check();
   await expect.poll(async () => (await savedProfile(page)).settings.fontScale).toBe(150);

@@ -59,7 +59,7 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.clock.install();
   await page.goto('/');
-  await page.locator('[data-action="settings"]').click();
+  await keyboardMenuTo(page, 'settings');
   const settings = page.locator('.settings-dialog');
   await keyboardRevealControl(page, settings.locator('input[name="fontScale"][value="150"]'));
   await settings.locator('input[name="fontScale"][value="150"]').check();
