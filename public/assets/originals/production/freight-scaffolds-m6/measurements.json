@@ -1,0 +1,158 @@
+[
+  {
+    "id": "city_freight_terminal",
+    "native_sha256": "efad82b08ba5cb6a537730b8c1ef4468603957e829da5f5ec65a091d06e6d6ab",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_alpha_bbox": [
+      0,
+      39,
+      1432,
+      1086
+    ],
+    "scale": 0.26743075453677173,
+    "translation": [
+      65,
+      40
+    ],
+    "resized_full_canvas": [
+      387,
+      290
+    ],
+    "export_size": [
+      512,
+      384
+    ],
+    "alpha_bbox": [
+      65,
+      70,
+      439,
+      327
+    ],
+    "anchor": [
+      256,
+      320
+    ],
+    "safe_rect": [
+      24,
+      24,
+      488,
+      360
+    ],
+    "safe_rect_pass": true,
+    "reserved_shop_alpha_max": null,
+    "png_sha256": "52ce41ab123cb64912d3216881a38ef9158974e32aef5e2492aad064f946fc16",
+    "webp_sha256": "9c36cd3dfa878f2484e042f03103a05db92eecae419304453ece8a8fb3cc4411",
+    "lossless_decoded_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "scaffold_large",
+    "native_sha256": "c84452a53b09eac9ea707be7f7628e9a28e93c8a4238d458ee324068e3054066",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_alpha_bbox": [
+      0,
+      9,
+      1430,
+      1086
+    ],
+    "scale": 0.40559440559440557,
+    "translation": [
+      364,
+      240
+    ],
+    "resized_full_canvas": [
+      587,
+      440
+    ],
+    "export_size": [
+      1024,
+      768
+    ],
+    "alpha_bbox": [
+      364,
+      247,
+      922,
+      659
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "safe_rect_pass": true,
+    "reserved_shop_alpha_max": 0,
+    "png_sha256": "8ba089e533a71d1e9245dcb3ff9ab600e1374286ddfde2141f8822a6d8f920be",
+    "webp_sha256": "b0f0d6ede82ce03aad0ed8a6290001fa0e54460d06812080feaf06e6e257bbde",
+    "lossless_decoded_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "id": "scaffold_medium",
+    "native_sha256": "2750b91abbe36bf7d933d7a14072aaa1ef5d666b6b1cc9ed8b543e50095cf08b",
+    "native_size": [
+      1448,
+      1086
+    ],
+    "native_alpha_bbox": [
+      0,
+      24,
+      1448,
+      1086
+    ],
+    "scale": 0.4005524861878453,
+    "translation": [
+      364,
+      245
+    ],
+    "resized_full_canvas": [
+      580,
+      435
+    ],
+    "export_size": [
+      1024,
+      768
+    ],
+    "alpha_bbox": [
+      377,
+      258,
+      924,
+      664
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "safe_rect_pass": true,
+    "reserved_shop_alpha_max": 0,
+    "png_sha256": "35fbfd61674437662a2f236bdb501b8630ba0fea2efe1c8854bd6fedde32e294",
+    "webp_sha256": "1d580e76299cc03f935da1ae05bdc5437906f371a02f8054277656406e54a1db",
+    "lossless_decoded_rgba_equal": true,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  }
+]
