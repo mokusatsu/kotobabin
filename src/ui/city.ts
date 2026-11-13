@@ -1,5 +1,5 @@
 import config from '../../spec/initial/data/economy_config.json';
-import { shopOverlayArtwork, vehicleArtworkId } from './equipment-visuals';
+import { scaffoldArtworkId, shopOverlayArtwork, vehicleArtworkId } from './equipment-visuals';
 import catalogue from '../../spec/initial/data/city_catalog.json';
 import { renderDistrictMap, renderDistrictCore, DISTRICT_CORE_BOUNDS, type DistrictMapFeature } from './district-map';
 import { CityEconomy, EconomyFormulas, MICRO_UNIT, summarizeCity, type CityState, type DistrictId, type EquipmentKind, type Rational } from '../economy';
@@ -33,9 +33,9 @@ export function districtArtwork(city: CityState, id: DistrictId) {
 }
 export function districtFigure(city: CityState, id: DistrictId, extraClass = ''): string {
   const art = districtArtwork(city, id);
-  const scaffold = city.districts[id].plan && city.districts[id].plan!.targetStage === 1;
+  const scaffold = city.districts[id].plan;
   const shop = ['residential','market','workshop','park','station','harbor'].includes(id) && city.districts[id].shops > 0;
-  return `<figure class="district-figure ${extraClass}"><div class="district-composite"><img class="district-base-art" src="${asset(art.path)}" alt="${districtName(id)} ${art.ready ? `段階${art.stage}の外観` : '地区の区画'}">${scaffold ? `<img class="district-scaffold-art" src="${asset('construction/scaffold_small.webp')}" alt="建築中の足場">` : ''}${shop ? `<img class="district-shop-art" src="${asset(`shop_scene/shop_${id}.webp`)}" alt="${districtName(id)}の代表店舗">` : ''}</div><figcaption>${districtName(id)} · 段階 ${art.stage}/5${art.candidate ? '<span class="art-pending">外観は調整中です。</span>' : art.ready ? '' : '<span class="art-pending">この段階の外観は制作中です。</span>'}</figcaption></figure>`;
+  return `<figure class="district-figure ${extraClass}"><div class="district-composite"><img class="district-base-art" src="${asset(art.path)}" alt="${districtName(id)} ${art.ready ? `段階${art.stage}の外観` : '地区の区画'}">${scaffold ? `<img class="district-scaffold-art" src="${asset(`construction/${scaffoldArtworkId(scaffold.targetStage)}.webp`)}" alt="建築中の足場">` : ''}${shop ? `<img class="district-shop-art" src="${asset(`shop_scene/shop_${id}.webp`)}" alt="${districtName(id)}の代表店舗">` : ''}</div><figcaption>${districtName(id)} · 段階 ${art.stage}/5${art.candidate ? '<span class="art-pending">外観は調整中です。</span>' : art.ready ? '' : '<span class="art-pending">この段階の外観は制作中です。</span>'}</figcaption></figure>`;
 }
 export function cityIncome(city: CityState): bigint {
   return Object.entries(city.districts).reduce((total, [id, district]) => total + formulas.shopIncomePerSecondMicro(id, district, city.research.commerce, city.synergies.includes('tourism_service')), 0n);
@@ -63,17 +63,22 @@ export function gameWorldMap(city: CityState, destination: DistrictId): string {
     return `<g transform="translate(${point[0]} ${point[1]})"><ellipse cx="0" cy="1" rx="16" ry="4" fill="#203d36" opacity=".16"/><g transform="scale(${dx < 0 ? -1 : 1} 1)"><image href="${asset(`vehicle/${sprite}.webp`)}" x="-24" y="-30" width="48" height="36"/></g></g>`;
   }).join('');
   const scaffolds = config.districts.map(item => {
-    const district = city.districts[item.id]; if (!district.plan || district.plan.targetStage !== 1) return '';
+    const district = city.districts[item.id]; if (!district.plan) return '';
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
-    return `<image href="${asset('construction/scaffold_small.webp')}" x="${anchor.x - 132}" y="${anchor.y - 165}" width="264" height="198"/>`;
+    return `<image href="${asset(`construction/${scaffoldArtworkId(district.plan.targetStage)}.webp`)}" x="${anchor.x - 132}" y="${anchor.y - 165}" width="264" height="198"/>`;
   }).join('');
   const shop = ['residential','market','workshop','park','station','harbor'].map(id=>{const anchor=catalogue.map_layout.anchors[id as keyof typeof catalogue.map_layout.anchors];return city.districts[id].shops>0?`<image href="${asset(`shop_scene/shop_${id}.webp`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>${shopOverlayArtwork(city.districts[id].shops).map(overlay=>`<image href="${asset(`shop_overlay/${overlay}.svg`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>`).join('')}`:'';}).join('');
+  const freight = config.districts.map(item => {
+    if (!city.districts[item.id].railway) return '';
+    const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
+    return `<image href="${asset('city_shared/city_freight_terminal.webp')}" x="${anchor.x - 32}" y="${anchor.y + 25}" width="64" height="48"/>`;
+  }).join('');
   const art = config.districts.map(item => {
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     const scale = 264 / DISTRICT_CORE_BOUNDS.width;
     return `<g data-world-district="${item.id}" data-world-district-id="${item.id}" data-stage="${city.districts[item.id].stage}" opacity="${city.districts[item.id].open?1:.35}" transform="translate(${anchor.x-DISTRICT_CORE_BOUNDS.anchorX*scale} ${anchor.y-DISTRICT_CORE_BOUNDS.anchorY*scale}) scale(${scale})">${renderDistrictCore(city,item.id)}</g>`;
   }).join('');
-  return `<section class="town-panel game-world-map" aria-label="${landscapeName(city.landscape)}の全体地図"><div class="town-map canonical-map world-map-canvas"><svg viewBox="0 0 1600 1000" aria-label="6地区の街の地図"><image href="${asset('terrain/terrain_riverside.webp')}" width="1600" height="1000"/><g class="city-routes">${routes}</g><image href="${asset('city_shared/city_hub.webp')}" x="696" y="398" width="128" height="128"/>${art}${scaffolds}${shop}${vehicles}</svg>${config.districts.map(item => {
+  return `<section class="town-panel game-world-map" aria-label="${landscapeName(city.landscape)}の全体地図"><div class="town-map canonical-map world-map-canvas"><svg viewBox="0 0 1600 1000" aria-label="6地区の街の地図"><image href="${asset(`terrain/terrain_${city.landscape}.webp`)}" width="1600" height="1000"/><g class="city-routes">${routes}</g><image href="${asset('city_shared/city_hub.webp')}" x="696" y="398" width="128" height="128"/>${art}${scaffolds}${shop}${freight}${vehicles}</svg>${config.districts.map(item => {
     const district = city.districts[item.id]; const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     return `<button class="map-label ${district.open ? '' : 'locked'} ${item.id === destination ? 'selected' : ''}" style="left:${anchor.x / 16}%;top:${(anchor.y + 40) / 10}%" data-action="city-district" data-district-id="${item.id}" data-world-x="${anchor.x}" data-world-y="${anchor.y}" aria-label="${item.name}の詳細"><strong>${item.name}</strong><small>${district.open ? `段階${district.stage}/5` : '未開通'}</small></button>`;
   }).join('')}</div><span class="world-map-status">開通 ${openCount}/6</span></section>`;

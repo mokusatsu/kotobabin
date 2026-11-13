@@ -13,3 +13,10 @@ export function vehicleArtworkId(crews: number, railway: boolean, orientation: V
 export function shopOverlayArtwork(count: number): readonly string[] {
   return ['shop_canopy', 'shop_banner', 'shop_signboard'].slice(0, Math.max(0, equipmentVisualTier(count) - 1));
 }
+
+export function packagingArtworkId(level: number): string {
+  return `equipment_packaging_${equipmentVisualTier(level)}`;
+}
+export function scaffoldArtworkId(targetStage: number): string {
+  return targetStage === 1 ? 'scaffold_small' : targetStage < 4 ? 'scaffold_medium' : 'scaffold_large';
+}

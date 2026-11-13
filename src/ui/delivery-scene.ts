@@ -128,7 +128,7 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
   const state = createDeliverySceneState(city, destination);
 
   return `<div id="delivery-scene" class="delivery-scene" data-transport="${state.queuedMicro > 0n ? 'waiting' : 'idle'}" aria-label="倉庫から${escapeCityText(districtName(destination))}への配送風景">
-    <div class="delivery-scene-landscape" style="background-image:linear-gradient(180deg,#d8eee66b,#e6edc987),url('${asset('terrain/terrain_riverside.webp')}')" aria-hidden="true"></div>
+    <div class="delivery-scene-landscape" style="background-image:linear-gradient(180deg,#d8eee66b,#e6edc987),url('${asset(`terrain/terrain_${city.landscape}.webp`)}')" aria-hidden="true"></div>
     <svg class="delivery-scene-art" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs><pattern id="delivery-road-lines" width="72" height="12" patternUnits="userSpaceOnUse"><path d="M0 6h36" stroke="#fff1c7" stroke-width="4"/></pattern></defs>
       <ellipse cx="144" cy="528" rx="174" ry="28" fill="#779e76" opacity=".25"/><ellipse cx="1056" cy="316" rx="150" ry="26" fill="#779e76" opacity=".25"/>
