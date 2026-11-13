@@ -1,0 +1,72 @@
+[
+  {
+    "id": "stamp_h01",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      38,
+      100,
+      471,
+      394
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 99094,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "20d4b0a68f7cd4d364cdb5510dfa73c1b90e76ada8e21b9086a650acc017973f",
+    "png_sha256": "4dd21ddf060f3038dac43010dfaad3fad2b700ac3a65298b82785d5e75a67c7d",
+    "runtime_sha256": "30896e9a501463fef3fdd02ebb1612ca9bee29936139d157cd779b09550b8e25"
+  },
+  {
+    "id": "stamp_h02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      111,
+      113,
+      394,
+      476
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 83920,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "264cbac442928a70b21303b53ce67da213178c65d9b27a6817e29567990fa4cc",
+    "png_sha256": "30342f7356fd6ac699d25ba19c6180f2f06b353bae57ea3b23c43d5c0b38d73a",
+    "runtime_sha256": "d661f272c0de24966f62fb64a0fd69571aaa0765aeb35779b6b13f8d02c010f6"
+  }
+]

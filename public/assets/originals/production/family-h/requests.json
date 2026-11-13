@@ -1,0 +1,26 @@
+{
+  "client_date": "2026-11-13 Asia/Tokyo",
+  "reference": "public/assets/originals/stamp_b01.png",
+  "method": "Actualimagegen generation + viewed H01 alpha cleanup edit. Full nativecanvas scaled448square and placed32,32 on512RGBA only; no crop/mask/alpha removal. Candidate runtime acceptancepending.",
+  "attempts": [
+    {
+      "key": "stamp_h01",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. A sleek PEREGRINE FALCON grasps one sealed cream ENVELOPE firmly in its TALONS (not beak) and flies DIAGONALLY UP towardupperright. Wings are SWEPT BACK and somewhat FOLDED along the body, streamlined LONG swift contours, NOT spread symmetricallylike a heraldic eagle. Sharp hookedbeak, falcon darkcheekmark, slategrey wingswithcreamchest, dynamiclongtail. Large falconandletter dominate, subtle windstreamcurves behindto suggest speed but no symbols/arrows. Entirebirdinframe. Cleanreadablesleek silhouette, warmgentlepaint notaggressivewar.",
+      "native_generation": "exec-8f5c753e-2719-4a65-a944-6e0d07813b60.png",
+      "selected_id": null,
+      "reason": "Largeopaquehazewash outsidefalcon."
+    },
+    {
+      "key": "stamp_h02",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. A QUIET circular roundwooden WINDOW, muted slatebluepane with softsage/cream light, alone witha narrowwoodwindowsill. ONE closed cream LETTER envelope rests on thesill in frontofroundwindow. From that letter ONE THIN GOLDEN THREAD OF LIGHT rises STRAIGHT VERTICALLY upward, a clear singlecontinuousfinegoldline acrossnegative space/window, not a flame/gloworb/plant orbeam rays. Abundant airy negative space aroundthewindow and letter, contemplativeandstill. No printedwriting on envelope/window. No people/birds/flowers/stacksofgoods. Framewindowcircleisrealarchitecture notastampborder.",
+      "native_generation": "exec-7c7f3cd6-fb67-4bf6-9f6b-f7e7788d3bd9.png",
+      "selected_id": "stamp_h02"
+    },
+    {
+      "key": "stamp_h01_clean",
+      "prompt": "EDIT this falcon artwork. Preserve exactsharpbeak/slategrayperegrinefalcon, streamlinedsweptbackfoldedwings, diagonalupwardflightandtalonsgraspingsealedletter. REMOVE the entire WHITE/BEIGE HAZY diagonal backgroundwash and ALL blue/gold windstreamlines, dustandclouds. Outsidebird/envelope must be genuinelytransparentalpha0, no opaque coloredpaper/ribbon/background. Keep allfeathersandentirelongtail andsealenvelope includingtheirpainttexture. No newmotifs/text/arrows orborder. Clean freestanding watercolorbird+letter only, generoussquaretransparentcanvas. Do NOT addwhiteshadoworwhitehalo, no cuttingintobird. Do notflattenitintologo.",
+      "native_generation": "exec-792f3de8-e8e7-4c3c-869a-eb63cb1b781d.png",
+      "selected_id": "stamp_h01"
+    }
+  ]
+}
