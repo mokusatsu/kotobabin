@@ -14,6 +14,12 @@ interface FactBase {
   guideUsed: boolean;
 }
 export type PracticeEndReason = 'home' | 'main' | 'replaced' | 'exit';
+export interface UnfinishedWord {
+  wordId: string;
+  position: number;
+  acceptedKeys: number;
+  mistakes: number;
+}
 export interface CompletedWord {
   wordId: string;
   topicId: string;
@@ -66,6 +72,11 @@ export interface SessionSnapshot {
   awaitingWordChoice: boolean;
   guideEnabled: boolean;
   guideUsed: boolean;
+  tutorialDelivered: boolean;
+  tutorialFailureStreak: number;
+  tutorialFallbackAvailable: boolean;
+  unfinishedWord: UnfinishedWord | null;
+  reviewWordIds: string[];
   message: string;
 }
 
@@ -79,6 +90,7 @@ export class GameSession {
   private word: Word;
   private engine: RomajiEngine;
   private readonly history: CompletedWord[] = [];
+  private readonly abandonedWords: UnfinishedWord[] = [];
   private readonly wordIds: string[] = [];
   private readonly cargo: { wordId: string; value: number }[] = [];
   private readonly facts: SessionFact[] = [];
@@ -99,6 +111,8 @@ export class GameSession {
   private awaitingWordChoice = false;
   private guideEnabled: boolean;
   private guideUsed: boolean;
+  private tutorialDelivered = false;
+  private tutorialFailureStreak = 0;
 
   constructor(options: { words?: Word[]; generator?: CourseGenerator; mode?: SessionMode; sessionId?: string; guideEnabled?: boolean }) {
     this.mode = options.mode ?? 'MAIN';
@@ -138,6 +152,7 @@ export class GameSession {
   private commitDelivery(reason: DeliveryReason, nowMs: number): void {
     if (!this.cargo.length) return;
     const bonus = this.pendingBonus();
+    if (this.mode === 'TUTORIAL' && (reason === 'manual' || reason === 'full')) this.tutorialDelivered = true;
     this.bonusScore += bonus;
     this.emit({ type: 'DeliveryCommitted', reason, cargoCount: this.cargo.length, bonus,
       position: this.history.length + this.skips, cargoWordIds: this.cargo.map((item) => item.wordId) }, nowMs);
@@ -179,6 +194,7 @@ export class GameSession {
         this.baseScore += canonicalLength * 10;
         this.canonicalLengthSum += canonicalLength;
         this.history.push(completion);
+        if (this.mode === 'TUTORIAL') this.tutorialFailureStreak = completion.clean ? 0 : this.tutorialFailureStreak + 1;
         this.emit({ type: 'WordCompleted', ...completion }, nowMs);
         if (completion.clean) {
           this.cleanStreak++;
@@ -229,6 +245,8 @@ export class GameSession {
   skip(nowMs: number): SessionSnapshot {
     if (this.phase !== 'PAUSED') return this.snapshot(nowMs);
     if (this.mode === 'PRACTICE') return this.nextPracticeWord(nowMs);
+    this.rememberAbandonedWord();
+    if (this.mode === 'TUTORIAL') this.tutorialFailureStreak++;
     this.commitDelivery('skip', nowMs);
     this.skips++;
     this.cleanStreak = 0;
@@ -241,6 +259,7 @@ export class GameSession {
   nextPracticeWord(nowMs: number, word?: Word): SessionSnapshot {
     if (this.mode !== 'PRACTICE' || this.phase === 'RESULT') return this.snapshot(nowMs);
     if (!this.awaitingWordChoice) {
+      this.rememberAbandonedWord();
       this.commitDelivery('skip', nowMs);
       this.skips++;
       this.cleanStreak = 0;
@@ -282,10 +301,36 @@ export class GameSession {
     return result;
   }
 
+  private currentUnfinishedWord(): UnfinishedWord | null {
+    if (!this.wordStarted || this.engine.complete) return null;
+    return { wordId: this.word.id, position: this.wordIds.length,
+      acceptedKeys: this.engine.acceptedInput.length, mistakes: this.wordMistakes };
+  }
+
+  private rememberAbandonedWord(): void {
+    const attempt = this.currentUnfinishedWord();
+    if (attempt) this.abandonedWords.push(attempt);
+  }
+
+  /** Review counts all mistakes for a word, then breaks ties by its first appearance. */
+  private reviewWordIds(unfinishedWord: UnfinishedWord | null): string[] {
+    const attempts = [...this.history, ...this.abandonedWords, ...(unfinishedWord ? [unfinishedWord] : [])];
+    const totals = new Map<string, { mistakes: number; position: number }>();
+    for (const attempt of attempts) {
+      if (!attempt.mistakes) continue;
+      const prior = totals.get(attempt.wordId);
+      totals.set(attempt.wordId, { mistakes: (prior?.mistakes ?? 0) + attempt.mistakes,
+        position: Math.min(prior?.position ?? attempt.position, attempt.position) });
+    }
+    return [...totals.entries()].sort((a, b) => b[1].mistakes - a[1].mistakes || a[1].position - b[1].position)
+      .slice(0, 10).map(([wordId]) => wordId);
+  }
+
   snapshot(nowMs: number): SessionSnapshot {
     const elapsedMs = this.elapsed(nowMs);
     const denominator = this.correctKeys + this.mistakes;
     const cargoValue = this.cargoValue();
+    const unfinishedWord = this.currentUnfinishedWord();
     return { phase: this.phase, mode: this.mode, currentWord: this.word, acceptedInput: this.engine.acceptedInput,
       remainingGuide: this.engine.remainingGuide, guide: this.engine.guide,
       score: this.baseScore + this.bonusScore, baseScore: this.baseScore, bonusScore: this.bonusScore,
@@ -298,7 +343,10 @@ export class GameSession {
       canonicalKpm: elapsedMs > 0 ? this.canonicalLengthSum / (elapsedMs / 1000) * 60 : null,
       canonicalLengthSum: this.canonicalLengthSum, wordStarted: this.wordStarted, wordHasMistake: this.wordMistakes > 0,
       wordMistakes: this.wordMistakes, skips: this.skips, maxCleanStreak: this.maxCleanStreak, currentCleanStreak: this.cleanStreak,
-      awaitingWordChoice: this.awaitingWordChoice, guideEnabled: this.guideEnabled, guideUsed: this.guideUsed, message: this.message };
+      awaitingWordChoice: this.awaitingWordChoice, guideEnabled: this.guideEnabled, guideUsed: this.guideUsed,
+      tutorialDelivered: this.tutorialDelivered, tutorialFailureStreak: this.tutorialFailureStreak,
+      tutorialFallbackAvailable: this.mode === 'TUTORIAL' && this.tutorialFailureStreak >= 3 && !this.tutorialDelivered,
+      unfinishedWord, reviewWordIds: this.reviewWordIds(unfinishedWord), message: this.message };
   }
 
   drainEvents(): SessionFact[] { return this.facts.splice(0); }
