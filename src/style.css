@@ -1983,3 +1983,9 @@ body[data-reduced-motion="true"] *::after {
 @media (max-width: 1199px) { .handbook-layout { grid-template-columns: 160px minmax(0, 1fr); } #achievement-detail { grid-column: 2; } .reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 959px) { .handbook-layout { grid-template-columns: 1fr; } #handbook-families { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } #achievement-detail { grid-column: 1; } .handbook-suggestions > div { grid-template-columns: 1fr; } .reward-grid { grid-template-columns: 1fr; } }
 @media (max-width: 767px) { #handbook-families { grid-template-columns: repeat(2, minmax(0, 1fr)); } .achievement-card-grid { grid-template-columns: 1fr; } .reward-equipment { grid-template-columns: 1fr; } .achievement-detail-card { padding: 20px; } }
+.home-goal-slot, #practice-awards-summary, .profile-operation-notice { grid-column: 1/-1; }
+.home-goal-slot:empty { display: none; }
+.equipped-title { font-size: calc(16px * var(--font-scale)); color: var(--secondary); }
+.achievement-live { position: fixed; z-index: 8; right: 24px; bottom: 12px; border: 2px solid var(--primary); background: var(--surface); color: var(--text); padding: 8px 16px; pointer-events: none; font-size: calc(16px * var(--font-scale)); }
+/* Keep the lower station label within the map's visible paper. */
+.canonical-map [data-district-id="station"] { top: 83% !important; }

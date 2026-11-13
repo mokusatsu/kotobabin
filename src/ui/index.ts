@@ -1,9 +1,12 @@
 import wordsData from '../../spec/initial/data/words.json';
 import { CourseGenerator, GameSession, InputAdapter, type Word, type SessionMode } from '../typing';
 import type { AppRuntime, AppSettings } from '../app/runtime';
-import type { RecordContext } from '../profile';
+import { parseProfileBackup, type RecordContext } from '../profile';
 import { catalogueShell, catalogueRows, catalogueFilter, filterCatalogue, cataloguePageSize } from './catalogue';
 import { settingsContent } from './settings';
+import { resetConfirmation, restoreConfirmation, type ResetScope } from './profile';
+import { getAchievementViews, type EquipmentSlot } from '../profile/achievements';
+import { handbookShell, familyNavigation, achievementCards, achievementDetail, goalStrip, recommendations, rewardCollection, achievementHistory, newAchievementSummary, handbookCatalog, type HandbookFilter, type HandbookTab } from './handbook';
 import { CityEconomy, type CityState, type DistrictId, type CityCommand, type EquipmentKind } from '../economy';
 import { homeTown, districtName, destinationOptions, balanceStrip, cityShell, districtDetail, equipmentShell, purchaseCard, specialEquipment, districtEquipmentSummary, restartContent, districtFigure, resultEconomy, formatMicro, type EquipmentTab, type PurchaseQuantity } from './city';
 
@@ -25,7 +28,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let seed = newSeed();
   let session: GameSession | undefined;
   let gameInput: InputAdapter | undefined;
-  let screen: 'home' | 'check' | 'game' | 'result' | 'catalogue' | 'city' | 'equipment' = 'home';
+  let screen: 'home' | 'check' | 'game' | 'result' | 'catalogue' | 'city' | 'equipment' | 'handbook' = 'home';
   let launchTarget: { mode: SessionMode; wordIds?: string[]; preferredWordId?: string | null } = { mode: 'MAIN' };
   let sessionContext: RecordContext | undefined;
   let mainPreferredWordId: string | null = null;
@@ -45,6 +48,20 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let displayedPurchaseQuote: ReturnType<CityEconomy['quotePurchase']> | undefined;
   let purchaseStructureKey = '';
   let returnNoticeDismissed = false;
+  let pendingBackupText: string | null = null;
+  let profileOperationPending = false;
+  let handbookOrigin: 'home' | 'game' | 'result' | 'catalogue' | 'city' | 'equipment' = 'home';
+  let handbookFamily = 'A';
+  let selectedAchievementId = 'A01';
+  let handbookFilter: HandbookFilter = 'all';
+  let handbookScope = '';
+  let handbookTab: HandbookTab = 'stamps';
+  let sessionUnlocksAtStart = new Set(Object.keys(runtime.achievements.unlocks));
+  let knownUnlocks = new Set(Object.keys(runtime.achievements.unlocks));
+  const practiceAwardCarry = new Set<string>();
+  const livePending = new Set<string>();
+  let lastLiveNoticeAt = -Infinity;
+  let liveNoticeTimer: ReturnType<typeof setTimeout> | undefined;
   let inputConfirmed = false;
   let checkPassed = false;
   let rechecking = false;
@@ -61,14 +78,17 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function renderMarkup(element: HTMLElement, markup: string) {
     if (viewMarkup.get(element) === markup) return;
     const active = document.activeElement as HTMLElement | null;
-    const action = active && element.contains(active) ? active.dataset.action : undefined;
+    const contained = Boolean(active && element.contains(active));
+    const action = contained ? active?.dataset.action : undefined;
+    const equipSlot = contained ? active?.dataset.equipSlot : undefined;
     const wordId = active?.dataset.wordId;
-    const matches = (candidate: HTMLElement) => candidate.dataset.action === action && candidate.dataset.wordId === wordId;
-    const ordinal = action ? [...element.querySelectorAll<HTMLElement>('[data-action]')].filter(matches).indexOf(active!) : -1;
+    const matches = (candidate: HTMLElement) => candidate.dataset.action === action && candidate.dataset.equipSlot === equipSlot && candidate.dataset.wordId === wordId;
+    const selector = equipSlot ? '[data-equip-slot]' : '[data-action]';
+    const ordinal = action || equipSlot ? [...element.querySelectorAll<HTMLElement>(selector)].filter(matches).indexOf(active!) : -1;
     element.innerHTML = markup;
     viewMarkup.set(element, markup);
-    if (action && ordinal >= 0) {
-      const next = [...element.querySelectorAll<HTMLElement>('[data-action]')].filter(matches)[ordinal];
+    if ((action || equipSlot) && ordinal >= 0) {
+      const next = [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal];
       if (next) { suppressBlur = true; next.focus(); suppressBlur = false; }
     }
   }
@@ -77,14 +97,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function header(game = false) {
     const mode = session?.mode;
     const location = mode === 'PRACTICE' ? 'ことばの練習' : mode === 'TUTORIAL' ? 'はじめの配達' : `${course().name} ／ ${districtName(sessionDestination)}へ`;
-    return `<header class="site-header">${brand()}${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}</header>`;
+    return `<header class="site-header">${brand()}${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}</header>`;
   }
   function footer() { return `<footer class="site-footer"><span>ひとつずつ、ことばを届けよう。</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function renderHome() {
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
-    root.innerHTML = `${header()}<main id="main" class="home-layout"><section class="home-intro"><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker"><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'}</p><div class="home-subactions"><button class="text-button" data-action="catalogue">ゆっくり練習する →</button><button class="text-button" data-action="help">遊び方を読む</button></div></section><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside></main>${footer()}`;
-    beginHomeMapObservation(); updateStorageStatus(); showReturnNotice();
+    root.innerHTML = `${header()}<main id="main" class="home-layout"><section class="home-intro"><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker"><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'}</p><div class="home-subactions"><button class="text-button" data-action="catalogue">ゆっくり練習する →</button><button class="text-button" data-action="help">遊び方を読む</button></div></section><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p id="practice-awards-summary">今回の練習で切手を${practiceAwardCarry.size}枚獲得しました。<button class="text-button" data-action="handbook">配達手帳で見る →</button></p>` : ''}<aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside></main>${footer()}`;
+    beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear();
   }
   function beginHomeMapObservation() {
     const map = root.querySelector<HTMLElement>('.town-map');
@@ -148,17 +168,18 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       mainPreferredWordId = launchTarget.preferredWordId ?? null;
       const generator = new CourseGenerator(wordsData.words as Word[], { seed, courseId: selectedCourse, preferredWordId: mainPreferredWordId });
       const candidate = new GameSession({ generator, mode, guideEnabled: runtime.settings.guide });
-      if (!runtime.beginSession(candidate.sessionId, mode, runtime.destination)) return;
-      session = candidate;
       sessionContext = { courseId: selectedCourse, planId: generator.plan.id, contentVersion: generator.plan.contentVersion, generatorVersion: generator.plan.generatorVersion, inputRuleVersion: 'romaji-1.0.0', scoringVersion: 'score-1.0.0', guideUsed: runtime.settings.guide, assisted: false };
+      if (!runtime.beginSession(candidate.sessionId, mode, runtime.destination, sessionContext)) return;
+      session = candidate;
     } else {
       const words = chosenIds.map(id => wordsData.words.find(word => word.id === id)!).filter(Boolean) as Word[];
       const candidate = new GameSession({ words, mode, guideEnabled: runtime.settings.guide });
-      if (!runtime.beginSession(candidate.sessionId, mode, runtime.destination)) return;
+      sessionContext = { courseId: words[0].courseId, planId: `${mode}:${chosenIds.join(',')}`, contentVersion: wordsData.contentVersion, generatorVersion: 'fixed-word-list-1.0.0', inputRuleVersion: 'romaji-1.0.0', scoringVersion: 'score-1.0.0', guideUsed: runtime.settings.guide, assisted: false };
+      if (!runtime.beginSession(candidate.sessionId, mode, runtime.destination, sessionContext)) return;
       session = candidate;
       practiceWordIds = [...chosenIds];
-      sessionContext = { courseId: words[0].courseId, planId: `${mode}:${chosenIds.join(',')}`, contentVersion: wordsData.contentVersion, generatorVersion: 'fixed-word-list-1.0.0', inputRuleVersion: 'romaji-1.0.0', scoringVersion: 'score-1.0.0', guideUsed: runtime.settings.guide, assisted: false };
     }
+    sessionUnlocksAtStart = new Set(Object.keys(runtime.achievements.unlocks));
     sessionDestination = runtime.destination; sessionCityAtStart = structuredClone(runtime.city);
     lastMistakes = 0; lastChoiceFocus = ''; renderGame(); focusInput();
   }
@@ -188,13 +209,90 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector<HTMLButtonElement>('[data-action="catalogue-next"]')!.disabled = cataloguePage + 1 >= totalPages;
     root.querySelector<HTMLButtonElement>('[data-action="practice-filtered"]')!.disabled = !words.length;
   }
+  function achievementViews() {
+    return getAchievementViews(runtime.achievements, session?.snapshot(performance.now()), session?.sessionId);
+  }
+  function openHandbook() {
+    if (screen !== 'handbook') {
+      handbookOrigin = screen === 'check' ? (rechecking ? 'game' : 'home') : screen;
+      if (screen === 'game') pause();
+    }
+    gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'handbook';
+    root.innerHTML = `${header()}${handbookShell()}${footer()}`;
+    root.querySelectorAll<HTMLInputElement>('[name="achievement-filter"]').forEach(input => { input.checked = input.value === handbookFilter; });
+    root.querySelector<HTMLSelectElement>('#achievement-scope')!.value = handbookScope;
+    updateHandbook(); updateStorageStatus(); markSelectedRead();
+  }
+  function markSelectedRead() {
+    if (runtime.status.writable && runtime.achievements.unreadAchievements.includes(selectedAchievementId)) runtime.achievementAction({ type: 'read', achievementIds: [selectedAchievementId] });
+  }
+  function updateHandbook() {
+    if (screen !== 'handbook') return;
+    const views = achievementViews(); const ledger = runtime.achievements;
+    root.querySelector<HTMLElement>('#handbook-count')!.textContent = `${Object.keys(ledger.unlocks).length}/72枚`;
+    root.querySelector<HTMLElement>('#handbook-unread')!.textContent = ledger.unreadAchievements.length ? `未読 ${ledger.unreadAchievements.length}枚` : '未読なし';
+    renderMarkup(root.querySelector<HTMLElement>('#handbook-target')!, goalStrip(views, ledger));
+    root.querySelectorAll<HTMLButtonElement>('[data-action="handbook-tab"]').forEach(button => { button.classList.toggle('selected', button.dataset.tab === handbookTab); button.setAttribute('aria-pressed', String(button.dataset.tab === handbookTab)); });
+    for (const tab of ['stamps', 'rewards', 'history'] as const) root.querySelector<HTMLElement>(`#handbook-${tab}`)!.hidden = handbookTab !== tab;
+    const suggestions = root.querySelector<HTMLElement>('#handbook-suggestions')!; suggestions.hidden = handbookTab !== 'stamps';
+    if (handbookTab === 'stamps') {
+      renderMarkup(suggestions, recommendations(views));
+      renderMarkup(root.querySelector<HTMLElement>('#handbook-families')!, familyNavigation(views, handbookFamily));
+      renderMarkup(root.querySelector<HTMLElement>('#handbook-cards')!, achievementCards(views, ledger, handbookFamily, selectedAchievementId, handbookFilter, handbookScope));
+      const selected = views.find(view => view.id === selectedAchievementId)!;
+      renderMarkup(root.querySelector<HTMLElement>('#achievement-detail')!, achievementDetail(selected, ledger, runtime.status.writable));
+    } else if (handbookTab === 'rewards') renderMarkup(root.querySelector<HTMLElement>('#handbook-rewards')!, rewardCollection(ledger, views, runtime.status.writable));
+    else renderMarkup(root.querySelector<HTMLElement>('#handbook-history')!, achievementHistory(ledger, views));
+    updateStorageStatus();
+  }
+  function returnFromHandbook() {
+    if (handbookOrigin === 'game' && session) renderGame();
+    else if (handbookOrigin === 'result' && lastResult) renderResult(lastResult);
+    else if (handbookOrigin === 'catalogue') renderCatalogue();
+    else if (handbookOrigin === 'city') openCityPage();
+    else if (handbookOrigin === 'equipment') renderEquipment();
+    else renderHome();
+  }
+  function resultAchievements() {
+    const views = achievementViews();
+    const current = Object.keys(runtime.achievements.unlocks).filter(id => !sessionUnlocksAtStart.has(id) && !practiceAwardCarry.has(id));
+    return newAchievementSummary(current, views, '今回の便で') + newAchievementSummary([...practiceAwardCarry], views, '練習で');
+  }
+  function updateAchievementDisplays() {
+    const ledger = runtime.achievements;
+    root.querySelectorAll<HTMLElement>('[data-unread-count]').forEach(element => { const text = ledger.unreadAchievements.length ? `未読${ledger.unreadAchievements.length}` : ''; if (element.textContent !== text) element.textContent = text; });
+    const views = achievementViews();
+    for (const id of ['home-goal-slot', 'game-goal-slot', 'result-goal-slot']) { const element = root.querySelector<HTMLElement>(`#${id}`); if (element) renderMarkup(element, goalStrip(views, ledger)); }
+    const title = handbookCatalog.achievements.find(definition => definition.title_id === ledger.equipped.titleId)?.name ?? '';
+    root.querySelectorAll<HTMLElement>('[data-equipped-title]').forEach(element => { element.textContent = title; element.hidden = !title; });
+    const result = root.querySelector<HTMLElement>('#result-achievements-slot'); if (result) renderMarkup(result, resultAchievements());
+    if (screen === 'handbook') updateHandbook();
+  }
+  function refreshAchievementState() {
+    const owned = new Set(Object.keys(runtime.achievements.unlocks));
+    const fresh = [...owned].filter(id => !knownUnlocks.has(id)); knownUnlocks = owned;
+    if (!profileOperationPending) {
+      if (session?.mode === 'PRACTICE') for (const id of fresh) practiceAwardCarry.add(id);
+      if (runtime.achievements.notificationMode === 'live' && performance.now() - lastLiveNoticeAt >= 10000) for (const id of fresh) livePending.add(id);
+    } else { livePending.clear(); practiceAwardCarry.clear(); }
+    updateAchievementDisplays();
+  }
+  function maybeShowLiveNotice(snapshot: Snapshot) {
+    if (runtime.achievements.notificationMode !== 'live' || snapshot.phase === 'PAUSED' || snapshot.wordStarted || !livePending.size || performance.now() - lastLiveNoticeAt < 10000) return;
+    const count = livePending.size; livePending.clear(); lastLiveNoticeAt = performance.now();
+    root.querySelector('.achievement-live')?.remove();
+    const notice = document.createElement('aside'); notice.className = 'achievement-live'; notice.setAttribute('role', 'status'); notice.textContent = `切手を${count}枚獲得しました。`;
+    root.append(notice); clearTimeout(liveNoticeTimer); liveNoticeTimer = setTimeout(() => notice.remove(), 1200);
+  }
   function openSettings() {
     if (screen === 'game') pause();
     const dialog = document.createElement('dialog'); dialog.className = 'settings-dialog paper-card';
-    dialog.innerHTML = settingsContent(runtime.settings); root.append(dialog); dialog.showModal(); updateStorageStatus();
+    dialog.innerHTML = settingsContent(runtime.settings, runtime.achievements.notificationMode); root.append(dialog); dialog.showModal(); updateStorageStatus();
     dialog.addEventListener('change', event => {
       if (!runtime.status.writable) return;
-      const input = event.target as HTMLInputElement; const patch: Partial<AppSettings> = {};
+      const input = event.target as HTMLInputElement;
+      if (input.name === 'achievement-notifications') { runtime.achievementAction({ type: 'notifications', mode: input.value as 'live' | 'result' }); return; }
+      if (!['fontScale', 'guide', 'reducedMotion', 'deliveryKeys'].includes(input.name)) return; const patch: Partial<AppSettings> = {};
       if (input.name === 'fontScale') patch.fontScale = Number(input.value) as AppSettings['fontScale'];
       if (input.name === 'guide') patch.guide = input.checked;
       if (input.name === 'reducedMotion') patch.reducedMotion = input.checked;
@@ -203,6 +301,45 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       if (session && state().phase !== 'RESULT' && patch.guide !== undefined) mutate(session.setGuideEnabled(patch.guide, performance.now()));
     });
     dialog.addEventListener('close', () => { dialog.remove(); if (screen === 'game' && session) { gameInput?.destroy(); attachGameInput(); updateGame(state()); } }, { once: true });
+  }
+  function openResetConfirmation(scope: ResetScope) {
+    if (!runtime.status.writable || runtime.cityBusy || profileOperationPending) return;
+    const dialog = document.createElement('dialog'); dialog.className = 'paper-card profile-confirm-dialog';
+    dialog.innerHTML = resetConfirmation(scope, Boolean(session && state().phase !== 'RESULT'));
+    root.append(dialog); dialog.showModal(); dialog.addEventListener('close', () => dialog.remove(), { once: true });
+  }
+  async function readBackupFile(input: HTMLInputElement) {
+    const file = input.files?.[0]; input.value = '';
+    if (!file || !runtime.status.writable || runtime.cityBusy || profileOperationPending) return;
+    const status = root.querySelector<HTMLElement>('#backup-import-status');
+    try {
+      const text = await file.text(); const document = parseProfileBackup(text);
+      pendingBackupText = text;
+      const dialog = window.document.createElement('dialog'); dialog.className = 'paper-card profile-confirm-dialog';
+      dialog.innerHTML = restoreConfirmation(file.name, { completedWords: document.progress.totalCompleted, collectedWords: Object.values(document.progress.words).filter(word => word.completed > 0).length, records: document.progress.recentRounds.length, fontScale: document.settings.fontScale, guide: document.settings.guide }, Boolean(session && state().phase !== 'RESULT'));
+      root.append(dialog); dialog.showModal(); dialog.addEventListener('close', () => dialog.remove(), { once: true });
+      if (status) status.textContent = '';
+    } catch { pendingBackupText = null; if (status) status.textContent = 'この控えの形式や内容を確認できませんでした。現在の保存データは変更していません。'; }
+  }
+  async function performProfileReplacement(kind: 'reset' | 'restore', scope?: ResetScope) {
+    if (!runtime.status.writable || runtime.cityBusy || profileOperationPending || (kind === 'restore' && pendingBackupText === null)) return;
+    const backup = pendingBackupText; profileOperationPending = true;
+    root.querySelectorAll<HTMLButtonElement>('.profile-confirm-dialog button').forEach(button => { button.disabled = true; });
+    gameInput?.destroy(); gameInput = undefined;
+    closeCurrent('replaced'); session = undefined; sessionContext = undefined; lastResult = undefined; screen = 'home';
+    inputConfirmed = false; lastChoiceFocus = '';
+    try {
+      if (kind === 'reset') await runtime.resetProfile(scope!); else await runtime.restoreProfile(backup!);
+      root.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach(dialog => dialog.close()); renderHome();
+      showProfileNotice(kind === 'restore' ? '選んだ控えの内容で復元しました。' : scope === 'settings' ? '設定を初期値へ戻しました。' : scope === 'records' ? '自己記録を削除しました。切手や街の進捗は残っています。' : '街・実績・収集を削除し、新しい計測を始めました。');
+    } catch {
+      root.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach(dialog => dialog.close()); renderHome();
+      showProfileNotice('操作を完了できませんでした。保存の状態を確認してください。');
+    } finally { pendingBackupText = null; profileOperationPending = false; }
+  }
+  function showProfileNotice(text: string) {
+    const notice = document.createElement('p'); notice.className = 'profile-operation-notice'; notice.id = 'profile-operation-notice'; notice.setAttribute('role', 'status'); notice.textContent = text;
+    root.querySelector('main')?.prepend(notice);
   }
   function downloadBackup() {
     const blob = new Blob([runtime.exportData()], { type: 'application/json' });
@@ -350,7 +487,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function renderGame() {
     gameInput?.destroy(); gameInput = undefined;
     screen = 'game';
-    root.innerHTML = `${header(true)}<main id="main" class="game-page" data-mode="${session!.mode}"><div class="game-topline"><div class="clock">${session!.mode === 'MAIN' ? '<span>のこり</span><strong id="time-left">90</strong><span>秒</span>' : '<strong class="untimed-clock">時間制限なし</strong>'}</div><p class="game-route">ことばの配達便 <span>${districtName(sessionDestination)}ゆき</span></p><div class="score"><span>確定得点</span><strong id="score">0</strong><span>点</span></div></div><div class="time-track" aria-hidden="true"><div id="time-bar"></div></div><section id="tutorial-status" class="tutorial-status" hidden aria-live="polite"></section><section class="typing-card" aria-labelledby="prompt-word"><p id="word-stage" class="eyebrow">最初の一打で、配達がはじまります</p><h1 id="prompt-word" class="prompt-word"></h1><p id="prompt-reading" class="prompt-reading"></p><div id="romaji-guide" class="romaji-guide" aria-hidden="true"></div><label class="typing-input-label" for="game-input">キーボード入力<span id="input-indicator">入力できます</span></label><input id="game-input" class="typing-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-instructions" aria-label="ローマ字を入力"><p id="input-instructions" class="sr-only">表示されたことばを半角ローマ字で入力してください。語の境目にSpaceで配達できます。Escapeで一時停止します。</p><div class="cargo-area"><span class="cargo-caption">荷物 <strong id="cargo-count">0</strong> / 5</span><div class="cargo-slots" id="cargo-slots" aria-hidden="true"></div></div><div class="delivery-area"><button id="deliver-button" class="button button-primary deliver-button" data-action="deliver"><kbd>Space</kbd><span id="deliver-label">次のことばを完成させよう</span></button><p id="continue-hint" class="continue-hint"></p><p id="risk-hint" class="risk-hint"></p></div><p id="game-message" class="game-message" role="status" aria-live="polite"></p><div id="practice-actions" class="practice-actions" hidden></div></section><div class="play-bottom"><span>届け先 <strong>${districtName(sessionDestination)}</strong></span><span id="completed-count">完成 0語</span><button class="text-button" data-action="guide">ローマ字ガイド <span id="guide-status">ON</span></button></div><p class="save-status" data-save-status data-save-state="${runtime.status.storage}"></p><div class="play-city-strip">${districtFigure(sessionCityAtStart!, sessionDestination)}<div class="play-city-values" id="play-city-values"></div></div><div class="paused-layer" id="paused-layer" hidden></div>${session!.mode === 'MAIN' ? '<p class="narrow-note">本編は幅768px以上の画面と物理キーボードで遊べます。</p>' : ''}</main>${footer()}`;
+    root.innerHTML = `${header(true)}<main id="main" class="game-page" data-mode="${session!.mode}"><div class="game-topline"><div class="clock">${session!.mode === 'MAIN' ? '<span>のこり</span><strong id="time-left">90</strong><span>秒</span>' : '<strong class="untimed-clock">時間制限なし</strong>'}</div><p class="game-route">ことばの配達便 <span>${districtName(sessionDestination)}ゆき</span></p><div class="score"><span>確定得点</span><strong id="score">0</strong><span>点</span></div></div><div class="time-track" aria-hidden="true"><div id="time-bar"></div></div><section id="tutorial-status" class="tutorial-status" hidden aria-live="polite"></section><section class="typing-card" aria-labelledby="prompt-word"><p id="word-stage" class="eyebrow">最初の一打で、配達がはじまります</p><h1 id="prompt-word" class="prompt-word"></h1><p id="prompt-reading" class="prompt-reading"></p><div id="romaji-guide" class="romaji-guide" aria-hidden="true"></div><label class="typing-input-label" for="game-input">キーボード入力<span id="input-indicator">入力できます</span></label><input id="game-input" class="typing-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-instructions" aria-label="ローマ字を入力"><p id="input-instructions" class="sr-only">表示されたことばを半角ローマ字で入力してください。語の境目にSpaceで配達できます。Escapeで一時停止します。</p><div class="cargo-area"><span class="cargo-caption">荷物 <strong id="cargo-count">0</strong> / 5</span><div class="cargo-slots" id="cargo-slots" aria-hidden="true"></div></div><div class="delivery-area"><button id="deliver-button" class="button button-primary deliver-button" data-action="deliver"><kbd>Space</kbd><span id="deliver-label">次のことばを完成させよう</span></button><p id="continue-hint" class="continue-hint"></p><p id="risk-hint" class="risk-hint"></p></div><p id="game-message" class="game-message" role="status" aria-live="polite"></p><div id="practice-actions" class="practice-actions" hidden></div></section><div class="play-bottom"><span>届け先 <strong>${districtName(sessionDestination)}</strong></span><span id="completed-count">完成 0語</span><button class="text-button" data-action="guide">ローマ字ガイド <span id="guide-status">ON</span></button></div><p class="save-status" data-save-status data-save-state="${runtime.status.storage}"></p><div id="game-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="play-city-strip">${districtFigure(sessionCityAtStart!, sessionDestination)}<div class="play-city-values" id="play-city-values"></div></div><div class="paused-layer" id="paused-layer" hidden></div>${session!.mode === 'MAIN' ? '<p class="narrow-note">本編は幅768px以上の画面と物理キーボードで遊べます。</p>' : ''}</main>${footer()}`;
     attachGameInput();
     updateGame(state()); updateStorageStatus();
   }
@@ -380,6 +517,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     set('completed-count', `完成 ${snapshot.completedWords}語`);
     set('game-message', snapshot.message);
     updateModeControls(snapshot);
+    updateAchievementDisplays(); maybeShowLiveNotice(snapshot);
     updatePlayCity();
     root.querySelector<HTMLElement>('#time-bar')!.style.width = `${Math.max(0, (snapshot.remainingMs ?? 90000) / 900)}%`;
     if (snapshot.mistakes > lastMistakes) {
@@ -392,7 +530,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (snapshot.phase === 'PAUSED' && overlay.hidden) {
       overlay.hidden = false;
       isolatePausedContent(true);
-      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button>${snapshot.mode === 'TUTORIAL' ? '<button class="button" data-action="tutorial-skip">導入を飛ばして本編へ</button>' : ''}${snapshot.mode === 'PRACTICE' ? '<button class="button" data-action="equipment">練習を終了して設備を見る</button>' : ''}<button class="button" data-action="catalogue">ことば図鑑</button><p>停止中も、街の輸送と営業は実時間で進みます。</p><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
+      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button>${snapshot.mode === 'TUTORIAL' ? '<button class="button" data-action="tutorial-skip">導入を飛ばして本編へ</button>' : ''}${snapshot.mode === 'PRACTICE' ? '<button class="button" data-action="equipment">練習を終了して設備を見る</button>' : ''}<button class="button" data-action="handbook">配達手帳</button><button class="button" data-action="catalogue">ことば図鑑</button><p>停止中も、街の輸送と営業は実時間で進みます。</p><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
       root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
     } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
     syncOwnershipActions();
@@ -401,8 +539,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function renderResult(snapshot: Snapshot) {
     gameInput?.destroy(); gameInput = undefined;
     screen = 'result'; lastResult = snapshot;
-    root.innerHTML = `${header()}<main id="main" class="result-page"><div class="result-heading"><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · ${districtName(sessionDestination)}へ · 90秒の配達 ${snapshot.skips ? '· 救済あり' : '· 通常'} ${snapshot.guideUsed ? '· ガイド表示あり' : '· ガイド表示なし'}</p></div><div class="result-grid"><section class="paper-card score-card"><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter"><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div id="city-balance-strip">${balanceStrip(runtime.city)}</div><div id="result-economy">${resultEconomy(runtime.city, session!.sessionId)}</div><div class="result-actions"><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button>${reviewIds(snapshot).length ? '<button class="button" data-action="review">まちがえたことばを復習</button>' : ''}<button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-status result-save" data-save-status></p></main>${footer()}`;
-    root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus(); updateStorageStatus();
+    root.innerHTML = `${header()}<main id="main" class="result-page"><div class="result-heading"><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · ${districtName(sessionDestination)}へ · 90秒の配達 ${snapshot.skips ? '· 救済あり' : '· 通常'} ${snapshot.guideUsed ? '· ガイド表示あり' : '· ガイド表示なし'}</p></div><div class="result-grid"><section class="paper-card score-card"><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter"><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div id="city-balance-strip">${balanceStrip(runtime.city)}</div><div id="result-economy">${resultEconomy(runtime.city, session!.sessionId)}</div><div id="result-achievements-slot">${resultAchievements()}</div><div id="result-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="result-actions"><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button>${reviewIds(snapshot).length ? '<button class="button" data-action="review">まちがえたことばを復習</button>' : ''}<button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-status result-save" data-save-status></p></main>${footer()}`;
+    root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus(); updateStorageStatus(); updateAchievementDisplays();
   }
   function reviewIds(snapshot: Snapshot) { return snapshot.reviewWordIds; }
   function updateModeControls(snapshot: Snapshot) {
@@ -499,6 +637,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   }
   on(root, 'change', event => {
     const target = event.target as HTMLInputElement;
+    if (target.name === 'achievement-filter') { handbookFilter = target.value as HandbookFilter; updateHandbook(); }
+    if (target.id === 'achievement-scope') { handbookScope = target.value; updateHandbook(); }
+    if (target.dataset.equipSlot) { runtime.achievementAction({ type: 'equip', slot: target.dataset.equipSlot as EquipmentSlot, id: target.value || null }); updateHandbook(); }
+    if (target.id === 'profile-backup-file') { void readBackupFile(target); return; }
     if (target.name === 'course') selectedCourse = target.value as CourseId;
     if (target.id === 'home-destination' && !runtime.cityBusy) runtime.selectDestination(target.value);
     if (target.id === 'equipment-district') { selectedDistrict = target.value; purchaseStructureKey = ''; updateCityViews(); }
@@ -522,7 +664,20 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'start': seed = newSeed(); launchTarget = { mode: runtime.settings.tutorialSeen ? 'MAIN' : 'TUTORIAL' }; launch(); break;
       case 'home': if (screen === 'game') { pause(); break; } confirmReplacement(renderHome); break;
       case 'help': help(); break;
+      case 'handbook': openHandbook(); break;
+      case 'achievement-open': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; openHandbook(); break;
+      case 'handbook-back': returnFromHandbook(); break;
+      case 'handbook-tab': handbookTab = target.dataset.tab as HandbookTab; updateHandbook(); if (handbookTab === 'rewards') runtime.achievementAction({ type: 'read', achievementIds: [], rewardKeys: [...runtime.achievements.unreadRewards] }); else if (handbookTab === 'history') runtime.achievementAction({ type: 'read', achievementIds: [...runtime.achievements.unreadAchievements] }); break;
+      case 'achievement-family': handbookFamily = target.dataset.familyId!; selectedAchievementId = `${handbookFamily}01`; updateHandbook(); markSelectedRead(); break;
+      case 'achievement-select': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; handbookTab = 'stamps'; updateHandbook(); markSelectedRead(); break;
+      case 'achievement-target': runtime.achievementAction({ type: 'target', id: runtime.achievements.targetId === target.dataset.achievementId ? null : target.dataset.achievementId! }); updateHandbook(); break;
+      case 'achievement-reveal': runtime.achievementAction({ type: 'reveal', id: target.dataset.achievementId! }); updateHandbook(); break;
+      case 'reward-equip': { const slot = target.dataset.equipSlot as EquipmentSlot; const id = target.dataset.rewardId!; runtime.achievementAction({ type: 'equip', slot, id: runtime.achievements.equipped[slot] === id ? null : id }); updateHandbook(); break; }
       case 'settings': openSettings(); break;
+      case 'profile-reset': openResetConfirmation(target.dataset.scope as ResetScope); break;
+      case 'cancel-profile-operation': root.querySelector<HTMLDialogElement>('.profile-confirm-dialog')?.close(); pendingBackupText = null; break;
+      case 'confirm-profile-reset': void performProfileReplacement('reset', target.dataset.scope as ResetScope); break;
+      case 'confirm-profile-restore': void performProfileReplacement('restore'); break;
       case 'close-settings': root.querySelector<HTMLDialogElement>('.settings-dialog')?.close(); break;
       case 'confirm': if (checkPassed) { inputConfirmed = true; if (rechecking) { renderGame(); updateGame(state()); } else launch(); } break;
       case 'check-back': if (rechecking) { renderGame(); updateGame(state()); } else renderHome(); break;
@@ -638,7 +793,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(window, 'blur', () => { pending = undefined; });
   on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; });
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
-  const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); });
+  const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
-  return () => { gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); root.innerHTML = ''; };
+  return () => { gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
 }
