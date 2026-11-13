@@ -115,3 +115,6 @@
   }
   #app:has(.game-page) #paused-ownership:empty { display: none; }
 }
+/* READY/typing/deliverable messages share one reserved row; longer copy cannot move input. */
+.typing-game-stage .typing-entry-row { height: calc(48px * var(--font-scale)); min-height: calc(48px * var(--font-scale)); }
+.typing-game-stage .deliver-button { height: 100%; width: 480px; max-width: 480px; flex: 0 1 480px; }

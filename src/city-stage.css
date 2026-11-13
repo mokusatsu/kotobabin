@@ -92,3 +92,6 @@
 .city-stage-map > #district-map-slot { grid-column: 1; grid-row: 1; }
 .city-stage-map > #equipment-district-summary { grid-column: 1; grid-row: 2; }
 .game-world-map .world-map-canvas { overflow: visible; }
+/* A quote uses the chosen readable font, without oversized financial-card figures. */
+.city-game-stage, .city-stage-hud .city-balance, .city-map-readout { line-height: 1.2; }
+.city-stage-panel .purchase-comparison > div > strong { font: inherit; font-weight: 700; margin-top: 4px; }

@@ -27,6 +27,8 @@ export interface ResultStageOptions {
   /** Already committed by the achievement engine, in actual acquisition order. */
   newAchievementIds: readonly string[];
   reducedMotion: boolean;
+  /** Protect the screen change from the unfinished game key stream. Not an award delay. */
+  inputGuardMs?: number;
   hasReview?: boolean;
   /** In-memory presentation continuation, never a save-data or award mutation. */
   resumeState?: ResultStageState;
@@ -128,6 +130,8 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
   const reduced = options.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let state = createResultStage(options.newAchievementIds, reduced, options.resumeState);
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let guardTimer: ReturnType<typeof setTimeout> | undefined;
+  let guardActive = (options.inputGuardMs ?? 0) > 0 && state.phase === 'score';
   let destroyed = false;
   const abort = new AbortController();
   container.classList.add('result-stage-host');
@@ -138,7 +142,11 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
     container.innerHTML = renderResultStage(state, options);
     options.onStateChange?.(structuredClone(state));
     const primary = container.querySelector<HTMLButtonElement>('[data-result-command="advance"], [data-result-action="retry"]');
-    primary?.focus({preventScroll:true});
+    if (guardActive && primary) {
+      primary.disabled = true;
+      const title = container.querySelector<HTMLElement>('#result-stage-title');
+      if (title) { title.tabIndex = -1; title.focus({ preventScroll: true }); }
+    } else primary?.focus({preventScroll:true});
     try { options.onPresentationEvent?.(state.phase, state.phase === 'reveal' ? state.queue[state.index] : undefined); } catch { /* Optional audio cannot gate presentation. */ }
     if (state.animating) timer = setTimeout(() => {
       state = finishResultAnimation(state);
@@ -146,6 +154,15 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
       container.querySelector<HTMLElement>('.result-stage')?.setAttribute('data-animating', 'false');
     }, 850);
   };
+  function finishInputGuard(focus = true) {
+    guardActive = false;
+    if (destroyed) return;
+    const primary = container.querySelector<HTMLButtonElement>('[data-result-command="advance"]');
+    if (primary) {
+      primary.disabled = false;
+      if (focus && !document.querySelector('dialog[open]') && (document.activeElement === document.body || document.activeElement === container.querySelector('#result-stage-title'))) primary.focus({ preventScroll: true });
+    }
+  }
   const change = (next: ResultStageState) => {
     if (next === state) return;
     if (next.phase === state.phase && next.index === state.index) {
@@ -170,6 +187,12 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
       || event.ctrlKey || event.altKey || event.metaKey || document.querySelector('dialog[open]')
       || target?.closest('input,textarea,select,[contenteditable="true"]')
       || (active !== document.body && active !== document.documentElement && (!active || !container.contains(active)))) return;
+    if (guardActive && event.key === 'Tab') { clearTimeout(guardTimer); finishInputGuard(false); return; }
+    if (guardActive && (event.key.length === 1 || ['Enter', 'Escape'].includes(event.key))) {
+      // A continuing word/held key extends the quiet window; it cannot skip the new screen.
+      clearTimeout(guardTimer); guardTimer = setTimeout(finishInputGuard, options.inputGuardMs);
+      event.preventDefault(); event.stopPropagation(); return;
+    }
     if (event.repeat) {
       if (['Enter', ' ', 'Escape', 's', 'S'].includes(event.key)) {event.preventDefault();event.stopPropagation();}
       return;
@@ -182,8 +205,9 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
     }
   }, {signal:abort.signal,capture:true});
   draw();
+  if (guardActive) guardTimer = setTimeout(finishInputGuard, options.inputGuardMs);
   return {
     snapshot: () => structuredClone(state),
-    destroy() {destroyed = true;clearTimeout(timer);abort.abort();container.classList.remove('result-stage-host');container.removeAttribute('data-ipad-exclude');},
+    destroy() {destroyed = true;clearTimeout(timer);clearTimeout(guardTimer);abort.abort();container.classList.remove('result-stage-host');container.removeAttribute('data-ipad-exclude');},
   };
 }

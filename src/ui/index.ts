@@ -659,7 +659,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.innerHTML = `${header()}<main id="main" class="result-page" data-ipad-exclude></main>${footer()}`;
     resultStage = mountResultStage(root.querySelector<HTMLElement>('#main')!, {
       result: { score: snapshot.score, baseScore: snapshot.baseScore, bonusScore: snapshot.bonusScore, completedWords: snapshot.completedWords, accuracy: snapshot.accuracy, canonicalKpm: snapshot.canonicalKpm, courseName: `${course().name} · ${districtName(sessionDestination)}ゆき`, assisted: snapshot.skips > 0, guideUsed: snapshot.guideUsed },
-      newAchievementIds: ids, reducedMotion: runtime.settings.reducedMotion, resumeState: resultStageState,
+      newAchievementIds: ids, reducedMotion: runtime.settings.reducedMotion, resumeState: resultStageState, inputGuardMs: resultStageState ? 0 : 300,
       hasReview: reviewIds(snapshot).length > 0,
       onStateChange: next => { resultStageState = next; updateStorageStatus(); },
       onAction: action => {

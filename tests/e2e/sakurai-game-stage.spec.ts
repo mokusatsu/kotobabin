@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { Page, TestInfo } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
 
 // Independent rendered-UI review. All application input uses the real keyboard.
 // No imports from application code, injected state, focus(), clicks or clock mocks.
@@ -46,8 +47,12 @@ async function record(page: Page, name: string, info: TestInfo) {
     };
   });
   console.log('OBSERVATION', name, JSON.stringify(snapshot));
-  await info.attach(name+'.json',{body:JSON.stringify(snapshot,null,2),contentType:'application/json'});
-  await info.attach(name+'.png',{body:await page.screenshot(),contentType:'image/png'});
+  const jsonPath=info.outputPath(name+'.json');
+  const pngPath=info.outputPath(name+'.png');
+  await writeFile(jsonPath,JSON.stringify(snapshot,null,2));
+  await page.screenshot({path:pngPath});
+  await info.attach(name+'.json',{path:jsonPath,contentType:'application/json'});
+  await info.attach(name+'.png',{path:pngPath,contentType:'image/png'});
   expect.soft(snapshot.viewport.scrollX, name+' horizontal scroll position').toBe(0);
   expect.soft(snapshot.viewport.scrollY, name+' vertical scroll position').toBe(0);
   expect.soft(snapshot.viewport.documentWidth, name+' page width').toBeLessThanOrEqual(snapshot.viewport.width);
@@ -67,6 +72,22 @@ async function menu(page: Page, label: string) {
   throw new Error('F2 menu cannot select '+label);
 }
 
+async function confirmVisibleLeaveDialog(page: Page, info: TestInfo) {
+  const dialog=page.getByRole('dialog').or(page.getByRole('alertdialog'));
+  if(await dialog.isVisible().catch(()=>false)) {
+    await record(page,'14-visible-leave-confirmation',info);
+    const choices=await dialog.getByRole('button').allTextContents();
+    console.log('VISIBLE_LEAVE_CHOICES',JSON.stringify(choices));
+    const choice=choices.find(s=>/やめ|中断|移動|離れ|終了/.test(s)&&!/キャンセル|続け|取り消|戻/.test(s));
+    if(!choice)throw new Error('No unambiguous visible confirmation to leave unfinished delivery: '+JSON.stringify(choices));
+    await activate(page,new RegExp(choice.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  }
+}
+async function expectLargeMap(page: Page) {
+  const maps=await page.locator('svg').evaluateAll(els=>els.map(e=>e.getBoundingClientRect()).filter(r=>r.width>=400&&r.height>=250).length);
+  expect(maps,'rendered district illustration occupies a substantial play area').toBeGreaterThan(0);
+}
+
 async function displayedGuide(page: Page) {
   const input=page.getByRole('textbox',{name:'ローマ字を入力'});
   return input.evaluate(e=>{
@@ -81,7 +102,7 @@ async function displayedGuide(page: Page) {
 }
 
 for(const height of [720,820]) test.describe('independent game review '+height,()=>{
-  test.use({viewport:{width:1180,height},reducedMotion:height===820?'reduce':'no-preference'});
+  test.use({trace:'off',viewport:{width:1180,height},reducedMotion:height===820?'reduce':'no-preference'});
   test('world construction delivery score reward retry',async({page},info)=>{
     test.setTimeout(240000);
     await page.goto('/');
@@ -154,27 +175,44 @@ for(const height of [720,820]) test.describe('independent game review '+height,(
     console.log('RESULT_ELAPSED_MS',Date.now()-start);
     await record(page,'09-separate-score',info);
     const view=page.getByRole('button',{name:'届いた切手を見る',exact:true});
-    if(await view.isVisible())await activate(page,'届いた切手を見る');
-    else await activate(page,'今回の配達を振り返る');
+    if(await view.isVisible()) {
+      await expect(view).toBeEnabled();
+      await activate(page,'届いた切手を見る');
+    } else {
+      await expect(page.getByRole('button',{name:'今回の配達を振り返る',exact:true})).toBeEnabled();
+      await activate(page,'今回の配達を振り返る');
+    }
     await record(page,'10-sealed-reward',info);
     let reveals=0;
-    for(let i=0;i<12;i++) {
+    const revealedNames:string[]=[];
+    const counted=new Set<number>();
+    const announced=(await page.locator('body').innerText()).match(/新しい切手\s+(\d+)\s*\/\s*(\d+)/);
+    const announcedTotal=announced?Number(announced[2]):0;
+    for(let i=0;i<160;i++) {
       const open=page.getByRole('button',{name:'封筒を開く',exact:true});
-      if(await open.isVisible()) {
-        await activate(page,'封筒を開く');
-        await record(page,'11-earned-item-'+(++reveals),info);
-        const revealText=await page.locator('body').innerText();
-        console.log('REVEALED_UI_TEXT',revealText);
-        // Only use a shortening key if its visible help advertises that action.
-        if(/Enter[^\n]*(?:短縮|すぐ表示)|(?:短縮|すぐ表示)[^\n]*Enter/.test(revealText)) {
-          await press(page,'Enter');await page.waitForTimeout(250);
-          await record(page,'11-shortened-item-'+reveals,info);
+      if(await open.isVisible())await activate(page,'封筒を開く');
+      const revealText=await page.locator('body').innerText();
+      const position=revealText.match(/新しい切手\s+(\d+)\s*\/\s*(\d+)/);
+      const earned=revealText.match(/新しい切手「([^」]+)」を獲得/);
+      if(position && earned && !counted.has(Number(position[1]))) {
+        counted.add(Number(position[1]));reveals++;revealedNames.push(earned[1]);
+        console.log('ACTUAL_REVEALED_ITEM',JSON.stringify({index:Number(position[1]),total:Number(position[2]),name:earned[1],text:revealText}));
+        await record(page,'11-earned-item-'+position[1],info);
+        if(reveals===1 && /Esc：今の動きを省略/.test(revealText)) {
+          await press(page,'Escape');
+          await record(page,'11-keyboard-shorten-first-item',info);
+          await expect(page.locator('body')).toContainText('新しい切手「'+earned[1]+'」を獲得');
         }
       }
       if(await page.getByRole('button',{name:'次の切手へ',exact:true}).isVisible())await activate(page,'次の切手へ');
       else if(await page.getByRole('button',{name:'結果をまとめる',exact:true}).isVisible()){await activate(page,'結果をまとめる');break;}
-      else break;
+      else {
+        await record(page,'11-unexpected-reward-state',info);
+        throw new Error('No visible next/open/summary action in reward sequence');
+      }
     }
+    console.log('REVEALED_ITEM_NAMES',JSON.stringify(revealedNames));
+    expect(reveals,'every announced reward individually reviewed').toBe(announcedTotal);
     console.log('INDIVIDUAL_REVEALS',reveals);
     await record(page,'12-reward-summary',info);
     const retryStart=Date.now();
@@ -182,6 +220,27 @@ for(const height of [720,820]) test.describe('independent game review '+height,(
     await expect(page.getByRole('textbox',{name:'ローマ字を入力'})).toBeVisible();
     console.log('RETRY_RETURN_MS',Date.now()-retryStart);
     await record(page,'13-retry',info);
+    await press(page,'Escape');
+    await menu(page,'街の開発');
+    await confirmVisibleLeaveDialog(page,info);
+    await expect(page.getByRole('heading',{name:'街の開発',exact:true})).toBeVisible();
+    await expectLargeMap(page);
+    await expect(page.locator('body')).toContainText(/建築 [1-5]\/5/);
+    await record(page,'14-earned-construction-map',info);
+    await menu(page,'街の設備');
+    await expect(page.getByRole('heading',{name:'街の設備',exact:true})).toBeVisible();
+    await expectLargeMap(page);
+    const earnedEquipment=await record(page,'15-earned-equipment-options',info);
+    const affordableEquipment=earnedEquipment.controls.find(c=>!c.disabled&&/購入|設置|増強|導入|強化/.test(c.label||''));
+    if(affordableEquipment) {
+      await activate(page,/購入|設置|増強|導入|強化/);
+      await expect(page.getByRole('button',{name:/住宅地、荷づくり台 Lv\.[1-9]/})).toBeVisible();
+      await expectLargeMap(page);
+      await record(page,'16-actual-equipment-purchase-map',info);
+    }else {
+      console.log('REVIEW_BLOCKER no affordable equipment after real earnings');
+      throw new Error('Could not perform actual equipment purchase with real earned resources');
+    }
     expect.soft(delivered,'at least one actually typed delivery').toBeGreaterThan(0);
     expect.soft(reveals,'individual earned reward shown').toBeGreaterThan(0);
   });
