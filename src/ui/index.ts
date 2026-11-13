@@ -42,10 +42,25 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let suppressBlur = false;
   let lastMistakes = 0;
   let feedbackTimer: ReturnType<typeof setTimeout> | undefined;
+  const viewMarkup = new WeakMap<HTMLElement, string>();
   const abort = new AbortController();
   const on = (target: EventTarget, type: string, handler: EventListener) => target.addEventListener(type, handler, { signal: abort.signal });
   const course = () => courses.find((item) => item.id === selectedCourse)!;
   const state = () => session!.snapshot(performance.now());
+  function renderMarkup(element: HTMLElement, markup: string) {
+    if (viewMarkup.get(element) === markup) return;
+    const active = document.activeElement as HTMLElement | null;
+    const action = active && element.contains(active) ? active.dataset.action : undefined;
+    const wordId = active?.dataset.wordId;
+    const matches = (candidate: HTMLElement) => candidate.dataset.action === action && candidate.dataset.wordId === wordId;
+    const ordinal = action ? [...element.querySelectorAll<HTMLElement>('[data-action]')].filter(matches).indexOf(active!) : -1;
+    element.innerHTML = markup;
+    viewMarkup.set(element, markup);
+    if (action && ordinal >= 0) {
+      const next = [...element.querySelectorAll<HTMLElement>('[data-action]')].filter(matches)[ordinal];
+      if (next) { suppressBlur = true; next.focus(); suppressBlur = false; }
+    }
+  }
   function newSeed() { return crypto.getRandomValues(new Uint32Array(1))[0]!; }
   function brand() { return `<a class="brand" href="#" data-action="home" aria-label="ことば便 ホーム"><span class="brand-stamp">${envelope}</span><span>ことば便<small>KOTOBABIN</small></span><span class="postmark" aria-hidden="true">∿<br>∿</span></a>`; }
   function header(game = false) {
@@ -90,9 +105,9 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const aside = root.querySelector<HTMLElement>('[data-ownership-action]');
     const inside = root.querySelector<HTMLElement>('#paused-ownership');
     const markup = '<button class="button" data-action="takeover">ここで続ける</button>';
-    if (aside && aside.innerHTML !== (paused ? '' : markup)) aside.innerHTML = paused ? '' : markup;
+    if (aside) renderMarkup(aside, paused ? '' : markup);
     const insideMarkup = paused && !runtime.status.writable ? `<p>別のタブで操作中です。ここで続ける場合は、操作するタブを切り替えてください。</p>${markup}` : '';
-    if (inside && inside.innerHTML !== insideMarkup) inside.innerHTML = insideMarkup;
+    if (inside) renderMarkup(inside, insideMarkup);
     const warning = root.querySelector<HTMLElement>('#ownership-status'); if (warning) warning.inert = Boolean(paused);
   }
   function commitFacts(snapshot: Snapshot) {
@@ -221,13 +236,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     set('prompt-reading', snapshot.currentWord.reading);
     const guide = root.querySelector<HTMLElement>('#romaji-guide')!;
     const nextGuide = `<span class="accepted">${esc(snapshot.acceptedInput)}</span>${snapshot.remainingGuide ? `<span class="next-key">${esc(snapshot.remainingGuide.slice(0, 1))}</span><span>${esc(snapshot.remainingGuide.slice(1))}</span>` : ''}`;
-    if (guide.innerHTML !== nextGuide) guide.innerHTML = nextGuide;
+    renderMarkup(guide, nextGuide);
     guide.style.visibility = snapshot.guideEnabled ? 'visible' : 'hidden';
     set('guide-status', snapshot.guideEnabled ? 'ON' : 'OFF');
     set('cargo-count', String(snapshot.cargoCount));
     const slots = root.querySelector<HTMLElement>('#cargo-slots')!;
     const slotMarkup = Array.from({ length: 5 }, (_, index) => `<span class="cargo-slot ${index < snapshot.cargoCount ? 'filled' : ''}">${index < snapshot.cargoCount ? `<img src="${asset('cargo/cargo_parcel.webp')}" alt="">` : ''}</span>`).join('');
-    if (slots.innerHTML !== slotMarkup) slots.innerHTML = slotMarkup;
+    renderMarkup(slots, slotMarkup);
     const canDeliver = (!snapshot.wordStarted || snapshot.awaitingWordChoice) && snapshot.cargoCount > 0;
     root.querySelector<HTMLButtonElement>('#deliver-button')!.disabled = !canDeliver;
     set('deliver-label', canDeliver ? `いま届ける +${number(snapshot.pendingBonus)}点` : snapshot.wordStarted ? 'このことばを完成すると届けられます' : '次のことばを完成させよう');
@@ -266,14 +281,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     tutorial.dataset.delivered = String(snapshot.tutorialDelivered);
     if (snapshot.mode === 'TUTORIAL') {
       const markup = `<div><strong>${snapshot.tutorialDelivered ? 'はじめての配達、できました。' : snapshot.cargoCount > 0 ? '荷物ができました。語の境目で届けてみましょう。' : 'まずは、ひとつのことばから。'}</strong><p>${snapshot.tutorialDelivered ? 'できたことが、切手になります。次は90秒の配達へ。' : `無誤打で完成すると荷物がひとつ増えます。${runtime.settings.deliveryKeys.join(' または ')}で配達できます。まちがえても続きを打てます。`}</p></div>${snapshot.tutorialDelivered ? '<button class="button button-primary" data-action="tutorial-main">90秒の配達へ →</button>' : '<button class="text-button" data-action="tutorial-skip">導入を飛ばして本編へ</button>'}<div id="tutorial-fallback" ${snapshot.tutorialFallbackAvailable ? '' : 'hidden'}><p>あせらなくても大丈夫。自分に合うほうを選べます。</p><button class="button" data-action="tutorial-skip">そのまま本編へ</button><button class="button" data-action="tutorial-practice">ゆっくり練習する</button></div>`;
-      if (tutorial.innerHTML !== markup) tutorial.innerHTML = markup;
+      renderMarkup(tutorial, markup);
     }
     const practice = root.querySelector<HTMLElement>('#practice-actions')!;
     practice.hidden = snapshot.mode !== 'PRACTICE';
     if (snapshot.mode === 'PRACTICE') {
       const clean = Math.min(3, runtime.profile.words[snapshot.currentWord.id]?.practiceCleanCompleted ?? 0);
       const markup = `<p id="practice-progress">このことばの練習 · 無誤打 <strong>${clean}/3</strong></p><p>${snapshot.awaitingWordChoice ? '完成しました。もう一度でも、次のことばでも。' : '途中で次のことばへ進むと、現在の連続成功は途切れます。'}</p><div>${snapshot.awaitingWordChoice ? '<button class="button button-primary" data-action="repeat-word">もう一度</button>' : ''}<button class="button" data-action="next-practice-word">次のことば</button><button class="button" data-action="practice-main" ${window.innerWidth < 768 ? 'disabled' : ''}>このことばを本編で試す</button>${window.innerWidth < 768 ? '<p>本編には幅768px以上の画面と物理キーボードが必要です。</p>' : ''}<button class="text-button" data-action="practice-end">練習を終える</button><button class="text-button" data-action="read-aloud">ことばを読み上げる</button></div>`;
-      if (practice.innerHTML !== markup) practice.innerHTML = markup;
+      renderMarkup(practice, markup);
       root.querySelector<HTMLElement>('#input-indicator')!.textContent = snapshot.awaitingWordChoice ? '完成しました' : '入力できます';
     }
     root.querySelectorAll<HTMLElement>('.deliver-button kbd').forEach(element => { element.textContent = runtime.settings.deliveryKeys.join(' / '); });
