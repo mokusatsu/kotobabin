@@ -86,3 +86,15 @@ All3 terrains are3200×2000 RGB opaque full scenes with clear central land. Insp
 All9 applicable SVG inner windows rendered with zero nonzero-alpha pixels: reward_frame_leaf/plaza/sunset/journey and album_base at [96,96,1104,704]; board_base/board_foil at [32,96,1168,784]; stamp_frame/memorial_frame at [64,64,576,576]. All92 SVGs have matching viewBoxes and fit their applicable safe bounds in the CairoSVG raster check. This is technical composition evidence, not a final motif review of every SVG.
 
 No production asset, renderer, UI, source contract or shared ledger was modified. The bounded fixes above require owner implementation and fresh checks; browser E2E and final acceptance remain separate work.
+
+## Harbor repair recheck (later integration snapshot)
+
+The original findings above are historical evidence, not a claim that the repaired files still fail. Read-only recheck at integration HEAD `e5042a5cc0c0b5425765ab717f5ebca5b7b57b5b` independently confirms all five repaired harbor stages are1024×768, have zero alpha outside district safe bounds and in the reserved shop rectangle, and now contain paint at both mandatory pier coordinates. Exact hashes and alpha measurements are in isolated `harbor-recheck.json`. Alpha at an artwork point need not be255 to count as painted; s3 tip alpha172 is nonzero, not fully opaque. This technical recheck is independent of the producer and does not substitute for land-contact visual/E2E acceptance.
+
+| ID | Connection alpha at730,650 | Tip alpha at904,716 | Safe spill max | Shop max |
+|---|---:|---:|---:|---:|
+| city_harbor_s1 | 253 | 251 | 0 | 0 |
+| city_harbor_s2 | 253 | 252 | 0 | 0 |
+| city_harbor_s3 | 253 | 172 | 0 | 0 |
+| city_harbor_s4 | 254 | 255 | 0 | 0 |
+| city_harbor_s5 | 253 | 251 | 0 | 0 |
