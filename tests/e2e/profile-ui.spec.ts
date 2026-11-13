@@ -34,7 +34,7 @@ test('practice progress reopens from IndexedDB without replaying the last comple
 
 test('a second tab is read-only and a paused owner can reclaim control using the keyboard', async ({ page, context }, testInfo) => {
   await beginMain(page);
-  await typeCurrentGuide(page);
+  const firstGuide = await typeCurrentGuide(page);
   await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
   const second = await context.newPage();
   await second.goto('/');
@@ -53,11 +53,55 @@ test('a second tab is read-only and a paused owner can reclaim control using the
   await expect(takeover).toBeFocused();
   await page.screenshot({ path: testInfo.outputPath('readonly-paused-keyboard-takeover.png'), fullPage: true });
   await page.keyboard.press('Enter');
+  const confirmation = page.locator('dialog[data-role="ownership-confirm"]');
+  await expect(confirmation).toBeVisible();
+  await expect(confirmation.locator('[data-action="cancel-ownership"]')).toBeFocused();
+  await page.keyboard.press('Enter'); // The default cancels; the old paused round stays intact.
+  await expect(confirmation).toBeHidden();
+  await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
+  await expect(page.locator('#paused-layer')).toBeVisible();
+  await expect(page.locator('#completed-count')).toHaveText('完成 1語');
+  for (let attempts = 0; attempts < 12; attempts++) {
+    if (await takeover.evaluate(element => element === document.activeElement)) break;
+    await page.keyboard.press('Tab');
+  }
+  await expect(takeover).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(confirmation).toBeVisible();
+  await page.keyboard.press('Tab');
+  await expect(confirmation.locator('[data-action="confirm-ownership"]')).toBeFocused();
+  await page.keyboard.press('Enter');
   await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
   await expect(second.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
-  await expect(page.locator('#paused-layer')).toBeVisible();
-  await page.locator('[data-action="resume"]').click();
-  await expect(page.locator('#game-input')).toBeFocused();
+  await expect(page.locator('.home-intro')).toBeVisible();
+  await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
+  const readSaved = () => page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('kotobabin', 4);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const document = await new Promise<{ progress: { totalCompleted: number }; extensions: { city: { generatedMicro: string } } }>((resolve, reject) => {
+      const transaction = database.transaction('profile', 'readonly');
+      const request = transaction.objectStore('profile').get('current');
+      transaction.oncomplete = () => resolve(request.result);
+      transaction.onabort = () => reject(transaction.error);
+    });
+    database.close();
+    return document;
+  });
+  const beforeNewRound = await readSaved();
+  expect(beforeNewRound.progress.totalCompleted).toBe(1);
+  expect(beforeNewRound.extensions.city.generatedMicro).toBe(String(firstGuide.length * 1000000));
+  await page.locator('[data-action="start"]').click();
+  if (await page.locator('#check-status').count()) await confirmHalfWidthInput(page);
+  await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
+  const newGuide = await typeCurrentGuide(page);
   await expect(page.locator('#completed-count')).toHaveText('完成 1語');
+  await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
+  const afterNewRound = await readSaved();
+  expect(afterNewRound.progress.totalCompleted).toBe(2);
+  expect(BigInt(afterNewRound.extensions.city.generatedMicro) - BigInt(beforeNewRound.extensions.city.generatedMicro))
+    .toBe(BigInt(newGuide.length) * 1000000n);
   await second.close();
 });
