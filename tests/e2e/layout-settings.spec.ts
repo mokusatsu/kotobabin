@@ -36,6 +36,15 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
       await expect(page.locator('#paused-layer')).toBeHidden();
       await page.screenshot({ path: testInfo.outputPath(`main-${viewport.width}.png`), fullPage: false });
       await expect(page.locator('#paused-layer')).toBeHidden();
+      if (viewport.width === 1366) {
+        await page.setViewportSize({ width: 767, height: 900 });
+        await expect(page.locator('#paused-layer')).toBeVisible();
+        await expect(page.locator('[data-action="resume"]')).toBeDisabled();
+        await page.setViewportSize(viewport);
+        await expect(page.locator('[data-action="resume"]')).toBeEnabled();
+        await page.locator('[data-action="resume"]').click();
+        await expect(page.locator('#game-input')).toBeFocused();
+      }
     } else {
       await expect(page.locator('[data-action="start"]')).toBeDisabled();
       await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
@@ -76,7 +85,9 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#cargo-count')).toHaveText('0');
   await expect(page.locator('#score')).toHaveText(String(baseScore + Math.floor(baseScore / 5)));
   await assertNoHorizontalOverflow(page);
-  await page.screenshot({ path: testInfo.outputPath('main-font-150-guide-off.png'), fullPage: true });
+  await expect(page.locator('#paused-layer')).toBeHidden();
+  await page.screenshot({ path: testInfo.outputPath('main-font-150-guide-off.png'), fullPage: false });
+  await expect(page.locator('#paused-layer')).toBeHidden();
   await page.locator('#game-input').press('Escape');
   await page.locator('#paused-layer [data-action="settings"]').click();
   await page.locator('.settings-dialog input[name="guide"]').check();

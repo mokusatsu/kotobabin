@@ -15,7 +15,9 @@ test('native input, delivery, 90-second finish, and same-plan retry', async ({ p
   await page.goto('/');
   await page.screenshot({ path: testInfo.outputPath('desktop-home.png'), fullPage: true });
   await beginMain(page, { fromHome: true });
-  await page.screenshot({ path: testInfo.outputPath('desktop-game.png'), fullPage: true });
+  await expect(page.locator('#paused-layer')).toBeHidden();
+  await page.screenshot({ path: testInfo.outputPath('desktop-game.png'), fullPage: false });
+  await expect(page.locator('#paused-layer')).toBeHidden();
   const firstWord = await page.locator('#prompt-word').textContent();
   await page.locator('#game-input').press('Space');
   await page.clock.runFor(5000);
