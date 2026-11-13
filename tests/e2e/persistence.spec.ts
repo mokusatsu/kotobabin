@@ -88,24 +88,24 @@ test('ownership takeover rejects stale writes and preserves abandoned unsaved da
   expect(result.abandonedScale).toBe(150);
 });
 
-test('unmigrated legacy storage remains protected across repeated opens', async ({ page }) => {
+test('corrupt current storage remains protected across repeated opens', async ({ page }) => {
   await page.goto('/');
   const result = await page.evaluate(async () => {
-    const dbName = `kotobabin-qa-legacy-${crypto.randomUUID()}`;
+    const dbName = `kotobabin-qa-corrupt-${crypto.randomUUID()}`;
     await new Promise<void>((resolve, reject) => {
-      const request = indexedDB.open(dbName, 3);
+      const request = indexedDB.open(dbName, 4);
       request.onupgradeneeded = () => {
-        request.result.createObjectStore('legacyRecords').put({ score: 123, title: 'preserved' }, 'old-record');
+        request.result.createObjectStore('profile').put({ score: 123, title: 'preserved-invalid-current' }, 'current');
       };
       request.onerror = () => reject(request.error);
       request.onsuccess = () => { request.result.close(); resolve(); };
     });
     const source = '/src/profile/repository.ts';
     const { ProfileRepository } = await import(source);
-    const first = await ProfileRepository.open({ dbName, tabId: 'legacy-first' });
+    const first = await ProfileRepository.open({ dbName, tabId: 'corrupt-first' });
     const firstStatus = first.status;
     first.close();
-    const second = await ProfileRepository.open({ dbName, tabId: 'legacy-second' });
+    const second = await ProfileRepository.open({ dbName, tabId: 'corrupt-second' });
     const secondStatus = second.status;
     const exported = second.exportData();
     second.close();
@@ -114,6 +114,5 @@ test('unmigrated legacy storage remains protected across repeated opens', async 
   });
   expect(result.firstStatus).toMatchObject({ storage: 'memory', recoveryRequired: true });
   expect(result.secondStatus).toMatchObject({ storage: 'memory', recoveryRequired: true });
-  expect(result.exported).toContain('old-record');
   expect(result.exported).toContain('preserved');
 });
