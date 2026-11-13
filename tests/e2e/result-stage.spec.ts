@@ -106,8 +106,26 @@ for (const reduced of [false, true]) {
     await expect(stage).toHaveAttribute('data-result-phase', 'score'); expect(await awards(page)).toEqual(committed);
     await assertViewportFits(page);
     await page.clock.runFor(301); await expect(primary).toBeEnabled();
-    await page.keyboard.press('Enter');
+    // A short quiet window alone cannot distinguish delayed game keys from deliberate
+    // result navigation. Keep the clock paused after another full simulated second.
+    await page.clock.runFor(1000);
+    await page.keyboard.type('sakana'); await page.keyboard.press('Space'); await page.keyboard.press('s');
+    await expect(stage).toHaveAttribute('data-result-phase', 'score'); expect(await awards(page)).toEqual(committed);
+    await expect(primary).toBeEnabled();
+    if (reduced) {
+      // Explicit navigation arms native Space activation, even when the button was
+      // auto-focused before the trailing game keys arrived.
+      await page.keyboard.press('Tab'); await tabTo(page, primary); await page.keyboard.press('Space');
+    } else {
+      await page.keyboard.press('Enter');
+    }
     await expect(stage).toHaveAttribute('data-result-phase', reduced ? 'reveal' : 'sealed');
     expect(await awards(page)).toEqual(committed);
+    if (!reduced) {
+      const open = stage.locator('[data-result-command="advance"]');
+      await page.keyboard.press('Tab'); await tabTo(page, open); await page.keyboard.press('Space');
+      await expect(stage).toHaveAttribute('data-result-phase', 'reveal');
+      expect(await awards(page)).toEqual(committed);
+    }
   });
 }
