@@ -96,6 +96,11 @@ export function validateProfileDocument(value: unknown): value is ProfileDocumen
 
 export class OwnershipError extends Error { constructor() { super('別のタブが操作中です。「ここで続ける」で引き継いでください。'); } }
 export class RevisionConflictError extends Error { constructor() { super('保存状態が更新されています。古い状態では上書きしません。'); } }
+export class GenerationMismatchError extends Error { constructor() { super('削除前のプレイ内容は新しい記録へ適用できません。'); } }
+export interface MutationOptions {
+  /** Capture at session READY and reuse for every fact batch from that session. */
+  generation?: number;
+}
 export class RecoveryRequiredError extends Error { constructor() { super('保存データを確認できません。元データを保持して今回のみで続けます。'); } }
 
 type Mutation = (document: ProfileDocument) => ProfileDocument;
@@ -111,6 +116,7 @@ export class ProfileRepository {
   private pending: Mutation[] = [];
   private tail: Promise<unknown> = Promise.resolve();
   private persistedRevision = 0;
+  private persistedGeneration = 0;
   private rawRecovery: unknown = undefined;
   private channel: BroadcastChannel | null = null;
   private closed = false;
@@ -230,6 +236,7 @@ export class ProfileRepository {
       });
       this.document = loaded;
       this.persistedRevision = loaded.metadata.revision;
+      this.persistedGeneration = loaded.metadata.generation;
       this.state = { storage: 'indexeddb', ownership: loaded.metadata.ownerTabId === this.tabId ? 'owner' : 'readonly', saveState: 'saved', recoveryRequired: false,
         notice: loaded.metadata.ownerTabId === this.tabId ? '' : '別のタブが操作中です。「ここで続ける」で引き継げます。' };
     } catch (error) {
@@ -265,7 +272,7 @@ export class ProfileRepository {
       const saved = await this.transaction(raw => {
         if (!validateProfileDocument(raw)) { this.rawRecovery = raw; throw new RecoveryRequiredError(); }
         if (raw.metadata.ownerTabId !== this.tabId || raw.metadata.writeEpoch !== expected.writeEpoch) throw new OwnershipError();
-        if (raw.metadata.revision !== this.persistedRevision || raw.metadata.generation !== expected.generation) throw new RevisionConflictError();
+        if (raw.metadata.revision !== this.persistedRevision || raw.metadata.generation !== this.persistedGeneration) throw new RevisionConflictError();
         let next = structuredClone(raw);
         for (const mutation of pending) next = mutation(next);
         next.metadata.revision++;
@@ -273,6 +280,7 @@ export class ProfileRepository {
       });
       this.document = saved;
       this.persistedRevision = saved.metadata.revision;
+      this.persistedGeneration = saved.metadata.generation;
       this.pending.splice(0, pending.length);
       this.state = { ...this.state, storage: 'indexeddb', saveState: 'saved', notice: '' };
       this.channel?.postMessage('updated');
@@ -287,17 +295,31 @@ export class ProfileRepository {
     this.emit();
   }
 
-  commitFacts(facts: readonly SessionFact[], recordContext: RecordContext): Promise<void> {
+  /** A pure synchronous reducer may run twice: once for this page and once on the
+   * latest persisted document inside the readwrite transaction. Never capture a
+   * stale document or perform I/O here; city/event reducers must be idempotent.
+   * Ownership, revision and deletion-generation metadata remain repository-owned.
+   */
+  mutateDocument(reducer: (current: ProfileDocument) => ProfileDocument, options: MutationOptions = {}): Promise<void> {
+    const generation = options.generation ?? this.document.metadata.generation;
+    return this.write(current => {
+      if (current.metadata.generation !== generation) throw new GenerationMismatchError();
+      const metadata = { ...current.metadata };
+      return { ...reducer(current), metadata };
+    });
+  }
+
+  commitFacts(facts: readonly SessionFact[], recordContext: RecordContext, options: MutationOptions = {}): Promise<void> {
     const batch = structuredClone(facts);
     const context = structuredClone(recordContext);
-    return this.write(document => ({ ...document, progress: batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress) }));
+    return this.mutateDocument(document => ({ ...document, progress: batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress) }), options);
   }
   updateSettings(patch: Partial<ProfileSettings>): Promise<void> {
     const change = structuredClone(patch);
     if (!settings({ ...this.document.settings, ...change })) return Promise.reject(new Error('設定値を確認してください。'));
-    return this.write(document => ({ ...document, settings: { ...document.settings, ...change } }));
+    return this.mutateDocument(document => ({ ...document, settings: { ...document.settings, ...change } }));
   }
-  markTutorialSeen(): Promise<void> { return this.write(document => ({ ...document, tutorialSeen: true })); }
+  markTutorialSeen(): Promise<void> { return this.mutateDocument(document => ({ ...document, tutorialSeen: true })); }
 
   /** Future state modules can commit related facts and extension values atomically. */
   commitExtension(key: string, value: unknown, facts: readonly SessionFact[] = [], recordContext?: RecordContext): Promise<void> {
@@ -305,8 +327,37 @@ export class ProfileRepository {
     const extension = structuredClone(value);
     const batch = structuredClone(facts);
     const context = recordContext && structuredClone(recordContext);
-    return this.write(document => ({ ...document, extensions: { ...document.extensions, [key]: extension },
+    return this.mutateDocument(document => ({ ...document, extensions: { ...document.extensions, [key]: extension },
       progress: context ? batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress) : document.progress }));
+  }
+
+  /** Caller confirms each scope before invoking; never use this for city restart. */
+  resetSettings(): Promise<void> {
+    return this.mutateDocument(document => ({ ...document,
+      settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] },
+    }));
+  }
+  resetRecords(): Promise<void> {
+    const generation = this.document.metadata.generation;
+    return this.write(document => {
+      if (document.metadata.generation !== generation) throw new GenerationMismatchError();
+      return { ...document, progress: { ...document.progress, recentRounds: [], bestByComparison: {} },
+        metadata: { ...document.metadata, generation: generation + 1 } };
+    });
+  }
+  resetCollectionAndEconomy(): Promise<void> {
+    const generation = this.document.metadata.generation;
+    return this.write(document => {
+      if (document.metadata.generation !== generation) throw new GenerationMismatchError();
+      const bestByComparison = Object.fromEntries(Object.entries(document.progress.bestByComparison).map(([key, best]) => [
+        key, { ...best, growthBestScore: null, growthBestCanonicalLength: null },
+      ]));
+      return { ...document, extensions: {}, progress: { ...createProfileProgress(),
+        recentRounds: document.progress.recentRounds, bestByComparison,
+        // Retain processed positions so displayed old results cannot replay facts.
+        factCursors: document.progress.factCursors,
+      }, metadata: { ...document.metadata, generation: generation + 1 } };
+    });
   }
 
   refresh(): Promise<void> {
@@ -317,8 +368,8 @@ export class ProfileRepository {
       if (raw.metadata.ownerTabId !== this.tabId || raw.metadata.writeEpoch !== this.document.metadata.writeEpoch) {
         this.state = { ...this.state, ownership: 'readonly', notice: '別のタブが操作中です。「ここで続ける」で引き継げます。' };
         // Keep unsaved facts for export, never replay them into the new owner's state.
-        if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; }
-      } else if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; }
+        if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; this.persistedGeneration = raw.metadata.generation; }
+      } else if (!this.pending.length) { this.document = raw; this.persistedRevision = raw.metadata.revision; this.persistedGeneration = raw.metadata.generation; }
       this.emit();
     });
   }
@@ -335,7 +386,7 @@ export class ProfileRepository {
       });
       if (abandoned) this.rawRecovery = { abandonedUnsavedData: abandoned };
       this.pending = [];
-      this.document = claimed; this.persistedRevision = claimed.metadata.revision;
+      this.document = claimed; this.persistedRevision = claimed.metadata.revision; this.persistedGeneration = claimed.metadata.generation;
       this.state = { storage: 'indexeddb', ownership: 'owner', saveState: 'saved', recoveryRequired: false, notice: '' };
       this.channel?.postMessage('ownership'); this.emit();
     });

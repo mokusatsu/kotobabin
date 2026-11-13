@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { GameSession } from '../../src/typing';
 import {
   ProfileRepository, createProfileDocument, filterCatalogue, createProfileProgress,
-  validateProfileDocument, type RecordContext,
+  validateProfileDocument, applySessionFact, type RecordContext,
 } from '../../src/profile';
 
 const context: RecordContext = {courseId:'relaxed', planId:'test', contentVersion:'2', generatorVersion:'1', inputRuleVersion:'romaji-1.0.0', scoringVersion:'1', guideUsed:true, assisted:false};
@@ -109,5 +109,98 @@ describe('functional per-page memory fallback', () => {
     expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'1000000'});
     expect(repository.snapshot.progress.totalCompleted).toBe(1);
     await expect(repository.commitExtension('__proto__',{})).rejects.toThrow('保存項目');
+  });
+});
+
+
+describe('atomic document reducers', () => {
+  it('applies city state and confirmed typing facts together with replay-safe event identities', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const batch = facts();
+    const reduce = (document: ReturnType<typeof createProfileDocument>) => {
+      const alreadyApplied = document.progress.factCursors[batch[0].sessionId] >= batch.at(-1)!.factSequence;
+      return { ...document,
+        progress: batch.reduce((progress, fact) => applySessionFact(progress, fact, context), document.progress),
+        extensions: alreadyApplied ? document.extensions : {...document.extensions, city:{generatedMaterials:'6'}},
+      };
+    };
+    await repository.mutateDocument(reduce);
+    await repository.mutateDocument(reduce);
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.extensions.city).toEqual({generatedMaterials:'6'});
+  });
+
+  it('derives queued operations from the latest document and protects repository metadata', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const increment = (document: ReturnType<typeof createProfileDocument>) => ({
+      ...document, extensions:{...document.extensions, count:Number(document.extensions.count ?? 0)+1},
+      metadata:{...document.metadata, ownerTabId:'intruder', revision:999},
+    });
+    await Promise.all([repository.mutateDocument(increment), repository.mutateDocument(increment)]);
+    expect(repository.snapshot.extensions.count).toBe(2);
+    expect(repository.snapshot.metadata).toEqual(createProfileDocument().metadata);
+  });
+
+  it('does not partially apply city state when a related profile fact fails', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const invalid = {...facts()[0],factSequence:99};
+    await expect(repository.mutateDocument(document => {
+      document.extensions.city = {generatedMaterials:'100'};
+      document.progress = applySessionFact(document.progress,invalid,context);
+      return document;
+    })).rejects.toThrow('gap');
+    expect(repository.snapshot.extensions).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(0);
+  });
+});
+
+describe('explicit deletion scopes and generations', () => {
+  it('resets settings alone while preserving tutorial completion, records, collection and city', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.markTutorialSeen();
+    await repository.updateSettings({guide:false,fontScale:150,deliveryKeys:['Enter'],sound:true});
+    await repository.resetSettings();
+    expect(repository.snapshot.settings).toEqual(createProfileDocument().settings);
+    expect(repository.snapshot.tutorialSeen).toBe(true);
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.progress.recentRounds).toHaveLength(1);
+    expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'123'});
+    expect(repository.snapshot.metadata.generation).toBe(0);
+  });
+
+  it('deletes self-record and growth references without deleting collection or city state', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.resetRecords();
+    expect(repository.snapshot.progress.recentRounds).toEqual([]);
+    expect(repository.snapshot.progress.bestByComparison).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(repository.snapshot.extensions.city).toEqual({coinsMicro:'123'});
+    expect(repository.snapshot.metadata.generation).toBe(1);
+  });
+
+  it('deletes collection and economy while retaining visible records/settings and rejecting delayed old facts', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    const oldGeneration = repository.snapshot.metadata.generation;
+    await repository.commitExtension('city',{coinsMicro:'123'},facts(),context);
+    await repository.updateSettings({fontScale:125});
+    await repository.resetCollectionAndEconomy();
+    const snapshot = repository.snapshot;
+    expect(snapshot.metadata.generation).toBe(oldGeneration + 1);
+    expect(snapshot.progress.totalCompleted).toBe(0);
+    expect(snapshot.progress.words).toEqual({});
+    expect(snapshot.extensions).toEqual({});
+    expect(snapshot.settings.fontScale).toBe(125);
+    expect(snapshot.progress.recentRounds).toHaveLength(1);
+    expect(Object.values(snapshot.progress.bestByComparison)[0]).toMatchObject({growthBestScore:null,growthBestCanonicalLength:null});
+    const oldFacts = facts().map(fact => ({...fact,sessionId:'late-old-session'}));
+    await expect(repository.commitFacts(oldFacts,context,{generation:oldGeneration})).rejects.toThrow('削除前');
+    await expect(repository.mutateDocument(document => ({...document,extensions:{city:{coinsMicro:'999'}}}),{generation:oldGeneration})).rejects.toThrow('削除前');
+    expect(repository.snapshot.extensions).toEqual({});
+    expect(repository.snapshot.progress.totalCompleted).toBe(0);
+    await repository.commitFacts(oldFacts,context,{generation:snapshot.metadata.generation});
+    expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    expect(validateProfileDocument(repository.snapshot)).toBe(true);
   });
 });
