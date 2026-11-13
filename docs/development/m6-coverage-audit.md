@@ -29,3 +29,11 @@
 lockfileVersion3、200 package entries、全resolved URLは `https://registry.npmjs.org/`、resolved付き全entryにintegrityあり。直接依存は7つのdevDependenciesのみ。lockの実版はVite7.3.8、Vitest4.1.12、Playwright1.65.0、TypeScript5.9.3、ESLint9.39.5、typescript-estree8.72.2。実行script宣言のあるtransitive packageはesbuild0.28.2とoptional fsevents2.3.3で、lock差し替え・未知レジストリ参照は見つからなかった。
 
 過去のlint dependency修正50db576を照合し、typescript-estree配下のminimatch overrideが現在も宣言されることを確認した。rootに古いmajorのminimatchが存在することだけでは脆弱と断定しない。今回の実auditは0件で、依存版・lockは変更しない。将来の新規advisoryやレジストリ内容はこの時点の結果に含まれない。
+
+## 第1回の実Firefox結果
+
+run43500330798／source645b025。独立journey job132144109750のnative logを独立取得し、**2/2成功（3.6分）**を確認した。実Firefox159.0、Linux7.0.0-1019-azure、1180×720／820で、変更なしのkeyboard-only世界・地区・90秒配達・結果・実報酬・再挑戦・設備操作を通過した。これをWindows FirefoxやiPad実機の合格とは呼ばない。
+
+音声job132144109800は**1/3成功（24.9秒）**。150%キーボード操作は成功した。音声opt-inはmusicCount0、障害後の明示retryは「音を再生できません」が継続して失敗した。取得したtraceでは両例とも音声ファイルの通信要求がなく、retry側のAudioContext生成数は1に達している。したがって音源decodeの失敗と断定できず、context開始／resume段階を切り分ける必要がある。テスト条件、音声assertion、製品は変更しない。
+
+追加するhealth preflightは実Firefoxの独立した空ページでnativeボタンを押し、native AudioContext生成・resume・発音開始のstate/errorとOSのaudio device/process有無を記録するだけである。実AudioContextを置換せず、音声sinkやFirefox設定も変更しない。CI audio環境と製品処理のどちらに原因があるかは、この観測前には断定しない。health自体のローカル実行はしていない。
