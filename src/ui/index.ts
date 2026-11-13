@@ -50,6 +50,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let practiceFilter: ReturnType<typeof catalogueFilter> = {};
   let practiceWordIds: string[] = [];
   let mapObserver: ResizeObserver | undefined;
+  let mapFocusedDistrict: string | undefined;
   let lastResult: Snapshot | undefined;
   let lastChoiceFocus = '';
   let cityOrigin: 'home' | 'result' = 'home';
@@ -134,7 +135,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
-    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚獲得 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}<p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></main>${footer()}`;
+    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚獲得 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}</main>${footer()}`;
     beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear(); focusScreen('[data-action="start"]');
   }
   function beginHomeMapObservation() {
@@ -145,8 +146,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     // same keyboard destination when a resize hides the focused representation.
     mapObserver = new ResizeObserver(() => {
       const active = document.activeElement;
-      if (!(active instanceof HTMLButtonElement) || !world.contains(active) || active.getBoundingClientRect().width > 0) return;
-      const id = active.dataset.districtId;
+      if (active instanceof HTMLElement && active !== document.body && (!world.contains(active) || active.getBoundingClientRect().width > 0)) return;
+      const id = mapFocusedDistrict;
       if (!id) return;
       Array.from(world.querySelectorAll<HTMLButtonElement>(`[data-district-id="${id}"]`))
         .find(button => button.getBoundingClientRect().width > 0)?.focus({ preventScroll: true });
@@ -1009,6 +1010,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(root, 'compositionend', () => { if (screen !== 'check') return; composing = false; pending = undefined; });
   on(root, 'paste', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(root, 'drop', (event) => { if (screen === 'check' && (event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
+  on(root, 'focusin', event => {
+    const target = event.target;
+    mapFocusedDistrict = target instanceof HTMLButtonElement && target.closest('.game-world-map') ? target.dataset.districtId : undefined;
+  });
   on(window, 'resize', () => { if (screen === 'home') { const button = root.querySelector<HTMLButtonElement>('[data-action="start"]'); if (button) button.disabled = window.innerWidth < 768; const note = root.querySelector<HTMLElement>('.keyboard-note'); if (note) note.textContent = window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'; beginHomeMapObservation(); } else if (screen === 'game' && session?.mode === 'MAIN' && window.innerWidth < 768) { pause(); const title = root.querySelector<HTMLElement>('#pause-title'); if (title) title.textContent = '幅768px以上に画面を広げてください。'; } });
   on(window, 'blur', () => { pending = undefined; audio.pause(); });
   on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; audio.visibility(document.hidden); });

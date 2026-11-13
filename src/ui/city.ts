@@ -85,7 +85,7 @@ export function gameWorldMap(city: CityState, destination: DistrictId): string {
   return `<section class="town-panel game-world-map" aria-label="${landscapeName(city.landscape)}の全体地図"><div class="town-map canonical-map world-map-canvas"><svg viewBox="0 0 1600 1000" aria-label="6地区の街の地図"><image href="${asset(`terrain/terrain_${city.landscape}.webp`)}" width="1600" height="1000"/><g class="city-routes">${routes}</g><image href="${asset('city_shared/city_hub.webp')}" x="696" y="398" width="128" height="128"/>${art}${scaffolds}${shop}${freight}${vehicles}</svg>${config.districts.map(item => {
     const district = city.districts[item.id]; const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     return `<button class="map-label ${district.open ? '' : 'locked'} ${item.id === destination ? 'selected' : ''}" style="left:${anchor.x / 16}%;top:${(anchor.y + 40) / 10}%" data-action="city-district" data-district-id="${item.id}" data-world-x="${anchor.x}" data-world-y="${anchor.y}" aria-label="${item.name}の詳細"><strong>${item.name}</strong><small>${district.open ? `段階${district.stage}/5` : '未開通'}</small></button>`;
-  }).join('')}</div>${compactWorldMap(city, destination)}<span class="world-map-status">開通 ${openCount}/6</span></section>`;
+  }).join('')}</div>${compactWorldMap(city, destination)}<span class="world-map-status">開通 ${openCount}/6</span><p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></section>`;
 }
 export function homeTown(city: CityState, destination: DistrictId): string { return gameWorldMap(city, destination); }
 

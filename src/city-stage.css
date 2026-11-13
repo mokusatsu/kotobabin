@@ -101,6 +101,7 @@
 .compact-world-map { display: none; }
 @container (width < 800px) or (height < 500px) {
   .game-world-map .world-map-canvas { display: none; }
+  .world-stage .game-world-map > .world-map-help { top: auto; bottom: 6px; }
   .game-world-map .compact-world-map {
     position: absolute; inset: 96px 12px 118px; display: grid;
     grid-template-columns: minmax(0,1fr) minmax(128px,1fr) minmax(0,1fr);
