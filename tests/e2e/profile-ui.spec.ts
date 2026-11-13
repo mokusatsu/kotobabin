@@ -76,6 +76,11 @@ test('a second tab is read-only and a paused owner can reclaim control using the
   await expect(confirmation.locator('[data-action="cancel-ownership"]')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(confirmation.locator('[data-action="confirm-ownership"]')).toBeFocused();
+  // Measuring alternate panels must preserve a real user's focused confirmation.
+  // A one-pixel viewport change triggers the same adaptive measurement as a late resize.
+  await page.setViewportSize({ width: 1365, height: 768 });
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await expect(confirmation.locator('[data-action="confirm-ownership"]')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
   await expect(second.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
