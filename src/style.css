@@ -1796,3 +1796,11 @@ body[data-reduced-motion="true"] *::after {
   .word-list li > div { width: 100%; }
   .word-list .word-state { flex: 1; }
 }
+
+/* Fixed label bounds leave distinct readable districts on the large map. */
+.town-map .map-label {
+  width: 180px;
+  max-width: 24%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

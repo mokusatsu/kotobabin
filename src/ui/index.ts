@@ -69,12 +69,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const compact = root.querySelector<HTMLElement>('.compact-town');
     const panel = root.querySelector<HTMLElement>('.town-panel');
     if (!map || !compact || !panel) return;
-    const update = () => { const small = panel.clientWidth - 24 < 800; map.hidden = small; compact.hidden = !small; };
+    const update = () => { const small = (panel.clientWidth - 24) / (runtime.settings.fontScale / 100) < 800; map.hidden = small; compact.hidden = !small; };
     mapObserver?.disconnect(); mapObserver = new ResizeObserver(update); mapObserver.observe(panel); update();
   }
   function applySettings() {
     root.style.setProperty('--font-scale', String(runtime.settings.fontScale / 100));
     document.body.dataset.reducedMotion = String(runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (screen === 'home') beginHomeMapObservation();
   }
   function updateStorageStatus() {
     root.querySelectorAll<HTMLElement>('[data-save-status]').forEach(element => { element.textContent = runtime.status.message; element.dataset.saveState = runtime.status.storage; });
