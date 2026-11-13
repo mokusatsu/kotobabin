@@ -1,0 +1,32 @@
+name: Development comparison entry acceptance
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/dev-comparison, feat/m7-integration, main]
+permissions:
+  contents: read
+concurrency:
+  group: dev-comparison-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  development:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config=playwright.dev-comparison.config.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: development-comparison-${{ matrix.browser }}
+          path: test-results/dev-comparison/

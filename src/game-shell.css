@@ -108,3 +108,14 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 @media (min-width: 960px) and (max-height: 760px) {
   #app:has(.cosmetic-home-gallery) .world-stage .canonical-map [data-district-id="station"] { top: auto !important; bottom: 8px; }
 }
+/* Readable HUD text follows the selected 100/125/150% text size. */
+.world-command-dock .dock-key-hint,
+.world-command-dock .course-option small,
+.world-command-dock .save-status,
+.world-stage .city-balance,
+.world-map-help,
+.world-map-help kbd,
+.button-small kbd,
+.deliver-button > kbd { font-size: 1em; }
+/* Enabled text and background must switch together, without a low-contrast fade. */
+.deliver-button { transition: none; }

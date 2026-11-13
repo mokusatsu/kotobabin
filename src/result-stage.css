@@ -115,3 +115,4 @@
   .result-stage-value strong { font-size: calc(72px * var(--font-scale)); }
 }
 .result-stage-topbar .result-stage-save { flex-basis: 100%; color: #d4e2d5; font-size: .75em; font-weight: 400; }
+.result-stage-topbar .result-stage-save { font-size: 1em; }

@@ -1,3 +1,4 @@
+import { GAME_PRESENTATION_DEFAULTS } from '../config/game-parameters';
 export type AudioKind = 'key' | 'word' | 'mistake' | 'dispatch_small' | 'dispatch_medium' | 'dispatch_full' | 'theme';
 export type AudioStatus = 'idle' | 'ready' | 'paused' | 'unavailable' | 'disposed';
 export interface AudioSettings { enabled: boolean; master: number; effects: number; music: number }
@@ -130,7 +131,7 @@ export class AudioPlayer {
     const context = this.context;
     if (!context || this.disposed || !this.playbackAllowed || !this.level(kind)) return;
     if (kind === 'theme' && [...this.voices].some((voice) => voice.kind === 'theme')) return;
-    if (this.voices.size >= 8) {
+    if (this.voices.size >= GAME_PRESENTATION_DEFAULTS.maxSoundVoices) {
       const eligible = [...this.voices].filter((voice) => priorities[voice.kind] <= priorities[kind]);
       // Preserve speech-like completion cues; first thin the oldest short typing feedback.
       const candidate = eligible.filter((voice) => voice.kind === 'key').sort((a, b) => a.order - b.order)[0]
@@ -149,7 +150,7 @@ export class AudioPlayer {
       source.onended = () => {
         if (!voice) return;
         this.removeVoice(voice, false);
-        if (this.themeWanted && kind !== 'theme' && this.voices.size < 8) this.play('theme');
+        if (this.themeWanted && kind !== 'theme' && this.voices.size < GAME_PRESENTATION_DEFAULTS.maxSoundVoices) this.play('theme');
       };
       source.start();
     } catch { if (voice) this.removeVoice(voice); this.silence('unavailable'); }

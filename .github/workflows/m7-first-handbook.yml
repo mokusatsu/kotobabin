@@ -1,7 +1,7 @@
 name: M7 first handbook early layout
 on:
   push:
-    branches: [fix/m7-first-handbook-layout]
+    branches: [fix/m7-first-handbook-layout, test/m7-webkit-focus, feat/m7-integration, main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,6 +24,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npx playwright test tests/e2e/first-handbook-layout.spec.ts --browser=${{ matrix.browser }}
+      - run: npx playwright test tests/e2e/world-stage.spec.ts --browser=${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
