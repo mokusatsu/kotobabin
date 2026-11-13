@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createAchievementState, getAchievementViews } from '../../src/profile/achievements';
 import { rewardCollection } from '../../src/ui/handbook';
-import { equippedDecoration, rewardAssetPaths, rewardThumbnail } from '../../src/ui/reward-art';
+import { equippedDecoration, rewardAssetPaths, rewardDetail, rewardFamilyPages, rewardThumbnail } from '../../src/ui/reward-art';
 import catalog from '../../spec/initial/data/achievement_catalog.json';
 import manifest from '../../spec/initial/data/visual_resource_manifest.json';
 
@@ -30,4 +30,23 @@ describe('reward presentation', () => {
     state.equipped.ornamentId = 'reward_total_36_background'; state.equipped.homeBackgroundId = null;
     expect(equippedDecoration(state, 'home')).not.toContain('reward_evening_panel');
   });
+});
+
+
+it('keeps any-48 memorial, first-collection eight pages, and twelve-family completion distinct', () => {
+  const state = createAchievementState(); const views = getAchievementViews(state);
+  expect(rewardFamilyPages('reward_total_48_board')).toEqual([]);
+  expect(rewardFamilyPages('reward_first_collection_board')).toEqual('ABCDEFGH'.split(''));
+  expect(rewardFamilyPages('reward_complete_72_board')).toEqual('ABCDEFGHIJKL'.split(''));
+  expect(rewardFamilyPages('reward_total_24_album')).toEqual('ABCDEFGHIJKL'.split(''));
+  expect(rewardFamilyPages('reward_total_60_album')).toEqual('ABCDEFGHIJKL'.split(''));
+  const before = structuredClone(state);
+  const html = rewardDetail('reward_complete_72_board', state, views, 11, view => `<div data-test-stamp="${view.id}"></div>`, true);
+  expect(html).toContain('12 / 12ページ'); expect(html).toContain('data-family-board="L"');
+  expect(html.match(/data-test-stamp=/g)).toHaveLength(6); expect(html).toContain('data-family-foil="false"');
+  expect(html).not.toContain('data-action="reward-equip"'); expect(html).toContain('未獲得のプレビュー');
+  expect(state).toEqual(before);
+  for (const view of views.filter(v => v.familyId === 'A')) view.earned = true;
+  expect(rewardDetail('reward_family_a_foil_board', state, views, 0, () => '', true)).toContain('data-family-foil="true"');
+  expect(rewardDetail('reward_total_48_board', state, views, 0, () => '', true)).not.toContain('data-family-board=');
 });
