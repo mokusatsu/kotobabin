@@ -23,3 +23,9 @@ The same local diagnostic after this change measured synchronous P95 2.53 ms. Th
 - Two added regressions pass: deeply frozen old views survive completed words, automatic deliveries, terminal awards, and city purchase/replay; immutable previous evidence and event deduplication are retained.
 - Repository schema remains v4; no old data, backups, eligibility conditions, cosmetic contracts, or workload thresholds are rewritten.
 - The baseline unused `AchievementView` import in `src/ui/reward-art.ts` was removed separately with root authorization; whole-tree lint now passes.
+
+## First actual repair measurement and saved-path follow-up
+
+Actual production CI run 43500486035 on bd1e4f0 measured handler P95 10.4 ms, display P95 15.6 ms, frame P95 16.7 ms, zero long tasks, and changed feedback in all 242 trusted input frames. All 72 handbook entries and the 960-word qualified filter were verified; cold-load P95 was 561 ms across 20 trials, largest actual wire transfer 922,847 bytes. The handler still exceeded 5 ms, so this is not an acceptance pass.
+
+The saved repository path reconciles a detached persisted snapshot after each successful write. That snapshot loses the previous in-memory frozen object identities; freezing its full history on the next word completion repeated unnecessary work inside native input. Reconciliation now freezes the detached canonical achievement snapshot at the existing persistence-completion boundary. Subsequent synchronous confirmed fact reducers share its frozen history and freeze only their new branches. Award calculation remains synchronous, and canonical reconciliation, transaction checks, records, and views are preserved. The initial Node diagnostic used memory storage (unsaved status), so it did not cover this saved-path reconciliation cost.
