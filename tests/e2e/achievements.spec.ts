@@ -50,8 +50,10 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   await title.selectOption('title_a01');
   await expect.poll(async () => (await savedAchievements(page)).equipped.titleId).toBe('title_a01');
   const after = await savedAchievements(page);
-  expect(after.unlocks).toEqual(before.unlocks);
-  expect(after.rewards).toEqual(before.rewards);
+  // The city keeps advancing while the handbook is open; existing ownership must not change.
+  for (const [id, unlock] of Object.entries(before.unlocks)) expect(after.unlocks[id]).toEqual(unlock);
+  for (const [id, reward] of Object.entries(before.rewards)) expect(after.rewards[id]).toEqual(reward);
+  expect(Object.keys(after.unlocks).filter(id => !before.unlocks[id]).every(id => ['I01', 'J01'].includes(id))).toBe(true);
   await page.locator('[data-action="handbook-back"]').click();
   await page.locator('nav [data-action="handbook"]').click();
   await page.locator('[data-action="handbook-tab"][data-tab="rewards"]').click();
