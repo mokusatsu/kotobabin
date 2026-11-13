@@ -228,3 +228,10 @@ PR #19で得点画面はEnterまたはTabによる明示選択で進むように
 [曲線輸送43510839791](https://github.com/mokusatsu/kotobabin/actions/runs/43510839791)両engine成功、[発展都市43510839755](https://github.com/mokusatsu/kotobabin/actions/runs/43510839755)の都市両job成功、[復帰43510839888](https://github.com/mokusatsu/kotobabin/actions/runs/43510839888)は各4成功、[Firefox43510839805](https://github.com/mokusatsu/kotobabin/actions/runs/43510839805)は自然90秒2件と実音声3件成功。都市は全6段階5・鉄道・研究3種5・再出発・実UIバックアップ復元・再読込の明示引継ぎを確認した。
 
 新規独立sakuraiの4組×両engineは実行完了、担当自身の観察・出典付きレビュー判定待ち。追加のフル装着後のreadonly reload状態は別CIで確認中。Sites配信前であり、108da49を公開済みと扱わない。OS実機/IME/JIS・US/実ブラウザー200%/初見6名/残る資材最終検収は未完。全72表示用の合成都市fixtureを通常の全解除証拠にはしない。
+
+
+## M6 追修正329の受入
+
+通常43515540759は307単体・101機能E2E・独立両2・音声各3を含む全5成功。view-onlyの4枠装着fixtureでreadonly reloadを追加し、全文/文字/原画最小サイズを保ったままHUDを分離した。全25画面条件の43516884760（workflowのみ異なるbc6752d、src/tests tree同一）はChromium/WebKit各25成功。12の所有状態caption検査とhelp/地名/footerの非重複を含む。
+
+独立担当は同一無改変シナリオで再び8経路を自然90秒・27個別開封・まとめ・鑑賞まで完遂し、所有状態の指摘解消を確認した。出典・因果・元の留保は reviews/sakurai-m6-retest.md へ保存。初回WebKit手帳の一時的な縦はみ出しは318msに存在し、キー操作なしで1856msまでに収束したと観測し、無条件の瞬間的な画面一致には合格を広げない。
