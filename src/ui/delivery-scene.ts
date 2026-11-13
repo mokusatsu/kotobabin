@@ -2,6 +2,7 @@ import type { CityState, DistrictId } from '../economy';
 import type { SessionFact, SessionSnapshot } from '../typing';
 import { districtName, escapeCityText, formatMicro } from './city';
 import { renderDistrictCore } from './district-map';
+import { vehicleArtworkId } from './equipment-visuals';
 import '../delivery-scene.css';
 
 export interface DeliveryBatch {
@@ -104,8 +105,15 @@ export function deliveryPosition(state: DeliverySceneState): number {
   const batch = state.batches.find(item => item.remainingMicro > 0n) ?? state.batches.at(-1);
   return batch ? deliveryBatchPosition(batch) : 0;
 }
-function batchMarkup(batch: DeliveryBatch, destination: DistrictId): string {
-  return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><img class="delivery-vehicle-parcel" src="${asset('cargo/cargo_parcel.webp')}" alt=""></div>`;
+function sceneVehicleArt(city: CityState, destination: DistrictId, progress: number): string {
+  const from = deliveryPathPoint(Math.max(0, progress - .001));
+  const to = deliveryPathPoint(Math.min(1, progress + .001));
+  const district = city.districts[destination];
+  return vehicleArtworkId(district.crews, district.railway, to.y < from.y ? 'rear' : 'front');
+}
+function batchMarkup(batch: DeliveryBatch, destination: DistrictId, city: CityState): string {
+  const art = sceneVehicleArt(city, destination, deliveryBatchPosition(batch));
+  return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img class="delivery-vehicle-art" data-asset-id="${art}" src="${asset(`vehicle/${art}.webp`)}" alt=""><img class="delivery-vehicle-parcel" src="${asset('cargo/cargo_parcel.webp')}" alt=""></div>`;
 }
 /** One continuous road across the playfield; exact throughput chooses the point. */
 export function deliveryPathPoint(progress: number): { x: number; y: number } {
@@ -131,7 +139,7 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
     <svg class="delivery-district-art" data-delivery-district data-stage="${city.districts[destination].stage}" viewBox="330 70 540 405" aria-hidden="true">${renderDistrictCore(city, destination)}</svg>
     <div class="delivery-arrival-glow" data-arrival-revision="0" aria-hidden="true">✓</div>
-    <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><img class="delivery-word-letter" data-delivery-effect="word" data-state="issued" src="${asset('cargo/cargo_parcel.webp')}" alt=""><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
+    <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination, city)).join('')}</div><img class="delivery-word-letter" data-delivery-effect="word" data-state="issued" src="${asset('cargo/cargo_parcel.webp')}" alt=""><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img data-dispatch-vehicle src="${asset(`vehicle/${vehicleArtworkId(city.districts[destination].crews, city.districts[destination].railway, 'rear')}.webp`)}" alt=""><span>✉✉</span></div></div>
     <div class="delivery-place delivery-origin"><strong>ことば倉庫</strong><span data-scene-cargo>まとめ便 0 / 5</span><span class="delivery-envelope-rack" aria-hidden="true">${'<i>✉</i>'.repeat(5)}</span></div>
     <div class="delivery-place delivery-destination"><strong>${escapeCityText(districtName(destination))}</strong><span data-scene-arrived title="画面を開いてからの到着。開始前の輸送待ちを含みます。">到着 0資材</span></div>
     <p class="delivery-route-state" data-scene-status>${sceneStatus(state)}</p>
@@ -177,16 +185,22 @@ export class DeliverySceneController {
       s.batches.forEach((batch, index) => {
         let node = Array.from(batchRoot.children).find(item => (item as HTMLElement).dataset.effectId === batch.id) as HTMLElement | undefined;
         if (!node) {
-          const container = document.createElement('div'); container.innerHTML = batchMarkup(batch, s.destination);
+          const container = document.createElement('div'); container.innerHTML = batchMarkup(batch, s.destination, this.city);
           node = container.firstElementChild as HTMLElement; batchRoot.append(node);
         }
         Object.assign(node.dataset, { state: batch.remainingMicro > 0n ? 'in-transit' : 'arrived',
           amountMicro: String(batch.amountMicro), remainingMicro: String(batch.remainingMicro), combined: String(batch.combined) });
         const progress = s.reducedMotion && batch.remainingMicro > 0n ? .5 : deliveryBatchPosition(batch);
+        const art = sceneVehicleArt(this.city, s.destination, progress);
+        const sprite = node.querySelector<HTMLImageElement>('.delivery-vehicle-art');
+        if (sprite && sprite.dataset.assetId !== art) { sprite.src = asset(`vehicle/${art}.webp`); sprite.dataset.assetId = art; }
         const point = deliveryPathPoint(progress);
         node.style.left = `${point.x * 100}%`; node.style.top = `calc(${point.y * 100}% + ${(index % 3) * 7}px)`;
       });
     }
+    const dispatchVehicle = el.querySelector<HTMLImageElement>('[data-dispatch-vehicle]');
+    const dispatchArt = vehicleArtworkId(this.city.districts[s.destination].crews, this.city.districts[s.destination].railway, 'rear');
+    if (dispatchVehicle && dispatchVehicle.dataset.assetId !== dispatchArt) { dispatchVehicle.src = asset(`vehicle/${dispatchArt}.webp`); dispatchVehicle.dataset.assetId = dispatchArt; }
     const wordEffect = el.querySelector<HTMLElement>('[data-delivery-effect=word]');
     const dispatchEffect = el.querySelector<HTMLElement>('[data-delivery-effect=dispatch]');
     if (wordEffect) Object.assign(wordEffect.dataset, { effectId: s.lastWordEventId, sessionId: s.sessionId, from: 'warehouse', to: s.destination });

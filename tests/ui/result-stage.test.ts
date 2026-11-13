@@ -43,9 +43,9 @@ describe('deterministic result presentation with confirmed award IDs',()=>{
     expect(html).toContain('はじめのことば');expect(html).toContain('語を1語完成する');expect(html).toContain('称号「はじめのことば」を獲得');expect(html).toContain('stamp_a01.webp');
     expect(html).not.toMatch(/SSR|排出率|大当たり|レア度|paper-card|data-paginate/);
   });
-  it('never displays an internal production code as the title of unfinished stamp art',()=>{
+  it('uses the finished L06 illustration without an internal production placeholder',()=>{
     const state=advanceResultStage(advanceResultStage(createResultStage(['L06'])));const html=renderResultStage(state,options);
-    expect(html).toContain('文の図鑑');expect(html).toContain('切手の絵柄は制作中');expect(html).not.toContain('<strong>L06</strong>');
+    expect(html).toContain('文の図鑑');expect(html).toContain('stamp_l06.webp');expect(html).not.toContain('切手の絵柄は制作中');expect(html).not.toContain('<strong>L06</strong>');
   });
   it('resumes the exact in-memory queue without replaying animations or changing rewards',()=>{
     const revealed=advanceResultStage(advanceResultStage(createResultStage(['A01','A02'])));
