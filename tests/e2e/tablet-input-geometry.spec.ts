@@ -22,6 +22,8 @@ for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
       await keyboardRevealControl(page, search); await search.fill(query);
       const practice = page.locator(`[data-action="practice-word"][data-word-id="${id}"]`);
       await keyboardRevealControl(page, practice); await practice.click();
+      const replace = page.getByRole('button', { name: '終了して移動する', exact: true });
+      if (await replace.isVisible()) { await keyboardRevealControl(page, replace); await replace.click(); }
       if (await page.locator('#check-status').count()) await confirmHalfWidthInput(page);
       await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'PRACTICE');
       await expect(page.locator('#game-input')).toBeFocused();

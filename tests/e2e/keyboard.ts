@@ -79,12 +79,16 @@ export async function keyboardWalkPanels(page: Page) {
 
 /** Reach a real paginated control using the same visible page controls as a player. */
 export async function keyboardRevealControl(page: Page, target: Locator) {
+  // Native details and font changes schedule measured repacking on the next frame.
+  const settle = () => page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await settle();
   if (await target.isVisible()) return;
   const host = page.locator('.ipad-page-host:visible').last();
   await expect(host).toBeVisible();
   const previous = host.locator('[data-ipad-prev]');
   for (let pageIndex = 0; pageIndex < 100 && await previous.isEnabled(); pageIndex++) {
     await tabTo(page, previous); await page.keyboard.press('ArrowLeft');
+    await settle();
     if (await target.isVisible()) return;
   }
   const next = host.locator('[data-ipad-next]');
@@ -92,6 +96,7 @@ export async function keyboardRevealControl(page: Page, target: Locator) {
     if (await target.isVisible()) return;
     await expect(next).toBeEnabled();
     await tabTo(page, next); await page.keyboard.press('ArrowRight');
+    await settle();
   }
   throw new Error('Control was not reachable through100 actual display panels');
 }

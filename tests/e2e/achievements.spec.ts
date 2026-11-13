@@ -100,6 +100,7 @@ test('a normal delivery achievement stays provisional until completion and becom
 });
 
 test('revealing a hidden condition changes its display without granting progress or rewards', async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 1180, height: 720 });
   await page.goto('/');
   await keyboardMenuTo(page, 'handbook');
   const family = page.locator('[data-action="achievement-family"][data-family-id="B"]');
