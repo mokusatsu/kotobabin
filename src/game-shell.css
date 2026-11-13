@@ -62,3 +62,8 @@
 }
 @media (prefers-reduced-motion: reduce) { .game-stage *, .city-game-stage *, .result-stage * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
 body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .city-game-stage *, body[data-reduced-motion=true] .result-stage * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+/* Guidance remains readable at the selected scale; compact spacing buys room. */
+.world-command-dock { gap: 6px; padding: 10px; }
+.world-command-dock .eyebrow { display: none; }
+.world-command-dock h1 { font-size: 1.15em; }
+.world-command-dock .keyboard-note { font-size: 1em; }
