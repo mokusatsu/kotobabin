@@ -35,14 +35,15 @@ async function preview(page: Page, id: string) {
   const open = page.locator('[data-action="reward-preview-choice"]'); await keyboardRevealControl(page, open); await tabTo(page, open); await page.keyboard.press('Enter');
   await expect(page.locator('[data-preview-reward]')).toHaveAttribute('data-preview-reward', id);
 }
-for (const font of [100, 125, 150] as const) test(`nonempty four-choice gallery and collection pages fit at ${font}% with keyboard`, async ({ page }, info) => {
+for (const height of [720, 820] as const) for (const font of [100, 125, 150] as const) test(`nonempty four-choice gallery and collection pages fit at1180x${height} ${font}% with keyboard`, async ({ page }, info) => {
   test.setTimeout(120000);
+  await page.setViewportSize({ width: 1180, height });
   await seed(page, font);
   await assertViewportFits(page);
   expect(await page.locator('.cosmetic-home-gallery').evaluate(element => { const g = element.getBoundingClientRect(); const d = document.querySelector('.world-command-dock')!.getBoundingClientRect(); const m = document.querySelector('.home-city-slot')!.getBoundingClientRect(); return g.bottom <= d.top && g.bottom <= m.top; })).toBe(true);
   const before = await equipped(page);
   expect(before.homeBackgroundId).toBe('reward_total_36_background'); expect(before.ornamentId).toBe('reward_total_08_ornament');
-  await page.screenshot({ path: info.outputPath(`home-${font}.png`) });
+  await page.screenshot({ path: info.outputPath(`home-1180x${height}-${font}.png`) });
   await keyboardMenuTo(page, 'handbook');
   expect(await page.locator('[data-cosmetic-gallery="handbook"] [data-reward-asset="reward_evening_panel"]').count()).toBe(0);
   const tab = page.locator('[data-action="handbook-tab"][data-tab="rewards"]'); await keyboardRevealControl(page, tab); await tabTo(page, tab); await page.keyboard.press('Enter');
@@ -58,7 +59,7 @@ for (const font of [100, 125, 150] as const) test(`nonempty four-choice gallery 
   await expect(page.locator('[data-family-board="B"] .reward-stamp-select')).toHaveCount(6);
   await keyboardWalkPanels(page);
   expect(await equipped(page)).toEqual(before);
-  await page.screenshot({ path: info.outputPath(`collection-${font}.png`) });
+  await page.screenshot({ path: info.outputPath(`collection-1180x${height}-${font}.png`) });
 });
 
 test('unowned preview does not equip and viewing objects never require equipment', async ({ page }) => {
