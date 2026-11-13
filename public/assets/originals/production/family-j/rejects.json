@@ -1,0 +1,9 @@
+{
+  "first_batch_error": "One output was rejected by imagegen safety system (violence false positive); batch aborted before results returned. Request ID 526c55c8-48a6-4199-9d94-d35137caba4a. No returned files attributable to first batch.",
+  "rejected_returned_images": [
+    {
+      "file": "stamp_j01.attempt-02.png",
+      "reason": "Superseded by square-canvas imagegen edit. Initial brown-halo diagnosis was a viewer false positive: hidden RGB under alpha zero, verified clean on opaque paper. Original was 1536x1024, selected edit is 1254x1254."
+    }
+  ]
+}

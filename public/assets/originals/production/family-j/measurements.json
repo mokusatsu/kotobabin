@@ -1,0 +1,308 @@
+[
+  {
+    "id": "stamp_j01",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      21,
+      1246,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      61,
+      99,
+      459,
+      445
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 126496,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "b9548ae8a8104c1bfe018b213a10ca3cd51b9923e2e75f25f2851c9e12067c8f",
+    "native_sha256": "97b6d74d13b73b3a4710ee91725c7c67b5612004f22e30093fb108b5a6042287",
+    "runtime_sha256": "62126d05e23ee330028052c510ce8f0ec2e6b1e4ec76fc34a381e7afe3ffd79f",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_j02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      2,
+      1244,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      32,
+      67,
+      476,
+      451
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 180952,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "250b1dc1c3dddd606c3842824b1b39ccb93ffd7b0c8a0733766b984a5c34b33d",
+    "native_sha256": "5c2317db4c1f9d740991f54cb4af784e2e64facf761c50286b827ea062be18e4",
+    "runtime_sha256": "2b06ea03dccefed4c939a70eea39cbd7e83ee86bec75943e97ca53be016eef24",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_j03",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      33,
+      1254,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      32,
+      53,
+      477,
+      452
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 251716,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "eeecba8f23368d40d1d2a093bd09863e8b49aa13300b1ceb25edeb5aa53c5b78",
+    "native_sha256": "62af40b8dfe16891eb3b9063f9207dec999a21730fb094f28c4e8ee9b9bbe321",
+    "runtime_sha256": "d62dccf6cadc248ba912740764795d8cabe0de47b77e8ba1324326102f69cabe",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_j04",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      2,
+      1254,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      32,
+      37,
+      479,
+      480
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 259850,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "f61ec83aa4250c138bfba4e962d1ea22911f8b64773f9a3e8c6f57c4678fe7f1",
+    "native_sha256": "6acd07ca5a117d865872fb362683290f5f682ca36604d8c8720e449b8ea52978",
+    "runtime_sha256": "0db3d6bfe98b34273a7cbdd5044bb5367185f38f92f6fde4031d7f948c4b33fe",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_j05",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      9,
+      1238,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      42,
+      49,
+      470,
+      470
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 275558,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "9fec0adc114df793fd4aa54cdffd502bf4630dbfe9ef2857576b12ccbf19843f",
+    "native_sha256": "a1aebbe18f5fc3b20c7ebd97e836f270bd488cbda7ad2511fedab172d534565a",
+    "runtime_sha256": "6f59d805ae7e2ffddc2ba4ea4e232fbc489afb79f744e1b502ea67f72f9fe3cb",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_j06",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      8,
+      1254,
+      1230
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      32,
+      63,
+      480,
+      452
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 225192,
+    "transform": {
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "scale": 0.3572567783094099,
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "crop": null,
+      "alpha_threshold": null,
+      "paint_edits": null
+    },
+    "normalized_sha256": "aa1065f2800568c4e80e26376983afba3928123930c79c2ac8597b9f57997b8c",
+    "native_sha256": "2fc269b90080b81bd54f16adb50576d9829a6fe914554d13911571a157b4cf96",
+    "runtime_sha256": "3cfcdd809da1c6097ac7210ac1393421a96930ea7af8340ea8bdb30a1f668316",
+    "png_webp_alpha_and_paper_composite_equal": true
+  }
+]

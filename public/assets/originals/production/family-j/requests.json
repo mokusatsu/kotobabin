@@ -1,0 +1,60 @@
+[
+  {
+    "id": "stamp_j01",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. A loaded horizontal timber pallet carrying three tied kraft parcels has just arrived from a wooden cargo deck onto a small district landing pier. Make the short broad bridging plank between cargo deck and pier and a thick knotted mooring rope prominent in the foreground. Low wide silhouette, stout timber supports, a tiny sliver of muted turquoise water under the landing. No ship, train, warehouse or road network. The arrival transition, broad pallet, gangplank and rope are the subject.",
+    "transparent_background": true,
+    "status": "superseded-square-canvas-edit; initial halo diagnosis was viewer false positive",
+    "native_source_path": "/workspace/generated_images/exec-7b27a016-c35c-47d4-ac7a-40124a499a88.png",
+    "preserved_native": "stamp_j01.attempt-02.png",
+    "edit": {
+      "prompt": "Edit this watercolor parcel landing illustration. Preserve the physical dock, loaded pallet, short bridging plank and knotted mooring rope and their warm watercolor/gouache cream, forest green, ochre and rust palette. Remove the broad brown hazy backdrop entirely so the only painted pixels are the physical objects, small turquoise water immediately below the pier and very short contact shadows. Make the canvas square and position the entire compact scene at its center with at least 12 percent clear fully transparent margin on ALL four sides; all physical objects must be complete and away from edges. True transparent background with absolutely no glow, colored aura, opaque page, backdrop or gradient. No text, numbers, border or state marks.",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-7b27a016-c35c-47d4-ac7a-40124a499a88.png"
+      ],
+      "native_source_path": "/workspace/generated_images/exec-e4e96bf9-a4b2-43f9-979e-1e18dbb509aa.png",
+      "preserved_native": "stamp_j01.attempt-03.png",
+      "status": "candidate-selected"
+    }
+  },
+  {
+    "id": "stamp_j02",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. A sturdy old forest-green platform weighing scale supports one broad low timber crate filled with material bundles. Its large round cream weighing dial is prominent below the crate, with a simple dark pointer and absolutely NO numbers, letters or tick labels. A neat long stack of ochre wooden boards extends alongside the scale to the right. Stable low silhouette, clearly mechanical scale feet. The round weighing dial is the main identifying detail. No dock, warehouse or vehicle.",
+    "transparent_background": true,
+    "status": "candidate-selected",
+    "native_source_path": "/workspace/generated_images/exec-6a1e2024-c010-4ed8-8ddc-8ee8a512632d.png",
+    "preserved_native": "stamp_j02.attempt-02.png"
+  },
+  {
+    "id": "stamp_j03",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. An elevated little grassy hill seen in gently isometric three-quarter view. A tall central wooden direction signpost with six broad completely BLANK arrow boards stands on the hill. Six wide cream roads radiate visibly from its base outward to six tiny physically distinct district building clusters around the perimeter: houses, shops, workshop, trees, station canopy, small harbor shed. The bold vertical signpost and branching road ribbons are dominant. Keep buildings secondary, no lettering, no rail tracks or trains. Standalone compact cutout miniature landscape.",
+    "transparent_background": true,
+    "status": "candidate-selected",
+    "native_source_path": "/workspace/generated_images/exec-b2172ff6-8a6a-4674-8bd5-349c8923e355.png",
+    "preserved_native": "stamp_j03.attempt-02.png"
+  },
+  {
+    "id": "stamp_j04",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. A compact forest-green freight steam locomotive emerges toward the viewer at a slight angle from a sturdy cream stone arched tunnel. Large dark tunnel opening above and behind the large round locomotive front, rust-red buffer beam, sturdy visible wheels, a small cargo wagon partly visible behind. The arch and locomotive occupy most of the composition. A short rail section under the wheels, no expansive landscape, no numerals or emblem plates or lettering. Hand-painted cozy working railway, not toy plastic.",
+    "transparent_background": true,
+    "status": "candidate-selected",
+    "native_source_path": "/workspace/generated_images/exec-cbe64990-b2c4-4c83-8f0d-22eaaa6c6d39.png",
+    "preserved_native": "stamp_j04.attempt-02.png"
+  },
+  {
+    "id": "stamp_j05",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. A compact miniature three-dimensional railway junction seen from high above. Several broad clearly readable railway tracks form sweeping curved branches and loops across a grassy ochre terrain island. A sturdy diagonal stone viaduct in the foreground carries one line, other rails curve underneath; a short stone tunnel at the back receives the rails. Dominant sprawling knot of rail ribbons and diagonal elevated bridge, NO central signpost, no trains, no giant buildings. Warm hand-painted terrain edges fade to transparency; no rectangular map, no symbols or lettering.",
+    "transparent_background": true,
+    "status": "candidate-selected",
+    "native_source_path": "/workspace/generated_images/exec-f30bb314-a517-4d11-a409-e4c0724ae2b5.png",
+    "preserved_native": "stamp_j05.attempt-02.png"
+  },
+  {
+    "id": "stamp_j06",
+    "prompt": "Create a single square frameless achievement stamp illustration for a cozy Japanese postal town game, on a truly transparent RGBA background. Warm hand-painted watercolor and opaque gouache with visible paper-like pigment texture within painted objects, soft upper-left light, short lower-right contact shadows. Restrained cream, ochre timber, forest green and rust-red palette. Richly painted physical objects, not vector icons, not a pictogram, not photorealistic. One bold legible composition identifiable at 72px. Keep the entire painted subject detached from all canvas edges with generous transparent margins. No white rectangular background, no opaque sky or page. No stamp frame, decorative border, letters, numerals, writing, UI marks, badges or labels anywhere. Center the entire subject, square canvas. A large cream and rust-roofed cargo warehouse has a tall dark open entrance behind a heavy forest-green rectangular gantry crane. The crane suspends one enormous broad wooden material crate by two thick ropes in front of the warehouse entrance. Several low wheeled wooden cargo platforms form a continuous row at its feet. Strong tall squared gantry silhouette and visibly heavy suspended wide box are dominant; crane legs firmly grounded. Cozy hand-painted industrial logistics, no text or warning labels or logos, no water or trains.",
+    "transparent_background": true,
+    "status": "candidate-selected",
+    "native_source_path": "/workspace/generated_images/exec-59ab58f8-bdc6-4603-b80d-075631b3bd68.png",
+    "preserved_native": "stamp_j06.attempt-02.png"
+  }
+]
