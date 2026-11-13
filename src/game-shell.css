@@ -103,7 +103,7 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 /* The route hint belongs in the clear band between the two district rows,
    rather than covering their lower labels at the selected readable type size. */
 @media (min-width: 960px) {
-  .world-stage > .world-map-help { top: 64%; bottom: auto; max-width: calc(100% - 389px); }
+  .world-stage .game-world-map > .world-map-help { top: 64%; bottom: auto; max-width: calc(100% - 24px); }
 }
 @media (min-width: 960px) and (max-height: 760px) {
   #app:has(.cosmetic-home-gallery) .world-stage .canonical-map [data-district-id="station"] { top: auto !important; bottom: 8px; }

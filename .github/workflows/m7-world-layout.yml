@@ -1,0 +1,29 @@
+name: M7 adaptive world game stage
+on:
+  push:
+    branches: [fix/m7-worldmap-minimum, feat/m7-integration, main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-world:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config=playwright.world-layout.config.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m7-world-layout-${{ matrix.browser }}
+          path: test-results/world-layout/
