@@ -259,6 +259,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector<HTMLButtonElement>('[data-action="practice-filtered"]')!.disabled = !words.length;
   }
   function focusScreen(selector = 'main h1') {
+    ipadLayout.flush();
     const element = root.querySelector<HTMLElement>(selector); if (!element) return;
     if (!element.matches('button, input, select, a')) element.tabIndex = -1;
     element.focus({ preventScroll: true });

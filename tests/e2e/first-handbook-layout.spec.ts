@@ -1,8 +1,8 @@
 import { expect, test, type Route } from '@playwright/test';
 import { assertViewportFits, keyboardMenuTo } from './keyboard';
 
-test('the first handbook commit and early frames fit before its pictures load', async ({ page }, info) => {
-  await page.setViewportSize({ width: 1180, height: 720 });
+for (const height of [720, 820]) for (const font of [100, 125, 150]) test(`first handbook commit and early frames fit at1180x${height} font${font} before pictures load`, async ({ page }, info) => {
+  await page.setViewportSize({ width: 1180, height });
   await page.addInitScript(() => {
     type Sample = { phase: string; elapsed: number; height: number; documentHeight: number; scrollY: number; pages?: string; focus: string; outside: string[] };
     const samples: Sample[] = []; Object.assign(window, { firstHandbookSamples: samples });
@@ -21,7 +21,22 @@ test('the first handbook commit and early frames fit before its pictures load', 
       for (const delay of [100, 300, 1000]) setTimeout(() => sample(`after-${delay}ms`), delay);
     }).observe(document, { childList: true, subtree: true });
   });
-  await page.goto('/');
+  if (font === 100) await page.goto('/');
+  else {
+    await page.route('**/src/main.ts', route => route.abort()); await page.goto('/');
+    await page.evaluate(async scale => {
+      const source = '/src/profile/repository.ts'; const { createProfileDocument } = await import(source);
+      const profile = createProfileDocument(); profile.settings.fontScale = scale; profile.tutorialSeen = true;
+      await new Promise<void>((resolve, reject) => {
+        const request = indexedDB.open('kotobabin', 4);
+        request.onupgradeneeded = () => request.result.createObjectStore('profile');
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => { const db = request.result; const tx = db.transaction('profile', 'readwrite'); tx.objectStore('profile').put(profile, 'current'); tx.oncomplete = () => { db.close(); resolve(); }; tx.onerror = () => reject(tx.error); };
+      });
+    }, font);
+    await page.unroute('**/src/main.ts'); await page.reload();
+  }
+  await expect(page.locator('#app')).toHaveCSS('font-size', `${16 * font / 100}px`);
   const held: Route[] = []; let release = false;
   await page.route(/\/assets\/(achievement_stamp|shared_frame)\//, route => release ? route.continue() : void held.push(route));
   await keyboardMenuTo(page, 'handbook');
