@@ -1,0 +1,31 @@
+name: M7 first handbook early layout
+on:
+  push:
+    branches: [fix/m7-first-handbook-layout]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: m7-first-handbook-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  first-handbook:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test tests/e2e/first-handbook-layout.spec.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m7-first-handbook-${{ matrix.browser }}
+          path: test-results/
