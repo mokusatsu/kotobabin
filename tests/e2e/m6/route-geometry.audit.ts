@@ -10,10 +10,13 @@ test('actual shipment anchors stay within the painted road while input continues
   const nextGuide = (await page.locator('#romaji-guide > span:not(.accepted)').allTextContents()).join('');
   await page.keyboard.type(nextGuide[0]);
   await expect(page.locator('#game-input')).toBeFocused();
-  const observations = [];
-  for (let step = 0; step < 20; step++) {
-    await page.waitForTimeout(180);
-    const observation = await page.evaluate(() => {
+  await page.screenshot({ path: info.outputPath('route-before.png') });
+  const observations = await page.evaluate(async () => {
+    const observations = [];
+    const stop = performance.now() + 4200;
+    while (performance.now() < stop) {
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      const observation = (() => {
       const scene = document.querySelector<HTMLElement>('#delivery-scene')!;
       const lane = scene.querySelector<HTMLElement>('.delivery-action-lane')!;
       const svg = scene.querySelector<SVGSVGElement>('.delivery-scene-art')!;
@@ -25,7 +28,7 @@ test('actual shipment anchors stay within the painted road while input continues
         return new DOMPoint(point.x, point.y).matrixTransform(matrix);
       });
       return {
-        scene: scene.getBoundingClientRect().toJSON(), lane: lane.getBoundingClientRect().toJSON(),
+        time: performance.now(), scene: scene.getBoundingClientRect().toJSON(), lane: lane.getBoundingClientRect().toJSON(),
         svg: svg.getBoundingClientRect().toJSON(), matrix: [matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f],
         arrived: scene.dataset.arrivedMicro, queued: scene.dataset.queuedMicro,
         vehicles: [...scene.querySelectorAll<HTMLElement>('[data-delivery-transport]')].map(node => {
@@ -37,10 +40,12 @@ test('actual shipment anchors stay within the painted road while input continues
             offsetParent: (node.offsetParent as HTMLElement)?.className, parent: node.parentElement?.getBoundingClientRect().toJSON() };
         }),
       };
-    });
-    observations.push(observation);
-    if ([0, 5, 10, 19].includes(step)) await page.screenshot({ path: info.outputPath(`route-${step}.png`) });
-  }
+      })();
+      observations.push(observation);
+    }
+    return observations;
+  });
+  await page.screenshot({ path: info.outputPath('route-after.png') });
   await info.attach('route-geometry.json', { body: JSON.stringify(observations, null, 2), contentType: 'application/json' });
   const vehicles = observations.flatMap(observation => observation.vehicles);
   console.log('ROUTE_GEOMETRY', JSON.stringify({ maxDistance: Math.max(...vehicles.map(vehicle => vehicle.distance)), observations }));
