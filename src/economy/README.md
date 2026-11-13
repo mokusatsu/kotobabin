@@ -1,22 +1,42 @@
-# 街の経済基盤（M3先行作業）
+# 街の経済エンジン
 
 数値の正本は `spec/initial/data/economy_config.json`。micro値は計算中BigInt、保存時は10進文字列にする。
 
 - `EconomyFormulas`：荷づくり・研究倍率、完成語・確定配達の資材量、個別切上げ価格、一括購入見積、輸送・営業速度、開発費用。
-- `initialWorldState(wallMs)`：初期6地区、住宅地の段階1計画、実経過時計の初期値。
-- `WorldClock(state)`：既存輸送待ち・計画積立・建築・営業を整数msで更新。境界の到着→建築→以後の営業速度を順守。`advanceTo`で絶対時刻、`restoreAt`で最大8時間と壁時計の最大値を保持する。
+- `initialWorldState(wallMs)` / `WorldClock(state)`：既存輸送待ち・計画積立・建築・営業を整数msで更新。境界の到着→建築→以後の営業速度を順守。`advanceTo`で絶対時刻、`restoreAt`で最大8時間と壁時計の最大値を保持する。
+- `initialCityState(wallMs)` / `CityEconomy(state)`：全経済操作と確定事実の適用。`snapshot()`はBigIntを保持する独立コピーを返す。
 
-`WorldClock`は受け取ったstateを更新する。復帰処理後のstateと`savedWallMs`を保存側の同一トランザクションへ入れる必要がある。ここではIndexedDBへの書込み・データ読込み検証を行わない。式へ渡す所有数・ランク・確定完成情報は上位層が正本の範囲内へ制約する。
+## CityEconomyの契約
 
-## 検証済みの範囲
+`beginSession(sessionId, districtId='residential', mode='normal', atMs?)` で、cityId・届け先・資材倍率を固定する。`completeWord`へ `{cityId, sessionId, factSequence, baseLength, mistakes?, completed?, confirmation?, atMs?}`、`shipCargo`へ `{cityId, sessionId, factSequence, scoreSum, cargoCount, reason, atMs?}` を渡す。UIや描画イベントから資源を直接加算しない。
 
-Python参照モデルで生成する `tests/economy/reference_fixtures.json` と照合する。更新はリポジトリルートから `python3 tests/economy/generate_fixtures.py`。全644価格、倍率節目を含む24組の語・配達生成量、整数ms建築境界・計画停止・放置上限・復帰再試行を確認している。時間分割と絶対時刻再試行も確認する。
+事実識別子の再適用は `applied:false, reason:'duplicate'`、前の街の事実は`stale_city`を返す。同じ識別子で内容が変われば例外。台帳は状態に保持し、snapshotから再構築しても二重適用を防ぐ。フィンガープリントは固定順序のJSONペイロードそのものを保持する。PythonのSHA-256表現とは異なるが、内容一致・衝突拒否の意味は同じである。
 
-## 未実装（M3全体の完成を意味しない）
+`endSession(atMs?)`は未配達ボーナスを作らず、当該便の生成量・便中の到着量（前便の待ちも含む）・収益の差分を返す。再呼出しは同じ要約を返す。`generatedMicro`、`arrivedMicro`、配送・営業収益は生涯累積、`cityArrivedMicro`は今回の街の累積である。
 
-- `CityEconomy` の確定事実取込み、cityId/sessionId/factSequence台帳、同一事実再適用防止。
-- セッション開始時の倍率・届け先固定、投資操作のセッションゲート。
-- 購入実行、計画操作、地区開通、鉄道・連携・研究購入、再出発と設計図報酬。
-- 永続化・復元検証、ゲーム画面との接続、街のイベント発行、経済全体の参照例照合。
+投資はセッション終了後に行う。
 
-描画側から直接queue/coinsを加算する構成にはしない。これらの事実処理が完了するまで、UIから本基盤の生成式だけを呼んで本番経済を実装済みと扱わない。
+- `quotePurchase(kind, quantity=1, districtId?)` / `purchase(..., atMs?)`：1/10/max、個別価格の合計、資金不足の部分購入、段階別店舗上限、倍率・輸送待ち・営業速度の前後比較。
+- `startPlan` / `pausePlan` / `resumePlan`：停止時も積立を保持、再開時は自由在庫から即時充当。完成後の次計画は自動開始しない。
+- `openDistrict`：現在の段階合計とコイン条件。
+- `buyRailway`：段階3・10班・コイン・自由在庫条件。予約資材を使わない。
+- `buySynergy` / `buyResearch`：前提、価格、単独所有、ランク上限。
+- `newCityPreview` / `startNewCity({confirmed, location, landscape, atMs?})`：全6地区段階3と到着100,000、整数平方根による報酬、HOME/RESULT確認。研究・設計図・生涯統計を保持し、cityIdと都市固有台帳を更新する。語彙・実績・設定等は本エンジンの外のプロフィール領域なので変更しない。
+
+`atMs`を与える操作は、指定時刻の到着・建築を先に精算してから操作する。省略時は現在の経済時刻で処理する。保存側で時刻と資源を同一トランザクションにする。
+
+## 検証
+
+`python3 tests/economy/generate_fixtures.py` と `python3 tests/economy/generate_transactions.py` は、変更していないPython正本から期待値を再生成する。
+
+- 全644価格、24組の資材倍率境界、整数ms建築境界、停止計画、放置上限、時間分割。
+- 4シナリオの操作ごとにPython状態と比較し、各操作間でsnapshotから再構築する。完成・配達・購入・計画・開通・鉄道・全連携・研究・再出発・古い街の事実・復帰再試行を含む。
+- 全投資入口の5モード中拒否、事実内容衝突、入力確認・途中語の資材0、鉄道の予約資材保護、正確な再出発閾値、旧実績用配達回数と経済配達回数の分離。
+
+## 残作業
+
+- IndexedDBでの保存・読込み時の入口検証とトランザクション。コンストラクターは検証済みの`CityState`を受け取り、内部で同じ検証を繰り返さない。
+- ゲームセッション・UI・実績への接続と、確定経済イベントのプロフィール反映。
+- 代表20語の経済状態を使った画面統合検証、実際の放置復帰・再起動E2E。
+
+経済単体の動作確認をM3全体の製品統合完了とは扱わない。

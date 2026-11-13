@@ -1,0 +1,5058 @@
+[
+  {
+    "name": "session-materials-summary-and-idempotence",
+    "initial": {
+      "economyVersion": "4.0.0",
+      "clockMs": 0,
+      "savedWallMs": 0,
+      "citySequence": 1,
+      "cityId": "city-1",
+      "landscape": "riverside",
+      "coinsMicro": "0",
+      "cityArrivedMicro": "0",
+      "packagingLevel": 0,
+      "blueprints": 0,
+      "research": {
+        "materials": 0,
+        "logistics": 0,
+        "commerce": 0
+      },
+      "synergies": [],
+      "districts": {
+        "residential": {
+          "open": true,
+          "stage": 0,
+          "shops": 0,
+          "crews": 1,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": {
+            "targetStage": 1,
+            "requiredMicro": "30000000",
+            "reservedMicro": "0",
+            "paidCoinsMicro": "0",
+            "paused": false
+          }
+        },
+        "market": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "workshop": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "park": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "station": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "harbor": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        }
+      },
+      "lastSessionSummary": null,
+      "constructionHistory": [],
+      "completedWords": 0,
+      "economicShipments": 0,
+      "legacyShipments": 0,
+      "generatedMicro": "0",
+      "arrivedMicro": "0",
+      "deliveryCoinsMicro": "0",
+      "shopCoinsMicro": "0",
+      "citiesRestarted": 0,
+      "usedSessionIds": [],
+      "factKeys": []
+    },
+    "steps": [
+      {
+        "action": [
+          "begin_session",
+          {
+            "session_id": "delivery"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "complete_word",
+          {
+            "session_id": "delivery",
+            "fact_sequence": 1,
+            "base_length": 3,
+            "mistakes": 2,
+            "city_id": "city-1"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "3000000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "3000000",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "complete_word",
+          {
+            "session_id": "delivery",
+            "fact_sequence": 1,
+            "base_length": 3,
+            "mistakes": 2,
+            "city_id": "city-1"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "3000000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "3000000",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "ship_cargo",
+          {
+            "session_id": "delivery",
+            "fact_sequence": 2,
+            "score_sum": 230,
+            "cargo_count": 3,
+            "reason": "manual",
+            "city_id": "city-1",
+            "at_ms": 1000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "6000000",
+          "cityArrivedMicro": "3000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "13800000",
+              "stockMicro": "0",
+              "arrivedMicro": "3000000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "3000000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "3000000",
+          "deliveryCoinsMicro": "6000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "end_session",
+          {
+            "at_ms": 2000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 2000,
+          "savedWallMs": 2000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "14000000",
+          "cityArrivedMicro": "7000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "9800000",
+              "stockMicro": "0",
+              "arrivedMicro": "7000000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "7000000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "delivery",
+            "cityId": "city-1",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 0,
+            "endMs": 2000,
+            "generatedMicro": "16800000",
+            "arrivedDuringSessionMicro": "7000000",
+            "deliveryCoinsMicro": "14000000",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "9800000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "7000000",
+          "deliveryCoinsMicro": "14000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "ship_cargo",
+          {
+            "session_id": "delivery",
+            "fact_sequence": 2,
+            "score_sum": 230,
+            "cargo_count": 3,
+            "reason": "manual",
+            "city_id": "city-1"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 2000,
+          "savedWallMs": 2000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "14000000",
+          "cityArrivedMicro": "7000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "9800000",
+              "stockMicro": "0",
+              "arrivedMicro": "7000000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "7000000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "delivery",
+            "cityId": "city-1",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 0,
+            "endMs": 2000,
+            "generatedMicro": "16800000",
+            "arrivedDuringSessionMicro": "7000000",
+            "deliveryCoinsMicro": "14000000",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "9800000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "7000000",
+          "deliveryCoinsMicro": "14000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "end_session",
+          {}
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 2000,
+          "savedWallMs": 2000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "14000000",
+          "cityArrivedMicro": "7000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "9800000",
+              "stockMicro": "0",
+              "arrivedMicro": "7000000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "7000000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "delivery",
+            "cityId": "city-1",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 0,
+            "endMs": 2000,
+            "generatedMicro": "16800000",
+            "arrivedDuringSessionMicro": "7000000",
+            "deliveryCoinsMicro": "14000000",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "9800000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "7000000",
+          "deliveryCoinsMicro": "14000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "advance_to",
+          {
+            "target_ms": 10000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 10000,
+          "savedWallMs": 10000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "33600000",
+          "cityArrivedMicro": "16800000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "16800000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "16800000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "delivery",
+            "cityId": "city-1",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 0,
+            "endMs": 2000,
+            "generatedMicro": "16800000",
+            "arrivedDuringSessionMicro": "7000000",
+            "deliveryCoinsMicro": "14000000",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "9800000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "16800000",
+          "deliveryCoinsMicro": "33600000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "advance_to",
+          {
+            "target_ms": 10000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 10000,
+          "savedWallMs": 10000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "33600000",
+          "cityArrivedMicro": "16800000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "16800000",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "16800000",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "delivery",
+            "cityId": "city-1",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 0,
+            "endMs": 2000,
+            "generatedMicro": "16800000",
+            "arrivedDuringSessionMicro": "7000000",
+            "deliveryCoinsMicro": "14000000",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "9800000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 1,
+          "legacyShipments": 1,
+          "generatedMicro": "16800000",
+          "arrivedMicro": "16800000",
+          "deliveryCoinsMicro": "33600000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "delivery"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"delivery\",1]",
+            "[\"city-1\",\"delivery\",2]"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "plans-investment-unlock-and-boundaries",
+    "initial": {
+      "economyVersion": "4.0.0",
+      "clockMs": 0,
+      "savedWallMs": 0,
+      "citySequence": 1,
+      "cityId": "city-1",
+      "landscape": "riverside",
+      "coinsMicro": "10000000000",
+      "cityArrivedMicro": "0",
+      "packagingLevel": 0,
+      "blueprints": 0,
+      "research": {
+        "materials": 0,
+        "logistics": 0,
+        "commerce": 0
+      },
+      "synergies": [],
+      "districts": {
+        "residential": {
+          "open": true,
+          "stage": 0,
+          "shops": 0,
+          "crews": 1,
+          "railway": false,
+          "queueMicro": "500000000",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": {
+            "targetStage": 1,
+            "requiredMicro": "30000000",
+            "reservedMicro": "0",
+            "paidCoinsMicro": "0",
+            "paused": false
+          }
+        },
+        "market": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "workshop": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "park": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "station": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "harbor": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        }
+      },
+      "lastSessionSummary": null,
+      "constructionHistory": [],
+      "completedWords": 0,
+      "economicShipments": 0,
+      "legacyShipments": 0,
+      "generatedMicro": "0",
+      "arrivedMicro": "0",
+      "deliveryCoinsMicro": "0",
+      "shopCoinsMicro": "0",
+      "citiesRestarted": 0,
+      "usedSessionIds": [],
+      "factKeys": []
+    },
+    "steps": [
+      {
+        "action": [
+          "purchase",
+          {
+            "kind": "packaging",
+            "at_ms": 7500
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 7500,
+          "savedWallMs": 7500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "10010000000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "470000000",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "start_plan",
+          {
+            "district_id": "residential"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 7500,
+          "savedWallMs": 7500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "9910000000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "470000000",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": {
+                "targetStage": 2,
+                "requiredMicro": "150000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "100000000",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "pause_plan",
+          {
+            "district_id": "residential"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 7500,
+          "savedWallMs": 7500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "9910000000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "470000000",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": {
+                "targetStage": 2,
+                "requiredMicro": "150000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "100000000",
+                "paused": true
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "advance",
+          {
+            "elapsed_ms": 60000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "10396000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "240000000",
+              "arrivedMicro": "270000000",
+              "plan": {
+                "targetStage": 2,
+                "requiredMicro": "150000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "100000000",
+                "paused": true
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "resume_plan",
+          {
+            "district_id": "residential"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "10396000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "open_district",
+          {
+            "district_id": "market"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "10246000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "purchase",
+          {
+            "kind": "shops",
+            "quantity": 10,
+            "district_id": "residential"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "9734000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "purchase",
+          {
+            "kind": "crews",
+            "quantity": 10,
+            "district_id": "market"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "8107000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 11,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "begin_session",
+          {
+            "session_id": "market-trip",
+            "district_id": "market",
+            "mode": "practice"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "8107000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 11,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "market-trip"
+          ],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "complete_word",
+          {
+            "session_id": "market-trip",
+            "fact_sequence": 1,
+            "base_length": 10,
+            "city_id": "city-1"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "8107000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 11,
+              "railway": false,
+              "queueMicro": "12500000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "12500000",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "market-trip"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"market-trip\",1]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "end_session",
+          {}
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 67500,
+          "savedWallMs": 67500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "8107000000",
+          "cityArrivedMicro": "270000000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "230000000",
+              "stockMicro": "90000000",
+              "arrivedMicro": "270000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 11,
+              "railway": false,
+              "queueMicro": "12500000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "market-trip",
+            "cityId": "city-1",
+            "districtId": "market",
+            "mode": "practice",
+            "startMs": 67500,
+            "endMs": 67500,
+            "generatedMicro": "12500000",
+            "arrivedDuringSessionMicro": "0",
+            "deliveryCoinsMicro": "0",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "12500000"
+          },
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "12500000",
+          "arrivedMicro": "270000000",
+          "deliveryCoinsMicro": "540000000",
+          "shopCoinsMicro": "6000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "market-trip"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"market-trip\",1]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "advance",
+          {
+            "elapsed_ms": 10000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 77500,
+          "savedWallMs": 77500,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "8252000000",
+          "cityArrivedMicro": "322500000",
+          "packagingLevel": 1,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 2,
+              "shops": 10,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "190000000",
+              "stockMicro": "130000000",
+              "arrivedMicro": "310000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 11,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "12500000",
+              "arrivedMicro": "12500000",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "market-trip",
+            "cityId": "city-1",
+            "districtId": "market",
+            "mode": "practice",
+            "startMs": 67500,
+            "endMs": 67500,
+            "generatedMicro": "12500000",
+            "arrivedDuringSessionMicro": "0",
+            "deliveryCoinsMicro": "0",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "12500000"
+          },
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            },
+            {
+              "districtId": "residential",
+              "stage": 2,
+              "clockMs": 67500,
+              "consumedMicro": "150000000"
+            }
+          ],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "12500000",
+          "arrivedMicro": "322500000",
+          "deliveryCoinsMicro": "645000000",
+          "shopCoinsMicro": "46000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [
+            "market-trip"
+          ],
+          "factKeys": [
+            "[\"city-1\",\"market-trip\",1]"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "railway-synergies-research-restart",
+    "initial": {
+      "economyVersion": "4.0.0",
+      "clockMs": 0,
+      "savedWallMs": 0,
+      "citySequence": 1,
+      "cityId": "city-1",
+      "landscape": "riverside",
+      "coinsMicro": "200000000000",
+      "cityArrivedMicro": "100000000000",
+      "packagingLevel": 0,
+      "blueprints": 4,
+      "research": {
+        "materials": 0,
+        "logistics": 0,
+        "commerce": 0
+      },
+      "synergies": [],
+      "districts": {
+        "residential": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "market": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "workshop": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "park": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "station": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "harbor": {
+          "open": true,
+          "stage": 3,
+          "shops": 1,
+          "crews": 10,
+          "railway": false,
+          "queueMicro": "100000000",
+          "stockMicro": "20000000000",
+          "arrivedMicro": "0",
+          "plan": null
+        }
+      },
+      "lastSessionSummary": null,
+      "constructionHistory": [],
+      "completedWords": 0,
+      "economicShipments": 0,
+      "legacyShipments": 0,
+      "generatedMicro": "0",
+      "arrivedMicro": "0",
+      "deliveryCoinsMicro": "0",
+      "shopCoinsMicro": "0",
+      "citiesRestarted": 0,
+      "usedSessionIds": [],
+      "factKeys": []
+    },
+    "steps": [
+      {
+        "action": [
+          "buy_railway",
+          {
+            "district_id": "residential"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "197000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_synergy",
+          {
+            "synergy_id": "joint_delivery"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "196000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [
+            "joint_delivery"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_synergy",
+          {
+            "synergy_id": "sorting_network"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "184000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_synergy",
+          {
+            "synergy_id": "tourism_service"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "84000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network",
+            "tourism_service"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_research",
+          {
+            "kind": "materials"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "84000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 3,
+          "research": {
+            "materials": 1,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network",
+            "tourism_service"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_research",
+          {
+            "kind": "logistics"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "84000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 2,
+          "research": {
+            "materials": 1,
+            "logistics": 1,
+            "commerce": 0
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network",
+            "tourism_service"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_research",
+          {
+            "kind": "commerce"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 0,
+          "savedWallMs": 0,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "84000000000",
+          "cityArrivedMicro": "100000000000",
+          "packagingLevel": 0,
+          "blueprints": 1,
+          "research": {
+            "materials": 1,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network",
+            "tourism_service"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "100000000",
+              "stockMicro": "19500000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "100000000",
+              "stockMicro": "20000000000",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "0",
+          "deliveryCoinsMicro": "0",
+          "shopCoinsMicro": "0",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "advance",
+          {
+            "elapsed_ms": 1000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "85863000000",
+          "cityArrivedMicro": "100600000000",
+          "packagingLevel": 0,
+          "blueprints": 1,
+          "research": {
+            "materials": 1,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [
+            "joint_delivery",
+            "sorting_network",
+            "tourism_service"
+          ],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": true,
+              "queueMicro": "0",
+              "stockMicro": "19600000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            },
+            "market": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "20100000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            },
+            "workshop": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "20100000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            },
+            "park": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "20100000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            },
+            "station": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "20100000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            },
+            "harbor": {
+              "open": true,
+              "stage": 3,
+              "shops": 1,
+              "crews": 10,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "20100000000",
+              "arrivedMicro": "100000000",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "start_new_city",
+          {
+            "confirmed": true,
+            "location": "RESULT",
+            "landscape": "seaside"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 1,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "complete_word",
+          {
+            "session_id": "old",
+            "fact_sequence": 0,
+            "base_length": 5,
+            "city_id": "city-1"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 4,
+          "research": {
+            "materials": 1,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "buy_research",
+          {
+            "kind": "materials"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 2,
+          "research": {
+            "materials": 2,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "begin_session",
+          {
+            "session_id": "new-research"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 2,
+          "research": {
+            "materials": 2,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [
+            "new-research"
+          ],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "complete_word",
+          {
+            "session_id": "new-research",
+            "fact_sequence": 0,
+            "base_length": 3,
+            "city_id": "city-2"
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 2,
+          "research": {
+            "materials": 2,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "4500000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "4500000",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [
+            "new-research"
+          ],
+          "factKeys": [
+            "[\"city-2\",\"new-research\",0]"
+          ]
+        }
+      },
+      {
+        "action": [
+          "end_session",
+          {}
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 1000,
+          "savedWallMs": 1000,
+          "citySequence": 2,
+          "cityId": "city-2",
+          "landscape": "seaside",
+          "coinsMicro": "0",
+          "cityArrivedMicro": "0",
+          "packagingLevel": 0,
+          "blueprints": 2,
+          "research": {
+            "materials": 2,
+            "logistics": 1,
+            "commerce": 1
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 0,
+              "shops": 0,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "4500000",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": {
+                "targetStage": 1,
+                "requiredMicro": "30000000",
+                "reservedMicro": "0",
+                "paidCoinsMicro": "0",
+                "paused": false
+              }
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": {
+            "sessionId": "new-research",
+            "cityId": "city-2",
+            "districtId": "residential",
+            "mode": "normal",
+            "startMs": 1000,
+            "endMs": 1000,
+            "generatedMicro": "4500000",
+            "arrivedDuringSessionMicro": "0",
+            "deliveryCoinsMicro": "0",
+            "shopCoinsMicro": "0",
+            "arrivalsIncludePreexistingQueue": true,
+            "remainingQueueMicro": "4500000"
+          },
+          "constructionHistory": [],
+          "completedWords": 1,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "4500000",
+          "arrivedMicro": "600000000",
+          "deliveryCoinsMicro": "1800000000",
+          "shopCoinsMicro": "63000000",
+          "citiesRestarted": 1,
+          "usedSessionIds": [
+            "new-research"
+          ],
+          "factKeys": [
+            "[\"city-2\",\"new-research\",0]"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "offline-restoration-high-water-mark",
+    "initial": {
+      "economyVersion": "4.0.0",
+      "clockMs": 0,
+      "savedWallMs": 0,
+      "citySequence": 1,
+      "cityId": "city-1",
+      "landscape": "riverside",
+      "coinsMicro": "0",
+      "cityArrivedMicro": "0",
+      "packagingLevel": 0,
+      "blueprints": 0,
+      "research": {
+        "materials": 0,
+        "logistics": 0,
+        "commerce": 0
+      },
+      "synergies": [],
+      "districts": {
+        "residential": {
+          "open": true,
+          "stage": 0,
+          "shops": 0,
+          "crews": 1,
+          "railway": false,
+          "queueMicro": "30000000",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": {
+            "targetStage": 1,
+            "requiredMicro": "30000000",
+            "reservedMicro": "0",
+            "paidCoinsMicro": "0",
+            "paused": false
+          }
+        },
+        "market": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "workshop": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "park": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "station": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        },
+        "harbor": {
+          "open": false,
+          "stage": 0,
+          "shops": 0,
+          "crews": 0,
+          "railway": false,
+          "queueMicro": "0",
+          "stockMicro": "0",
+          "arrivedMicro": "0",
+          "plan": null
+        }
+      },
+      "lastSessionSummary": null,
+      "constructionHistory": [],
+      "completedWords": 0,
+      "economicShipments": 0,
+      "legacyShipments": 0,
+      "generatedMicro": "0",
+      "arrivedMicro": "0",
+      "deliveryCoinsMicro": "0",
+      "shopCoinsMicro": "0",
+      "citiesRestarted": 0,
+      "usedSessionIds": [],
+      "factKeys": []
+    },
+    "steps": [
+      {
+        "action": [
+          "restore_at",
+          {
+            "wall_ms": 129600000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 28800000,
+          "savedWallMs": 129600000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "2939250000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "2879250000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "restore_at",
+          {
+            "wall_ms": 129600000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 28800000,
+          "savedWallMs": 129600000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "2939250000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "2879250000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "restore_at",
+          {
+            "wall_ms": 1000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 28800000,
+          "savedWallMs": 129600000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "2939250000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "2879250000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      },
+      {
+        "action": [
+          "restore_at",
+          {
+            "wall_ms": 129601000
+          }
+        ],
+        "expected": {
+          "economyVersion": "4.0.0",
+          "clockMs": 28801000,
+          "savedWallMs": 129601000,
+          "citySequence": 1,
+          "cityId": "city-1",
+          "landscape": "riverside",
+          "coinsMicro": "2939350000",
+          "cityArrivedMicro": "30000000",
+          "packagingLevel": 0,
+          "blueprints": 0,
+          "research": {
+            "materials": 0,
+            "logistics": 0,
+            "commerce": 0
+          },
+          "synergies": [],
+          "districts": {
+            "residential": {
+              "open": true,
+              "stage": 1,
+              "shops": 1,
+              "crews": 1,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "30000000",
+              "plan": null
+            },
+            "market": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "workshop": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "park": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "station": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            },
+            "harbor": {
+              "open": false,
+              "stage": 0,
+              "shops": 0,
+              "crews": 0,
+              "railway": false,
+              "queueMicro": "0",
+              "stockMicro": "0",
+              "arrivedMicro": "0",
+              "plan": null
+            }
+          },
+          "lastSessionSummary": null,
+          "constructionHistory": [
+            {
+              "districtId": "residential",
+              "stage": 1,
+              "clockMs": 7500,
+              "consumedMicro": "30000000"
+            }
+          ],
+          "completedWords": 0,
+          "economicShipments": 0,
+          "legacyShipments": 0,
+          "generatedMicro": "0",
+          "arrivedMicro": "30000000",
+          "deliveryCoinsMicro": "60000000",
+          "shopCoinsMicro": "2879350000",
+          "citiesRestarted": 0,
+          "usedSessionIds": [],
+          "factKeys": []
+        }
+      }
+    ]
+  }
+]
