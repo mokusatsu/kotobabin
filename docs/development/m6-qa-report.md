@@ -22,3 +22,14 @@
 実通信の地形・車両・A01絵柄を失敗させても実入力6語・結果・次の便へ進めた。初期読込完了後のnetwork offlineでも同じ経路とIDB保存を維持した。IndexedDBのSecurityErrorを明示的に注入した全UIでは「ページを閉じると残らない」メモリー保存の案内を表示し、便と次の入力を継続した。本番mainハッシュchunkの中断では原因と再読込リンクを表示し、native Tab/Enterで回復後、実際に1語完成した。画像だけの検査ではない。保存拒否の注入は実OSのプライバシーモード確認ではなく、初回オフライン起動の保証も追加していない。
 
 この4件は起動・縮退の受入根拠であり、性能予算の合格根拠には使わない。転送量・低速cold開始・実native入力・960語進捗と72定義の手帳の性能は、別のChromium専用測定で記録する。物理iPad／Windows・macOSのIME、実機性能は引き続き未検証。
+
+## 性能計測の独立CI（未実行）
+
+`.github/workflows/m6-performance.yml` は `feat/measure-performance` のpush、またはworkflow_dispatchのみで動作する。既存の障害復旧4例とは別ジョブ・別設定である。製品コードと共有CI設定は変更しない。
+
+- Chromium CDPで、キャッシュのない新規コンテキスト20回に10Mbps・100msを適用。実際の `Network.loadingFinished.encodedDataLength`、応答のContent-Encoding、開始可能までの時間を保存し、P95 3秒と初回3MBを検証する。identity応答を「圧縮配信」と呼ばない。Vite静的previewの配信測定であり、Sites CDNの測定ではない。
+- 公開GameSession・実績reducerと変更なしの保存validatorで、960語すべて各3回の無誤打練習と30件の便履歴を作る。これはCI隔離環境の合成ドメインfixtureであり、利用者の速度・獲得履歴を示さない。Vitestで生成後、実際のIDB保存と再読込を行う。製品の開発用hookは追加しない。
+- 実際のnative入力を240打以上送り、trusted inputのcapture→bubble間隔（handler代理値）、keydown→次のanimation frameのDOM変化（表示代理値）を記録する。P95 5ms/50ms、観測区間のlong taskを検証する。表示装置の実発光やOS IME遅延の測定ではなく、long taskにはブラウザ・計測の影響も入り得るため、失敗時はtraceや個別原因を調べて帰属を判断する。
+- 同じ960語状態で、実UIの12系統を順に開き72個の実績IDを確認する。図鑑はページ分割を保持したまま全960語の「練習で無誤打3回」filterを実行する。960行の同時DOM表示は要求しない。UI応答とRAF間隔は記録し、仕様にない新しい合否閾値は作らない。
+
+実行時のOS、CPU型番・論理CPU数、メモリ、Node、実ブラウザversion、viewport、倍率、全標本をJSON artifactに残す。GitHubホストの結果をMM9C3J/A実機の合格へ読み替えない。ローカルではESLint、Playwrightの収集（2例）、fixture生成・validator検証（1例）だけを実施し、ブラウザや代替サーバーは起動していない。実性能値と合否はCI実行後に追記する。
