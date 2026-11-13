@@ -16,7 +16,14 @@ export interface AchievementView {
 }
 export interface AchievementAcquisition { acquiredAtMs:number; evidenceEventId:string }
 export interface AchievementUnlock extends AchievementAcquisition { conditionRevision:string; mode:SessionMode|'CITY' }
-export type EquipmentSlot = 'titleId'|'frameId'|'postcardId'|'boardId'|'ornamentId'|'albumId';
+export type EquipmentSlot = 'titleId'|'frameId'|'ornamentId'|'homeBackgroundId';
+export interface CosmeticSelection {
+  titleId:string|null; frameId:string|null; ornamentId:string|null;
+  /** Optional addition to the current format. An absent choice means no background. */
+  homeBackgroundId?:string|null;
+  /** Existing current-format data is retained but these viewing objects have no equipment UI. */
+  postcardId?:string|null; boardId?:string|null; albumId?:string|null;
+}
 export type AchievementAction =
   | {type:'target';id:string|null} | {type:'reveal';id:string}
   | {type:'read';achievementIds:string[];rewardKeys?:string[]}
@@ -41,7 +48,7 @@ export interface AchievementState {
   sessions:Record<string,AchievementSession>;
   unlocks:Record<string,AchievementUnlock>; rewards:Record<string,AchievementAcquisition>;
   unreadAchievements:string[]; unreadRewards:string[]; revealedIds:string[];
-  targetId:string|null; equipped:Record<EquipmentSlot,string|null>; notificationMode:'live'|'result';
+  targetId:string|null; equipped:CosmeticSelection; notificationMode:'live'|'result';
   manualDeliveries:number; groupedDeliveries:number; fullDeliveries:number; deliveredCargo:number;
   completedRounds:number; fiveWordRounds:number; orderCompletions:Record<string,number>;
   fiveWordCourses:string[]; skilledCourses:string[]; bestNormalStreak:number; bestPracticeStreak:number;
@@ -52,7 +59,7 @@ const ids = new Set(catalog.achievements.map(a=>a.id));
 const rewardIds = new Set([...catalog.achievements.flatMap(a=>[a.stamp_asset_id,a.title_id]),...catalog.rewards.map(r=>r.id)]);
 const wordById = new Map(words.words.map(word=>[word.id,word]));
 const districtNames:Record<string,string>=Object.fromEntries(economyConfig.districts.map(d=>[d.id,d.name]));
-const slotKinds:Record<EquipmentSlot,string[]>={titleId:['title'],frameId:['frame'],postcardId:['postcard'],boardId:['foil_board','memorial_board'],ornamentId:['ornament','home_panel'],albumId:['album']};
+const slotKinds:Record<EquipmentSlot,string[]>={titleId:['title'],frameId:['frame'],ornamentId:['ornament'],homeBackgroundId:['home_panel']};
 function rewardFitsSlot(slot:EquipmentSlot,id:string):boolean {
   const kind=catalog.achievements.some(a=>a.title_id===id)?'title':catalog.rewards.find(r=>r.id===id)?.kind;
   return !!kind&&slotKinds[slot].includes(kind);
@@ -61,7 +68,7 @@ const courses = ['relaxed','standard','challenge'];
 const topics = [...new Set(words.words.map(word=>word.topicId))];
 export function createAchievementState():AchievementState {
   return {version:1,measuredProgress:createProfileProgress(),sessions:{},unlocks:{},rewards:{},unreadAchievements:[],unreadRewards:[],revealedIds:[],targetId:null,
-    equipped:{titleId:null,frameId:null,postcardId:null,boardId:null,ornamentId:null,albumId:null},notificationMode:'live',manualDeliveries:0,groupedDeliveries:0,
+    equipped:{titleId:null,frameId:null,ornamentId:null,homeBackgroundId:null},notificationMode:'live',manualDeliveries:0,groupedDeliveries:0,
     fullDeliveries:0,deliveredCargo:0,completedRounds:0,fiveWordRounds:0,orderCompletions:{},fiveWordCourses:[],skilledCourses:[],bestNormalStreak:0,
     bestPracticeStreak:0,bestNormalCanonicalLength:0,bestAccuracies:{},city:null,countedCityEvents:[],paidEquipmentPurchases:0,researchPurchases:0};
 }
@@ -212,7 +219,7 @@ export function applyAchievementAction(state:AchievementState,action:Achievement
       next.unreadRewards=next.unreadRewards.filter(key=>!action.rewardKeys?.includes(key));break;
     case 'notifications':if(action.mode!=='live'&&action.mode!=='result')throw new Error('Unknown notification mode');next.notificationMode=action.mode;break;
     case 'equip': {
-      if(!Object.hasOwn(next.equipped,action.slot))throw new Error('Unknown equipment slot');
+      if(!Object.hasOwn(slotKinds,action.slot))throw new Error('Unknown equipment slot');
       if(action.id!==null) {
         if(!next.rewards[action.id])throw new Error('Reward is not owned');
         if(!rewardFitsSlot(action.slot,action.id))throw new Error('Reward does not fit this equipment slot');
@@ -372,9 +379,17 @@ export function validateAchievementState(value:unknown):value is AchievementStat
     const achievement=catalog.achievements.find(a=>a.title_id===id||a.stamp_asset_id===id);
     if(achievement&&!value.unlocks[achievement.id])return false;
   }
-  for(const slot of ['titleId','frameId','postcardId','boardId','ornamentId','albumId']as const) {
-    const id=value.equipped[slot];if(id!==null&&(typeof id!=='string'||!value.rewards[id]))return false;
-    if(id!==null&&!rewardFitsSlot(slot,id as string))return false;
+  for(const slot of ['titleId','frameId','ornamentId','homeBackgroundId']as const) {
+    const id=value.equipped[slot];
+    if(slot==='homeBackgroundId'&&id===undefined)continue;
+    if(id!==null&&(typeof id!=='string'||!value.rewards[id]))return false;
+    // Retain a previously saved evening-panel choice without moving or applying it as an ornament.
+    const retainedPanel=slot==='ornamentId'&&catalog.rewards.some(r=>r.id===id&&r.kind==='home_panel');
+    if(id!==null&&!retainedPanel&&!rewardFitsSlot(slot,id as string))return false;
+  }
+  for(const[slot,kinds]of Object.entries({postcardId:['postcard'],boardId:['foil_board','memorial_board'],albumId:['album']})) {
+    const id=value.equipped[slot];if(id===undefined||id===null)continue;
+    if(typeof id!=='string'||!value.rewards[id]||!catalog.rewards.some(r=>r.id===id&&kinds.includes(r.kind)))return false;
   }
   for(const[sessionId,session]of Object.entries(value.sessions)) {
     if(!text(sessionId)||!isRecord(session)||session.sessionId!==sessionId||!['MAIN','PRACTICE','TUTORIAL'].includes(session.mode as string)||!['active','completed','aborted'].includes(session.phase as string)||!isRecord(session.context)||!isRecord(session.baselines))return false;

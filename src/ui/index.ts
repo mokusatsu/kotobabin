@@ -1,3 +1,5 @@
+import './reward-art.css';
+import { equippedDecoration } from './reward-art';
 import { AudioPlayer } from '../audio/AudioPlayer';
 import { GameAudio, renderAudioStatus } from './audio';
 import wordsData from '../../spec/initial/data/words.json';
@@ -125,7 +127,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
-    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚獲得 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}<p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></main>${footer()}`;
+    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚獲得 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}<div class="home-cosmetic-slot" data-cosmetic-slot="home"></div><p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></main>${footer()}`;
     beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear(); focusScreen('[data-action="start"]');
   }
   function beginHomeMapObservation() {
@@ -313,6 +315,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       renderMarkup(root.querySelector<HTMLElement>('#achievement-detail')!, achievementDetail(selected, ledger, runtime.status.writable));
     } else if (handbookTab === 'rewards') renderMarkup(root.querySelector<HTMLElement>('#handbook-rewards')!, rewardCollection(ledger, views, runtime.status.writable));
     else renderMarkup(root.querySelector<HTMLElement>('#handbook-history')!, achievementHistory(ledger, views));
+    const decoration = root.querySelector<HTMLElement>('[data-cosmetic-slot="handbook"]');
+    if (decoration) renderMarkup(decoration, equippedDecoration(ledger, 'handbook'));
     updateStorageStatus();
   }
   function returnFromHandbook() {
@@ -333,6 +337,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelectorAll<HTMLElement>('[data-unread-count]').forEach(element => { const text = ledger.unreadAchievements.length ? `未読${ledger.unreadAchievements.length}` : ''; if (element.textContent !== text) element.textContent = text; });
     const views = achievementViews();
     for (const id of ['home-goal-slot', 'game-goal-slot', 'result-goal-slot']) { const element = root.querySelector<HTMLElement>(`#${id}`); if (element) renderMarkup(element, goalStrip(views, ledger, { recommend: id === 'game-goal-slot' })); }
+    root.querySelectorAll<HTMLElement>('[data-cosmetic-slot]').forEach(element => {
+      const destination = element.dataset.cosmeticSlot;
+      if (destination === 'home' || destination === 'handbook') renderMarkup(element, equippedDecoration(ledger, destination));
+    });
     const title = handbookCatalog.achievements.find(definition => definition.title_id === ledger.equipped.titleId)?.name ?? '';
     root.querySelectorAll<HTMLElement>('[data-equipped-title]').forEach(element => { element.textContent = title; element.hidden = !title; });
     const result = root.querySelector<HTMLElement>('#result-achievements-slot'); if (result) renderMarkup(result, resultAchievements());
