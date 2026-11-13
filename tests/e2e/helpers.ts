@@ -42,6 +42,8 @@ export async function assertNoHorizontalOverflow(page: Page) {
 export async function summarizeResult(page: Page) {
   await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'score');
   await expect(page.locator('.result-stage [data-result-command="advance"]')).toBeEnabled();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.result-stage')).not.toHaveAttribute('data-result-phase', 'score');
   await page.keyboard.press('s');
   await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'summary');
 }
