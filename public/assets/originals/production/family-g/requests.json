@@ -1,0 +1,70 @@
+{
+  "client_date": "2026-11-14 Asia/Tokyo",
+  "method": "Actual imagegen: six new originals and one imagegen edit, transparent_background:true. Six selected outputs and one preserved rejected original.",
+  "attempts": [
+    {
+      "id": "stamp_g01",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, symbols, stamp border or perforations. No opaque rectangular background. A LOW HORIZONTAL ROW OF BLANK LETTERS/envelopes held neatly between two simple wooden BOOKENDS on one thin horizontal wooden plank. A small natural HUMAN HAND reaches FROM ABOVE, gently sliding the FINAL CREAM ENVELOPE into the row. Keep envelope edges broad and readable, row low and wide, hand clearly entering from above; no mailbox, no tall pile, no trees. Three-quarter view slightly from above, warm calm completion.",
+      "attempt": 1,
+      "selected": false,
+      "rejection": "Three floating gold emphasis rays were not part of the canonical physical still life.",
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-3701328f-f46c-425d-843e-4b3d5cbf0550.png",
+      "preserved_as": "public/assets/originals/stamp_g01.rejected-01.generated.png"
+    },
+    {
+      "id": "stamp_g01",
+      "attempt": 2,
+      "prompt": "Keep this watercolor illustration's low row of envelopes in wooden bookends and the human hand inserting the last envelope, on the same genuine transparent background. REMOVE ONLY the THREE FLOATING GOLDEN EXCLAMATION / EMPHASIS RAYS above the letters, leaving that area fully transparent. No replacement marks, sparkle, symbol, lettering or added object. Preserve all physical hand, envelope, wooden plank and bookend shapes and gentle watercolor style; no enclosing frame.",
+      "selected": true,
+      "reference": "public/assets/originals/stamp_g01.rejected-01.generated.png",
+      "native_generation": "exec-7f2d20ce-ae6a-431c-b312-fe86421499fe.png",
+      "preserved_as": "public/assets/originals/stamp_g01.generated.png"
+    },
+    {
+      "id": "stamp_g02",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, symbols, stamp border or perforations. No opaque rectangular background. A TALL STEPPED PILE of differently shaped cream/ochre PAPER PARCELS, WIDE STABLE BASE narrowing gradually toward the top. A single THICK TWINE binding runs vertically up the center and ties the pile securely. Place ONE SMALL BLANK ENVELOPE on the very top. The parcel pile should feel substantially tall, with chunky large packages, clear stepped outer silhouette, no tiny clutter, no wagon, no plants, no lettering or decorative marks.",
+      "attempt": 1,
+      "selected": true,
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-0a02defd-6fcb-4ebb-a625-17fcf41d8243.png",
+      "preserved_as": "public/assets/originals/stamp_g02.generated.png"
+    },
+    {
+      "id": "stamp_g03",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, symbols, stamp border or perforations. No opaque rectangular background. A LARGE LIVING TREE with a THICK warm brown TRUNK, prominent spreading roots and a generously BRANCHING BROAD CROWN. Its leaves have clear FOLDED ENVELOPE SHAPES, cream and sage, clustered across the branches as living growth. Place ONE SMALL leather DELIVERY SATCHEL between the foreground roots. The rich crown is the dominant silhouette, trunk/root structure clear. No fruit, no text, no envelopes with printed lines. Freestanding tree on a small soft patch of earth, not a full landscape.",
+      "attempt": 1,
+      "selected": true,
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-2cfd4a88-61f7-401e-9a2c-46ea4f106c65.png",
+      "preserved_as": "public/assets/originals/stamp_g03.generated.png"
+    },
+    {
+      "id": "stamp_g04",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, floating emphasis rays, stamp border or perforations. No opaque rectangular background. A NARROW STONE-PAVED PATH receding UPWARD from a prominent wrapped PARCEL IN THE NEAR FOREGROUND toward a small open WOODEN DOORWAY in the distance. A sequence of paired HUMAN SHOE FOOTPRINTS leads along the paving; NEAR FOOTPRINTS LARGE and distant footprints smaller. Strong vertical perspective, near package corners broad, distant doorway simple. Soft sage plants flank the cobbles. No bridge, no river, no wheel ruts. Footprints are physical worn shoe impressions, not printed interface icons. Let the sides of the small scene fade naturally into transparency.",
+      "attempt": 1,
+      "selected": true,
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-2f127d34-3f81-4fbd-81b4-896aaf472f8b.png",
+      "preserved_as": "public/assets/originals/stamp_g04.generated.png"
+    },
+    {
+      "id": "stamp_g05",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, floating emphasis rays, stamp border or perforations. No opaque rectangular background. A broad CURVING RIVER leads diagonally across the composition beneath a LOW STONE BRIDGE with ONE unmistakable OPEN ARCH. Twin WHEEL RUTS of a delivery handcart follow the riverbank and lead onto the bridge. A small wooden HANDCART LOADED WITH PARCELS stands on the bridge. Emphasize the river's large curved shape and the bridge's clear stone arch, seen from slightly above, with transparent outer margins around this small landscape vignette. The water must visibly pass UNDER the arch. No people, no text, no footprints, no giant landscape background.",
+      "attempt": 1,
+      "selected": true,
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-0ffe965e-8448-41df-8029-4f4cc6275bec.png",
+      "preserved_as": "public/assets/originals/stamp_g05.generated.png"
+    },
+    {
+      "id": "stamp_g06",
+      "prompt": "Create a NEW original kotobabin achievement stamp artwork using the reference ONLY for watercolor style, NOT its map, buds or pebble subjects. Warm Japanese storybook watercolor/gouache, honey-ochre wood, cream paper, muted sage and restrained terracotta, soft paper grain INSIDE painted shapes. Large clear silhouettes recognizable at 72px. One frame-free square composition with genuine transparent background outside the freestanding scene and generous clear outer margins. NO printed words, letters, numbers, title, UI status, floating emphasis rays, stamp border or perforations. No opaque rectangular background. A LARGE FRONT-FACING LEATHER DELIVERY SATCHEL sits exactly in the CENTER, its flap, strap and buckle clearly visible. Around it, a CIRCULAR DELIVERY ROAD makes a complete loop, with a few SMALL BLANK WOODEN DIRECTION POSTS beside the road. Bring the near section of the circular road toward the viewer, broader and thicker than its back section, creating clear depth and an open gap between road and central bag. Sage grass outside the loop, no trees. The central BAG and the ROAD RING must dominate, not a map or badge. NO lettering or arrow graphics on the signposts; blank physical wooden planks only.",
+      "attempt": 1,
+      "selected": true,
+      "reference": "public/assets/originals/stamp_e01.png",
+      "native_generation": "exec-66fb6d4f-a6b8-443a-b831-eb392d1c8896.png",
+      "preserved_as": "public/assets/originals/stamp_g06.generated.png"
+    }
+  ]
+}
