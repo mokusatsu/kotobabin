@@ -1,3 +1,4 @@
+import { assertViewportFits } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalOverflow, beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -68,7 +69,8 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await settings.locator('[data-action="close-settings"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-reduced-motion', 'true');
   await assertNoHorizontalOverflow(page);
-  await page.screenshot({ path: testInfo.outputPath('home-font-150.png'), fullPage: true });
+  await assertViewportFits(page);
+  await page.screenshot({ path: testInfo.outputPath('home-font-150.png'), fullPage: false });
   await page.locator('[data-action="start"]').click();
   await confirmHalfWidthInput(page);
   await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
@@ -86,6 +88,7 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#score')).toHaveText(String(baseScore + Math.floor(baseScore / 5)));
   await assertNoHorizontalOverflow(page);
   await expect(page.locator('#paused-layer')).toBeHidden();
+  await assertViewportFits(page);
   await page.screenshot({ path: testInfo.outputPath('main-font-150-guide-off.png'), fullPage: false });
   await expect(page.locator('#paused-layer')).toBeHidden();
   await page.locator('#game-input').press('Escape');
@@ -97,5 +100,6 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await page.locator('[data-action="resume"]').click();
   await page.clock.runFor(90001);
   await expect(page.locator('.result-heading')).toContainText('ガイド表示あり');
-  await page.screenshot({ path: testInfo.outputPath('result-font-150.png'), fullPage: true });
+  await assertViewportFits(page);
+  await page.screenshot({ path: testInfo.outputPath('result-font-150.png'), fullPage: false });
 });
