@@ -149,6 +149,7 @@
     margin: 0;
     line-height: 1.2;
   }
+  .game-delivery-shortcut { line-height: 1.2; color: var(--secondary); }
   .game-main-column > .game-message {
     min-height: calc(20px * var(--font-scale));
     margin: 0;
@@ -172,11 +173,11 @@
   }
   .game-side-panel { min-width: 0; line-height: 1.2; }
   .game-side-panel p { overflow-wrap: anywhere; }
-  .game-side-panel .cargo-area { gap: 8px; margin: 0 0 12px; justify-content: center; }
-  .game-side-panel .cargo-caption { line-height: 1.2; }
-  .game-side-panel .cargo-caption strong { margin-left: 2px; line-height: 1.1; }
-  .game-side-panel .cargo-slots { gap: 4px; }
-  .game-side-panel .cargo-slot { width: 32px; height: 32px; }
+  .game-sidebar > .cargo-area, .game-side-panel .cargo-area { gap: 8px; margin: 0 0 12px; justify-content: center; }
+  .game-sidebar .cargo-caption { line-height: 1.2; }
+  .game-sidebar .cargo-caption strong { margin-left: 2px; line-height: 1.1; }
+  .game-sidebar .cargo-slots { gap: 4px; }
+  .game-sidebar .cargo-slot { width: 32px; height: 32px; }
   .game-side-panel .delivery-area { width: 100%; max-width: none; margin: 0; }
   .game-side-panel .deliver-button {
     min-height: 60px;

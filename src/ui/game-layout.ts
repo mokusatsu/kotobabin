@@ -8,6 +8,7 @@ interface Layout {
   selected: number;
   choiceToken: string;
   goalNote: HTMLElement;
+  shortcut: HTMLElement;
   show(index: number): void;
   destroy(): void;
 }
@@ -39,7 +40,7 @@ export function installGameLayout(root: HTMLElement): () => void {
     if (!element.childElementCount) return;
     panels.push({ id, label, element });
   };
-  addPanel('delivery', '配達', ['.cargo-area', '.delivery-area']);
+  addPanel('delivery', '配達', ['.delivery-area']);
   const mode = root.querySelector<HTMLElement>('.game-page')?.dataset.mode;
   if (mode !== 'MAIN') addPanel('mode', mode === 'TUTORIAL' ? '導入の案内' : '練習の操作', ['#tutorial-status', '#practice-actions']);
   else for (const selector of ['#tutorial-status', '#practice-actions']) {
@@ -51,6 +52,12 @@ export function installGameLayout(root: HTMLElement): () => void {
   addPanel('save', '保存の状態', ['[data-save-status]']);
   const message = root.querySelector<HTMLElement>('#game-message');
   if (message) mainColumn.insertBefore(message, mainColumn.querySelector('.play-bottom'));
+  const cargo = root.querySelector<HTMLElement>('.cargo-area');
+  if (cargo) sidebar.append(cargo);
+  const shortcut = document.createElement('span');
+  shortcut.className = 'game-delivery-shortcut';
+  shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
+  root.querySelector('.typing-entry-row')?.append(shortcut);
   root.querySelector('.game-sidebar-primary')?.remove();
   root.querySelector('.game-sidebar-details')?.remove();
   const toolbar = document.createElement('nav');
@@ -69,7 +76,7 @@ export function installGameLayout(root: HTMLElement): () => void {
   const next = toolbar.querySelector<HTMLButtonElement>('[data-game-panel-step="1"]')!;
   const label = toolbar.querySelector<HTMLElement>('.game-panel-label')!;
   const layout: Layout = {
-    workspace, panels, selected: 0, choiceToken: '', goalNote,
+    workspace, panels, selected: 0, choiceToken: '', goalNote, shortcut,
     show(index) {
       layout.selected = Math.max(0, Math.min(panels.length - 1, index));
       panels.forEach((panel, i) => { panel.element.hidden = i !== layout.selected; });
@@ -102,6 +109,7 @@ export function installGameLayout(root: HTMLElement): () => void {
 export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): void {
   const layout = layouts.get(root);
   if (!layout || !layout.workspace.isConnected) return;
+  layout.shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
   layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
   const choice = snapshot.mode !== 'MAIN' && (snapshot.awaitingWordChoice || snapshot.tutorialDelivered || snapshot.tutorialFallbackAvailable);
   const token = choice ? `${snapshot.mode}:${snapshot.completedWords}:${snapshot.awaitingWordChoice}:${snapshot.tutorialDelivered}:${snapshot.tutorialFallbackAvailable}` : '';
