@@ -118,7 +118,9 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   const syncSnapshot = () => {
     const snapshot = repo.snapshot;
     progress = snapshot.progress;
-    achievements = readAchievements(snapshot);
+    // Persisted reads are detached full snapshots. Freeze at this existing
+    // reconciliation boundary so the next input shares frozen history too.
+    achievements = freezeSnapshot(readAchievements(snapshot));
     settings = { ...snapshot.settings, audioVolume: selectedAudioVolume(snapshot.settings.audioVolume), tutorialSeen: snapshot.tutorialSeen };
     syncCity();
   };
