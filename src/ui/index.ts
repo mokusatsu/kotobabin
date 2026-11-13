@@ -7,6 +7,7 @@ import { settingsContent } from './settings';
 import { resetConfirmation, restoreConfirmation, type ResetScope } from './profile';
 import { getAchievementViews, type EquipmentSlot } from '../profile/achievements';
 import { installIPadPagination } from './ipad-layout';
+import { installGameLayout, refreshGameLayout } from './game-layout';
 import { handbookShell, familyNavigation, achievementCards, achievementDetail, goalStrip, recommendations, rewardCollection, achievementHistory, newAchievementSummary, handbookCatalog, type HandbookFilter, type HandbookTab } from './handbook';
 import { CityEconomy, type CityState, type DistrictId, type CityCommand, type EquipmentKind } from '../economy';
 import { homeTown, districtName, destinationOptions, balanceStrip, cityShell, districtDetail, equipmentShell, purchaseCard, specialEquipment, districtEquipmentSummary, restartContent, districtFigure, resultEconomy, formatMicro, type EquipmentTab, type PurchaseQuantity } from './city';
@@ -29,6 +30,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let seed = newSeed();
   let session: GameSession | undefined;
   let gameInput: InputAdapter | undefined;
+  let disposeGameLayout: (() => void) | undefined;
   let screen: 'home' | 'check' | 'game' | 'result' | 'catalogue' | 'city' | 'equipment' | 'handbook' = 'home';
   let launchTarget: { mode: SessionMode; wordIds?: string[]; preferredWordId?: string | null } = { mode: 'MAIN' };
   let sessionContext: RecordContext | undefined;
@@ -103,6 +105,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function renderHome() {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
     root.innerHTML = `${header()}<main id="main" class="home-layout" data-paginate="ホーム"><section class="home-intro" data-page-children><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker" data-ipad-fixed><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination" data-ipad-fixed><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-ipad-fixed data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note" data-ipad-fixed>${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'}</p><div class="home-subactions"><button class="text-button" data-action="catalogue">ゆっくり練習する →</button><button class="text-button" data-action="help">遊び方を読む</button></div></section><div class="home-city-slot" data-page-children>${homeTown(runtime.city, runtime.destination)}</div><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p id="practice-awards-summary">今回の練習で切手を${practiceAwardCarry.size}枚獲得しました。<button class="text-button" data-action="handbook">配達手帳で見る →</button></p>` : ''}<aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside></main>${footer()}`;
@@ -196,6 +199,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     confirmReplacement(() => { launchTarget = { mode: 'PRACTICE', wordIds: ids }; launch(); });
   }
   function renderCatalogue() {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'catalogue'; cataloguePage = 0;
     root.innerHTML = `${header()}${catalogueShell(runtime.profile)}${footer()}`;
     updateCatalogue(); updateStorageStatus(); focusScreen();
@@ -242,6 +246,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       handbookOrigin = screen === 'check' ? (rechecking ? 'game' : 'home') : screen;
       if (screen === 'game') pause();
     }
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'handbook';
     root.innerHTML = `${header()}${handbookShell()}${footer()}`;
     root.querySelectorAll<HTMLInputElement>('[name="achievement-filter"]').forEach(input => { input.checked = input.value === handbookFilter; });
@@ -350,6 +355,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (!runtime.status.writable || runtime.cityBusy || profileOperationPending || (kind === 'restore' && pendingBackupText === null)) return;
     const backup = pendingBackupText; profileOperationPending = true;
     root.querySelectorAll<HTMLButtonElement>('.profile-confirm-dialog button').forEach(button => { button.disabled = true; });
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     closeCurrent('replaced'); session = undefined; sessionContext = undefined; lastResult = undefined; screen = 'home';
     inputConfirmed = false; lastChoiceFocus = '';
@@ -403,13 +409,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function rememberCityOrigin() { if (screen !== 'city' && screen !== 'equipment') cityOrigin = screen === 'result' ? 'result' : 'home'; }
   function openCityPage(id = selectedDistrict) {
     rememberCityOrigin();
-    confirmReplacement(() => { selectedDistrict = id; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city'; root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen(); });
+    confirmReplacement(() => { selectedDistrict = id; disposeGameLayout?.(); disposeGameLayout = undefined; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city'; root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen(); });
   }
   function openEquipmentPage() {
     rememberCityOrigin();
     confirmReplacement(renderEquipment);
   }
   function renderEquipment() {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'equipment';
     if (!runtime.city.districts[selectedDistrict].open) selectedDistrict = runtime.destination;
     purchaseStructureKey = '';
@@ -504,6 +511,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector('main')?.prepend(notice);
   }
   function renderCheck() {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'check'; checkPassed = false; pending = undefined;
     root.innerHTML = `${header()}<main id="main" class="centered-page" data-paginate="入力確認"><section class="paper-card input-check" data-page-children><p class="eyebrow">BEFORE WE GO</p><h1>キーボードを準備しましょう。</h1><p>IMEをオフにして、<strong>半角英字の a</strong> を1回入力してください。<br>確認の入力は、得点に数えません。</p><div class="check-field-group" data-ipad-fixed><label class="check-label" for="game-input">入力の確認</label><input id="game-input" class="check-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="check-status"><p id="check-status" role="status">半角英字で a を入力してください</p></div><button class="button button-primary" data-ipad-fixed data-action="confirm" disabled>${rechecking ? '一時停止へ戻る' : '準備できました →'}</button><button class="text-button" data-ipad-fixed data-action="check-back">戻る</button></section></main>${footer()}`;
@@ -525,10 +533,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     sidebar.append(primary, details); main.append(root.querySelector('.play-bottom')!);
   }
   function renderGame() {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'game';
     root.innerHTML = `${header(true)}<main id="main" class="game-page" data-mode="${session!.mode}"><div class="game-topline"><div class="clock">${session!.mode === 'MAIN' ? '<span>のこり</span><strong id="time-left">90</strong><span>秒</span>' : '<strong class="untimed-clock">時間制限なし</strong>'}</div><p class="game-route">ことばの配達便 <span>${districtName(sessionDestination)}ゆき</span></p><div class="score"><span>確定得点</span><strong id="score">0</strong><span>点</span></div></div><div class="time-track" aria-hidden="true"><div id="time-bar"></div></div><section id="tutorial-status" class="tutorial-status" hidden aria-live="polite"></section><section class="typing-card" aria-labelledby="prompt-word"><p id="word-stage" class="eyebrow">最初の一打で、配達がはじまります</p><h1 id="prompt-word" class="prompt-word"></h1><p id="prompt-reading" class="prompt-reading"></p><div id="romaji-guide" class="romaji-guide" aria-hidden="true"></div><label class="typing-input-label" for="game-input">キーボード入力<span id="input-indicator">入力できます</span></label><input id="game-input" class="typing-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-instructions" aria-label="ローマ字を入力"><p id="input-instructions" class="sr-only">表示されたことばを半角ローマ字で入力してください。語の境目にSpaceで配達できます。Escapeで一時停止します。</p><div class="cargo-area"><span class="cargo-caption">荷物 <strong id="cargo-count">0</strong> / 5</span><div class="cargo-slots" id="cargo-slots" aria-hidden="true"></div></div><div class="delivery-area"><button id="deliver-button" class="button button-primary deliver-button" data-action="deliver"><kbd>Space</kbd><span id="deliver-label">次のことばを完成させよう</span></button><p id="continue-hint" class="continue-hint"></p><p id="risk-hint" class="risk-hint"></p></div><p id="game-message" class="game-message" role="status" aria-live="polite"></p><div id="practice-actions" class="practice-actions" hidden></div></section><div class="play-bottom"><span>届け先 <strong>${districtName(sessionDestination)}</strong></span><span id="completed-count">完成 0語</span><button class="text-button" data-action="guide">ローマ字ガイド <span id="guide-status">ON</span></button></div><p class="save-status" data-save-status data-save-state="${runtime.status.storage}"></p><div id="game-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="play-city-strip">${districtFigure(sessionCityAtStart!, sessionDestination)}<div class="play-city-values" id="play-city-values"></div></div><div class="paused-layer" id="paused-layer" hidden></div>${session!.mode === 'MAIN' ? '<p class="narrow-note">本編は幅768px以上の画面と物理キーボードで遊べます。</p>' : ''}</main>${footer()}`;
     prepareGameWorkspace();
+    disposeGameLayout = installGameLayout(root);
     attachGameInput();
     updateGame(state()); updateStorageStatus();
   }
@@ -578,6 +588,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const resume = root.querySelector<HTMLButtonElement>('[data-action="resume"]'); if (resume) resume.disabled = !runtime.status.writable || (snapshot.mode === 'MAIN' && window.innerWidth < 768);
   }
   function renderResult(snapshot: Snapshot) {
+    disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'result'; lastResult = snapshot;
     root.innerHTML = `${header()}<main id="main" class="result-page" data-paginate="配達の結果"><div class="result-heading" data-ipad-fixed><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · ${districtName(sessionDestination)}へ · 90秒の配達 ${snapshot.skips ? '· 救済あり' : '· 通常'} ${snapshot.guideUsed ? '· ガイド表示あり' : '· ガイド表示なし'}</p></div><div class="result-grid" data-page-children><section class="paper-card score-card" data-page-children><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter" data-page-children><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div id="city-balance-strip">${balanceStrip(runtime.city)}</div><div id="result-economy" data-page-children>${resultEconomy(runtime.city, session!.sessionId)}</div><div id="result-achievements-slot" data-page-children>${resultAchievements()}</div><div id="result-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="result-actions" data-ipad-fixed><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button>${reviewIds(snapshot).length ? '<button class="button" data-action="review">まちがえたことばを復習</button>' : ''}<button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-status result-save" data-save-status></p></main>${footer()}`;
@@ -602,6 +613,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     }
     root.querySelectorAll<HTMLElement>('.deliver-button kbd').forEach(element => { element.textContent = runtime.settings.deliveryKeys.join(' / '); });
     root.querySelector<HTMLElement>('#input-instructions')!.textContent = `表示されたことばを半角ローマ字で入力してください。語の境目に${runtime.settings.deliveryKeys.join('または')}で配達できます。Escapeで一時停止します。`;
+    refreshGameLayout(root, snapshot);
     focusNewChoice(snapshot);
   }
   function choiceTarget(snapshot: Snapshot): string | undefined {
@@ -850,5 +862,5 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   const ipadLayout = installIPadPagination(root);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
-  return () => { ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
+  return () => { disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
 }
