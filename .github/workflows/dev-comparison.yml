@@ -2,7 +2,7 @@ name: Development comparison entry acceptance
 on:
   workflow_dispatch:
   push:
-    branches: [feat/dev-comparison]
+    branches: [feat/dev-comparison, feat/m7-integration, main]
 permissions:
   contents: read
 concurrency:

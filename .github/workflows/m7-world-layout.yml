@@ -3,6 +3,9 @@ on:
   push:
     branches: [fix/m7-worldmap-minimum, feat/m7-integration, main]
   workflow_dispatch:
+concurrency:
+  group: m7-world-${{ github.ref_name }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
