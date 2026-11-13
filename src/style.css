@@ -1888,3 +1888,19 @@ body[data-reduced-motion="true"] *::after {
 .district-composite > .district-shop-art { position: absolute; left: 8.191287879%; top: 59.217171717%; width: 24.242424242%; height: 32.323232323%; object-fit: contain; }
 .play-city-strip .district-composite { width: 132px; min-width: 132px; height: 99px; }
 .play-city-strip .district-composite > .district-shop-art { width: 24.242424242%; height: 32.323232323%; }
+
+/* Profile changes use explicit scopes and a separate confirmation. */
+.profile-management { border-top: 1px solid var(--border); margin-top: 24px; padding-top: 16px; }
+.profile-management summary { cursor: pointer; min-height: 44px; }
+.profile-management > .button { margin-top: 12px; }
+.backup-file-label { display: flex; flex-direction: column; gap: 12px; margin: 24px 0 12px; }
+.backup-file-label input { width: 100%; min-height: 44px; font: inherit; }
+.profile-confirm-dialog { max-width: 720px; width: calc(100% - 36px); max-height: calc(100dvh - 40px); overflow: auto; color: var(--text); }
+.profile-confirm-dialog::backdrop { background: #203d3666; }
+.profile-confirm-dialog h2 { font-size: calc(26px * var(--font-scale)); margin: 0 0 20px; }
+.profile-confirm-dialog .button { width: 100%; margin-top: 14px; }
+.danger-button { color: var(--accent); border-color: var(--accent); }
+.profile-operation-status { color: var(--accent); }
+.backup-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; }
+.backup-preview dd { margin: 6px 0 0; font-weight: 700; }
+@media (max-width: 767px) { .backup-preview { grid-template-columns: 1fr; } }
