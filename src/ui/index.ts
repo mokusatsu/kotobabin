@@ -308,15 +308,18 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime)
   }
   async function runCityCommand(action: CityAction): Promise<boolean> {
     if (!cityWritable()) return false;
+    const focusedAction = (document.activeElement as HTMLElement | null)?.dataset.action;
     const command = { ...action, cityId: runtime.city.cityId, economyEventId: crypto.randomUUID() } as CityCommand;
     const message = root.querySelector<HTMLElement>('.restart-dialog #restart-status') ?? root.querySelector<HTMLElement>('#city-command-status');
     if (message) message.textContent = '処理しています。';
     try {
       await runtime.cityCommand(command);
       if (message?.isConnected) message.textContent = '街に反映しました。';
-      updateCityViews(); return true;
+      updateCityViews();
+      if (focusedAction && document.activeElement === document.body) root.querySelector<HTMLButtonElement>(`button[data-action="${focusedAction}"]:not(:disabled)`)?.focus();
+      return true;
     } catch (error) {
-      if (message?.isConnected) message.textContent = error instanceof Error ? `操作を完了できませんでした。${error.message}` : '操作を完了できませんでした。保存の状態を確認してください。';
+      if (message?.isConnected) message.textContent = error instanceof Error && error.message.includes('Purchase quote changed') ? '残高が変わり、購入数量を更新しました。表示内容を確認して、もう一度購入してください。' : '操作を完了できませんでした。現在の条件と保存の状態を確認して、もう一度お試しください。';
       updateCityViews(); return false;
     }
   }
