@@ -253,6 +253,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector<HTMLSelectElement>('#achievement-scope')!.value = handbookScope;
     updateHandbook(); updateStorageStatus(); markSelectedRead(); focusScreen();
   }
+  function revealHandbookElement(selector: string) {
+    const element = root.querySelector<HTMLElement>(selector); if (!element) return;
+    if (!element.matches('button, input, select, a')) element.tabIndex = -1;
+    void ipadLayout.reveal(element);
+  }
+  function revealSelectedAchievement() { revealHandbookElement('#achievement-detail h2'); }
   function markSelectedRead() {
     if (runtime.status.writable && runtime.achievements.unreadAchievements.includes(selectedAchievementId)) runtime.achievementAction({ type: 'read', achievementIds: [selectedAchievementId] });
   }
@@ -721,13 +727,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'close-navigation': root.querySelector<HTMLDialogElement>('.navigation-dialog')?.close(); break;
       case 'help': help(); break;
       case 'handbook': openHandbook(); break;
-      case 'achievement-open': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; openHandbook(); break;
+      case 'achievement-open': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; openHandbook(); revealSelectedAchievement(); break;
       case 'handbook-back': returnFromHandbook(); break;
       case 'handbook-tab': handbookTab = target.dataset.tab as HandbookTab; updateHandbook(); if (handbookTab === 'rewards') runtime.achievementAction({ type: 'read', achievementIds: [], rewardKeys: [...runtime.achievements.unreadRewards] }); else if (handbookTab === 'history') runtime.achievementAction({ type: 'read', achievementIds: [...runtime.achievements.unreadAchievements] }); break;
-      case 'achievement-family': handbookFamily = target.dataset.familyId!; selectedAchievementId = `${handbookFamily}01`; updateHandbook(); markSelectedRead(); break;
-      case 'achievement-select': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; handbookTab = 'stamps'; updateHandbook(); markSelectedRead(); break;
+      case 'achievement-family': handbookFamily = target.dataset.familyId!; selectedAchievementId = `${handbookFamily}01`; updateHandbook(); markSelectedRead(); revealHandbookElement('#handbook-cards .achievement-select'); break;
+      case 'achievement-select': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; handbookTab = 'stamps'; updateHandbook(); markSelectedRead(); revealSelectedAchievement(); break;
       case 'achievement-target': runtime.achievementAction({ type: 'target', id: runtime.achievements.targetId === target.dataset.achievementId ? null : target.dataset.achievementId! }); updateHandbook(); break;
-      case 'achievement-reveal': runtime.achievementAction({ type: 'reveal', id: target.dataset.achievementId! }); updateHandbook(); break;
+      case 'achievement-reveal': runtime.achievementAction({ type: 'reveal', id: target.dataset.achievementId! }); updateHandbook(); revealHandbookElement('#achievement-detail .achievement-detail-condition'); break;
       case 'reward-equip': { const slot = target.dataset.equipSlot as EquipmentSlot; const id = target.dataset.rewardId!; runtime.achievementAction({ type: 'equip', slot, id: runtime.achievements.equipped[slot] === id ? null : id }); updateHandbook(); break; }
       case 'settings': openSettings(); break;
       case 'profile-reset': openResetConfirmation(target.dataset.scope as ResetScope); break;
