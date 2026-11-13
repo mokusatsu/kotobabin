@@ -1,8 +1,8 @@
 # 資材制作の進捗
 
-2026-11-13（指定クライアント日付、Asia/Tokyo） / 初回 M0–M1。正本 `spec/initial/data/visual_resource_manifest.json` は変更しない。
+2026-11-13（指定クライアント日付、Asia/Tokyo） / M0–M1 / 第2サイクル。正本 `spec/initial/data/visual_resource_manifest.json` は変更しない。
 
-全248 ID中 44 IDの候補ファイルを制作（SVG39 / ラスター5）。製品全体の資材完成ではない。音源7 IDは未制作。
+全248 ID中 47 IDの候補ファイルを制作（SVG39 / ラスター8）。製品全体の資材完成ではない。音源7 IDは未制作。
 
 ## アートディレクション
 
@@ -25,6 +25,26 @@
 ## 受入状況
 
 生成画像5枚は単独画像を目視し、主題・可変文字なし・透過を確認。画像が存在することと、指定アンカーへ合成して製品検収済みであることを区別する。terrain_riverside・city_hubはCIのホーム画像、cargo_parcelはゲームUIへ接続済み。ホーム/プレイ/結果のCI画像を統括と独立QAが確認。厳密なアンカー・最小サイズ・経済状態との一致は未検証。terrain_riversideは幾何条件未達の候補として扱い、M1以降の修正対象とする。
+
+## 第2サイクル：配送車両と荷づくりの小単位
+
+2026-11-13（指定クライアント日付、Asia/Tokyo）。対象5 ID：車両2・敷き布1・木の荷づくり台1・既存川沿い地形の修正。新規ランタイム候補は3 ID。画像の生成数や再試行数を独立ID数へ加算しない。
+
+| ID | 状態 | 指定寸法・基準点 | 実施した確認 | 残作業 |
+|---|---|---|---|---|
+| vehicle_cart_front | 実装済み・未検証 | 256×192 RGBA / (128,160) | 正面寄り、右下(+2,+1)、馬と幌なし荷台、文字なし、地面・影なし。50%不透明の範囲182×124+(35,35) | CI画面合成 |
+| vehicle_cart_rear | 実装済み・未検証 | 256×192 RGBA / (128,160) | 背面寄り、右上(+2,-1)、同じ馬・車体。50%不透明の範囲158×143+(48,17) | CI画面合成 |
+| equipment_packaging_0 | 実装済み・未検証 | 1200×800 RGBA / (600,680) | 机脚なし、敷き布・包み紙・ひも巻き・荷物1個。背景除去の再編集後にハローなし、50%不透明の範囲1070×380+(65,300) | 設備画面合成 |
+| equipment_packaging_1 | 保留・阻害要因あり | 未納品 / (600,680) | 新規生成と背景除去を複数回試行 | 広い茶色のハローが残り、脚間にも背景が残るため不合格。正規ランタイム出力を作成せず、原画をrejectedへ保存 |
+| terrain_riverside | 保留・阻害要因あり | 既存候補3200×2000 / 論理1600×1000 | 既存原画をimagegenで編集。港の荷下ろし範囲に水色画素なし（色の近似判定0/3024） | 岸線の厳密座標は不合格。y820で最初の水色x約1211.6（正本1240）、y999で約1084.5（正本1130）。編集候補のみrejectedへ保存、既存ランタイムは変更しない |
+
+原画は `originals/{id}.generated.png` へ変更せず保存。指定寸法への正規化では切り出しを行わず、透過キャンバス上へ配置する。frontは256×192へ縮小。rearは230×173へ縮小して256×192の(13,3)へ配置し、接地を約y160へ合わせる。packaging_0は1080×443へ縮小して1200×800の(60,264)へ配置し、布の不透明な下端をy679に合わせる。PNGとWebPは同じ寸法・アルファを保持し、正規化PNGは8bit RGBAとし、WebPは可逆変換。3点のPNGとWebPでアルファの全画素一致と紙色に合成した全画素一致を確認。
+
+生成器の原生寸法は車両各1448×1086、敷き布1958×803。原生寸法と正規化寸法を区別する。車両48×36・24×18と敷き布240×160の静止縮小表示を紙色へ合成して目視。馬車の前後と敷き布の主題を確認した。これは実行中のブラウザー画面合成を代替しない。
+
+独立QA（Agent F）は3点の寸法・アルファ・最小表示の前後形状と敷き布を確認。rearの透過範囲が安全域y16より1px上へ出る指摘を受け、配置をy2→y3へ修正。再検査のアルファ範囲は(47,16)〜(206,160)で安全域内。3点は単体静止検収を通過し、ゲーム内の実行画面合成は引き続き未検証。地形は改善度だけで合格扱いせず、既存ランタイムを維持する判断を独立QAと一致させた。
+
+不合格原画：`originals/rejected/equipment_packaging_1.halo.png`、`originals/rejected/terrain_riverside.coastline-attempt.png`。これらは制作済みの正規出力として集計しない。
 
 ## 全ID台帳
 
@@ -187,13 +207,13 @@
 | terrain_riverside | 実装済み・未検証 | 寸法・形式確認、目視済み | UI統合済み・CI画像確認、厳密座標は未検証 | `assets/terrain/terrain_riverside.webp` |
 | terrain_seaside | 未着手 | — | 未検証 | — |
 | terrain_highland | 未着手 | — | 未検証 | — |
-| equipment_packaging_0 | 未着手 | — | 未検証 | — |
-| equipment_packaging_1 | 未着手 | — | 未検証 | — |
+| equipment_packaging_0 | 実装済み・未検証 | 寸法・アルファ・背景除去・縮小の独立QA済み | 未検証 | `assets/equipment_scene/equipment_packaging_0.webp` |
+| equipment_packaging_1 | 保留・阻害要因あり | 背景ハロー残存で不合格 | 未検証 | — |
 | equipment_packaging_2 | 未着手 | — | 未検証 | — |
 | equipment_packaging_3 | 未着手 | — | 未検証 | — |
 | equipment_packaging_4 | 未着手 | — | 未検証 | — |
-| vehicle_cart_front | 未着手 | — | 未検証 | — |
-| vehicle_cart_rear | 未着手 | — | 未検証 | — |
+| vehicle_cart_front | 実装済み・未検証 | 寸法・アルファ・向き・縮小の独立QA済み | 未検証 | `assets/vehicle/vehicle_cart_front.webp` |
+| vehicle_cart_rear | 実装済み・未検証 | 寸法・アルファ・向き・縮小の独立QA済み | 未検証 | `assets/vehicle/vehicle_cart_rear.webp` |
 | vehicle_van_front | 未着手 | — | 未検証 | — |
 | vehicle_van_rear | 未着手 | — | 未検証 | — |
 | vehicle_box_van_front | 未着手 | — | 未検証 | — |
