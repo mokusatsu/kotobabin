@@ -79,9 +79,11 @@ export class CityEconomy {
     s.activeSession = null;
     return structuredClone(s.lastSessionSummary);
   }
+  private rejectStaleCity(cityId: string): MaterialReceipt | null {
+    if (!cityId) throw new Error('Economic facts require an explicit cityId');
+    return cityId === this.state.cityId ? null : { applied: false, reason: 'stale_city', generatedMicro: 0n };
+  }
   private fact(identity: FactIdentity, payload: object): { reason: 'stale_city' | 'duplicate' } | { key: string; fingerprint: string; session: EconomySession } {
-    if (!identity.cityId) throw new Error('Economic facts require an explicit cityId');
-    if (identity.cityId !== this.state.cityId) return { reason: 'stale_city' };
     integer(identity.factSequence, 'factSequence');
     const key = JSON.stringify([identity.cityId, identity.sessionId, identity.factSequence]);
     // Canonical fixed-key payloads preserve exact content equality without asynchronous hashing.
@@ -95,6 +97,7 @@ export class CityEconomy {
     return { key, fingerprint, session };
   }
   completeWord(fact: CompletedWordFact): MaterialReceipt {
+    const stale = this.rejectStaleCity(fact.cityId); if (stale) return stale;
     this.at(fact.atMs); integer(fact.baseLength, 'baseLength', 1); integer(fact.mistakes ?? 0, 'mistakes');
     const completed = fact.completed ?? true; const confirmation = fact.confirmation ?? false;
     const result = this.fact(fact, { kind: 'WordCompleted', baseLength: fact.baseLength, mistakes: fact.mistakes ?? 0, completed, confirmation });
@@ -106,6 +109,7 @@ export class CityEconomy {
     return { applied: true, generatedMicro: amount, districtId: result.session.districtId };
   }
   shipCargo(fact: ShippedCargoFact): MaterialReceipt {
+    const stale = this.rejectStaleCity(fact.cityId); if (stale) return stale;
     this.at(fact.atMs); integer(fact.scoreSum, 'scoreSum'); integer(fact.cargoCount, 'cargoCount');
     const { cargoCount: k, reason } = fact; const cfg = config.material_generation;
     if (!cfg.shipment_reasons.includes(reason)) throw new RangeError('Unknown shipment reason');
