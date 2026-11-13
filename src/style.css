@@ -2028,3 +2028,20 @@ body[data-reduced-motion="true"] *::after {
   .achievement-card .stamp-art, .achievement-card .stamp-placeholder { width: 96px; height: 96px; }
 }
 .reward-postcard { display: block; width: 100%; min-width: 160px; max-width: 480px; aspect-ratio: 8/5; object-fit: contain; margin: 16px auto; }
+/* Ownership status participates in layout; it never covers panel navigation. */
+.site-header > .ownership-warning {
+  position: static;
+  order: 10;
+  flex: 1 0 100%;
+  max-width: none;
+  margin: 0;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-width: 1px;
+  box-shadow: none;
+}
+.site-header > .ownership-warning[hidden] { display: none; }
+.site-header > .ownership-warning p { flex: 1; min-width: 0; margin: 0; }
+.site-header > .ownership-warning .button { width: auto; min-height: 44px; padding: 6px 12px; white-space: nowrap; font-size: calc(16px * var(--font-scale)); }
