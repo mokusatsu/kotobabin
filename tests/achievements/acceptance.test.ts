@@ -56,7 +56,7 @@ function seedUnlocks(selected: string[]): AchievementState {
  const state=createAchievementState();
  for(const id of selected) {
   const definition=catalog.achievements.find(a=>a.id===id)!;
-  state.unlocks[id]={acquiredAtMs:0,evidenceEventId:`fixture-${id}`,conditionRevision:catalog.catalog_version,mode:'MAIN'};
+  state.unlocks[id]={acquiredAtMs:0,evidenceEventId:`fixture-${id}`,conditionRevision:catalog.catalog_version,mode:definition.scope==='街'?'CITY':definition.scope==='練'?'PRACTICE':'MAIN'};
   for(const key of [definition.stamp_asset_id,definition.title_id])state.rewards[key]={acquiredAtMs:0,evidenceEventId:`fixture-${id}`};
  }
  return state;
@@ -94,4 +94,13 @@ test('all72 achievements own exactly40 supplemental rewards and the total remain
  expect(catalog.rewards.every(reward=>!!next.rewards[reward.id])).toBe(true);
  expect(Object.keys(next.rewards)).toHaveLength(72*2+40);
  expect(getAchievementViews(next).every(view=>view.earned)).toBe(true);
+});
+
+test('a current backup cannot own or equip an achievement title without the matching unlock', async()=>{
+ const { validateAchievementState, applyAchievementAction }=await import('../../src/profile/achievements');
+ const state=createAchievementState();
+ state.rewards.title_a01={acquiredAtMs:0,evidenceEventId:'corrupt-unearned-title'};
+ state.equipped.titleId='title_a01';
+ expect(validateAchievementState(state)).toBe(false);
+ expect(()=>applyAchievementAction(createAchievementState(),{type:'equip',slot:'titleId',id:'title_a01'})).toThrow();
 });
