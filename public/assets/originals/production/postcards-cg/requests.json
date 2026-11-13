@@ -1,0 +1,21 @@
+{
+  "method": "Independent actual image_gen calls; opaque backgrounds. Existing A/B and five representative screens inspected for style only; no image references submitted.",
+  "attempts": [
+    {
+      "id": "postcard_c",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A meticulously cared-for FLORIST'S WINDOW WORKSPACE. Large foreground focus: two natural human hands carefully wrapping a fresh bouquet in thin translucent cream wrapping paper on a wooden counter. View close enough to see hands gently folding paper around stems, not a portrait; arms enter from bottom edge. Midground a broad sunny window, behind it and beside it tidy shelves with clear glass vases of water, flowers and potted plants. Big quiet areas of thin wrapping paper and glowing water droplets express precise calm work. Flowers include soft cream daisies, muted rust blossoms and green foliage. No price tags, packaging writing or shop names. Make bouquet-wrapping hands and window unmistakable.",
+      "native_generation": "exec-cb587b90-2086-49a2-9a40-4986c9ee3f70.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "postcard_d",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A broad STATION FORECOURT SIDEWALK with sweeping curved roadway leads toward a long railway PLATFORM CANOPY receding deeply into distance at right. In foreground, a cheerful delivery rider actively pedaling a rust red BICYCLE with a large tan postal satchel moves lightly across the scene, whole bicycle readable inside composition. Beyond the sidewalk, a dark forest-green passenger TRAIN waiting beside the platform before departure. Simple cloth flags blow in wind; flag shapes and curved road convey brisk movement. Old cream station, terracotta roof, warm early sunshine. Any clock has a completely plain unmarked dial with two hands only; no station name, signage, numbers or writing.",
+      "native_generation": "exec-45e1a009-bf00-43d2-980d-3eed990bd18e.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}
