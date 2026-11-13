@@ -40,14 +40,15 @@ describe('confirmed UI audio feedback', () => {
     session.input('z', 0); observe(); expect(cues().at(-1)).toBe('mistake');
     expect(session.snapshot(0).score).toBe(40);
   });
-  it('uses the delivery-size cue once, suppressing word/key overlap on automatic full cargo', () => {
+  it('plays distinct completion and delivery facts once while suppressing the final key on full cargo', () => {
     const { session, observe, complete, cues } = fixture();
     complete(); session.deliver(0); observe(); expect(cues().at(-1)).toBe('dispatch_small');
     for (let index = 0; index < 3; index++) complete();
     session.deliver(0); observe(); expect(cues().at(-1)).toBe('dispatch_medium');
     for (let index = 0; index < 5; index++) complete();
     expect(cues().at(-1)).toBe('dispatch_full');
-    expect(cues().filter(kind => kind === 'word')).toHaveLength(8); // ninth completion is represented by the full-delivery cue
+    expect(cues().slice(-2)).toEqual(['word', 'dispatch_full']);
+    expect(cues().filter(kind => kind === 'word')).toHaveLength(9);
     expect(session.snapshot(0).completedWords).toBe(9);
   });
   it('does not replay effects from redraws, reducer retries or an older snapshot', () => {
@@ -57,6 +58,13 @@ describe('confirmed UI audio feedback', () => {
     audio.observe(session.sessionId, snapshot, facts); audio.observe(session.sessionId, old, []); observe();
     expect(cues()).toEqual(expected);
     audio.leaveSession(); audio.observe(session.sessionId, snapshot, facts); expect(cues()).toEqual(expected);
+  });
+  it('never doubles the same fact when a retry repeats it within one supplied batch', () => {
+    const { session, audio, cues } = fixture();
+    for (const key of session.snapshot(0).remainingGuide) session.input(key, 0);
+    const facts = session.drainEvents();
+    audio.observe(session.sessionId, session.snapshot(0), [...facts, ...facts]);
+    expect(cues()).toEqual(['word']);
   });
   it('consumes muted facts without replaying them after the player opts in', async () => {
     const { output, audio, complete, observe, session, cues } = fixture();

@@ -52,8 +52,8 @@ export class GameAudio {
   leaveSession(): void { this.sessionId = null; this.paused = false; }
   observe(sessionId: string, snapshot: SessionSnapshot, facts: readonly SessionFact[]): void {
     if (this.disposed || this.sessionId !== sessionId) return;
-    const fresh = facts.filter(fact => fact.sessionId === sessionId && fact.factSequence > this.factCursor);
-    for (const fact of fresh) this.factCursor = Math.max(this.factCursor, fact.factSequence);
+    const fresh: SessionFact[] = [];
+    for (const fact of facts) if (fact.sessionId === sessionId && fact.factSequence > this.factCursor) { this.factCursor = fact.factSequence; fresh.push(fact); }
     const correct = snapshot.correctKeys > this.correctKeys;
     const mistake = snapshot.mistakes > this.mistakes;
     const completed = snapshot.completedWords > this.completedWords;
@@ -64,14 +64,18 @@ export class GameAudio {
     this.paused = false;
     if (snapshot.phase === 'RESULT') this.output.stopTheme();
     if (!this.preferences.sound || this.hidden) return;
-    const delivery = fresh.filter(fact => fact.type === 'DeliveryCommitted').sort((a, b) => b.cargoCount - a.cargoCount)[0];
-    let cue: AudioKind | undefined;
-    if (delivery) cue = delivery.cargoCount === 5 ? 'dispatch_full' : delivery.cargoCount >= 3 ? 'dispatch_medium' : 'dispatch_small';
-    else if (fresh.some(fact => fact.type === 'WordCompleted')) cue = 'word';
-    else if (mistake) cue = 'mistake';
-    else if (correct && !completed) cue = 'key';
-    if (cue) this.output.play(cue);
-    else if (snapshot.phase === 'RESULT') this.output.pause();
+    let domainCue = false;
+    for (const fact of fresh) {
+      let cue: AudioKind | undefined;
+      if (fact.type === 'WordCompleted') cue = 'word';
+      if (fact.type === 'DeliveryCommitted') cue = fact.cargoCount === 5 ? 'dispatch_full' : fact.cargoCount >= 3 ? 'dispatch_medium' : 'dispatch_small';
+      if (cue) { domainCue = true; this.output.play(cue); }
+    }
+    // Completion and delivery are distinct facts. Each keeps its cue; their final
+    // key is suppressed and the player's bounded voice priority handles crowding.
+    if (!domainCue && mistake) this.output.play('mistake');
+    else if (!domainCue && correct && !completed) this.output.play('key');
+    else if (!domainCue && snapshot.phase === 'RESULT') this.output.pause();
   }
   dispose(): void { this.disposed = true; this.output.dispose(); }
 }
