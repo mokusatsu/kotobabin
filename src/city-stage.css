@@ -86,3 +86,5 @@
 .city-stage-panel .condition-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
 .city-stage-panel .condition-list li > strong { margin: 0; }
 .city-effects-note { margin: 4px 0 0; color: var(--secondary); }
+/* The parent game grid allocates the exact remainder after the scaled HUD. */
+#app .city-game-stage { block-size: 100%; padding: 8px 12px; }

@@ -8,6 +8,8 @@ import { catalogueShell, catalogueRows, catalogueFilter, filterCatalogue, catalo
 import { settingsContent } from './settings';
 import { resetConfirmation, restoreConfirmation, type ResetScope } from './profile';
 import { getAchievementViews, type EquipmentSlot } from '../profile/achievements';
+import { renderDistrictMap, installDistrictMap, animateDistrictEntry, type DistrictMapFeature } from './district-map';
+import { mountResultStage, type ResultStageController, type ResultStageState } from './result-stage';
 import { installIPadPagination } from './ipad-layout';
 import { installGameLayout, refreshGameLayout } from './game-layout';
 import { handbookShell, familyNavigation, achievementCards, achievementDetail, goalStrip, recommendations, rewardCollection, achievementHistory, newAchievementSummary, handbookCatalog, type HandbookFilter, type HandbookTab } from './handbook';
@@ -50,6 +52,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let sessionCityAtStart: CityState | undefined;
   let equipmentTab: EquipmentTab = 'packaging';
   let purchaseQuantity: PurchaseQuantity = 1;
+  let selectedSpecialId: string | undefined;
+  let resultStage: ResultStageController | undefined;
+  let resultStageState: ResultStageState | undefined;
+  let resultStageSessionId = '';
+  function releaseResultStage() { if (resultStage) { resultStageState = resultStage.snapshot(); resultStage.destroy(); resultStage = undefined; } }
   let displayedPurchaseQuote: ReturnType<CityEconomy['quotePurchase']> | undefined;
   let purchaseStructureKey = '';
   let returnNoticeDismissed = false;
@@ -109,6 +116,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function ownershipStatus() { return `<aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中 · このタブは閲覧のみです。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer>`; }
   function renderHome() {
+    releaseResultStage();
     audio.leaveSession();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
@@ -191,6 +199,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       session = candidate;
       practiceWordIds = [...chosenIds];
     }
+    resultStageState = undefined; resultStageSessionId = '';
     sessionUnlocksAtStart = new Set(Object.keys(runtime.achievements.unlocks));
     sessionDestination = runtime.destination; sessionCityAtStart = structuredClone(runtime.city);
     audio.beginSession(session.sessionId, state()); audio.resumeFromGesture();
@@ -206,6 +215,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     confirmReplacement(() => { launchTarget = { mode: 'PRACTICE', wordIds: ids }; launch(); });
   }
   function renderCatalogue() {
+    releaseResultStage();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'catalogue'; cataloguePage = 0;
     root.innerHTML = `${header()}${catalogueShell(runtime.profile)}${footer()}`;
@@ -249,6 +259,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     return getAchievementViews(runtime.achievements, session?.snapshot(performance.now()), session?.sessionId);
   }
   function openHandbook() {
+    releaseResultStage();
     if (screen !== 'handbook') {
       handbookOrigin = screen === 'check' ? (rechecking ? 'game' : 'home') : screen;
       if (screen === 'game') pause();
@@ -426,14 +437,33 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function cityWritable() { return runtime.status.writable && !runtime.cityBusy && runtime.city.activeSession === null; }
   function rememberCityOrigin() { if (screen !== 'city' && screen !== 'equipment') cityOrigin = screen === 'result' ? 'result' : 'home'; }
   function openCityPage(id = selectedDistrict) {
+    const world = root.querySelector<HTMLElement>('.world-stage');
+    const source = world?.querySelector<SVGGraphicsElement>(`[data-world-district-id="${id}"]`)?.getBoundingClientRect();
+    const reduced = runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ghost = world && source && !reduced ? world.cloneNode(true) as HTMLElement : undefined;
+    const worldBounds = world?.getBoundingClientRect();
     rememberCityOrigin();
-    confirmReplacement(() => { selectedDistrict = id; disposeGameLayout?.(); disposeGameLayout = undefined; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city'; root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen(); });
+    confirmReplacement(() => {
+      releaseResultStage(); selectedDistrict = id; disposeGameLayout?.(); disposeGameLayout = undefined; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city';
+      root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen();
+      const map = root.querySelector<HTMLElement>('.district-map');
+      if (map && source) animateDistrictEntry(map, source, reduced);
+      if (ghost && worldBounds) {
+        ghost.inert = true; ghost.setAttribute('aria-hidden', 'true'); ghost.removeAttribute('id');
+        ghost.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+        Object.assign(ghost.style, { position: 'fixed', left: `${worldBounds.left}px`, top: `${worldBounds.top}px`, width: `${worldBounds.width}px`, height: `${worldBounds.height}px`, pointerEvents: 'none', zIndex: '1000' });
+        document.body.append(ghost);
+        const fade = ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 360, easing: 'ease-out' });
+        void fade.finished.catch(() => {}).finally(() => ghost.remove());
+      }
+    });
   }
   function openEquipmentPage() {
     rememberCityOrigin();
     confirmReplacement(renderEquipment);
   }
   function renderEquipment() {
+    releaseResultStage();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'equipment';
     if (!runtime.city.districts[selectedDistrict].open) selectedDistrict = runtime.destination;
@@ -443,6 +473,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   }
   function updateCityViews() {
     const city = runtime.city;
+    if (screen === 'city' || screen === 'equipment') {
+      const map = root.querySelector<HTMLElement>('#district-map-slot');
+      if (map) renderMarkup(map, renderDistrictMap(city, selectedDistrict, { selectedFeature: screen === 'city' ? 'plan' : equipmentTab }));
+      const stage = root.querySelector<HTMLElement>('#city-stage-district-state');
+      if (stage) stage.textContent = `${districtName(selectedDistrict)} · 段階 ${city.districts[selectedDistrict].stage}/5`;
+      const summary = root.querySelector<HTMLElement>('#equipment-district-summary');
+      if (summary) renderMarkup(summary, districtEquipmentSummary(city, selectedDistrict));
+    }
     const balance = root.querySelector<HTMLElement>('#city-balance-strip');
     if (balance) {
       // Keep the resource row stable while its numbers advance in real time.
@@ -466,7 +504,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
         const markup = purchaseCard(city, selectedDistrict, kind, purchaseQuantity, cityWritable());
         if (purchaseStructureKey !== key) { renderMarkup(content, markup); purchaseStructureKey = key; }
         else patchPurchaseCard(content, markup);
-      } else { displayedPurchaseQuote = undefined; renderMarkup(content, specialEquipment(city, selectedDistrict, equipmentTab, cityWritable())); }
+      } else { displayedPurchaseQuote = undefined; renderMarkup(content, specialEquipment(city, selectedDistrict, equipmentTab, cityWritable(), selectedSpecialId)); }
       renderMarkup(root.querySelector<HTMLElement>('#equipment-district-summary')!, districtEquipmentSummary(city, selectedDistrict));
       root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('.equipment-controls input, .equipment-controls select').forEach(input => { input.disabled = runtime.cityBusy; });
     } else if (screen === 'game') updatePlayCity();
@@ -529,6 +567,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector('main')?.prepend(notice);
   }
   function renderCheck() {
+    releaseResultStage();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'check'; checkPassed = false; pending = undefined;
@@ -551,6 +590,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     sidebar.append(primary, details); main.append(root.querySelector('.play-bottom')!);
   }
   function renderGame() {
+    releaseResultStage();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'game';
@@ -606,11 +646,34 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const resume = root.querySelector<HTMLButtonElement>('[data-action="resume"]'); if (resume) resume.disabled = !runtime.status.writable || (snapshot.mode === 'MAIN' && window.innerWidth < 768);
   }
   function renderResult(snapshot: Snapshot) {
-    disposeGameLayout?.(); disposeGameLayout = undefined;
-    gameInput?.destroy(); gameInput = undefined;
+    releaseResultStage(); disposeGameLayout?.(); disposeGameLayout = undefined;
+    gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'result'; lastResult = snapshot;
-    root.innerHTML = `${header()}<main id="main" class="result-page" data-paginate="配達の結果"><div class="result-heading" data-ipad-fixed><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · ${districtName(sessionDestination)}へ · 90秒の配達 ${snapshot.skips ? '· 救済あり' : '· 通常'} ${snapshot.guideUsed ? '· ガイド表示あり' : '· ガイド表示なし'}</p></div><div class="result-grid" data-page-children><section class="paper-card score-card" data-page-children><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter" data-page-children><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div id="city-balance-strip">${balanceStrip(runtime.city)}</div><div id="result-economy" data-page-children>${resultEconomy(runtime.city, session!.sessionId)}</div><div id="result-achievements-slot" data-page-children>${resultAchievements()}</div><div id="result-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="result-actions" data-ipad-fixed><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button>${reviewIds(snapshot).length ? '<button class="button" data-action="review">まちがえたことばを復習</button>' : ''}<button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-status result-save" data-save-status></p></main>${footer()}`;
-    root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus({ preventScroll: true }); updateStorageStatus(); updateAchievementDisplays();
+    const sessionId = session?.sessionId ?? resultStageSessionId;
+    const ids = Object.keys(runtime.achievements.unlocks).filter(id => !sessionUnlocksAtStart.has(id) && !practiceAwardCarry.has(id));
+    if (resultStageSessionId !== sessionId) { resultStageState = undefined; resultStageSessionId = sessionId; }
+    root.innerHTML = `${header()}<main id="main" class="result-page" data-ipad-exclude></main>${footer()}`;
+    resultStage = mountResultStage(root.querySelector<HTMLElement>('#main')!, {
+      result: { score: snapshot.score, baseScore: snapshot.baseScore, bonusScore: snapshot.bonusScore, completedWords: snapshot.completedWords, accuracy: snapshot.accuracy, canonicalKpm: snapshot.canonicalKpm, courseName: `${course().name} · ${districtName(sessionDestination)}ゆき`, assisted: snapshot.skips > 0, guideUsed: snapshot.guideUsed },
+      newAchievementIds: ids, reducedMotion: runtime.settings.reducedMotion, resumeState: resultStageState,
+      hasReview: reviewIds(snapshot).length > 0,
+      onStateChange: next => { resultStageState = next; },
+      onAction: action => {
+        if (action === 'retry') { launchTarget = { mode: 'MAIN', preferredWordId: mainPreferredWordId }; launch(); }
+        else if (action === 'new-round') { seed = newSeed(); launchTarget = { mode: 'MAIN' }; launch(); }
+        else if (action === 'home') renderHome();
+        else if (action === 'handbook') openHandbook();
+        else if (action === 'review') { practiceFilter = {}; startPractice(reviewIds(snapshot)); }
+        else if (action === 'details') showResultDetails(snapshot);
+      },
+    });
+    updateStorageStatus(); updateAchievementDisplays();
+  }
+  function showResultDetails(snapshot: Snapshot) {
+    const dialog = document.createElement('dialog'); dialog.className = 'paper-card result-detail-dialog';
+    dialog.innerHTML = `<form method="dialog"><h2>詳しい配達記録</h2><p>完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)} = ${number(snapshot.score)}点</p><p>正解打鍵 ${snapshot.correctKeys} / 誤打 ${snapshot.mistakes} · 完成 ${snapshot.completedWords}語</p><div id="result-economy">${session ? resultEconomy(runtime.city, session.sessionId) : ''}</div><div id="result-achievements-slot">${resultAchievements()}</div><p class="save-status" data-save-status></p><button type="button" class="button" data-action="close-result-details">結果へ戻る</button></form>`;
+    root.append(dialog); dialog.showModal(); updateStorageStatus();
+    dialog.addEventListener('close', () => { dialog.remove(); root.querySelector<HTMLButtonElement>('[data-result-action="details"]')?.focus({ preventScroll: true }); }, { once: true });
   }
   function reviewIds(snapshot: Snapshot) { return snapshot.reviewWordIds; }
   function updateModeControls(snapshot: Snapshot) {
@@ -714,6 +777,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (target.id === 'profile-backup-file') { void readBackupFile(target); return; }
     if (target.name === 'course') selectedCourse = target.value as CourseId;
     if (target.id === 'home-destination' && !runtime.cityBusy) runtime.selectDestination(target.value);
+    if (target.id === 'special-equipment-item') { selectedSpecialId = target.value; updateCityViews(); }
     if (target.id === 'equipment-district') { selectedDistrict = target.value; purchaseStructureKey = ''; updateCityViews(); }
     if (target.name === 'purchase-quantity') { purchaseQuantity = target.value === 'max' ? 'max' : Number(target.value) as 1 | 10; updateCityViews(); }
     if (['catalogue-set', 'catalogue-topic', 'catalogue-state'].includes(target.id)) { cataloguePage = 0; updateCatalogue(); }
@@ -802,6 +866,9 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'tutorial-practice': { const wordId = state().currentWord.id; closeCurrent('replaced'); launchTarget = { mode: 'PRACTICE', wordIds: [wordId] }; launch(); break; }
       case 'city': openCityPage(); break;
       case 'equipment': openEquipmentPage(); break;
+      case 'world-map': renderHome(); break;
+      case 'district-feature': { const feature = target.dataset.feature as DistrictMapFeature; selectedDistrict = target.dataset.districtId!; if (feature === 'plan') openCityPage(selectedDistrict); else { equipmentTab = feature; selectedSpecialId = undefined; renderEquipment(); focusScreen(`.district-map [data-feature="${feature}"]`); } break; }
+      case 'close-result-details': root.querySelector<HTMLDialogElement>('.result-detail-dialog')?.close(); break;
       case 'city-district': selectedDistrict = target.dataset.districtId!; openCityPage(selectedDistrict); break;
       case 'city-back': if (cityOrigin === 'result' && lastResult) renderResult(lastResult); else renderHome(); break;
       case 'choose-destination': if (!runtime.cityBusy) { runtime.selectDestination(target.dataset.districtId!); renderHome(); } break;
@@ -899,8 +966,9 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   on(window, 'blur', () => { pending = undefined; audio.pause(); });
   on(document, 'visibilitychange', () => { if (document.hidden) pending = undefined; audio.visibility(document.hidden); });
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
+  const disposeDistrictMap = installDistrictMap(root);
   const ipadLayout = installIPadPagination(root);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
-  return () => { audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
+  return () => { releaseResultStage(); disposeDistrictMap(); audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
 }
