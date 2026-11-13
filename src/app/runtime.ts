@@ -25,6 +25,7 @@ export interface AppRuntime {
   applyFacts(facts: SessionFact[], context: RecordContext): void;
   takeOver(options?: { discardUnsaved?: boolean }): Promise<void>;
   retrySave(): Promise<void>;
+  resetProfile(scope: 'settings' | 'records' | 'collection'): Promise<void>;
   exportData(): string;
   subscribe(listener: () => void): () => void;
   close(): void;
@@ -280,6 +281,20 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
         if (!pendingWrites && !rejectedProjection && repo.status.saveState === 'saved') syncSnapshot();
       } catch (error) { errorMessage = error instanceof Error ? error.message : '保存を完了できませんでした。'; }
       emit();
+    },
+    async resetProfile(scope) {
+      if (!runtime.status.writable || busy) throw new Error('操作するタブで、処理が終わってからお試しください。');
+      if (rejectedProjection) throw new Error('未保存の進捗があります。控えを保存してから最新状態へ切り替えてください。');
+      busy = true; emit();
+      try {
+        // The UI has already ended its GameSession. Also close the economic
+        // session before changing a deletion generation or resetting settings.
+        if (city.activeSession) runtime.endSession(city.activeSession.sessionId);
+        await persist(() => scope === 'settings' ? repo.resetSettings()
+          : scope === 'records' ? repo.resetRecords() : repo.resetCollectionAndEconomy(), false);
+        syncSnapshot();
+        baseClock = city.clockMs; baseMono = clock.now(); returnSummary = null;
+      } finally { busy = false; emit(); }
     },
     exportData() { return JSON.stringify({ repository: JSON.parse(repo.exportData()), currentView: { settings, progress, city: encodeCityState(city), destination }, pendingWrites, rejectedProjection, abandonedProjection, originalCityData: originalCityData && JSON.parse(originalCityData) }, null, 2); },
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },

@@ -49,6 +49,30 @@ test('queued settings cannot replace newer local projections with an older write
   } finally { runtime.close(); }
 });
 
+test('collection reset closes the old economic session and rejects its later confirmed facts', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    const oldGeneration = repository.snapshot.metadata.generation;
+    await runtime.resetProfile('collection');
+    expect(repository.snapshot.metadata.generation).toBe(oldGeneration + 1);
+    expect(runtime.city.activeSession).toBeNull();
+    expect(runtime.profile.totalCompleted).toBe(0);
+    session.repeatWord(2);
+    for (const key of 'neko') session.input(key, 3);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(0);
+    expect(runtime.city.generatedMicro).toBe(0n);
+    expect(runtime.status.message).toMatch(/前の便|記録が削除/);
+  } finally { runtime.close(); }
+});
+
 
 test('a pre-stage ownership rejection preserves confirmed projection through refresh and requires explicit discard', async () => {
   const repository = await ProfileRepository.open({ indexedDB: null });
