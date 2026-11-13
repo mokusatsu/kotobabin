@@ -41,6 +41,7 @@ export async function assertNoHorizontalOverflow(page: Page) {
 /** Compatibility regressions may shorten presentation; individual real awards have their own E2E. */
 export async function summarizeResult(page: Page) {
   await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'score');
+  await expect(page.locator('.result-stage [data-result-command="advance"]')).toBeEnabled();
   await page.keyboard.press('s');
   await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'summary');
 }

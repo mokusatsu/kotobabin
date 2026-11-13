@@ -34,6 +34,7 @@ async function prepare(page: Page, height: number, scale: number, reducedMotion 
   const ids = Object.keys(saved.unlocks).filter(id => !before.unlocks[id]);
   expect(ids.length).toBeGreaterThan(2);
   await expect(stage.locator('.result-stage-new-count')).toContainText(`${ids.length}枚`);
+  await expect(stage.locator('[data-result-command="advance"]')).toBeEnabled();
   return { stage, ids, saved };
 }
 
@@ -76,5 +77,37 @@ for (const height of [720, 820]) {
     await expect(stage.locator('.result-stage-collection-count')).toHaveText(`${ids.length}枚`);
     expect(await awards(page)).toEqual(saved);
     await assertViewportFits(page);
+  });
+}
+
+for (const reduced of [false, true]) {
+  test(`keys queued across the natural deadline cannot consume the score or rewards reducedMotion${reduced}`, async ({ page }) => {
+    await page.setViewportSize({ width: 1180, height: 720 }); await page.clock.install(); await page.goto('/');
+    if (reduced) {
+      await keyboardMenuTo(page, 'settings');
+      const reduce = page.locator('.settings-dialog input[name="reducedMotion"]');
+      await keyboardRevealControl(page, reduce); await tabTo(page, reduce); await page.keyboard.press('Space'); await page.keyboard.press('Escape');
+    }
+    await beginMain(page, { fromHome: true });
+    for (let word = 0; word < 6; word++) await typeCurrentGuide(page);
+    await page.keyboard.press('Space');
+    // Pause the test clock only after native typing and bootstrap. Deadline steps then stay
+    // within the public 300ms input guard even on a heavily loaded CI runner.
+    const now = await page.evaluate(() => Date.now()); await page.clock.pauseAt(now + 1000);
+    const remaining = Number(await page.locator('#time-left').textContent());
+    await page.clock.runFor(Math.max(0, (remaining - 1) * 1000));
+    const stage = page.locator('.result-stage');
+    for (let step = 0; step < 80 && !await stage.count(); step++) await page.clock.runFor(20);
+    await expect(stage).toHaveAttribute('data-result-phase', 'score');
+    const primary = stage.locator('[data-result-command="advance"]'); await expect(primary).toBeDisabled();
+    await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
+    const committed = await awards(page); expect(Object.keys(committed.unlocks).length).toBeGreaterThan(2);
+    await page.keyboard.press('Space'); await page.keyboard.press('s'); await page.keyboard.press('Enter');
+    await expect(stage).toHaveAttribute('data-result-phase', 'score'); expect(await awards(page)).toEqual(committed);
+    await assertViewportFits(page);
+    await page.clock.runFor(301); await expect(primary).toBeEnabled();
+    await page.keyboard.press('Enter');
+    await expect(stage).toHaveAttribute('data-result-phase', reduced ? 'reveal' : 'sealed');
+    expect(await awards(page)).toEqual(committed);
   });
 }
