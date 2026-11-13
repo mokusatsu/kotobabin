@@ -1,0 +1,1109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:kotobabin:words:schema:2.0.0",
+  "title": "ことば便 960件出題データ",
+  "description": "960件と旧版・全体・コース別の固定集合。ID・表示・読みの一意性、派生値、固定集合と旧240件の不変条件は配布検査器で追加検査する。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "contentVersion",
+    "inputRuleVersion",
+    "dictionarySetId",
+    "reviewedMeaning",
+    "longMarkMeaning",
+    "difficultyPolicy",
+    "prototypeTopicBalanced",
+    "prototypeIds",
+    "tutorialIds",
+    "words",
+    "collectionSets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "2.0.0"
+    },
+    "contentVersion": {
+      "type": "string",
+      "const": "2.0.0"
+    },
+    "inputRuleVersion": {
+      "type": "string",
+      "const": "romaji-1.0.0"
+    },
+    "dictionarySetId": {
+      "type": "string",
+      "const": "kotobabin-ja-960-v2"
+    },
+    "reviewedMeaning": {
+      "type": "string",
+      "const": "作成時の表記と読みの校正済み。独立レビュー完了や実機検証済みを意味しない。"
+    },
+    "longMarkMeaning": {
+      "type": "string",
+      "const": "読み内の長音記号「ー」の入力を対象とし、音声学上の長さを表さない。"
+    },
+    "difficultyPolicy": {
+      "type": "object",
+      "const": {
+        "method": "rank_within_course",
+        "sortKeys": [
+          "complexityScore",
+          "canonicalLength",
+          "id"
+        ],
+        "shares": {
+          "easy": 0.4,
+          "medium": 0.4,
+          "hard": 0.2
+        },
+        "scoreFormula": "L+n+2*sokuon+2*yoon+2*foreign+long_mark",
+        "basis": "relative_editorial_criterion_not_measured_difficulty"
+      }
+    },
+    "prototypeTopicBalanced": {
+      "type": "boolean",
+      "const": true
+    },
+    "prototypeIds": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/wordId"
+      },
+      "description": "現960件を参照する試作30件。各コース10件、帯4/4/2、全体の分類は各5件、各コースに全6分類、全体に全5タグを含む。"
+    },
+    "tutorialIds": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/wordId"
+      },
+      "description": "初版から引き継ぐ猫・花・傘の順序付き3語。現960件の同じIDを参照する。",
+      "const": [
+        "living_r01",
+        "nature_r05",
+        "daily_r07"
+      ]
+    },
+    "words": {
+      "type": "array",
+      "minItems": 960,
+      "maxItems": 960,
+      "items": {
+        "$ref": "#/$defs/word"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 240,
+          "maxContains": 240
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 300,
+          "maxContains": 300
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 420,
+          "maxContains": 420
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "daily"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "daily"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "daily"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "daily"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "food"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "food"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "food"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "food"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "living"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "living"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "living"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "living"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "town"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "town"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "town"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "town"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "nature"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "nature"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "nature"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "nature"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "people"
+              }
+            }
+          },
+          "minContains": 160,
+          "maxContains": 160
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "people"
+              },
+              "courseId": {
+                "const": "relaxed"
+              }
+            }
+          },
+          "minContains": 40,
+          "maxContains": 40
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "people"
+              },
+              "courseId": {
+                "const": "standard"
+              }
+            }
+          },
+          "minContains": 50,
+          "maxContains": 50
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "topicId",
+              "courseId"
+            ],
+            "properties": {
+              "topicId": {
+                "const": "people"
+              },
+              "courseId": {
+                "const": "challenge"
+              }
+            }
+          },
+          "minContains": 70,
+          "maxContains": 70
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "relaxed"
+              },
+              "difficultyBand": {
+                "const": "easy"
+              }
+            }
+          },
+          "minContains": 96,
+          "maxContains": 96
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "relaxed"
+              },
+              "difficultyBand": {
+                "const": "medium"
+              }
+            }
+          },
+          "minContains": 96,
+          "maxContains": 96
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "relaxed"
+              },
+              "difficultyBand": {
+                "const": "hard"
+              }
+            }
+          },
+          "minContains": 48,
+          "maxContains": 48
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "standard"
+              },
+              "difficultyBand": {
+                "const": "easy"
+              }
+            }
+          },
+          "minContains": 120,
+          "maxContains": 120
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "standard"
+              },
+              "difficultyBand": {
+                "const": "medium"
+              }
+            }
+          },
+          "minContains": 120,
+          "maxContains": 120
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "standard"
+              },
+              "difficultyBand": {
+                "const": "hard"
+              }
+            }
+          },
+          "minContains": 60,
+          "maxContains": 60
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "challenge"
+              },
+              "difficultyBand": {
+                "const": "easy"
+              }
+            }
+          },
+          "minContains": 168,
+          "maxContains": 168
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "challenge"
+              },
+              "difficultyBand": {
+                "const": "medium"
+              }
+            }
+          },
+          "minContains": 168,
+          "maxContains": 168
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "courseId",
+              "difficultyBand"
+            ],
+            "properties": {
+              "courseId": {
+                "const": "challenge"
+              },
+              "difficultyBand": {
+                "const": "hard"
+              }
+            }
+          },
+          "minContains": 84,
+          "maxContains": 84
+        }
+      ]
+    },
+    "collectionSets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kotobabin-ja-240-v1",
+        "kotobabin-ja-960-v2",
+        "kotobabin-ja-relaxed-v2",
+        "kotobabin-ja-standard-v2",
+        "kotobabin-ja-challenge-v2"
+      ],
+      "properties": {
+        "kotobabin-ja-240-v1": {
+          "type": "array",
+          "minItems": 240,
+          "maxItems": 240,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wordId"
+          }
+        },
+        "kotobabin-ja-960-v2": {
+          "type": "array",
+          "minItems": 960,
+          "maxItems": 960,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wordId"
+          }
+        },
+        "kotobabin-ja-relaxed-v2": {
+          "type": "array",
+          "minItems": 240,
+          "maxItems": 240,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wordId"
+          }
+        },
+        "kotobabin-ja-standard-v2": {
+          "type": "array",
+          "minItems": 300,
+          "maxItems": 300,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wordId"
+          }
+        },
+        "kotobabin-ja-challenge-v2": {
+          "type": "array",
+          "minItems": 420,
+          "maxItems": 420,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wordId"
+          }
+        }
+      },
+      "description": "固定集合IDをキー、語ID配列を値とする。集合の構成要素は配布検査器で照合する。"
+    }
+  },
+  "$defs": {
+    "wordId": {
+      "type": "string",
+      "pattern": "^(daily|food|living|town|nature|people)_[rsc][0-9]{2}$(?![\\s\\S])"
+    },
+    "word": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "display",
+        "reading",
+        "courseId",
+        "topicId",
+        "dictionarySetId",
+        "difficultyBand",
+        "tags",
+        "canonicalLength",
+        "reviewed",
+        "complexityScore"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/wordId"
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 18,
+          "pattern": "^[^\\s0-9０-９、。,.!?！？]+$(?![\\s\\S])"
+        },
+        "reading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^[ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをんゔー]+$(?![\\s\\S])",
+          "description": "受理表のひらがなと長音記号。ゔを含み、ゐ・ゑ・小さいゎなどを含まない。"
+        },
+        "courseId": {
+          "type": "string",
+          "enum": [
+            "relaxed",
+            "standard",
+            "challenge"
+          ]
+        },
+        "topicId": {
+          "type": "string",
+          "enum": [
+            "daily",
+            "food",
+            "living",
+            "town",
+            "nature",
+            "people"
+          ]
+        },
+        "dictionarySetId": {
+          "type": "string",
+          "const": "kotobabin-ja-960-v2"
+        },
+        "difficultyBand": {
+          "type": "string",
+          "enum": [
+            "easy",
+            "medium",
+            "hard"
+          ],
+          "description": "コース内の複雑度順による相対的な編集基準。実測難度ではない。"
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "n",
+              "sokuon",
+              "yoon",
+              "long_mark",
+              "foreign"
+            ]
+          },
+          "description": "n、sokuon、yoon、long_mark、foreignの順に、読みから自動導出する。"
+        },
+        "canonicalLength": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 24,
+          "description": "全受理経路に対する最短打鍵数。"
+        },
+        "reviewed": {
+          "type": "boolean",
+          "const": true,
+          "description": "作成時の表記と読みの校正済み。独立レビュー完了や実機検証済みを意味しない。"
+        },
+        "editorialNote": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "complexityScore": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "L+n数+2×っ数+2×基本拗音ペア数+2×外来音ペア数+ー数。"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "courseId": {
+                "const": "relaxed"
+              }
+            },
+            "required": [
+              "courseId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "canonicalLength": {
+                "minimum": 3,
+                "maximum": 8
+              },
+              "id": {
+                "pattern": "^[a-z]+_r[0-9]{2}$(?![\\s\\S])"
+              },
+              "tags": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "courseId": {
+                "const": "standard"
+              }
+            },
+            "required": [
+              "courseId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "canonicalLength": {
+                "minimum": 5,
+                "maximum": 14
+              },
+              "id": {
+                "pattern": "^[a-z]+_s[0-9]{2}$(?![\\s\\S])"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "courseId": {
+                "const": "challenge"
+              }
+            },
+            "required": [
+              "courseId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "canonicalLength": {
+                "minimum": 10,
+                "maximum": 24
+              },
+              "id": {
+                "pattern": "^[a-z]+_c[0-9]{2}$(?![\\s\\S])"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "daily"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^daily_"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "food"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^food_"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "living"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^living_"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "town"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^town_"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "nature"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^nature_"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "topicId": {
+                "const": "people"
+              }
+            },
+            "required": [
+              "topicId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^people_"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

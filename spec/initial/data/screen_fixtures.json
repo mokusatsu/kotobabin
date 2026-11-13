@@ -1,0 +1,1940 @@
+{
+  "id": "representative-round-v2",
+  "courseId": "standard",
+  "mode": "normal",
+  "seconds": 90,
+  "romanGuide": true,
+  "skips": 0,
+  "initialAchievementIds": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "D01",
+    "D02",
+    "D04",
+    "E01",
+    "E02",
+    "F01",
+    "F02",
+    "F03",
+    "G01",
+    "I01",
+    "I02",
+    "J01",
+    "J02",
+    "K01",
+    "K03"
+  ],
+  "initialProfile": {
+    "normalMaxStreak": 3,
+    "bestCanonicalKpmSameConditions": 120,
+    "totalCompleted": 200,
+    "totalDistinctCompleted": 60,
+    "totalDeliveredCargo": 30,
+    "roundsWith5WordsCompleted": 6,
+    "practiceQualifiedWordIds": [
+      "living_r01"
+    ]
+  },
+  "round": [
+    {
+      "position": 1,
+      "wordId": "food_s01",
+      "display": "おにぎり",
+      "canonicalLength": 7,
+      "difficultyBand": "easy",
+      "acceptedKeys": 7,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 8000
+    },
+    {
+      "position": 2,
+      "wordId": "daily_s04",
+      "display": "カーテン",
+      "canonicalLength": 7,
+      "difficultyBand": "medium",
+      "acceptedKeys": 7,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 18000
+    },
+    {
+      "position": 3,
+      "wordId": "food_s10",
+      "display": "コロッケ",
+      "canonicalLength": 7,
+      "difficultyBand": "medium",
+      "acceptedKeys": 7,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 29000
+    },
+    {
+      "position": 4,
+      "wordId": "food_s04",
+      "display": "食パン",
+      "canonicalLength": 9,
+      "difficultyBand": "hard",
+      "acceptedKeys": 9,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 42000
+    },
+    {
+      "position": 5,
+      "wordId": "town_s01",
+      "display": "切手",
+      "canonicalLength": 5,
+      "difficultyBand": "easy",
+      "acceptedKeys": 5,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 45000
+    },
+    {
+      "position": 6,
+      "wordId": "daily_s14",
+      "display": "湯のみ",
+      "canonicalLength": 6,
+      "difficultyBand": "easy",
+      "acceptedKeys": 6,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 48000
+    },
+    {
+      "position": 7,
+      "wordId": "daily_s03",
+      "display": "せっけん",
+      "canonicalLength": 7,
+      "difficultyBand": "medium",
+      "acceptedKeys": 7,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 51000
+    },
+    {
+      "position": 8,
+      "wordId": "daily_s05",
+      "display": "スリッパ",
+      "canonicalLength": 7,
+      "difficultyBand": "medium",
+      "acceptedKeys": 7,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 54000
+    },
+    {
+      "position": 9,
+      "wordId": "food_s05",
+      "display": "サンドイッチ",
+      "canonicalLength": 9,
+      "difficultyBand": "hard",
+      "acceptedKeys": 9,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 57000
+    },
+    {
+      "position": 10,
+      "wordId": "daily_s15",
+      "display": "折り紙",
+      "canonicalLength": 7,
+      "difficultyBand": "easy",
+      "acceptedKeys": 7,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 60000
+    },
+    {
+      "position": 11,
+      "wordId": "food_s07",
+      "display": "ぎょうざ",
+      "canonicalLength": 6,
+      "difficultyBand": "easy",
+      "acceptedKeys": 6,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 63000
+    },
+    {
+      "position": 12,
+      "wordId": "daily_s11",
+      "display": "シャンプー",
+      "canonicalLength": 7,
+      "difficultyBand": "medium",
+      "acceptedKeys": 7,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 66000
+    },
+    {
+      "position": 13,
+      "wordId": "food_s08",
+      "display": "シチュー",
+      "canonicalLength": 6,
+      "difficultyBand": "medium",
+      "acceptedKeys": 6,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 69000
+    },
+    {
+      "position": 14,
+      "wordId": "food_s06",
+      "display": "チャーハン",
+      "canonicalLength": 8,
+      "difficultyBand": "hard",
+      "acceptedKeys": 8,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 72000
+    },
+    {
+      "position": 15,
+      "wordId": "food_s11",
+      "display": "プリン",
+      "canonicalLength": 6,
+      "difficultyBand": "easy",
+      "acceptedKeys": 6,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 75000
+    },
+    {
+      "position": 16,
+      "wordId": "town_s02",
+      "display": "手紙",
+      "canonicalLength": 6,
+      "difficultyBand": "easy",
+      "acceptedKeys": 6,
+      "mistakes": 0,
+      "clean": true,
+      "completedAtMs": 78000
+    },
+    {
+      "position": 17,
+      "wordId": "food_s09",
+      "display": "カフェラテ",
+      "canonicalLength": 8,
+      "difficultyBand": "medium",
+      "acceptedKeys": 8,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 81000
+    },
+    {
+      "position": 18,
+      "wordId": "food_s13",
+      "display": "ジャムパン",
+      "canonicalLength": 8,
+      "difficultyBand": "medium",
+      "acceptedKeys": 8,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 84000
+    },
+    {
+      "position": 19,
+      "wordId": "town_s07",
+      "display": "図書館",
+      "canonicalLength": 9,
+      "difficultyBand": "hard",
+      "acceptedKeys": 9,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 87000
+    },
+    {
+      "position": 20,
+      "wordId": "living_s01",
+      "display": "パンダ",
+      "canonicalLength": 5,
+      "difficultyBand": "easy",
+      "acceptedKeys": 5,
+      "mistakes": 1,
+      "clean": false,
+      "completedAtMs": 89000
+    }
+  ],
+  "shipments": [
+    {
+      "afterWord": 6,
+      "cargoBase": 340,
+      "bonus": 340
+    },
+    {
+      "afterWord": 16,
+      "cargoBase": 330,
+      "bonus": 330
+    }
+  ],
+  "expected": {
+    "completedWords": 20,
+    "baseScore": 1400,
+    "deliveryBonus": 670,
+    "score": 2070,
+    "correctKeys": 140,
+    "mistakes": 10,
+    "accuracyRaw": 93.33333333333333,
+    "accuracyDisplayed": "93.3%",
+    "canonicalKpm": 93.33333333333333,
+    "canonicalKpmDisplayed": "93.3",
+    "longestCleanStreak": 5,
+    "newAchievementIds": [
+      "B03",
+      "C01",
+      "C04"
+    ],
+    "achievementTotalBefore": 22,
+    "achievementTotalAfter": 25,
+    "newMilestoneRewardKeys": [
+      "milestone:24:album"
+    ]
+  },
+  "notes": [
+    "実際のプレイヤーの記録ではなく、ホーム→設備→本編→結果→手帳の5画面を整合させる数値例。",
+    "全20語は過去に完成済みで、異なる語の新しい閾値を越えない。",
+    "過去のA04はスキップありの便で取得したため、通常の便の連続記録3語とは矛盾しない。A02・A03も通常条件の対象外の便で取得済み。",
+    "過去6便は通常3便とスキップあり3便であり、今回の完走でも累計10便の閾値を越えない。",
+    "自然と季節・人とことばはそれぞれ5語未満の完成に留まり、今回の20語に練習3回成功済みの語を含めない。",
+    "この例では正解入力がすべて最短綴りである。実際の正確率は選ばれた綴りの正解打鍵数と誤打鍵数で算出する。",
+    "開始前の街は住宅地段階2・商店街段階1で、到着1000資材は消費・予約・自由在庫へ一致する。初期コインは過去の営業を含む合成値。",
+    "21枚から設備のK02で22枚、本編のB03・C01・C04で25枚となる。",
+    "手帳は結果と同じ瞬間の表示例。実際には閲覧中も営業と輸送が実時間で進む。"
+  ],
+  "playBoundary": {
+    "afterWord": 4,
+    "secondsRemaining": 48,
+    "currentWordId": "town_s01",
+    "confirmedScore": 300,
+    "cargoCount": 3,
+    "cargoBase": 230,
+    "manualBonus": 138,
+    "nextCleanWordCanonicalLength": 5,
+    "bonusIfNextCleanThenDelivered": 224,
+    "currentStreak": 3
+  },
+  "documentVersion": "4.0",
+  "contentVersion": "2.0.0",
+  "economyVersion": "4.0.0",
+  "sessionStartAchievementIds": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "D01",
+    "D02",
+    "D04",
+    "E01",
+    "E02",
+    "F01",
+    "F02",
+    "F03",
+    "G01",
+    "I01",
+    "I02",
+    "J01",
+    "J02",
+    "K01",
+    "K03",
+    "K02"
+  ],
+  "preRoundPurchase": {
+    "kind": "packaging",
+    "from": 9,
+    "to": 10,
+    "costCoins": 222,
+    "newAchievementIds": [
+      "K02"
+    ],
+    "achievementTotalBefore": 21,
+    "achievementTotalAfter": 22
+  },
+  "cityEconomy": {
+    "id": "screen-economy-90s-reference-v4",
+    "economy_version": "4.0.0",
+    "passed": true,
+    "assumptions": {
+      "clock_origin_ms": 0,
+      "session_deadline_ms": 90000,
+      "word_completion_seconds": [
+        8,
+        18,
+        29,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66,
+        69,
+        72,
+        75,
+        78,
+        81,
+        84,
+        87,
+        89
+      ],
+      "all_word_events_precede_deadline": true,
+      "history_scope": "synthetic starting profile; initial 800 coins include prior shop income; historical transactions are not reconstructed",
+      "historical_arrivals_micro": "1000000000",
+      "historical_generated_material_micro": "1000000000",
+      "residential_prior_allocation": {
+        "arrived_micro": "300000000",
+        "development_consumed_micro": "180000000",
+        "reserved_micro": "120000000"
+      },
+      "market_prior_allocation": {
+        "arrived_micro": "700000000",
+        "development_consumed_micro": "60000000",
+        "stock_micro": "640000000"
+      },
+      "prepaid_residential_stage3_coins_micro": "600000000",
+      "additional_shipments": [
+        {
+          "after_word": 6,
+          "reason": "full",
+          "S": 340,
+          "k": 5
+        },
+        {
+          "after_word": 16,
+          "reason": "full",
+          "S": 330,
+          "k": 5
+        }
+      ],
+      "shipments_reconstructed_with_cargo_loss_on_mistakes": true,
+      "other_purchases": false
+    },
+    "source_round_sha256": "d06f3006e4be6ea613fd667c476a6b2763982366f55fc1a54bcd21c4252fc056",
+    "source_round_hash_scope": "all fields of the round array, including completedAtMs",
+    "source_config_sha256": "98588e6e607f3433a36ae9106ce5a3c3c6d647e88955972908ac7c0dcbe33441",
+    "purchase": {
+      "kind": "packaging",
+      "district_id": null,
+      "quantity": 1,
+      "count": 1,
+      "requested_count": 1,
+      "current": 9,
+      "after": 10,
+      "cap": 50,
+      "prices_coins": [
+        222
+      ],
+      "total_cost_coins": 222,
+      "total_cost_micro": "222000000",
+      "limited_by_cap": false,
+      "limited_by_funds": false,
+      "before_multiplier": {
+        "numerator": 13,
+        "denominator": 4
+      },
+      "after_multiplier": {
+        "numerator": 7,
+        "denominator": 1
+      }
+    },
+    "expected_and_actual": {
+      "all_values_match": true,
+      "at_42s": {
+        "generated_material": "210",
+        "arrived_material": "147",
+        "queue_material": "63",
+        "reserved_material": "267",
+        "coins": "1048.4"
+      },
+      "at_90s": {
+        "generated_material": "1449",
+        "arrived_material": "531",
+        "queue_material": "918",
+        "residential_stage": 3,
+        "residential_stock_material": "51",
+        "market_stock_material": "640",
+        "construction_completed_at_seconds": "83.625",
+        "income_before_per_second": "4.2",
+        "income_after_per_second": "8.2",
+        "shop_coins": "403.5",
+        "delivery_coins": "1062",
+        "coins": "2043.5",
+        "current_city_arrived_material": "1531"
+      }
+    },
+    "income_intervals": [
+      {
+        "start_ms": 0,
+        "end_ms": 83625,
+        "coins_per_second_micro": "4200000",
+        "earned_coins_micro": "351225000"
+      },
+      {
+        "start_ms": 83625,
+        "end_ms": 90000,
+        "coins_per_second_micro": "8200000",
+        "earned_coins_micro": "52275000"
+      }
+    ],
+    "session_summary": {
+      "session_id": "screen-reference-90s",
+      "city_id": "city-1",
+      "district_id": "residential",
+      "mode": "normal",
+      "start_ms": 0,
+      "end_ms": 90000,
+      "generated_micro": "1449000000",
+      "arrived_during_session_micro": "531000000",
+      "delivery_coins_micro": "1062000000",
+      "shop_coins_micro": "403500000",
+      "arrivals_include_preexisting_queue": true,
+      "remaining_queue_micro": "918000000"
+    },
+    "material_conservation": {
+      "before_purchase": {
+        "development_consumed_micro": "240000000",
+        "railway_consumed_micro": "0",
+        "reserved_micro": "120000000",
+        "stock_micro": "640000000",
+        "queue_micro": "0",
+        "accounted_arrivals_micro": "1000000000",
+        "city_arrived_micro": "1000000000",
+        "generated_baseline_micro": "1000000000",
+        "current_session_generated_micro": "0",
+        "total_generated_micro": "1000000000",
+        "arrival_allocation_conserved": true,
+        "generated_flow_conserved": true
+      },
+      "after_purchase": {
+        "development_consumed_micro": "240000000",
+        "railway_consumed_micro": "0",
+        "reserved_micro": "120000000",
+        "stock_micro": "640000000",
+        "queue_micro": "0",
+        "accounted_arrivals_micro": "1000000000",
+        "city_arrived_micro": "1000000000",
+        "generated_baseline_micro": "1000000000",
+        "current_session_generated_micro": "0",
+        "total_generated_micro": "1000000000",
+        "arrival_allocation_conserved": true,
+        "generated_flow_conserved": true
+      },
+      "at_42s_after_word4": {
+        "development_consumed_micro": "240000000",
+        "railway_consumed_micro": "0",
+        "reserved_micro": "267000000",
+        "stock_micro": "640000000",
+        "queue_micro": "63000000",
+        "accounted_arrivals_micro": "1147000000",
+        "city_arrived_micro": "1147000000",
+        "generated_baseline_micro": "1000000000",
+        "current_session_generated_micro": "210000000",
+        "total_generated_micro": "1210000000",
+        "arrival_allocation_conserved": true,
+        "generated_flow_conserved": true
+      },
+      "at_90s_after_session": {
+        "development_consumed_micro": "840000000",
+        "railway_consumed_micro": "0",
+        "reserved_micro": "0",
+        "stock_micro": "691000000",
+        "queue_micro": "918000000",
+        "accounted_arrivals_micro": "1531000000",
+        "city_arrived_micro": "1531000000",
+        "generated_baseline_micro": "1000000000",
+        "current_session_generated_micro": "1449000000",
+        "total_generated_micro": "2449000000",
+        "arrival_allocation_conserved": true,
+        "generated_flow_conserved": true
+      }
+    },
+    "save_roundtrip_checkpoints": [
+      "before_purchase",
+      "after_purchase",
+      "session_start",
+      "at_42s_after_word4",
+      "at_90s_after_session"
+    ],
+    "replay_exactly_matches": true,
+    "snapshots": {
+      "before_purchase": {
+        "schema_version": "1.0.0",
+        "economy_version": "4.0.0",
+        "clock_ms": 0,
+        "saved_wall_ms": 0,
+        "city_sequence": 1,
+        "city_id": "city-1",
+        "landscape": "riverside",
+        "coins_micro": "800000000",
+        "city_arrived_micro": "1000000000",
+        "packaging_level": 9,
+        "blueprints": 0,
+        "research": {
+          "materials": 0,
+          "logistics": 0,
+          "commerce": 0
+        },
+        "synergies": [],
+        "districts": {
+          "residential": {
+            "open": true,
+            "stage": 2,
+            "shops": 10,
+            "crews": 2,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "300000000",
+            "plan": {
+              "target_stage": 3,
+              "required_micro": "600000000",
+              "reserved_micro": "120000000",
+              "paid_coins_micro": "600000000",
+              "paused": false
+            }
+          },
+          "market": {
+            "open": true,
+            "stage": 1,
+            "shops": 1,
+            "crews": 1,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "640000000",
+            "arrived_micro": "700000000",
+            "plan": null
+          },
+          "workshop": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "park": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "station": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "harbor": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          }
+        },
+        "active_session": null,
+        "last_session_summary": null,
+        "used_session_ids": [],
+        "fact_ledger": {},
+        "construction_history": [],
+        "persistent": {
+          "vocabulary": [],
+          "stamps": [],
+          "records": {},
+          "settings": {}
+        },
+        "lifetime": {
+          "completed_words": 0,
+          "economic_shipments": 0,
+          "legacy_shipments": 0,
+          "generated_micro": "1000000000",
+          "arrived_micro": "1000000000",
+          "delivery_coins_micro": "0",
+          "shop_coins_micro": "0",
+          "cities_restarted": 0
+        }
+      },
+      "after_purchase": {
+        "schema_version": "1.0.0",
+        "economy_version": "4.0.0",
+        "clock_ms": 0,
+        "saved_wall_ms": 0,
+        "city_sequence": 1,
+        "city_id": "city-1",
+        "landscape": "riverside",
+        "coins_micro": "578000000",
+        "city_arrived_micro": "1000000000",
+        "packaging_level": 10,
+        "blueprints": 0,
+        "research": {
+          "materials": 0,
+          "logistics": 0,
+          "commerce": 0
+        },
+        "synergies": [],
+        "districts": {
+          "residential": {
+            "open": true,
+            "stage": 2,
+            "shops": 10,
+            "crews": 2,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "300000000",
+            "plan": {
+              "target_stage": 3,
+              "required_micro": "600000000",
+              "reserved_micro": "120000000",
+              "paid_coins_micro": "600000000",
+              "paused": false
+            }
+          },
+          "market": {
+            "open": true,
+            "stage": 1,
+            "shops": 1,
+            "crews": 1,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "640000000",
+            "arrived_micro": "700000000",
+            "plan": null
+          },
+          "workshop": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "park": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "station": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "harbor": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          }
+        },
+        "active_session": null,
+        "last_session_summary": null,
+        "used_session_ids": [],
+        "fact_ledger": {},
+        "construction_history": [],
+        "persistent": {
+          "vocabulary": [],
+          "stamps": [],
+          "records": {},
+          "settings": {}
+        },
+        "lifetime": {
+          "completed_words": 0,
+          "economic_shipments": 0,
+          "legacy_shipments": 0,
+          "generated_micro": "1000000000",
+          "arrived_micro": "1000000000",
+          "delivery_coins_micro": "0",
+          "shop_coins_micro": "0",
+          "cities_restarted": 0
+        }
+      },
+      "session_start": {
+        "schema_version": "1.0.0",
+        "economy_version": "4.0.0",
+        "clock_ms": 0,
+        "saved_wall_ms": 0,
+        "city_sequence": 1,
+        "city_id": "city-1",
+        "landscape": "riverside",
+        "coins_micro": "578000000",
+        "city_arrived_micro": "1000000000",
+        "packaging_level": 10,
+        "blueprints": 0,
+        "research": {
+          "materials": 0,
+          "logistics": 0,
+          "commerce": 0
+        },
+        "synergies": [],
+        "districts": {
+          "residential": {
+            "open": true,
+            "stage": 2,
+            "shops": 10,
+            "crews": 2,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "300000000",
+            "plan": {
+              "target_stage": 3,
+              "required_micro": "600000000",
+              "reserved_micro": "120000000",
+              "paid_coins_micro": "600000000",
+              "paused": false
+            }
+          },
+          "market": {
+            "open": true,
+            "stage": 1,
+            "shops": 1,
+            "crews": 1,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "640000000",
+            "arrived_micro": "700000000",
+            "plan": null
+          },
+          "workshop": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "park": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "station": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "harbor": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          }
+        },
+        "active_session": {
+          "session_id": "screen-reference-90s",
+          "district_id": "residential",
+          "mode": "normal",
+          "multiplier_numerator": 7,
+          "multiplier_denominator": 1,
+          "city_id": "city-1",
+          "started_at_ms": 0,
+          "generated_start_micro": "1000000000",
+          "arrived_start_micro": "1000000000",
+          "delivery_coins_start_micro": "0",
+          "shop_coins_start_micro": "0"
+        },
+        "last_session_summary": null,
+        "used_session_ids": [
+          "screen-reference-90s"
+        ],
+        "fact_ledger": {},
+        "construction_history": [],
+        "persistent": {
+          "vocabulary": [],
+          "stamps": [],
+          "records": {},
+          "settings": {}
+        },
+        "lifetime": {
+          "completed_words": 0,
+          "economic_shipments": 0,
+          "legacy_shipments": 0,
+          "generated_micro": "1000000000",
+          "arrived_micro": "1000000000",
+          "delivery_coins_micro": "0",
+          "shop_coins_micro": "0",
+          "cities_restarted": 0
+        }
+      },
+      "at_42s_after_word4": {
+        "schema_version": "1.0.0",
+        "economy_version": "4.0.0",
+        "clock_ms": 42000,
+        "saved_wall_ms": 42000,
+        "city_sequence": 1,
+        "city_id": "city-1",
+        "landscape": "riverside",
+        "coins_micro": "1048400000",
+        "city_arrived_micro": "1147000000",
+        "packaging_level": 10,
+        "blueprints": 0,
+        "research": {
+          "materials": 0,
+          "logistics": 0,
+          "commerce": 0
+        },
+        "synergies": [],
+        "districts": {
+          "residential": {
+            "open": true,
+            "stage": 2,
+            "shops": 10,
+            "crews": 2,
+            "railway": false,
+            "queue_micro": "63000000",
+            "stock_micro": "0",
+            "arrived_micro": "447000000",
+            "plan": {
+              "target_stage": 3,
+              "required_micro": "600000000",
+              "reserved_micro": "267000000",
+              "paid_coins_micro": "600000000",
+              "paused": false
+            }
+          },
+          "market": {
+            "open": true,
+            "stage": 1,
+            "shops": 1,
+            "crews": 1,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "640000000",
+            "arrived_micro": "700000000",
+            "plan": null
+          },
+          "workshop": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "park": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "station": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "harbor": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          }
+        },
+        "active_session": {
+          "session_id": "screen-reference-90s",
+          "district_id": "residential",
+          "mode": "normal",
+          "multiplier_numerator": 7,
+          "multiplier_denominator": 1,
+          "city_id": "city-1",
+          "started_at_ms": 0,
+          "generated_start_micro": "1000000000",
+          "arrived_start_micro": "1000000000",
+          "delivery_coins_start_micro": "0",
+          "shop_coins_start_micro": "0"
+        },
+        "last_session_summary": null,
+        "used_session_ids": [
+          "screen-reference-90s"
+        ],
+        "fact_ledger": {
+          "[\"city-1\",\"screen-reference-90s\",1]": "378df541e438ea8f72214e7b01d16793eb6c47078720715d93492f3cca7557bf",
+          "[\"city-1\",\"screen-reference-90s\",2]": "0e6923009334f824233a7c1ec11ee250b4315d9a64bae118bb29313137ad02e9",
+          "[\"city-1\",\"screen-reference-90s\",3]": "0e6923009334f824233a7c1ec11ee250b4315d9a64bae118bb29313137ad02e9",
+          "[\"city-1\",\"screen-reference-90s\",4]": "5b6b2e31bae085cee28bb2cd4fd7099f43432191e784eed82bde56a0bcc9ff69"
+        },
+        "construction_history": [],
+        "persistent": {
+          "vocabulary": [],
+          "stamps": [],
+          "records": {},
+          "settings": {}
+        },
+        "lifetime": {
+          "completed_words": 4,
+          "economic_shipments": 0,
+          "legacy_shipments": 0,
+          "generated_micro": "1210000000",
+          "arrived_micro": "1147000000",
+          "delivery_coins_micro": "294000000",
+          "shop_coins_micro": "176400000",
+          "cities_restarted": 0
+        }
+      },
+      "at_90s_after_session": {
+        "schema_version": "1.0.0",
+        "economy_version": "4.0.0",
+        "clock_ms": 90000,
+        "saved_wall_ms": 90000,
+        "city_sequence": 1,
+        "city_id": "city-1",
+        "landscape": "riverside",
+        "coins_micro": "2043500000",
+        "city_arrived_micro": "1531000000",
+        "packaging_level": 10,
+        "blueprints": 0,
+        "research": {
+          "materials": 0,
+          "logistics": 0,
+          "commerce": 0
+        },
+        "synergies": [],
+        "districts": {
+          "residential": {
+            "open": true,
+            "stage": 3,
+            "shops": 10,
+            "crews": 2,
+            "railway": false,
+            "queue_micro": "918000000",
+            "stock_micro": "51000000",
+            "arrived_micro": "831000000",
+            "plan": null
+          },
+          "market": {
+            "open": true,
+            "stage": 1,
+            "shops": 1,
+            "crews": 1,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "640000000",
+            "arrived_micro": "700000000",
+            "plan": null
+          },
+          "workshop": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "park": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "station": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          },
+          "harbor": {
+            "open": false,
+            "stage": 0,
+            "shops": 0,
+            "crews": 0,
+            "railway": false,
+            "queue_micro": "0",
+            "stock_micro": "0",
+            "arrived_micro": "0",
+            "plan": null
+          }
+        },
+        "active_session": null,
+        "last_session_summary": {
+          "session_id": "screen-reference-90s",
+          "city_id": "city-1",
+          "district_id": "residential",
+          "mode": "normal",
+          "start_ms": 0,
+          "end_ms": 90000,
+          "generated_micro": "1449000000",
+          "arrived_during_session_micro": "531000000",
+          "delivery_coins_micro": "1062000000",
+          "shop_coins_micro": "403500000",
+          "arrivals_include_preexisting_queue": true,
+          "remaining_queue_micro": "918000000"
+        },
+        "used_session_ids": [
+          "screen-reference-90s"
+        ],
+        "fact_ledger": {
+          "[\"city-1\",\"screen-reference-90s\",1]": "378df541e438ea8f72214e7b01d16793eb6c47078720715d93492f3cca7557bf",
+          "[\"city-1\",\"screen-reference-90s\",2]": "0e6923009334f824233a7c1ec11ee250b4315d9a64bae118bb29313137ad02e9",
+          "[\"city-1\",\"screen-reference-90s\",3]": "0e6923009334f824233a7c1ec11ee250b4315d9a64bae118bb29313137ad02e9",
+          "[\"city-1\",\"screen-reference-90s\",4]": "5b6b2e31bae085cee28bb2cd4fd7099f43432191e784eed82bde56a0bcc9ff69",
+          "[\"city-1\",\"screen-reference-90s\",5]": "6b0be0daa769e25f4ebb67bde80bcd0a97ab19e4252ae6ed56591b9136e1a401",
+          "[\"city-1\",\"screen-reference-90s\",6]": "5576ca818b4bb61857d2e6ae0566f1ab1de6a2e52b03daa206303c559e621103",
+          "[\"city-1\",\"screen-reference-90s\",7]": "6f7b6bbeedaea128f4e76603c7510231f010fba062674d801b0eedb3b70224d5",
+          "[\"city-1\",\"screen-reference-90s\",8]": "378df541e438ea8f72214e7b01d16793eb6c47078720715d93492f3cca7557bf",
+          "[\"city-1\",\"screen-reference-90s\",9]": "378df541e438ea8f72214e7b01d16793eb6c47078720715d93492f3cca7557bf",
+          "[\"city-1\",\"screen-reference-90s\",10]": "b5beec1360b1fb380113a98424cdb19420a3d3ca7a0eb10695abb247b40f7b2c",
+          "[\"city-1\",\"screen-reference-90s\",11]": "378df541e438ea8f72214e7b01d16793eb6c47078720715d93492f3cca7557bf",
+          "[\"city-1\",\"screen-reference-90s\",12]": "36f16146b1d4c46556b4055e5ee88de5f0a90351b7762c321e134a43057159a7",
+          "[\"city-1\",\"screen-reference-90s\",13]": "0e6923009334f824233a7c1ec11ee250b4315d9a64bae118bb29313137ad02e9",
+          "[\"city-1\",\"screen-reference-90s\",14]": "5576ca818b4bb61857d2e6ae0566f1ab1de6a2e52b03daa206303c559e621103",
+          "[\"city-1\",\"screen-reference-90s\",15]": "6062031f92447935262d64d61873a2e8451478a789cb16e4ca4b6187095b8769",
+          "[\"city-1\",\"screen-reference-90s\",16]": "5576ca818b4bb61857d2e6ae0566f1ab1de6a2e52b03daa206303c559e621103",
+          "[\"city-1\",\"screen-reference-90s\",17]": "5576ca818b4bb61857d2e6ae0566f1ab1de6a2e52b03daa206303c559e621103",
+          "[\"city-1\",\"screen-reference-90s\",18]": "3a5a10008b5dc1e4d48d6958b155c19d792bccbf399d71226bac12b1a1c0a6b7",
+          "[\"city-1\",\"screen-reference-90s\",19]": "0772eb9f8c845eed5960ee7f5e02cc33b99a3846343e8dbda4ce3a40dc236c98",
+          "[\"city-1\",\"screen-reference-90s\",20]": "0772eb9f8c845eed5960ee7f5e02cc33b99a3846343e8dbda4ce3a40dc236c98",
+          "[\"city-1\",\"screen-reference-90s\",21]": "b5beec1360b1fb380113a98424cdb19420a3d3ca7a0eb10695abb247b40f7b2c",
+          "[\"city-1\",\"screen-reference-90s\",22]": "5250604a3f907c9257c9857721583e3afd42b88ec7d24a434807caa4a98fe4d9"
+        },
+        "construction_history": [
+          {
+            "district_id": "residential",
+            "stage": 3,
+            "clock_ms": 83625,
+            "consumed_micro": "600000000"
+          }
+        ],
+        "persistent": {
+          "vocabulary": [],
+          "stamps": [],
+          "records": {},
+          "settings": {}
+        },
+        "lifetime": {
+          "completed_words": 20,
+          "economic_shipments": 2,
+          "legacy_shipments": 2,
+          "generated_micro": "2449000000",
+          "arrived_micro": "1531000000",
+          "delivery_coins_micro": "1062000000",
+          "shop_coins_micro": "403500000",
+          "cities_restarted": 0
+        }
+      }
+    },
+    "events": [
+      {
+        "type": "purchase",
+        "kind": "packaging",
+        "quantity": 1,
+        "at_ms": 0
+      },
+      {
+        "type": "begin_session",
+        "session_id": "screen-reference-90s",
+        "district_id": "residential",
+        "mode": "normal",
+        "at_ms": 0
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 1,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 8000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 2,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 18000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 3,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 29000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 4,
+        "base_length": 9,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 42000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 5,
+        "base_length": 5,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 45000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 6,
+        "base_length": 6,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 48000
+      },
+      {
+        "type": "ship_cargo",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 7,
+        "score_sum": 340,
+        "cargo_count": 5,
+        "reason": "full",
+        "city_id": "city-1",
+        "at_ms": 48000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 8,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 51000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 9,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 54000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 10,
+        "base_length": 9,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 57000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 11,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 60000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 12,
+        "base_length": 6,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 63000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 13,
+        "base_length": 7,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 66000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 14,
+        "base_length": 6,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 69000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 15,
+        "base_length": 8,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 72000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 16,
+        "base_length": 6,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 75000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 17,
+        "base_length": 6,
+        "city_id": "city-1",
+        "mistakes": 0,
+        "at_ms": 78000
+      },
+      {
+        "type": "ship_cargo",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 18,
+        "score_sum": 330,
+        "cargo_count": 5,
+        "reason": "full",
+        "city_id": "city-1",
+        "at_ms": 78000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 19,
+        "base_length": 8,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 81000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 20,
+        "base_length": 8,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 84000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 21,
+        "base_length": 9,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 87000
+      },
+      {
+        "type": "complete_word",
+        "session_id": "screen-reference-90s",
+        "fact_sequence": 22,
+        "base_length": 5,
+        "city_id": "city-1",
+        "mistakes": 1,
+        "at_ms": 89000
+      },
+      {
+        "type": "end_session",
+        "at_ms": 90000
+      }
+    ],
+    "trace": [
+      {
+        "position": 1,
+        "word_id": "food_s01",
+        "display": "おにぎり",
+        "clock_ms": 8000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "49000000",
+        "session_arrived_micro": "0",
+        "residential_queue_micro": "49000000",
+        "residential_reserved_micro": "120000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "611600000"
+      },
+      {
+        "position": 2,
+        "word_id": "daily_s04",
+        "display": "カーテン",
+        "clock_ms": 18000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "98000000",
+        "session_arrived_micro": "49000000",
+        "residential_queue_micro": "49000000",
+        "residential_reserved_micro": "169000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "751600000"
+      },
+      {
+        "position": 3,
+        "word_id": "food_s10",
+        "display": "コロッケ",
+        "clock_ms": 29000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "147000000",
+        "session_arrived_micro": "98000000",
+        "residential_queue_micro": "49000000",
+        "residential_reserved_micro": "218000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "895800000"
+      },
+      {
+        "position": 4,
+        "word_id": "food_s04",
+        "display": "食パン",
+        "clock_ms": 42000,
+        "base_length": 9,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "63000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "210000000",
+        "session_arrived_micro": "147000000",
+        "residential_queue_micro": "63000000",
+        "residential_reserved_micro": "267000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1048400000"
+      },
+      {
+        "position": 5,
+        "word_id": "town_s01",
+        "display": "切手",
+        "clock_ms": 45000,
+        "base_length": 5,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "35000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "245000000",
+        "session_arrived_micro": "171000000",
+        "residential_queue_micro": "74000000",
+        "residential_reserved_micro": "291000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1109000000"
+      },
+      {
+        "position": 6,
+        "word_id": "daily_s14",
+        "display": "湯のみ",
+        "clock_ms": 48000,
+        "base_length": 6,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "42000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": {
+          "applied": true,
+          "bonus_points": 340,
+          "generated_micro": "238000000",
+          "legacy_delivery_counted": true,
+          "district_id": "residential"
+        },
+        "session_generated_micro": "525000000",
+        "session_arrived_micro": "195000000",
+        "residential_queue_micro": "330000000",
+        "residential_reserved_micro": "315000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1169600000"
+      },
+      {
+        "position": 7,
+        "word_id": "daily_s03",
+        "display": "せっけん",
+        "clock_ms": 51000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "574000000",
+        "session_arrived_micro": "219000000",
+        "residential_queue_micro": "355000000",
+        "residential_reserved_micro": "339000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1230200000"
+      },
+      {
+        "position": 8,
+        "word_id": "daily_s05",
+        "display": "スリッパ",
+        "clock_ms": 54000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "623000000",
+        "session_arrived_micro": "243000000",
+        "residential_queue_micro": "380000000",
+        "residential_reserved_micro": "363000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1290800000"
+      },
+      {
+        "position": 9,
+        "word_id": "food_s05",
+        "display": "サンドイッチ",
+        "clock_ms": 57000,
+        "base_length": 9,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "63000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "686000000",
+        "session_arrived_micro": "267000000",
+        "residential_queue_micro": "419000000",
+        "residential_reserved_micro": "387000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1351400000"
+      },
+      {
+        "position": 10,
+        "word_id": "daily_s15",
+        "display": "折り紙",
+        "clock_ms": 60000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "735000000",
+        "session_arrived_micro": "291000000",
+        "residential_queue_micro": "444000000",
+        "residential_reserved_micro": "411000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1412000000"
+      },
+      {
+        "position": 11,
+        "word_id": "food_s07",
+        "display": "ぎょうざ",
+        "clock_ms": 63000,
+        "base_length": 6,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "42000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "777000000",
+        "session_arrived_micro": "315000000",
+        "residential_queue_micro": "462000000",
+        "residential_reserved_micro": "435000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1472600000"
+      },
+      {
+        "position": 12,
+        "word_id": "daily_s11",
+        "display": "シャンプー",
+        "clock_ms": 66000,
+        "base_length": 7,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "49000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "826000000",
+        "session_arrived_micro": "339000000",
+        "residential_queue_micro": "487000000",
+        "residential_reserved_micro": "459000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1533200000"
+      },
+      {
+        "position": 13,
+        "word_id": "food_s08",
+        "display": "シチュー",
+        "clock_ms": 69000,
+        "base_length": 6,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "42000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "868000000",
+        "session_arrived_micro": "363000000",
+        "residential_queue_micro": "505000000",
+        "residential_reserved_micro": "483000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1593800000"
+      },
+      {
+        "position": 14,
+        "word_id": "food_s06",
+        "display": "チャーハン",
+        "clock_ms": 72000,
+        "base_length": 8,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "56000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "924000000",
+        "session_arrived_micro": "387000000",
+        "residential_queue_micro": "537000000",
+        "residential_reserved_micro": "507000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1654400000"
+      },
+      {
+        "position": 15,
+        "word_id": "food_s11",
+        "display": "プリン",
+        "clock_ms": 75000,
+        "base_length": 6,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "42000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "966000000",
+        "session_arrived_micro": "411000000",
+        "residential_queue_micro": "555000000",
+        "residential_reserved_micro": "531000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1715000000"
+      },
+      {
+        "position": 16,
+        "word_id": "town_s02",
+        "display": "手紙",
+        "clock_ms": 78000,
+        "base_length": 6,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "42000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": {
+          "applied": true,
+          "bonus_points": 330,
+          "generated_micro": "231000000",
+          "legacy_delivery_counted": true,
+          "district_id": "residential"
+        },
+        "session_generated_micro": "1239000000",
+        "session_arrived_micro": "435000000",
+        "residential_queue_micro": "804000000",
+        "residential_reserved_micro": "555000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1775600000"
+      },
+      {
+        "position": 17,
+        "word_id": "food_s09",
+        "display": "カフェラテ",
+        "clock_ms": 81000,
+        "base_length": 8,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "56000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "1295000000",
+        "session_arrived_micro": "459000000",
+        "residential_queue_micro": "836000000",
+        "residential_reserved_micro": "579000000",
+        "residential_stock_micro": "0",
+        "residential_stage": 2,
+        "coins_micro": "1836200000"
+      },
+      {
+        "position": 18,
+        "word_id": "food_s13",
+        "display": "ジャムパン",
+        "clock_ms": 84000,
+        "base_length": 8,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "56000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "1351000000",
+        "session_arrived_micro": "483000000",
+        "residential_queue_micro": "868000000",
+        "residential_reserved_micro": "0",
+        "residential_stock_micro": "3000000",
+        "residential_stage": 3,
+        "coins_micro": "1898300000"
+      },
+      {
+        "position": 19,
+        "word_id": "town_s07",
+        "display": "図書館",
+        "clock_ms": 87000,
+        "base_length": 9,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "63000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "1414000000",
+        "session_arrived_micro": "507000000",
+        "residential_queue_micro": "907000000",
+        "residential_reserved_micro": "0",
+        "residential_stock_micro": "27000000",
+        "residential_stage": 3,
+        "coins_micro": "1970900000"
+      },
+      {
+        "position": 20,
+        "word_id": "living_s01",
+        "display": "パンダ",
+        "clock_ms": 89000,
+        "base_length": 5,
+        "word_receipt": {
+          "applied": true,
+          "generated_micro": "35000000",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 7,
+            "denominator": 1
+          }
+        },
+        "shipment_receipt": null,
+        "session_generated_micro": "1449000000",
+        "session_arrived_micro": "523000000",
+        "residential_queue_micro": "926000000",
+        "residential_reserved_micro": "0",
+        "residential_stock_micro": "43000000",
+        "residential_stage": 3,
+        "coins_micro": "2019300000"
+      }
+    ]
+  },
+  "handbookFamilyCounts": {
+    "A": 6,
+    "B": 1,
+    "C": 2,
+    "D": 3,
+    "E": 2,
+    "F": 3,
+    "G": 1,
+    "H": 0,
+    "I": 2,
+    "J": 2,
+    "K": 3,
+    "L": 0
+  }
+}

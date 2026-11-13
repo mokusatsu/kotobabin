@@ -1,0 +1,1934 @@
+{
+  "schemaVersion": "1.0.0",
+  "dictionarySetId": "kotobabin-ja-240-v1",
+  "fields": [
+    "id",
+    "display",
+    "reading",
+    "courseId",
+    "topicId",
+    "canonicalLength"
+  ],
+  "words": [
+    {
+      "id": "daily_r01",
+      "display": "枕",
+      "reading": "まくら",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 6
+    },
+    {
+      "id": "daily_r02",
+      "display": "机",
+      "reading": "つくえ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 5
+    },
+    {
+      "id": "daily_r03",
+      "display": "鏡",
+      "reading": "かがみ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 6
+    },
+    {
+      "id": "daily_r04",
+      "display": "窓",
+      "reading": "まど",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 4
+    },
+    {
+      "id": "daily_r05",
+      "display": "手袋",
+      "reading": "てぶくろ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 8
+    },
+    {
+      "id": "daily_r06",
+      "display": "箱",
+      "reading": "はこ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 4
+    },
+    {
+      "id": "daily_r07",
+      "display": "傘",
+      "reading": "かさ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 4
+    },
+    {
+      "id": "daily_r08",
+      "display": "靴",
+      "reading": "くつ",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 4
+    },
+    {
+      "id": "daily_r09",
+      "display": "帽子",
+      "reading": "ぼうし",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 5
+    },
+    {
+      "id": "daily_r10",
+      "display": "タオル",
+      "reading": "たおる",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 5
+    },
+    {
+      "id": "daily_r11",
+      "display": "たらい",
+      "reading": "たらい",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 5
+    },
+    {
+      "id": "daily_r12",
+      "display": "ほうき",
+      "reading": "ほうき",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 5
+    },
+    {
+      "id": "daily_r13",
+      "display": "糸",
+      "reading": "いと",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 3
+    },
+    {
+      "id": "daily_r14",
+      "display": "歯ブラシ",
+      "reading": "はぶらし",
+      "courseId": "relaxed",
+      "topicId": "daily",
+      "canonicalLength": 8
+    },
+    {
+      "id": "daily_s01",
+      "display": "玄関",
+      "reading": "げんかん",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s02",
+      "display": "洗濯",
+      "reading": "せんたく",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s03",
+      "display": "せっけん",
+      "reading": "せっけん",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s04",
+      "display": "カーテン",
+      "reading": "かーてん",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s05",
+      "display": "スリッパ",
+      "reading": "すりっぱ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s06",
+      "display": "ハンカチ",
+      "reading": "はんかち",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s07",
+      "display": "ぬいぐるみ",
+      "reading": "ぬいぐるみ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 9
+    },
+    {
+      "id": "daily_s08",
+      "display": "洗面所",
+      "reading": "せんめんじょ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 8
+    },
+    {
+      "id": "daily_s09",
+      "display": "郵便",
+      "reading": "ゆうびん",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s10",
+      "display": "引き出し",
+      "reading": "ひきだし",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 8
+    },
+    {
+      "id": "daily_s11",
+      "display": "シャンプー",
+      "reading": "しゃんぷー",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s12",
+      "display": "エプロン",
+      "reading": "えぷろん",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s13",
+      "display": "湯たんぽ",
+      "reading": "ゆたんぽ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s14",
+      "display": "湯のみ",
+      "reading": "ゆのみ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 6
+    },
+    {
+      "id": "daily_s15",
+      "display": "折り紙",
+      "reading": "おりがみ",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_s16",
+      "display": "掃除機",
+      "reading": "そうじき",
+      "courseId": "standard",
+      "topicId": "daily",
+      "canonicalLength": 7
+    },
+    {
+      "id": "daily_c01",
+      "display": "電気を消す",
+      "reading": "でんきをけす",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 11
+    },
+    {
+      "id": "daily_c02",
+      "display": "シャツをたたむ",
+      "reading": "しゃつをたたむ",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 13
+    },
+    {
+      "id": "daily_c03",
+      "display": "本棚を片づける",
+      "reading": "ほんだなをかたづける",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 19
+    },
+    {
+      "id": "daily_c04",
+      "display": "メモを冷蔵庫に貼る",
+      "reading": "めもをれいぞうこにはる",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 20
+    },
+    {
+      "id": "daily_c05",
+      "display": "朝はカーテンを開ける",
+      "reading": "あさはかーてんをあける",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 18
+    },
+    {
+      "id": "daily_c06",
+      "display": "靴下をそろえる",
+      "reading": "くつしたをそろえる",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 17
+    },
+    {
+      "id": "daily_c07",
+      "display": "クッションを並べる",
+      "reading": "くっしょんをならべる",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 17
+    },
+    {
+      "id": "daily_c08",
+      "display": "棚をさっと拭く",
+      "reading": "たなをさっとふく",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 15
+    },
+    {
+      "id": "daily_c09",
+      "display": "手帳に予定を書く",
+      "reading": "てちょうによていをかく",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 19
+    },
+    {
+      "id": "daily_c10",
+      "display": "ソファでひと休みする",
+      "reading": "そふぁでひとやすみする",
+      "courseId": "challenge",
+      "topicId": "daily",
+      "canonicalLength": 20
+    },
+    {
+      "id": "food_r01",
+      "display": "トマト",
+      "reading": "とまと",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r02",
+      "display": "レタス",
+      "reading": "れたす",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r03",
+      "display": "ごま",
+      "reading": "ごま",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 4
+    },
+    {
+      "id": "food_r04",
+      "display": "きな粉",
+      "reading": "きなこ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r05",
+      "display": "卵",
+      "reading": "たまご",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r06",
+      "display": "豆",
+      "reading": "まめ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 4
+    },
+    {
+      "id": "food_r07",
+      "display": "そば",
+      "reading": "そば",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 4
+    },
+    {
+      "id": "food_r08",
+      "display": "枝豆",
+      "reading": "えだまめ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 7
+    },
+    {
+      "id": "food_r09",
+      "display": "海苔",
+      "reading": "のり",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 4
+    },
+    {
+      "id": "food_r10",
+      "display": "芋",
+      "reading": "いも",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 3
+    },
+    {
+      "id": "food_r11",
+      "display": "きのこ",
+      "reading": "きのこ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r12",
+      "display": "お米",
+      "reading": "おこめ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 5
+    },
+    {
+      "id": "food_r13",
+      "display": "バナナ",
+      "reading": "ばなな",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_r14",
+      "display": "たけのこ",
+      "reading": "たけのこ",
+      "courseId": "relaxed",
+      "topicId": "food",
+      "canonicalLength": 8
+    },
+    {
+      "id": "food_s01",
+      "display": "おにぎり",
+      "reading": "おにぎり",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 7
+    },
+    {
+      "id": "food_s02",
+      "display": "味噌汁",
+      "reading": "みそしる",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 8
+    },
+    {
+      "id": "food_s03",
+      "display": "焼き魚",
+      "reading": "やきざかな",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 10
+    },
+    {
+      "id": "food_s04",
+      "display": "食パン",
+      "reading": "しょくぱん",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 9
+    },
+    {
+      "id": "food_s05",
+      "display": "サンドイッチ",
+      "reading": "さんどいっち",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 9
+    },
+    {
+      "id": "food_s06",
+      "display": "チャーハン",
+      "reading": "ちゃーはん",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 8
+    },
+    {
+      "id": "food_s07",
+      "display": "ぎょうざ",
+      "reading": "ぎょうざ",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_s08",
+      "display": "シチュー",
+      "reading": "しちゅー",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_s09",
+      "display": "カフェラテ",
+      "reading": "かふぇらて",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 8
+    },
+    {
+      "id": "food_s10",
+      "display": "コロッケ",
+      "reading": "ころっけ",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 7
+    },
+    {
+      "id": "food_s11",
+      "display": "プリン",
+      "reading": "ぷりん",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 6
+    },
+    {
+      "id": "food_s12",
+      "display": "ヨーグルト",
+      "reading": "よーぐると",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 9
+    },
+    {
+      "id": "food_s13",
+      "display": "ジャムパン",
+      "reading": "じゃむぱん",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 8
+    },
+    {
+      "id": "food_s14",
+      "display": "りんご",
+      "reading": "りんご",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 5
+    },
+    {
+      "id": "food_s15",
+      "display": "かぼちゃ",
+      "reading": "かぼちゃ",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 7
+    },
+    {
+      "id": "food_s16",
+      "display": "ほうれん草",
+      "reading": "ほうれんそう",
+      "courseId": "standard",
+      "topicId": "food",
+      "canonicalLength": 9
+    },
+    {
+      "id": "food_c01",
+      "display": "ご飯をよくかむ",
+      "reading": "ごはんをよくかむ",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 15
+    },
+    {
+      "id": "food_c02",
+      "display": "お弁当を包む",
+      "reading": "おべんとうをつつむ",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 15
+    },
+    {
+      "id": "food_c03",
+      "display": "スープをゆっくり飲む",
+      "reading": "すーぷをゆっくりのむ",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 18
+    },
+    {
+      "id": "food_c04",
+      "display": "クッキーを分ける",
+      "reading": "くっきーをわける",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 14
+    },
+    {
+      "id": "food_c05",
+      "display": "豆腐にしょうゆをかける",
+      "reading": "とうふにしょうゆをかける",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 21
+    },
+    {
+      "id": "food_c06",
+      "display": "キャベツをちぎる",
+      "reading": "きゃべつをちぎる",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 15
+    },
+    {
+      "id": "food_c07",
+      "display": "パフェにさくらんぼをのせる",
+      "reading": "ぱふぇにさくらんぼをのせる",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 23
+    },
+    {
+      "id": "food_c08",
+      "display": "紅茶にミルクを注ぐ",
+      "reading": "こうちゃにみるくをそそぐ",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 22
+    },
+    {
+      "id": "food_c09",
+      "display": "パンがふっくら焼けた",
+      "reading": "ぱんがふっくらやけた",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 18
+    },
+    {
+      "id": "food_c10",
+      "display": "ナイフとフォークを並べる",
+      "reading": "ないふとふぉーくをならべる",
+      "courseId": "challenge",
+      "topicId": "food",
+      "canonicalLength": 22
+    },
+    {
+      "id": "living_r01",
+      "display": "猫",
+      "reading": "ねこ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 4
+    },
+    {
+      "id": "living_r02",
+      "display": "犬",
+      "reading": "いぬ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 3
+    },
+    {
+      "id": "living_r03",
+      "display": "シマウマ",
+      "reading": "しまうま",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 7
+    },
+    {
+      "id": "living_r04",
+      "display": "亀",
+      "reading": "かめ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 4
+    },
+    {
+      "id": "living_r05",
+      "display": "シロクマ",
+      "reading": "しろくま",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 8
+    },
+    {
+      "id": "living_r06",
+      "display": "カエル",
+      "reading": "かえる",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_r07",
+      "display": "キツネ",
+      "reading": "きつね",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_r08",
+      "display": "ウサギ",
+      "reading": "うさぎ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_r09",
+      "display": "メダカ",
+      "reading": "めだか",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_r10",
+      "display": "アヒル",
+      "reading": "あひる",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_r11",
+      "display": "ツバメ",
+      "reading": "つばめ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_r12",
+      "display": "トカゲ",
+      "reading": "とかげ",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_r13",
+      "display": "コアラ",
+      "reading": "こあら",
+      "courseId": "relaxed",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_s01",
+      "display": "パンダ",
+      "reading": "ぱんだ",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_s02",
+      "display": "キリン",
+      "reading": "きりん",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_s03",
+      "display": "ライオン",
+      "reading": "らいおん",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_s04",
+      "display": "ペンギン",
+      "reading": "ぺんぎん",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 7
+    },
+    {
+      "id": "living_s05",
+      "display": "カンガルー",
+      "reading": "かんがるー",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 8
+    },
+    {
+      "id": "living_s06",
+      "display": "チンパンジー",
+      "reading": "ちんぱんじー",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 9
+    },
+    {
+      "id": "living_s07",
+      "display": "金魚",
+      "reading": "きんぎょ",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 6
+    },
+    {
+      "id": "living_s08",
+      "display": "ハムスター",
+      "reading": "はむすたー",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 9
+    },
+    {
+      "id": "living_s09",
+      "display": "セキセイインコ",
+      "reading": "せきせいいんこ",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 11
+    },
+    {
+      "id": "living_s10",
+      "display": "ちょうちょ",
+      "reading": "ちょうちょ",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 7
+    },
+    {
+      "id": "living_s11",
+      "display": "てんとう虫",
+      "reading": "てんとうむし",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 10
+    },
+    {
+      "id": "living_s12",
+      "display": "カブトムシ",
+      "reading": "かぶとむし",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 10
+    },
+    {
+      "id": "living_s13",
+      "display": "モルモット",
+      "reading": "もるもっと",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 9
+    },
+    {
+      "id": "living_s14",
+      "display": "モモンガ",
+      "reading": "ももんが",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 7
+    },
+    {
+      "id": "living_s15",
+      "display": "ラッコ",
+      "reading": "らっこ",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 5
+    },
+    {
+      "id": "living_s16",
+      "display": "ニワトリ",
+      "reading": "にわとり",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 8
+    },
+    {
+      "id": "living_s17",
+      "display": "フクロウ",
+      "reading": "ふくろう",
+      "courseId": "standard",
+      "topicId": "living",
+      "canonicalLength": 7
+    },
+    {
+      "id": "living_c01",
+      "display": "子犬がしっぽを振る",
+      "reading": "こいぬがしっぽをふる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 18
+    },
+    {
+      "id": "living_c02",
+      "display": "猫が日なたで眠る",
+      "reading": "ねこがひなたでねむる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 20
+    },
+    {
+      "id": "living_c03",
+      "display": "パンダは竹を食べる",
+      "reading": "ぱんだはたけをたべる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 19
+    },
+    {
+      "id": "living_c04",
+      "display": "金魚がすいすい泳ぐ",
+      "reading": "きんぎょがすいすいおよぐ",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 19
+    },
+    {
+      "id": "living_c05",
+      "display": "ちょうちょが花にとまる",
+      "reading": "ちょうちょがはなにとまる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 21
+    },
+    {
+      "id": "living_c06",
+      "display": "ひよこがぴょんと跳ねる",
+      "reading": "ひよこがぴょんとはねる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 20
+    },
+    {
+      "id": "living_c07",
+      "display": "ペンギンが海を泳ぐ",
+      "reading": "ぺんぎんがうみをおよぐ",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 18
+    },
+    {
+      "id": "living_c08",
+      "display": "ハムスターがえさを運ぶ",
+      "reading": "はむすたーがえさをはこぶ",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 22
+    },
+    {
+      "id": "living_c09",
+      "display": "アヒルがのんびり歩く",
+      "reading": "あひるがのんびりあるく",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 19
+    },
+    {
+      "id": "living_c10",
+      "display": "リスが木の実をかじる",
+      "reading": "りすがきのみをかじる",
+      "courseId": "challenge",
+      "topicId": "living",
+      "canonicalLength": 20
+    },
+    {
+      "id": "town_r01",
+      "display": "時計",
+      "reading": "とけい",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_r02",
+      "display": "はがき",
+      "reading": "はがき",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_r03",
+      "display": "ポスト",
+      "reading": "ぽすと",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_r04",
+      "display": "バス",
+      "reading": "ばす",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 4
+    },
+    {
+      "id": "town_r05",
+      "display": "駅",
+      "reading": "えき",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 3
+    },
+    {
+      "id": "town_r06",
+      "display": "町",
+      "reading": "まち",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 4
+    },
+    {
+      "id": "town_r07",
+      "display": "橋",
+      "reading": "はし",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 4
+    },
+    {
+      "id": "town_r08",
+      "display": "地図",
+      "reading": "ちず",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 4
+    },
+    {
+      "id": "town_r09",
+      "display": "道路",
+      "reading": "どうろ",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_r10",
+      "display": "道具",
+      "reading": "どうぐ",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_r11",
+      "display": "お店",
+      "reading": "おみせ",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_r12",
+      "display": "はさみ",
+      "reading": "はさみ",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_r13",
+      "display": "バケツ",
+      "reading": "ばけつ",
+      "courseId": "relaxed",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_s01",
+      "display": "切手",
+      "reading": "きって",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_s02",
+      "display": "手紙",
+      "reading": "てがみ",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_s03",
+      "display": "切符",
+      "reading": "きっぷ",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_s04",
+      "display": "封筒",
+      "reading": "ふうとう",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_s05",
+      "display": "便せん",
+      "reading": "びんせん",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 7
+    },
+    {
+      "id": "town_s06",
+      "display": "自転車",
+      "reading": "じてんしゃ",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 8
+    },
+    {
+      "id": "town_s07",
+      "display": "図書館",
+      "reading": "としょかん",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 9
+    },
+    {
+      "id": "town_s08",
+      "display": "商店街",
+      "reading": "しょうてんがい",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 10
+    },
+    {
+      "id": "town_s09",
+      "display": "交差点",
+      "reading": "こうさてん",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 9
+    },
+    {
+      "id": "town_s10",
+      "display": "信号",
+      "reading": "しんごう",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_s11",
+      "display": "ベンチ",
+      "reading": "べんち",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 5
+    },
+    {
+      "id": "town_s12",
+      "display": "トンネル",
+      "reading": "とんねる",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 7
+    },
+    {
+      "id": "town_s13",
+      "display": "シャッター",
+      "reading": "しゃったー",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 7
+    },
+    {
+      "id": "town_s14",
+      "display": "エレベーター",
+      "reading": "えれべーたー",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 9
+    },
+    {
+      "id": "town_s15",
+      "display": "横断歩道",
+      "reading": "おうだんほどう",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 10
+    },
+    {
+      "id": "town_s16",
+      "display": "店員",
+      "reading": "てんいん",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 7
+    },
+    {
+      "id": "town_s17",
+      "display": "本屋",
+      "reading": "ほんや",
+      "courseId": "standard",
+      "topicId": "town",
+      "canonicalLength": 6
+    },
+    {
+      "id": "town_c01",
+      "display": "ポストへ手紙を入れる",
+      "reading": "ぽすとへてがみをいれる",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 21
+    },
+    {
+      "id": "town_c02",
+      "display": "駅で切符を買う",
+      "reading": "えきできっぷをかう",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 15
+    },
+    {
+      "id": "town_c03",
+      "display": "図書館へ本を返す",
+      "reading": "としょかんへほんをかえす",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 20
+    },
+    {
+      "id": "town_c04",
+      "display": "交差点の信号が変わる",
+      "reading": "こうさてんのしんごうがかわる",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 24
+    },
+    {
+      "id": "town_c05",
+      "display": "バスはゆっくり進む",
+      "reading": "ばすはゆっくりすすむ",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 19
+    },
+    {
+      "id": "town_c06",
+      "display": "カフェの扉を開ける",
+      "reading": "かふぇのとびらをあける",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 19
+    },
+    {
+      "id": "town_c07",
+      "display": "封筒に宛名を書く",
+      "reading": "ふうとうにあてなをかく",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 19
+    },
+    {
+      "id": "town_c08",
+      "display": "鉛筆を削る",
+      "reading": "えんぴつをけずる",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 14
+    },
+    {
+      "id": "town_c09",
+      "display": "シャッターが開いた",
+      "reading": "しゃったーがあいた",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 13
+    },
+    {
+      "id": "town_c10",
+      "display": "チャイムが鳴った",
+      "reading": "ちゃいむがなった",
+      "courseId": "challenge",
+      "topicId": "town",
+      "canonicalLength": 13
+    },
+    {
+      "id": "nature_r01",
+      "display": "空",
+      "reading": "そら",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r02",
+      "display": "雲",
+      "reading": "くも",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r03",
+      "display": "雨",
+      "reading": "あめ",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 3
+    },
+    {
+      "id": "nature_r04",
+      "display": "風",
+      "reading": "かぜ",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r05",
+      "display": "花",
+      "reading": "はな",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r06",
+      "display": "草",
+      "reading": "くさ",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r07",
+      "display": "森",
+      "reading": "もり",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r08",
+      "display": "海",
+      "reading": "うみ",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 3
+    },
+    {
+      "id": "nature_r09",
+      "display": "雪",
+      "reading": "ゆき",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 4
+    },
+    {
+      "id": "nature_r10",
+      "display": "桜",
+      "reading": "さくら",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 6
+    },
+    {
+      "id": "nature_r11",
+      "display": "つぼみ",
+      "reading": "つぼみ",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 6
+    },
+    {
+      "id": "nature_r12",
+      "display": "落ち葉",
+      "reading": "おちば",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 5
+    },
+    {
+      "id": "nature_r13",
+      "display": "氷",
+      "reading": "こおり",
+      "courseId": "relaxed",
+      "topicId": "nature",
+      "canonicalLength": 5
+    },
+    {
+      "id": "nature_s01",
+      "display": "春風",
+      "reading": "はるかぜ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 8
+    },
+    {
+      "id": "nature_s02",
+      "display": "夏の空",
+      "reading": "なつのそら",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 10
+    },
+    {
+      "id": "nature_s03",
+      "display": "秋晴れ",
+      "reading": "あきばれ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 7
+    },
+    {
+      "id": "nature_s04",
+      "display": "冬支度",
+      "reading": "ふゆじたく",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 10
+    },
+    {
+      "id": "nature_s05",
+      "display": "夕焼け",
+      "reading": "ゆうやけ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 7
+    },
+    {
+      "id": "nature_s06",
+      "display": "木漏れ日",
+      "reading": "こもれび",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 8
+    },
+    {
+      "id": "nature_s07",
+      "display": "雨上がり",
+      "reading": "あめあがり",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 8
+    },
+    {
+      "id": "nature_s08",
+      "display": "水たまり",
+      "reading": "みずたまり",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 10
+    },
+    {
+      "id": "nature_s09",
+      "display": "どんぐり",
+      "reading": "どんぐり",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 7
+    },
+    {
+      "id": "nature_s10",
+      "display": "たんぽぽ",
+      "reading": "たんぽぽ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 7
+    },
+    {
+      "id": "nature_s11",
+      "display": "朝顔",
+      "reading": "あさがお",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 6
+    },
+    {
+      "id": "nature_s12",
+      "display": "みつばち",
+      "reading": "みつばち",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 8
+    },
+    {
+      "id": "nature_s13",
+      "display": "ひまわり",
+      "reading": "ひまわり",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 8
+    },
+    {
+      "id": "nature_s14",
+      "display": "まつぼっくり",
+      "reading": "まつぼっくり",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 11
+    },
+    {
+      "id": "nature_s15",
+      "display": "小さな葉っぱ",
+      "reading": "ちいさなはっぱ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 12
+    },
+    {
+      "id": "nature_s16",
+      "display": "チューリップ",
+      "reading": "ちゅーりっぷ",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 9
+    },
+    {
+      "id": "nature_s17",
+      "display": "真っ白な雲",
+      "reading": "まっしろなくも",
+      "courseId": "standard",
+      "topicId": "nature",
+      "canonicalLength": 13
+    },
+    {
+      "id": "nature_c01",
+      "display": "春風が頬をなでる",
+      "reading": "はるかぜがほほをなでる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 22
+    },
+    {
+      "id": "nature_c02",
+      "display": "空に満月が浮かぶ",
+      "reading": "そらにまんげつがうかぶ",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 20
+    },
+    {
+      "id": "nature_c03",
+      "display": "雨がやんで虹が出た",
+      "reading": "あめがやんでにじがでた",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 20
+    },
+    {
+      "id": "nature_c04",
+      "display": "葉っぱがひらりと落ちる",
+      "reading": "はっぱがひらりとおちる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 20
+    },
+    {
+      "id": "nature_c05",
+      "display": "どんぐりが坂を転がる",
+      "reading": "どんぐりがさかをころがる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 23
+    },
+    {
+      "id": "nature_c06",
+      "display": "チューリップが咲いた",
+      "reading": "ちゅーりっぷがさいた",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 16
+    },
+    {
+      "id": "nature_c07",
+      "display": "雪を踏むと音がする",
+      "reading": "ゆきをふむとおとがする",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 21
+    },
+    {
+      "id": "nature_c08",
+      "display": "風鈴がちりんと鳴る",
+      "reading": "ふうりんがちりんとなる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 19
+    },
+    {
+      "id": "nature_c09",
+      "display": "フェンスに朝露が光る",
+      "reading": "ふぇんすにあさつゆがひかる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 22
+    },
+    {
+      "id": "nature_c10",
+      "display": "小川のせせらぎが聞こえる",
+      "reading": "おがわのせせらぎがきこえる",
+      "courseId": "challenge",
+      "topicId": "nature",
+      "canonicalLength": 24
+    },
+    {
+      "id": "people_r01",
+      "display": "声",
+      "reading": "こえ",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 3
+    },
+    {
+      "id": "people_r02",
+      "display": "笑顔",
+      "reading": "えがお",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 4
+    },
+    {
+      "id": "people_r03",
+      "display": "名前",
+      "reading": "なまえ",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 5
+    },
+    {
+      "id": "people_r04",
+      "display": "家族",
+      "reading": "かぞく",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_r05",
+      "display": "仲間",
+      "reading": "なかま",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_r06",
+      "display": "子ども",
+      "reading": "こども",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_r07",
+      "display": "言葉",
+      "reading": "ことば",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_r08",
+      "display": "お話",
+      "reading": "おはなし",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 7
+    },
+    {
+      "id": "people_r09",
+      "display": "会話",
+      "reading": "かいわ",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 5
+    },
+    {
+      "id": "people_r10",
+      "display": "友だち",
+      "reading": "ともだち",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_r11",
+      "display": "合図",
+      "reading": "あいず",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 4
+    },
+    {
+      "id": "people_r12",
+      "display": "手助け",
+      "reading": "てだすけ",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_r13",
+      "display": "お礼",
+      "reading": "おれい",
+      "courseId": "relaxed",
+      "topicId": "people",
+      "canonicalLength": 4
+    },
+    {
+      "id": "people_s01",
+      "display": "こんにちは",
+      "reading": "こんにちは",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 9
+    },
+    {
+      "id": "people_s02",
+      "display": "おはよう",
+      "reading": "おはよう",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_s03",
+      "display": "ありがとう",
+      "reading": "ありがとう",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_s04",
+      "display": "おかえり",
+      "reading": "おかえり",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_s05",
+      "display": "おめでとう",
+      "reading": "おめでとう",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_s06",
+      "display": "お先にどうぞ",
+      "reading": "おさきにどうぞ",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 12
+    },
+    {
+      "id": "people_s07",
+      "display": "はじめまして",
+      "reading": "はじめまして",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 12
+    },
+    {
+      "id": "people_s08",
+      "display": "握手",
+      "reading": "あくしゅ",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 6
+    },
+    {
+      "id": "people_s09",
+      "display": "返事",
+      "reading": "へんじ",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 5
+    },
+    {
+      "id": "people_s10",
+      "display": "約束",
+      "reading": "やくそく",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_s11",
+      "display": "自己紹介",
+      "reading": "じこしょうかい",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 11
+    },
+    {
+      "id": "people_s12",
+      "display": "相談",
+      "reading": "そうだん",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 7
+    },
+    {
+      "id": "people_s13",
+      "display": "ゆっくり話す",
+      "reading": "ゆっくりはなす",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 13
+    },
+    {
+      "id": "people_s14",
+      "display": "みんなで拍手",
+      "reading": "みんなではくしゅ",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 14
+    },
+    {
+      "id": "people_s15",
+      "display": "メッセージ",
+      "reading": "めっせーじ",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_s16",
+      "display": "インタビュー",
+      "reading": "いんたびゅー",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 8
+    },
+    {
+      "id": "people_s17",
+      "display": "応援",
+      "reading": "おうえん",
+      "courseId": "standard",
+      "topicId": "people",
+      "canonicalLength": 5
+    },
+    {
+      "id": "people_c01",
+      "display": "友だちに手を振る",
+      "reading": "ともだちにてをふる",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 18
+    },
+    {
+      "id": "people_c02",
+      "display": "みんなで輪になろう",
+      "reading": "みんなでわになろう",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 16
+    },
+    {
+      "id": "people_c03",
+      "display": "メッセージを受け取る",
+      "reading": "めっせーじをうけとる",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 17
+    },
+    {
+      "id": "people_c04",
+      "display": "インタビューに答える",
+      "reading": "いんたびゅーにこたえる",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 17
+    },
+    {
+      "id": "people_c05",
+      "display": "拍手で気持ちを伝える",
+      "reading": "はくしゅできもちをつたえる",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 24
+    },
+    {
+      "id": "people_c06",
+      "display": "小さな声で相談する",
+      "reading": "ちいさなこえでそうだんする",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 22
+    },
+    {
+      "id": "people_c07",
+      "display": "笑顔であいさつする",
+      "reading": "えがおであいさつする",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 16
+    },
+    {
+      "id": "people_c08",
+      "display": "返事を聞いてほっとする",
+      "reading": "へんじをきいてほっとする",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 21
+    },
+    {
+      "id": "people_c09",
+      "display": "一緒に写真を撮ろう",
+      "reading": "いっしょにしゃしんをとろう",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 20
+    },
+    {
+      "id": "people_c10",
+      "display": "心をこめて感謝する",
+      "reading": "こころをこめてかんしゃする",
+      "courseId": "challenge",
+      "topicId": "people",
+      "canonicalLength": 24
+    }
+  ]
+}

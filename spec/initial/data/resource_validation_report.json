@@ -1,0 +1,8773 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "4.1.0",
+  "validation_scope": "resource_contracts_only",
+  "status": "passed",
+  "checks": 24452,
+  "contractual_checks": 24420,
+  "groups": {
+    "source": {
+      "checks": 40,
+      "failures": 0
+    },
+    "achievements": {
+      "checks": 2908,
+      "failures": 0
+    },
+    "city": {
+      "checks": 540,
+      "failures": 0
+    },
+    "equipment": {
+      "checks": 3914,
+      "failures": 0
+    },
+    "manifest": {
+      "checks": 7353,
+      "failures": 0
+    },
+    "references": {
+      "checks": 8815,
+      "failures": 0
+    },
+    "geometry": {
+      "checks": 848,
+      "failures": 0
+    },
+    "markdown": {
+      "checks": 2,
+      "failures": 0
+    },
+    "mutation": {
+      "checks": 32,
+      "failures": 0
+    }
+  },
+  "metrics": {
+    "unchanged_source_contracts": 4,
+    "reference_screen_images": 5,
+    "achievements": 72,
+    "families": 12,
+    "titles": 72,
+    "progress_fields": 183,
+    "additional_rewards": 40,
+    "family_rewards": 24,
+    "milestone_rewards": 16,
+    "memorial_stamps_outside_72": 2,
+    "districts": 6,
+    "district_stage_states": 36,
+    "district_completed_art": 30,
+    "shared_empty_art": 1,
+    "landscapes": 3,
+    "landscape_stage_combinations": 108,
+    "packaging_states": 51,
+    "crew_states_per_route": 50,
+    "shop_states_per_district": 51,
+    "price_cells": 644,
+    "price_cells_by_kind": {
+      "packaging": 50,
+      "crews": 294,
+      "shops": 300
+    },
+    "formula_price_checks": 644,
+    "canonical_price_checks": 644,
+    "reachable_paid_price_cells": 638,
+    "reference_only_zero_shop_price_cells": 6,
+    "railways": 6,
+    "synergies": 3,
+    "research_states": 18,
+    "visual_unique": 241,
+    "raster_unique": 149,
+    "svg_unique": 92,
+    "audio_unique": 7,
+    "all_unique": 248,
+    "runtime_export_files": 249,
+    "bindings": 709,
+    "asset_profiles": 19,
+    "resolved_asset_profiles": 248,
+    "resolved_render_layers": 248,
+    "vehicle_native_directions": 10,
+    "production_assets_delivered": 0,
+    "production_asset_status_counts": {
+      "planned": 248
+    },
+    "assets_by_category": {
+      "achievement_stamp": 72,
+      "family_emblem": 12,
+      "postcard": 12,
+      "milestone_svg": 11,
+      "milestone_raster": 4,
+      "district_icon": 6,
+      "shop_scene": 6,
+      "city_plot": 1,
+      "city_stage": 30,
+      "terrain": 3,
+      "equipment_scene": 5,
+      "vehicle": 10,
+      "shop_overlay": 3,
+      "city_shared": 2,
+      "equipment_icon": 4,
+      "synergy_icon": 3,
+      "research_icon": 3,
+      "shared_frame": 5,
+      "brand": 1,
+      "construction": 3,
+      "cargo": 1,
+      "ui_icon": 32,
+      "resource_icon": 3,
+      "course_icon": 3,
+      "topic_icon": 6,
+      "sound_effect": 6,
+      "bgm": 1
+    },
+    "assets_by_phase": {
+      "P0": 71,
+      "P2": 109,
+      "P1": 68
+    },
+    "bindings_by_kind": {
+      "achievement": 72,
+      "family": 12,
+      "reward": 40,
+      "district": 36,
+      "landscape": 3,
+      "equipment": 475,
+      "component": 62,
+      "render_state": 9
+    },
+    "forward_reference_edges": 2081,
+    "reverse_reference_edges": 2081,
+    "catalog_asset_reference_occurrences": 1475,
+    "screen_usage_contracts": 9,
+    "required_screen_usage_edges": 122,
+    "screen_asset_reference_edges": 744,
+    "screen_count": 13,
+    "orphan_assets": 0,
+    "fixed_routes": 6,
+    "main_route_segments": 21,
+    "terminal_connectors": 6,
+    "geometry_segments_including_connectors": 27,
+    "whole_segment_land_breakpoints": 76,
+    "segment_building_rectangle_checks": 189,
+    "minimum_water_distance_squared_exact": "469225/202",
+    "route_protection_radius_map_px": 24,
+    "minimum_map_css": [
+      800,
+      500
+    ],
+    "vehicle_at_minimum_map_css": [
+      "24",
+      "18"
+    ],
+    "freight_at_minimum_map_css": [
+      "32",
+      "24"
+    ],
+    "minimum_board_css": [
+      600,
+      400
+    ],
+    "board_thumbnail_minimum_css": [
+      240,
+      160
+    ],
+    "stamp_frame_at_minimum_board_css": "120",
+    "stamp_art_at_minimum_board_css": [
+      "96",
+      "96"
+    ],
+    "board_name_rectangles": [
+      [
+        "32",
+        "350",
+        "368",
+        "430"
+      ],
+      [
+        "432",
+        "350",
+        "768",
+        "430"
+      ],
+      [
+        "832",
+        "350",
+        "1168",
+        "430"
+      ],
+      [
+        "32",
+        "700",
+        "368",
+        "780"
+      ],
+      [
+        "432",
+        "700",
+        "768",
+        "780"
+      ],
+      [
+        "832",
+        "700",
+        "1168",
+        "780"
+      ]
+    ],
+    "board_name_max_width_css": "168",
+    "board_name_line_box_height_css": "40",
+    "board_name_maximum_line_height_css_by_row": [
+      "25",
+      "21"
+    ],
+    "board_name_maximum_line_height_css": "21",
+    "board_name_geometry_scope": "explicit_two_line_CSS_boxes; glyph_metrics_and_enlarged_text_layout_require_runtime_review",
+    "board_header_emblem_rect_source": [
+      "64",
+      "24",
+      "128",
+      "88"
+    ],
+    "board_header_line_bounds_source": [
+      "24",
+      "88"
+    ],
+    "board_header_text_anchor_mode": "left_center",
+    "board_name_anchor_mode": "top_center",
+    "board_header_text_scope": "anchor_and_explicit_CSS_line_height; full_text_width_requires_runtime_review",
+    "generated_markdown_documents": 5,
+    "mutation_cases": 32,
+    "detected_mutation_cases": 32
+  },
+  "errors": [],
+  "mutation_tests": [
+    {
+      "id": "achievement_missing",
+      "name": "実績1件の欠落",
+      "expected_error_code": "ACH.count",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 12,
+      "example": {
+        "group": "achievements",
+        "code": "ACH.count",
+        "path": "achievements",
+        "actual": 71,
+        "expected": 72
+      }
+    },
+    {
+      "id": "price_wrong",
+      "name": "荷づくり価格を1コイン増額",
+      "expected_error_code": "PRICE.formula",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "equipment",
+        "code": "PRICE.formula",
+        "path": "packaging.12",
+        "actual": 366,
+        "expected": 365
+      }
+    },
+    {
+      "id": "asset_missing",
+      "name": "資材1点の欠落",
+      "expected_error_code": "REFERENCE.binding_unknown",
+      "detected": true,
+      "matching_failures": 2,
+      "total_failures": 30,
+      "example": {
+        "group": "references",
+        "code": "REFERENCE.binding_unknown",
+        "path": "achievement:A01",
+        "actual": "stamp_a01",
+        "expected": "台帳内の資材ID"
+      }
+    },
+    {
+      "id": "asset_duplicate_id",
+      "name": "資材IDの重複",
+      "expected_error_code": "MANIFEST.duplicate_id",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 26,
+      "example": {
+        "group": "manifest",
+        "code": "MANIFEST.duplicate_id",
+        "path": "assets",
+        "actual": [
+          "stamp_a01"
+        ],
+        "expected": []
+      }
+    },
+    {
+      "id": "appearance_wrong",
+      "name": "配送班10の外観帯を1へ変更",
+      "expected_error_code": "EQUIP.crew.visual",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "equipment",
+        "code": "EQUIP.crew.visual",
+        "path": "10",
+        "actual": 1,
+        "expected": 2
+      }
+    },
+    {
+      "id": "research_multiplier_wrong",
+      "name": "研究ランク5の効果を変更",
+      "expected_error_code": "RESEARCH.multiplier",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "equipment",
+        "code": "RESEARCH.multiplier",
+        "path": "research_commerce_r5",
+        "actual": "999",
+        "expected": "9/4"
+      }
+    },
+    {
+      "id": "zero_shop_paid",
+      "name": "店舗0→1を有償購入可能へ変更",
+      "expected_error_code": "EQUIP.shop.paid",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "equipment",
+        "code": "EQUIP.shop.paid",
+        "path": "0",
+        "actual": true,
+        "expected": false
+      }
+    },
+    {
+      "id": "landscape_reuse_wrong",
+      "name": "海辺を川沿いの背景IDへ変更",
+      "expected_error_code": "CITY.landscape.asset_unique",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 4,
+      "example": {
+        "group": "city",
+        "code": "CITY.landscape.asset_unique",
+        "path": "landscapes",
+        "actual": [
+          "terrain_riverside"
+        ],
+        "expected": []
+      }
+    },
+    {
+      "id": "unknown_forward_ref",
+      "name": "未知の資材参照を追加",
+      "expected_error_code": "REFERENCE.binding_unknown",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 3,
+      "example": {
+        "group": "references",
+        "code": "REFERENCE.binding_unknown",
+        "path": "achievement:A01",
+        "actual": "missing_resource",
+        "expected": "台帳内の資材ID"
+      }
+    },
+    {
+      "id": "reverse_ref_missing",
+      "name": "資材の逆参照を1件削除",
+      "expected_error_code": "REFERENCE.reverse",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "references",
+        "code": "REFERENCE.reverse",
+        "path": "stamp_a01",
+        "actual": [
+          "achievement:A01"
+        ],
+        "expected": [
+          "achievement:A01",
+          "family:A"
+        ]
+      }
+    },
+    {
+      "id": "route_slope_wrong",
+      "name": "経路の中間点を1px移動",
+      "expected_error_code": "ROUTE.slope",
+      "detected": true,
+      "matching_failures": 2,
+      "total_failures": 2,
+      "example": {
+        "group": "geometry",
+        "code": "ROUTE.slope",
+        "path": "route_residential",
+        "actual": "-31/60",
+        "expected": "±1/2"
+      }
+    },
+    {
+      "id": "terminal_connector_long",
+      "name": "終端コネクタを15pxへ延長",
+      "expected_error_code": "ROUTE.connector_length",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "geometry",
+        "code": "ROUTE.connector_length",
+        "path": "route_market",
+        "actual": "225",
+        "expected": "長さの二乗が25以下"
+      }
+    },
+    {
+      "id": "route_submerged",
+      "name": "共通水際を経路の左へ移動",
+      "expected_error_code": "ROUTE.land",
+      "detected": true,
+      "matching_failures": 66,
+      "total_failures": 76,
+      "example": {
+        "group": "geometry",
+        "code": "ROUTE.land",
+        "path": "route_residential.segment[0].t=0",
+        "actual": "760",
+        "expected": "水際の陸側"
+      }
+    },
+    {
+      "id": "source_hash_wrong",
+      "name": "語彙正本の保持ハッシュを変更",
+      "expected_error_code": "SOURCE.sha256",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "source",
+        "code": "SOURCE.sha256",
+        "path": "source_contracts.words.json",
+        "actual": "0000000000000000000000000000000000000000000000000000000000000000",
+        "expected": "b27c0a3823221c0cad23e1765be56edf597469ac2041056e5e9ced1925ecab4a"
+      }
+    },
+    {
+      "id": "references_as_delivered",
+      "name": "参考5枚を個別完成資材へ計上",
+      "expected_error_code": "MANIFEST.delivered",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "manifest",
+        "code": "MANIFEST.delivered",
+        "path": "counts",
+        "actual": 5,
+        "expected": 0
+      }
+    },
+    {
+      "id": "hidden_wrong",
+      "name": "A01を隠し実績へ変更",
+      "expected_error_code": "ACH.hidden_set",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 3,
+      "example": {
+        "group": "achievements",
+        "code": "ACH.hidden_set",
+        "path": "achievements",
+        "actual": [
+          "A01",
+          "B05",
+          "F06"
+        ],
+        "expected": [
+          "B05",
+          "F06"
+        ]
+      }
+    },
+    {
+      "id": "synergy_cost_wrong",
+      "name": "連携の費用を変更",
+      "expected_error_code": "SYNERGY.cost_coins",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "equipment",
+        "code": "SYNERGY.cost_coins",
+        "path": "joint_delivery",
+        "actual": 1001,
+        "expected": 1000
+      }
+    },
+    {
+      "id": "development_cost_wrong",
+      "name": "段階1の資材費を変更",
+      "expected_error_code": "CITY.stage.material_cost",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "city",
+        "code": "CITY.stage.material_cost",
+        "path": "residential.s1",
+        "actual": 31,
+        "expected": "30"
+      }
+    },
+    {
+      "id": "district_alpha_wrong",
+      "name": "地区原画を非透過へ変更",
+      "expected_error_code": "PROFILE.transparent",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "manifest",
+        "code": "PROFILE.transparent",
+        "path": "district",
+        "actual": false,
+        "expected": true
+      }
+    },
+    {
+      "id": "canonical_price_wrong",
+      "name": "価格正本の1セルを変更",
+      "expected_error_code": "PRICE.canonical_formula",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "equipment",
+        "code": "PRICE.canonical_formula",
+        "path": "packaging.12",
+        "actual": 1,
+        "expected": 365
+      }
+    },
+    {
+      "id": "required_screen_missing",
+      "name": "チュートリアルの切手配置先を削除",
+      "expected_error_code": "SCREEN.required_placement",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 3,
+      "example": {
+        "group": "references",
+        "code": "SCREEN.required_placement",
+        "path": "tutorial_first_stamp.stamp_a01",
+        "actual": "TUTORIAL",
+        "expected": "資材の配置画面へ含める"
+      }
+    },
+    {
+      "id": "screen_reverse_missing",
+      "name": "画面から資材への参照を1件削除",
+      "expected_error_code": "SCREEN.reverse",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "references",
+        "code": "SCREEN.reverse",
+        "path": "HOME",
+        "actual": [
+          "album_base",
+          "board_base",
+          "board_foil",
+          "brand_mark",
+          "city_freight_terminal",
+          "city_harbor_s1",
+          "city_harbor_s2",
+          "city_harbor_s3",
+          "city_harbor_s4",
+          "city_harbor_s5",
+          "city_hub",
+          "city_market_s1",
+          "city_market_s2",
+          "city_market_s3",
+          "city_market_s4",
+          "city_market_s5",
+          "city_park_s1",
+          "city_park_s2",
+          "city_park_s3",
+          "city_park_s4",
+          "city_park_s5",
+          "city_plot_empty",
+          "city_residential_s1",
+          "city_residential_s2",
+          "city_residential_s3",
+          "city_residential_s4",
+          "city_residential_s5",
+          "city_station_s1",
+          "city_station_s2",
+          "city_station_s3",
+          "city_station_s4",
+          "city_station_s5",
+          "city_workshop_s1",
+          "city_workshop_s2",
+          "city_workshop_s3",
+          "city_workshop_s4",
+          "city_workshop_s5",
+          "course_challenge",
+          "course_relaxed",
+          "course_standard",
+          "district_harbor",
+          "district_market",
+          "district_park",
+          "district_residential",
+          "district_station",
+          "district_workshop",
+          "equipment_crews_icon",
+          "equipment_packaging_icon",
+          "equipment_railway_icon",
+          "equipment_shops_icon",
+          "family_a",
+          "family_b",
+          "family_c",
+          "family_d",
+          "family_e",
+          "family_f",
+          "family_g",
+          "family_h",
+          "family_i",
+          "family_j",
+          "family_k",
+          "family_l",
+          "memorial_frame",
+          "postcard_a",
+          "postcard_b",
+          "postcard_c",
+          "postcard_d",
+          "postcard_e",
+          "postcard_f",
+          "postcard_g",
+          "postcard_h",
+          "postcard_i",
+          "postcard_j",
+          "postcard_k",
+          "postcard_l",
+          "resource_blueprint",
+          "resource_coin",
+          "resource_material",
+          "reward_album_24_emblem",
+          "reward_board_48_emblem",
+          "reward_complete_72_emblem",
+          "reward_evening_panel",
+          "reward_expanded_album_emblem",
+          "reward_first_collection_emblem",
+          "reward_fountain_ornament",
+          "reward_frame_journey",
+          "reward_frame_leaf",
+          "reward_frame_plaza",
+          "reward_frame_sunset",
+          "reward_tree_ornament",
+          "scaffold_large",
+          "scaffold_medium",
+          "scaffold_small",
+          "shop_banner",
+          "shop_canopy",
+          "shop_harbor",
+          "shop_market",
+          "shop_park",
+          "shop_residential",
+          "shop_signboard",
+          "shop_station",
+          "shop_workshop",
+          "stamp_frame",
+          "synergy_joint_delivery",
+          "synergy_sorting_network",
+          "synergy_tourism_service",
+          "terrain_highland",
+          "terrain_riverside",
+          "terrain_seaside",
+          "ui_check",
+          "ui_dictionary",
+          "ui_handbook",
+          "ui_home",
+          "ui_info",
+          "ui_lock",
+          "ui_new_city",
+          "ui_pause",
+          "ui_pin",
+          "ui_plan",
+          "ui_play",
+          "ui_practice",
+          "ui_route",
+          "ui_settings",
+          "ui_unread",
+          "ui_warning",
+          "vehicle_box_van_front",
+          "vehicle_box_van_rear",
+          "vehicle_cart_front",
+          "vehicle_cart_rear",
+          "vehicle_train_front",
+          "vehicle_train_rear",
+          "vehicle_truck_front",
+          "vehicle_truck_rear",
+          "vehicle_van_front",
+          "vehicle_van_rear"
+        ],
+        "expected": [
+          "album_base",
+          "audio_theme",
+          "board_base",
+          "board_foil",
+          "brand_mark",
+          "city_freight_terminal",
+          "city_harbor_s1",
+          "city_harbor_s2",
+          "city_harbor_s3",
+          "city_harbor_s4",
+          "city_harbor_s5",
+          "city_hub",
+          "city_market_s1",
+          "city_market_s2",
+          "city_market_s3",
+          "city_market_s4",
+          "city_market_s5",
+          "city_park_s1",
+          "city_park_s2",
+          "city_park_s3",
+          "city_park_s4",
+          "city_park_s5",
+          "city_plot_empty",
+          "city_residential_s1",
+          "city_residential_s2",
+          "city_residential_s3",
+          "city_residential_s4",
+          "city_residential_s5",
+          "city_station_s1",
+          "city_station_s2",
+          "city_station_s3",
+          "city_station_s4",
+          "city_station_s5",
+          "city_workshop_s1",
+          "city_workshop_s2",
+          "city_workshop_s3",
+          "city_workshop_s4",
+          "city_workshop_s5",
+          "course_challenge",
+          "course_relaxed",
+          "course_standard",
+          "district_harbor",
+          "district_market",
+          "district_park",
+          "district_residential",
+          "district_station",
+          "district_workshop",
+          "equipment_crews_icon",
+          "equipment_packaging_icon",
+          "equipment_railway_icon",
+          "equipment_shops_icon",
+          "family_a",
+          "family_b",
+          "family_c",
+          "family_d",
+          "family_e",
+          "family_f",
+          "family_g",
+          "family_h",
+          "family_i",
+          "family_j",
+          "family_k",
+          "family_l",
+          "memorial_frame",
+          "postcard_a",
+          "postcard_b",
+          "postcard_c",
+          "postcard_d",
+          "postcard_e",
+          "postcard_f",
+          "postcard_g",
+          "postcard_h",
+          "postcard_i",
+          "postcard_j",
+          "postcard_k",
+          "postcard_l",
+          "resource_blueprint",
+          "resource_coin",
+          "resource_material",
+          "reward_album_24_emblem",
+          "reward_board_48_emblem",
+          "reward_complete_72_emblem",
+          "reward_evening_panel",
+          "reward_expanded_album_emblem",
+          "reward_first_collection_emblem",
+          "reward_fountain_ornament",
+          "reward_frame_journey",
+          "reward_frame_leaf",
+          "reward_frame_plaza",
+          "reward_frame_sunset",
+          "reward_tree_ornament",
+          "scaffold_large",
+          "scaffold_medium",
+          "scaffold_small",
+          "shop_banner",
+          "shop_canopy",
+          "shop_harbor",
+          "shop_market",
+          "shop_park",
+          "shop_residential",
+          "shop_signboard",
+          "shop_station",
+          "shop_workshop",
+          "stamp_frame",
+          "synergy_joint_delivery",
+          "synergy_sorting_network",
+          "synergy_tourism_service",
+          "terrain_highland",
+          "terrain_riverside",
+          "terrain_seaside",
+          "ui_check",
+          "ui_dictionary",
+          "ui_handbook",
+          "ui_home",
+          "ui_info",
+          "ui_lock",
+          "ui_new_city",
+          "ui_pause",
+          "ui_pin",
+          "ui_plan",
+          "ui_play",
+          "ui_practice",
+          "ui_route",
+          "ui_settings",
+          "ui_unread",
+          "ui_warning",
+          "vehicle_box_van_front",
+          "vehicle_box_van_rear",
+          "vehicle_cart_front",
+          "vehicle_cart_rear",
+          "vehicle_train_front",
+          "vehicle_train_rear",
+          "vehicle_truck_front",
+          "vehicle_truck_rear",
+          "vehicle_van_front",
+          "vehicle_van_rear"
+        ]
+      }
+    },
+    {
+      "id": "map_minimum_too_small",
+      "name": "全地図の最小幅を600pxへ縮小",
+      "expected_error_code": "MAP.child_minimum_size",
+      "detected": true,
+      "matching_failures": 4,
+      "total_failures": 5,
+      "example": {
+        "group": "geometry",
+        "code": "MAP.child_minimum_size",
+        "path": "vehicle.0",
+        "actual": "18",
+        "expected": "24以上"
+      }
+    },
+    {
+      "id": "board_minimum_too_small",
+      "name": "台紙の最小幅を360pxへ縮小",
+      "expected_error_code": "GRID.art_readable",
+      "detected": true,
+      "matching_failures": 2,
+      "total_failures": 15,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.art_readable",
+        "path": "0",
+        "actual": null,
+        "expected": null
+      }
+    },
+    {
+      "id": "board_name_overflow",
+      "name": "台紙の下段名称を内窓の外へ移動",
+      "expected_error_code": "GRID.name_inner_window",
+      "detected": true,
+      "matching_failures": 3,
+      "total_failures": 5,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.name_inner_window",
+        "path": "3",
+        "actual": [
+          "32",
+          "750",
+          "368",
+          "830"
+        ],
+        "expected": [
+          "32",
+          "96",
+          "1168",
+          "784"
+        ]
+      }
+    },
+    {
+      "id": "scaffold_layer_wrong",
+      "name": "足場を地区本体のレイヤーへ変更",
+      "expected_error_code": "MANIFEST.render_layer",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "manifest",
+        "code": "MANIFEST.render_layer",
+        "path": "scaffold_small",
+        "actual": "district_art",
+        "expected": "scaffold"
+      }
+    },
+    {
+      "id": "vehicle_direction_wrong",
+      "name": "正面車両の原画方向を変更",
+      "expected_error_code": "MANIFEST.vehicle_native_direction",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 3,
+      "example": {
+        "group": "manifest",
+        "code": "MANIFEST.vehicle_native_direction",
+        "path": "vehicle_cart_front",
+        "actual": [
+          2,
+          -1
+        ],
+        "expected": [
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "id": "board_composition_wrong",
+      "name": "名前を箔より先に描く合成順へ変更",
+      "expected_error_code": "GRID.layer_order",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.layer_order",
+        "path": "collection_grid",
+        "actual": [
+          "paper_DOM",
+          "board_base",
+          "family_emblem",
+          "stamp_art",
+          "stamp_frame",
+          "name_DOM",
+          "board_foil",
+          "focus_DOM"
+        ],
+        "expected": [
+          "paper_DOM",
+          "board_base",
+          "family_emblem",
+          "stamp_art",
+          "stamp_frame",
+          "board_foil",
+          "name_DOM",
+          "focus_DOM"
+        ]
+      }
+    },
+    {
+      "id": "outer_frame_window_wrong",
+      "name": "額縁の内窓を変更",
+      "expected_error_code": "FRAME.window_profile",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "geometry",
+        "code": "FRAME.window_profile",
+        "path": "collection_frame",
+        "actual": [
+          96,
+          96,
+          1104,
+          700
+        ],
+        "expected": [
+          96,
+          96,
+          1104,
+          704
+        ]
+      }
+    },
+    {
+      "id": "board_name_line_height_wrong",
+      "name": "台紙の名前行高を24pxへ変更",
+      "expected_error_code": "GRID.name_inner_window",
+      "detected": true,
+      "matching_failures": 3,
+      "total_failures": 5,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.name_inner_window",
+        "path": "3",
+        "actual": [
+          "32",
+          "700",
+          "368",
+          "796"
+        ],
+        "expected": [
+          "32",
+          "96",
+          "1168",
+          "784"
+        ]
+      }
+    },
+    {
+      "id": "board_header_line_height_wrong",
+      "name": "台紙の見出し行高を48pxへ変更",
+      "expected_error_code": "GRID.header_line_region",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 2,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.header_line_region",
+        "path": "collection_grid",
+        "actual": [
+          "8",
+          "104"
+        ],
+        "expected": [
+          "24",
+          "96"
+        ]
+      }
+    },
+    {
+      "id": "board_header_anchor_wrong",
+      "name": "台紙見出しの基準点を左上へ変更",
+      "expected_error_code": "GRID.header_anchor_mode",
+      "detected": true,
+      "matching_failures": 1,
+      "total_failures": 1,
+      "example": {
+        "group": "geometry",
+        "code": "GRID.header_anchor_mode",
+        "path": "collection_grid",
+        "actual": "left_top",
+        "expected": "left_center"
+      }
+    }
+  ],
+  "generated_markdown_check": {
+    "command": "python3 tools/build_resource_docs.py --check",
+    "exit_code": 0,
+    "stdout": "{\"mode\": \"check\", \"documents\": 5, \"mismatches\": []}",
+    "stderr": "",
+    "reports_excluded": true
+  },
+  "source_sha256": {
+    "economy_config.json": "98588e6e607f3433a36ae9106ce5a3c3c6d647e88955972908ac7c0dcbe33441",
+    "words.json": "b27c0a3823221c0cad23e1765be56edf597469ac2041056e5e9ced1925ecab4a",
+    "words.schema.json": "196990c95dca7447bd0bb3495e69ab919e7eb1c02921490d6b5e5a88c0a27c8d",
+    "romaji_rules_v1.json": "697a4710cddaa48aa91d8b9a1813f262e4a758c91cc29bcbeee44351090a0abb"
+  },
+  "input_sha256": {
+    "data/achievement_catalog.json": "03bc82c3477bfede4a24a60e0d7e21843620d6ab64428ca7217c0983b0a06aea",
+    "data/city_catalog.json": "f037bbeea78f693bb2b3df271690374b57c5a44583e9e3ece246f0498631b0b0",
+    "data/equipment_catalog.json": "94e014080af5faf858752ea7433879e9d70f6563eea0116a7972ba4991943dbb",
+    "data/rendering_rules.json": "e8c763db4cda476c29db3054cdb13d9b2c5762a2b69be21c38c2c7df3ef046ea",
+    "data/visual_resource_manifest.json": "505cb9977485b73bc85314dbb15380aba2d5965c6925e0fcd6d6350625ba1d08",
+    "data/economy_config.json": "98588e6e607f3433a36ae9106ce5a3c3c6d647e88955972908ac7c0dcbe33441",
+    "docs/game_experience.md": "af9988661c72f17746b06f5e972f1bbf65328b6477d31e93b0c2c543e30cbb64"
+  },
+  "reference_png_headers": {
+    "home": {
+      "valid_png": true,
+      "width": 1568,
+      "height": 1003
+    },
+    "play": {
+      "valid_png": true,
+      "width": 1568,
+      "height": 1003
+    },
+    "result": {
+      "valid_png": true,
+      "width": 1568,
+      "height": 1003
+    },
+    "handbook": {
+      "valid_png": true,
+      "width": 1568,
+      "height": 1003
+    },
+    "upgrades": {
+      "valid_png": true,
+      "width": 1568,
+      "height": 1003
+    }
+  },
+  "resolved_assets": [
+    {
+      "id": "stamp_a01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_a02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_a03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_a04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_a05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_a06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_a06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_b06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_b06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_c06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_c06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_d06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_e06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_e06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_f06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_f06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_g06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_g06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_h06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_h06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_i06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_i06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_j06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_j06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_k06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_k06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l01",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l01.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l02",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l02.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l03",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l03.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l04",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l04.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l05",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l05.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_l06",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_l06.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_a",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_a.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_a",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_a.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_b",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_b.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_b",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_b.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_c",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_c.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_c",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_c.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_d",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_d.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_d",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_d.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_e",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_e.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_e",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_e.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_f",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_f.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_f",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_f.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_g",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_g.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_g",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_g.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_h",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_h.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_h",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_h.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_i",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_i.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_i",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_i.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_j",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_j.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_j",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_j.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_k",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_k.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_k",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_k.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "family_l",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/family_emblem/family_l.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "postcard_l",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/postcard/postcard_l.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_frame_leaf",
+      "kind": "svg",
+      "profile_id": "frame",
+      "render_layer": "collection_outer_frame",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_frame_leaf.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_tree_ornament",
+      "kind": "svg",
+      "profile_id": "ornament",
+      "render_layer": "home_decoration",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        256
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "16",
+        "992",
+        "240"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_tree_ornament.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_frame_plaza",
+      "kind": "svg",
+      "profile_id": "frame",
+      "render_layer": "collection_outer_frame",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_frame_plaza.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_fountain_ornament",
+      "kind": "svg",
+      "profile_id": "ornament",
+      "render_layer": "home_decoration",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        256
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "16",
+        "992",
+        "240"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_fountain_ornament.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_album_24_emblem",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_album_24_emblem.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_celebration_postcard",
+      "kind": "raster",
+      "profile_id": "postcard",
+      "render_layer": "postcard_art",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        1000
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "500"
+      ],
+      "safe_rect": [
+        "80",
+        "50",
+        "1520",
+        "950"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_raster/reward_celebration_postcard.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_evening_panel",
+      "kind": "raster",
+      "profile_id": "evening_panel",
+      "render_layer": "home_decoration",
+      "native_direction_map": null,
+      "source_size": [
+        1600,
+        400
+      ],
+      "transparent": false,
+      "anchor": [
+        "800",
+        "200"
+      ],
+      "safe_rect": [
+        "40",
+        "20",
+        "1560",
+        "380"
+      ],
+      "placements": [
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_raster/reward_evening_panel.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_frame_sunset",
+      "kind": "svg",
+      "profile_id": "frame",
+      "render_layer": "collection_outer_frame",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_frame_sunset.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_board_48_emblem",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_board_48_emblem.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_first_collection_emblem",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_first_collection_emblem.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_first_collection_stamp_art",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_raster/reward_first_collection_stamp_art.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_frame_journey",
+      "kind": "svg",
+      "profile_id": "frame",
+      "render_layer": "collection_outer_frame",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_frame_journey.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_expanded_album_emblem",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_expanded_album_emblem.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_complete_72_emblem",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_svg/reward_complete_72_emblem.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "reward_collection_stamp_art",
+      "kind": "raster",
+      "profile_id": "stamp",
+      "render_layer": "stamp_art",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "256"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/milestone_raster/reward_collection_stamp_art.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_residential",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_residential.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_residential",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_residential.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_plot_empty",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_plot/city_plot_empty.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_residential_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_residential_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_residential_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_residential_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_residential_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_residential_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_residential_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_residential_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_residential_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_residential_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_market",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_market.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_market",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_market.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_market_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_market_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_market_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_market_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_market_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_market_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_market_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_market_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_market_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_market_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_workshop",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_workshop.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_workshop",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_workshop.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_workshop_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_workshop_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_workshop_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_workshop_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_workshop_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_workshop_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_workshop_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_workshop_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_workshop_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_workshop_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_park",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_park.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_park",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_park.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_park_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_park_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_park_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_park_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_park_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_park_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_park_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_park_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_park_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_park_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_station",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_station.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_station",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_station.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_station_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_station_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_station_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_station_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_station_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_station_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_station_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_station_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_station_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_station_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "district_harbor",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        128,
+        128
+      ],
+      "transparent": true,
+      "anchor": [
+        "64",
+        "64"
+      ],
+      "safe_rect": [
+        "256/25",
+        "256/25",
+        "2944/25",
+        "2944/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/district_icon/district_harbor.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_harbor",
+      "kind": "raster",
+      "profile_id": "shop",
+      "render_layer": "shop",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_scene/shop_harbor.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_harbor_s1",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_harbor_s2",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_harbor_s3",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_harbor_s4",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_harbor_s5",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "district_art",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/city_stage/city_harbor_s5.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "terrain_riverside",
+      "kind": "raster",
+      "profile_id": "terrain",
+      "render_layer": "terrain",
+      "native_direction_map": null,
+      "source_size": [
+        3200,
+        2000
+      ],
+      "transparent": false,
+      "anchor": [
+        "1600",
+        "1000"
+      ],
+      "safe_rect": [
+        "0",
+        "0",
+        "3200",
+        "2000"
+      ],
+      "placements": [
+        "HOME",
+        "NEW_CITY",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/terrain/terrain_riverside.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "terrain_seaside",
+      "kind": "raster",
+      "profile_id": "terrain",
+      "render_layer": "terrain",
+      "native_direction_map": null,
+      "source_size": [
+        3200,
+        2000
+      ],
+      "transparent": false,
+      "anchor": [
+        "1600",
+        "1000"
+      ],
+      "safe_rect": [
+        "0",
+        "0",
+        "3200",
+        "2000"
+      ],
+      "placements": [
+        "HOME",
+        "NEW_CITY",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/terrain/terrain_seaside.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "terrain_highland",
+      "kind": "raster",
+      "profile_id": "terrain",
+      "render_layer": "terrain",
+      "native_direction_map": null,
+      "source_size": [
+        3200,
+        2000
+      ],
+      "transparent": false,
+      "anchor": [
+        "1600",
+        "1000"
+      ],
+      "safe_rect": [
+        "0",
+        "0",
+        "3200",
+        "2000"
+      ],
+      "placements": [
+        "HOME",
+        "NEW_CITY",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/terrain/terrain_highland.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_0",
+      "kind": "raster",
+      "profile_id": "packaging",
+      "render_layer": "equipment_preview",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "680"
+      ],
+      "safe_rect": [
+        "60",
+        "40",
+        "1140",
+        "760"
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_0.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_1",
+      "kind": "raster",
+      "profile_id": "packaging",
+      "render_layer": "equipment_preview",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "680"
+      ],
+      "safe_rect": [
+        "60",
+        "40",
+        "1140",
+        "760"
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_1.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_2",
+      "kind": "raster",
+      "profile_id": "packaging",
+      "render_layer": "equipment_preview",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "680"
+      ],
+      "safe_rect": [
+        "60",
+        "40",
+        "1140",
+        "760"
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_2.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_3",
+      "kind": "raster",
+      "profile_id": "packaging",
+      "render_layer": "equipment_preview",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "680"
+      ],
+      "safe_rect": [
+        "60",
+        "40",
+        "1140",
+        "760"
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_3.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_4",
+      "kind": "raster",
+      "profile_id": "packaging",
+      "render_layer": "equipment_preview",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "680"
+      ],
+      "safe_rect": [
+        "60",
+        "40",
+        "1140",
+        "760"
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_4.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_cart_front",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_cart_front.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_cart_rear",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_cart_rear.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_van_front",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_van_front.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_van_rear",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_van_rear.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_box_van_front",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_box_van_front.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_box_van_rear",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_box_van_rear.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_truck_front",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_truck_front.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_truck_rear",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_truck_rear.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_train_front",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_train_front.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "vehicle_train_rear",
+      "kind": "raster",
+      "profile_id": "vehicle",
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "source_size": [
+        256,
+        192
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "160"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "176"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/vehicle/vehicle_train_rear.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_canopy",
+      "kind": "svg",
+      "profile_id": "shop",
+      "render_layer": "shop_overlay",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_overlay/shop_canopy.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_banner",
+      "kind": "svg",
+      "profile_id": "shop",
+      "render_layer": "shop_overlay",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_overlay/shop_banner.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "shop_signboard",
+      "kind": "svg",
+      "profile_id": "shop",
+      "render_layer": "shop_overlay",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/shop_overlay/shop_signboard.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_freight_terminal",
+      "kind": "raster",
+      "profile_id": "freight",
+      "render_layer": "freight_terminal",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        384
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "320"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "488",
+        "360"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/city_shared/city_freight_terminal.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_packaging_icon",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_packaging_icon.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_crews_icon",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_crews_icon.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_shops_icon",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_shops_icon.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "equipment_railway_icon",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_railway_icon.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "synergy_joint_delivery",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_joint_delivery.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "synergy_sorting_network",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_sorting_network.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "synergy_tourism_service",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_tourism_service.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "research_materials",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/research_icon/research_materials.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "research_logistics",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/research_icon/research_logistics.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "research_commerce",
+      "kind": "svg",
+      "profile_id": "emblem",
+      "render_layer": "emblem",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/research_icon/research_commerce.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "stamp_frame",
+      "kind": "svg",
+      "profile_id": "stamp_frame",
+      "render_layer": "stamp_frame",
+      "native_direction_map": null,
+      "source_size": [
+        640,
+        640
+      ],
+      "transparent": true,
+      "anchor": [
+        "320",
+        "320"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "624",
+        "624"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/shared_frame/stamp_frame.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "memorial_frame",
+      "kind": "svg",
+      "profile_id": "memorial_frame",
+      "render_layer": "stamp_frame",
+      "native_direction_map": null,
+      "source_size": [
+        640,
+        640
+      ],
+      "transparent": true,
+      "anchor": [
+        "320",
+        "320"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "624",
+        "624"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/shared_frame/memorial_frame.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "board_base",
+      "kind": "svg",
+      "profile_id": "board",
+      "render_layer": "collection_base",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/shared_frame/board_base.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "board_foil",
+      "kind": "svg",
+      "profile_id": "board",
+      "render_layer": "collection_finish",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/shared_frame/board_foil.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "album_base",
+      "kind": "svg",
+      "profile_id": "frame",
+      "render_layer": "collection_base",
+      "native_direction_map": null,
+      "source_size": [
+        1200,
+        800
+      ],
+      "transparent": true,
+      "anchor": [
+        "600",
+        "400"
+      ],
+      "safe_rect": [
+        "24",
+        "24",
+        "1176",
+        "776"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/shared_frame/album_base.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "brand_mark",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        64,
+        64
+      ],
+      "transparent": true,
+      "anchor": [
+        "32",
+        "32"
+      ],
+      "safe_rect": [
+        "128/25",
+        "128/25",
+        "1472/25",
+        "1472/25"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/brand/brand_mark.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "city_hub",
+      "kind": "raster",
+      "profile_id": "hub",
+      "render_layer": "city_hub",
+      "native_direction_map": null,
+      "source_size": [
+        512,
+        512
+      ],
+      "transparent": true,
+      "anchor": [
+        "256",
+        "448"
+      ],
+      "safe_rect": [
+        "32",
+        "32",
+        "480",
+        "480"
+      ],
+      "placements": [
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/city_shared/city_hub.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "scaffold_small",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "scaffold",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/construction/scaffold_small.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "scaffold_medium",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "scaffold",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/construction/scaffold_medium.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "scaffold_large",
+      "kind": "raster",
+      "profile_id": "district",
+      "render_layer": "scaffold",
+      "native_direction_map": null,
+      "source_size": [
+        1024,
+        768
+      ],
+      "transparent": true,
+      "anchor": [
+        "512",
+        "640"
+      ],
+      "safe_rect": [
+        "64",
+        "48",
+        "960",
+        "736"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/construction/scaffold_large.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "cargo_parcel",
+      "kind": "raster",
+      "profile_id": "cargo",
+      "render_layer": "cargo",
+      "native_direction_map": null,
+      "source_size": [
+        256,
+        256
+      ],
+      "transparent": true,
+      "anchor": [
+        "128",
+        "192"
+      ],
+      "safe_rect": [
+        "16",
+        "16",
+        "240",
+        "240"
+      ],
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/cargo/cargo_parcel.webp"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_home",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_home.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_play",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "PAUSE",
+        "PRACTICE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_play.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_practice",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "DICTIONARY",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_practice.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_dictionary",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "DICTIONARY"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_dictionary.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_handbook",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "HANDBOOK",
+        "RESULT",
+        "PAUSE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_handbook.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_settings",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "PAUSE",
+        "SETTINGS"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_settings.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_lock",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "NEW_CITY",
+        "DISTRICT_DETAIL",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_lock.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_check",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "UPGRADES",
+        "RESULT",
+        "DICTIONARY",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_check.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_pin",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "HOME",
+        "PLAY"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_pin.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_unread",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT",
+        "HOME"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_unread.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_info",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "NEW_CITY",
+        "SETTINGS",
+        "PLAY",
+        "HANDBOOK",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_info.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_warning",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "SETTINGS",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_warning.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_search",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_search.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_filter",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_filter.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_sort",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_sort.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_back",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "DISTRICT_DETAIL",
+        "UPGRADES",
+        "HANDBOOK",
+        "DICTIONARY",
+        "SETTINGS",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_back.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_chevron",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "DICTIONARY",
+        "UPGRADES",
+        "SETTINGS"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_chevron.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_close",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "PAUSE",
+        "RETURN",
+        "NEW_CITY",
+        "HANDBOOK",
+        "SETTINGS"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_close.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_retry",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "RESULT",
+        "PRACTICE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_retry.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_pause",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "DISTRICT_DETAIL",
+        "PAUSE",
+        "HOME",
+        "UPGRADES",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_pause.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_sound",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "SETTINGS",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_sound.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_guide",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "SETTINGS",
+        "PAUSE",
+        "PLAY"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_guide.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_text_size",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "SETTINGS",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_text_size.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_motion",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "SETTINGS",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_motion.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_more",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "RESULT",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_more.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_question",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_question.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_clock",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "PLAY",
+        "RETURN",
+        "UPGRADES"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_clock.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_route",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_route.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_plan",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_plan.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_new_city",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "NEW_CITY",
+        "HOME",
+        "RESULT"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_new_city.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_history",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RETURN"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_history.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "ui_stop",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "PRACTICE",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/ui_icon/ui_stop.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "resource_material",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "NEW_CITY",
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/resource_icon/resource_material.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "resource_coin",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/resource_icon/resource_coin.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "resource_blueprint",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        32,
+        32
+      ],
+      "transparent": true,
+      "anchor": [
+        "16",
+        "16"
+      ],
+      "safe_rect": [
+        "64/25",
+        "64/25",
+        "736/25",
+        "736/25"
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "RESULT",
+        "DISTRICT_DETAIL",
+        "NEW_CITY"
+      ],
+      "runtime_exports": [
+        "assets/resource_icon/resource_blueprint.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "course_relaxed",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "HOME",
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/course_icon/course_relaxed.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "course_standard",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "HOME",
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/course_icon/course_standard.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "course_challenge",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "HOME",
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/course_icon/course_challenge.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_daily",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_daily.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_food",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_food.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_living",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_living.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_town",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_town.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_nature",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_nature.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "topic_people",
+      "kind": "svg",
+      "profile_id": "icon",
+      "render_layer": "UI_icon",
+      "native_direction_map": null,
+      "source_size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "anchor": [
+        "24",
+        "24"
+      ],
+      "safe_rect": [
+        "96/25",
+        "96/25",
+        "1104/25",
+        "1104/25"
+      ],
+      "placements": [
+        "DICTIONARY",
+        "HANDBOOK"
+      ],
+      "runtime_exports": [
+        "assets/topic_icon/topic_people.svg"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_key",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_key.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_word",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_word.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_dispatch_small",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_dispatch_small.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_dispatch_medium",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_dispatch_medium.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_dispatch_full",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_dispatch_full.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_mistake",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "runtime_exports": [
+        "assets/sound_effect/audio_mistake.wav"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "audio_theme",
+      "kind": "audio",
+      "profile_id": "audio",
+      "render_layer": "audio",
+      "native_direction_map": null,
+      "source_size": null,
+      "transparent": null,
+      "anchor": null,
+      "safe_rect": null,
+      "placements": [
+        "HOME",
+        "PLAY",
+        "PRACTICE",
+        "RESULT",
+        "HANDBOOK",
+        "UPGRADES",
+        "TUTORIAL",
+        "PAUSE"
+      ],
+      "runtime_exports": [
+        "assets/bgm/audio_theme.ogg",
+        "assets/bgm/audio_theme.mp3"
+      ],
+      "status": "planned"
+    }
+  ],
+  "limitations": [
+    "個別の画像・SVG・音源はplanned。実ファイルの完成検査はしていない。",
+    "実行時の視認性・操作・楽しさを検証した結果ではない。",
+    "経路検査は共通の折れ線水際・予定矩形・座標データに対して実施。完成した背景の描画検収は別途必要。",
+    "参考5PNGは個別資材の完成点数へ含めない。"
+  ]
+}

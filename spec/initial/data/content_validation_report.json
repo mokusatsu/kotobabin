@@ -1,0 +1,722 @@
+{
+  "ok": true,
+  "versions": {
+    "schemaVersion": "2.0.0",
+    "contentVersion": "2.0.0",
+    "inputRuleVersion": "romaji-1.0.0",
+    "dictionarySetId": "kotobabin-ja-960-v2"
+  },
+  "inputRuleSchemaVersion": "1.0.0",
+  "inputRulesImmutable": {
+    "ok": true,
+    "sha256": "ad14c84be1278610c53312dab60972b8dbd75e17d44fd36f02e071556ed5b014"
+  },
+  "totalCount": 960,
+  "courseCounts": {
+    "relaxed": 240,
+    "standard": 300,
+    "challenge": 420
+  },
+  "topicCounts": {
+    "daily": 160,
+    "food": 160,
+    "living": 160,
+    "town": 160,
+    "nature": 160,
+    "people": 160
+  },
+  "crossCounts": {
+    "daily": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    },
+    "food": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    },
+    "living": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    },
+    "town": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    },
+    "nature": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    },
+    "people": {
+      "relaxed": 40,
+      "standard": 50,
+      "challenge": 70
+    }
+  },
+  "difficultyBandCounts": {
+    "relaxed": {
+      "easy": 96,
+      "medium": 96,
+      "hard": 48
+    },
+    "standard": {
+      "easy": 120,
+      "medium": 120,
+      "hard": 60
+    },
+    "challenge": {
+      "easy": 168,
+      "medium": 168,
+      "hard": 84
+    }
+  },
+  "canonicalLengthRanges": {
+    "relaxed": {
+      "min": 3,
+      "max": 8
+    },
+    "standard": {
+      "min": 5,
+      "max": 14
+    },
+    "challenge": {
+      "min": 10,
+      "max": 24
+    }
+  },
+  "complexityScoreRanges": {
+    "relaxed": {
+      "min": 3,
+      "max": 8
+    },
+    "standard": {
+      "min": 5,
+      "max": 17
+    },
+    "challenge": {
+      "min": 10,
+      "max": 29
+    }
+  },
+  "maxDisplayLength": 13,
+  "maxReadingLength": 14,
+  "tagWordCounts": {
+    "n": 234,
+    "sokuon": 75,
+    "yoon": 112,
+    "long_mark": 63,
+    "foreign": 9
+  },
+  "tagOccurrenceCounts": {
+    "n": 278,
+    "sokuon": 76,
+    "yoon": 127,
+    "long_mark": 68,
+    "foreign": 9
+  },
+  "collectionSets": {
+    "kotobabin-ja-240-v1": {
+      "expectedCount": 240,
+      "actualCount": 240,
+      "membershipMatches": true
+    },
+    "kotobabin-ja-960-v2": {
+      "expectedCount": 960,
+      "actualCount": 960,
+      "membershipMatches": true
+    },
+    "kotobabin-ja-relaxed-v2": {
+      "expectedCount": 240,
+      "actualCount": 240,
+      "membershipMatches": true
+    },
+    "kotobabin-ja-standard-v2": {
+      "expectedCount": 300,
+      "actualCount": 300,
+      "membershipMatches": true
+    },
+    "kotobabin-ja-challenge-v2": {
+      "expectedCount": 420,
+      "actualCount": 420,
+      "membershipMatches": true
+    }
+  },
+  "legacyRetention": {
+    "ok": true,
+    "referenceCount": 240,
+    "matchedCount": 240,
+    "fixedFields": [
+      "id",
+      "display",
+      "reading",
+      "courseId",
+      "topicId",
+      "canonicalLength"
+    ],
+    "referenceSha256": "a1ed3b81abfa7e47cc7384eaa383685b5467b1c8feb728397aad587d78dd61b8",
+    "differences": []
+  },
+  "prototype": {
+    "count": 30,
+    "courseCounts": {
+      "relaxed": 10,
+      "standard": 10,
+      "challenge": 10
+    },
+    "bandCounts": {
+      "relaxed": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      },
+      "standard": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      },
+      "challenge": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      }
+    },
+    "topicCounts": {
+      "daily": 5,
+      "food": 5,
+      "living": 5,
+      "town": 5,
+      "nature": 5,
+      "people": 5
+    },
+    "topicBalanced": true,
+    "courseTopicCounts": {
+      "relaxed": {
+        "daily": 1,
+        "food": 2,
+        "living": 2,
+        "town": 2,
+        "nature": 1,
+        "people": 2
+      },
+      "standard": {
+        "daily": 2,
+        "food": 1,
+        "living": 2,
+        "town": 2,
+        "nature": 2,
+        "people": 1
+      },
+      "challenge": {
+        "daily": 2,
+        "food": 2,
+        "living": 1,
+        "town": 1,
+        "nature": 2,
+        "people": 2
+      }
+    },
+    "tagWordCounts": {
+      "n": 5,
+      "sokuon": 2,
+      "yoon": 4,
+      "long_mark": 3,
+      "foreign": 1
+    }
+  },
+  "tutorials": [
+    {
+      "id": "living_r01",
+      "display": "猫",
+      "reading": "ねこ"
+    },
+    {
+      "id": "nature_r05",
+      "display": "花",
+      "reading": "はな"
+    },
+    {
+      "id": "daily_r07",
+      "display": "傘",
+      "reading": "かさ"
+    }
+  ],
+  "ruleConformance": {
+    "ok": true,
+    "referenceAcceptedPaths": {
+      "passed": 43,
+      "total": 43
+    },
+    "referenceRejectedPaths": {
+      "passed": 3,
+      "total": 3
+    },
+    "referenceCanonicalLengths": {
+      "passed": 14,
+      "total": 14
+    },
+    "additionalCases": {
+      "passed": 29,
+      "total": 29
+    },
+    "errors": []
+  },
+  "errors": [],
+  "warnings": [],
+  "referenceModelComparison": {
+    "ok": true,
+    "tableKeysCompared": 138,
+    "wordsCompared": 960,
+    "graphPositionsCompared": 7592,
+    "errors": []
+  },
+  "validatorMutationChecks": {
+    "ok": true,
+    "passed": 41,
+    "total": 41,
+    "cases": [
+      {
+        "name": "件数不足",
+        "passed": true,
+        "requiredErrorCode": "total_count"
+      },
+      {
+        "name": "ID重複",
+        "passed": true,
+        "requiredErrorCode": "duplicate_id"
+      },
+      {
+        "name": "表示重複",
+        "passed": true,
+        "requiredErrorCode": "duplicate_display"
+      },
+      {
+        "name": "読み重複",
+        "passed": true,
+        "requiredErrorCode": "duplicate_reading"
+      },
+      {
+        "name": "表示文字数超過",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "読み文字数超過",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "未対応仮名",
+        "passed": true,
+        "requiredErrorCode": "unsupported_kana"
+      },
+      {
+        "name": "連続する促音",
+        "passed": true,
+        "requiredErrorCode": "forbidden_sokuon"
+      },
+      {
+        "name": "語末の促音",
+        "passed": true,
+        "requiredErrorCode": "forbidden_sokuon"
+      },
+      {
+        "name": "基準長不一致",
+        "passed": true,
+        "requiredErrorCode": "derived_canonicalLength"
+      },
+      {
+        "name": "タグ不一致",
+        "passed": true,
+        "requiredErrorCode": "derived_tags"
+      },
+      {
+        "name": "複雑度不一致",
+        "passed": true,
+        "requiredErrorCode": "derived_complexityScore"
+      },
+      {
+        "name": "難度帯不一致",
+        "passed": true,
+        "requiredErrorCode": "difficulty_rank"
+      },
+      {
+        "name": "試作ID不明",
+        "passed": true,
+        "requiredErrorCode": "unknown_reference"
+      },
+      {
+        "name": "導入ID不明",
+        "passed": true,
+        "requiredErrorCode": "unknown_reference"
+      },
+      {
+        "name": "校正フラグ不正",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "辞書集合版不一致",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "初版表示の変更",
+        "passed": true,
+        "requiredErrorCode": "legacy_changed"
+      },
+      {
+        "name": "初版所属コースの変更",
+        "passed": true,
+        "requiredErrorCode": "legacy_changed"
+      },
+      {
+        "name": "初版固定参照の同時変更",
+        "passed": true,
+        "requiredErrorCode": "legacy_reference"
+      },
+      {
+        "name": "現在版IDと集合の同時変更",
+        "passed": true,
+        "requiredErrorCode": "word_id_set"
+      },
+      {
+        "name": "初版集合の同件数交換",
+        "passed": true,
+        "requiredErrorCode": "collection_membership"
+      },
+      {
+        "name": "全件集合の欠落",
+        "passed": true,
+        "requiredErrorCode": "collection_membership"
+      },
+      {
+        "name": "コース集合の別コース混入",
+        "passed": true,
+        "requiredErrorCode": "collection_membership"
+      },
+      {
+        "name": "集合ID重複",
+        "passed": true,
+        "requiredErrorCode": "collection_duplicate"
+      },
+      {
+        "name": "集合のnull",
+        "passed": true,
+        "requiredErrorCode": "collection_shape"
+      },
+      {
+        "name": "集合配列への辞書混入",
+        "passed": true,
+        "requiredErrorCode": "collection_shape"
+      },
+      {
+        "name": "集合キー不足",
+        "passed": true,
+        "requiredErrorCode": "collection_keys"
+      },
+      {
+        "name": "集合の参照先不明",
+        "passed": true,
+        "requiredErrorCode": "unknown_reference"
+      },
+      {
+        "name": "導入語の別語交換",
+        "passed": true,
+        "requiredErrorCode": "tutorial_identity"
+      },
+      {
+        "name": "導入順の交換",
+        "passed": true,
+        "requiredErrorCode": "tutorial_identity"
+      },
+      {
+        "name": "複雑度の欠落",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "試作参照語のnullタグ",
+        "passed": true,
+        "requiredErrorCode": "schema"
+      },
+      {
+        "name": "規則スキーマ版の誤変更",
+        "passed": true,
+        "requiredErrorCode": "rules_immutable"
+      },
+      {
+        "name": "受理表の改変",
+        "passed": true,
+        "requiredErrorCode": "rules_immutable"
+      },
+      {
+        "name": "受理表の型破損",
+        "passed": true,
+        "requiredErrorCode": "rules_immutable"
+      },
+      {
+        "name": "撥音規則の型破損",
+        "passed": true,
+        "requiredErrorCode": "rules_immutable"
+      },
+      {
+        "name": "促音規則の型破損",
+        "passed": true,
+        "requiredErrorCode": "rules_immutable"
+      },
+      {
+        "name": "試作の分類件数不一致",
+        "passed": true,
+        "requiredErrorCode": "prototype_topic_balance"
+      },
+      {
+        "name": "試作コースの分類欠落",
+        "passed": true,
+        "requiredErrorCode": "prototype_course_topics"
+      },
+      {
+        "name": "試作の外来音欠落",
+        "passed": true,
+        "requiredErrorCode": "prototype_tag_coverage"
+      }
+    ]
+  },
+  "screenFixtureContentComparison": {
+    "count": 20,
+    "lengthChangedCount": 0,
+    "bandChangedCount": 0,
+    "rows": [
+      {
+        "position": 1,
+        "wordId": "food_s01",
+        "display": "おにぎり",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 2,
+        "wordId": "daily_s04",
+        "display": "カーテン",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 3,
+        "wordId": "food_s10",
+        "display": "コロッケ",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 4,
+        "wordId": "food_s04",
+        "display": "食パン",
+        "oldCanonicalLength": 9,
+        "newCanonicalLength": 9,
+        "oldDifficultyBand": "hard",
+        "newDifficultyBand": "hard",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 5,
+        "wordId": "town_s01",
+        "display": "切手",
+        "oldCanonicalLength": 5,
+        "newCanonicalLength": 5,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 6,
+        "wordId": "daily_s14",
+        "display": "湯のみ",
+        "oldCanonicalLength": 6,
+        "newCanonicalLength": 6,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 7,
+        "wordId": "daily_s03",
+        "display": "せっけん",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 8,
+        "wordId": "daily_s05",
+        "display": "スリッパ",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 9,
+        "wordId": "food_s05",
+        "display": "サンドイッチ",
+        "oldCanonicalLength": 9,
+        "newCanonicalLength": 9,
+        "oldDifficultyBand": "hard",
+        "newDifficultyBand": "hard",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 10,
+        "wordId": "daily_s15",
+        "display": "折り紙",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 11,
+        "wordId": "food_s07",
+        "display": "ぎょうざ",
+        "oldCanonicalLength": 6,
+        "newCanonicalLength": 6,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 12,
+        "wordId": "daily_s11",
+        "display": "シャンプー",
+        "oldCanonicalLength": 7,
+        "newCanonicalLength": 7,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 13,
+        "wordId": "food_s08",
+        "display": "シチュー",
+        "oldCanonicalLength": 6,
+        "newCanonicalLength": 6,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 14,
+        "wordId": "food_s06",
+        "display": "チャーハン",
+        "oldCanonicalLength": 8,
+        "newCanonicalLength": 8,
+        "oldDifficultyBand": "hard",
+        "newDifficultyBand": "hard",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 15,
+        "wordId": "food_s11",
+        "display": "プリン",
+        "oldCanonicalLength": 6,
+        "newCanonicalLength": 6,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 16,
+        "wordId": "town_s02",
+        "display": "手紙",
+        "oldCanonicalLength": 6,
+        "newCanonicalLength": 6,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 17,
+        "wordId": "food_s09",
+        "display": "カフェラテ",
+        "oldCanonicalLength": 8,
+        "newCanonicalLength": 8,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 18,
+        "wordId": "food_s13",
+        "display": "ジャムパン",
+        "oldCanonicalLength": 8,
+        "newCanonicalLength": 8,
+        "oldDifficultyBand": "medium",
+        "newDifficultyBand": "medium",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 19,
+        "wordId": "town_s07",
+        "display": "図書館",
+        "oldCanonicalLength": 9,
+        "newCanonicalLength": 9,
+        "oldDifficultyBand": "hard",
+        "newDifficultyBand": "hard",
+        "lengthChanged": false,
+        "bandChanged": false
+      },
+      {
+        "position": 20,
+        "wordId": "living_s01",
+        "display": "パンダ",
+        "oldCanonicalLength": 5,
+        "newCanonicalLength": 5,
+        "oldDifficultyBand": "easy",
+        "newDifficultyBand": "easy",
+        "lengthChanged": false,
+        "bandChanged": false
+      }
+    ]
+  },
+  "editorialChanges": {
+    "count": 24,
+    "requiredCount": 2,
+    "recommendedCount": 20,
+    "clarificationCount": 2,
+    "lengthAdjustedCount": 5
+  }
+}

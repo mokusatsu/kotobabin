@@ -1,0 +1,1706 @@
+{
+  "schema_version": "1.0.0",
+  "economy_version": "4.0.0",
+  "model_role": "deterministic numerical reference; author validation, not independent review",
+  "source_config_sha256": "98588e6e607f3433a36ae9106ce5a3c3c6d647e88955972908ac7c0dcbe33441",
+  "checks": 51,
+  "passed": 51,
+  "failed": 0,
+  "results": [
+    {
+      "name": "exact_fixed_point_material_examples",
+      "passed": true,
+      "evidence": {
+        "L3_packaging1": "3.75",
+        "S230_k3_bonus_points": 138,
+        "bonus_materials": "13.8",
+        "packaging10_bonus_materials": "96.6"
+      }
+    },
+    {
+      "name": "packaging_milestones_0_10_25_50",
+      "passed": true,
+      "evidence": [
+        "1",
+        "7",
+        "29",
+        "108"
+      ]
+    },
+    {
+      "name": "no_per_word_truncation_and_mistakes_keep_material",
+      "passed": true,
+      "evidence": "16 × 1.5625 = 25 exactly; mistakes do not reduce base material"
+    },
+    {
+      "name": "confirmation_and_unfinished_words_generate_zero",
+      "passed": true,
+      "evidence": [
+        {
+          "applied": true,
+          "generated_micro": "0",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        },
+        {
+          "applied": true,
+          "generated_micro": "0",
+          "district_id": "residential",
+          "session_multiplier": {
+            "numerator": 1,
+            "denominator": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "normal_skip_practice_review_intro_share_base_material_rule",
+      "passed": true,
+      "evidence": {
+        "normal": "5000000",
+        "skip": "5000000",
+        "practice": "5000000",
+        "review": "5000000",
+        "intro": "5000000"
+      }
+    },
+    {
+      "name": "shipment_bonus_and_legacy_achievement_scope",
+      "passed": true,
+      "evidence": {
+        "manual": {
+          "bonus_points": 138,
+          "legacy": true
+        },
+        "full": {
+          "bonus_points": 230,
+          "legacy": true
+        },
+        "deadline": {
+          "bonus_points": 138,
+          "legacy": false
+        },
+        "skip": {
+          "bonus_points": 138,
+          "legacy": false
+        }
+      }
+    },
+    {
+      "name": "only_manual_full_deadline_skip_shipment_reasons_are_accepted",
+      "passed": true,
+      "evidence": {
+        "rejected_reasons": [
+          "early_exit",
+          "automatic",
+          "timeout"
+        ],
+        "resources_and_ledger_unchanged": true
+      }
+    },
+    {
+      "name": "early_end_retains_words_without_making_bonus",
+      "passed": true,
+      "evidence": {
+        "session_id": "facts",
+        "city_id": "city-1",
+        "district_id": "residential",
+        "mode": "normal",
+        "start_ms": 0,
+        "end_ms": 0,
+        "generated_micro": "5000000",
+        "arrived_during_session_micro": "0",
+        "delivery_coins_micro": "0",
+        "shop_coins_micro": "0",
+        "arrivals_include_preexisting_queue": true,
+        "remaining_queue_micro": "5000000"
+      }
+    },
+    {
+      "name": "arrival_30_completes_first_building_and_pays_once",
+      "passed": true,
+      "evidence": {
+        "generated_coins": 0,
+        "arrival_coins": 60,
+        "stage": 1,
+        "shops": 1
+      }
+    },
+    {
+      "name": "Q30_rate4_60seconds_is_65_25_coins",
+      "passed": true,
+      "evidence": {
+        "completion_ms": 7500,
+        "delivery_coins": "60",
+        "shop_coins": "5.25",
+        "total_coins": "65.25"
+      }
+    },
+    {
+      "name": "stage2_mid_interval_changes_future_income_only",
+      "passed": true,
+      "evidence": "37.5 s × 0.1 + 22.5 s × 0.2 + 150 × 2 = 308.25 coins"
+    },
+    {
+      "name": "paused_plan_retains_reservation_and_new_arrivals_stay_stock",
+      "passed": true,
+      "evidence": "paused reservation 10; arrivals become stock 20; resume completes without a second arrival reward"
+    },
+    {
+      "name": "railway_payment_cannot_invade_reserved_material",
+      "passed": true,
+      "evidence": "reserved 2000 stays untouched; unreserved 500 and 3000 coins purchase railway"
+    },
+    {
+      "name": "offline_eight_hour_cap_and_same_interval_idempotence",
+      "passed": true,
+      "evidence": "36 h absence credits 8 h; same wall timestamp credits zero; next new hour credits 1 h"
+    },
+    {
+      "name": "offline_new_building_credits_only_income_after_its_completion",
+      "passed": true,
+      "evidence": "9 h absence credits 8 h: 60 delivery + (28800 - 7.5) × 0.1 = 2939.25 coins"
+    },
+    {
+      "name": "negative_elapsed_and_backward_wall_clock",
+      "passed": true,
+      "evidence": "wall high-water mark prevents rollback double credits; resources never decrease"
+    },
+    {
+      "name": "shops_continue_after_material_supply_is_exhausted",
+      "passed": true,
+      "evidence": "4 materials arrive in 1 s, then stores continue; 8 delivery + 6 shop = 14"
+    },
+    {
+      "name": "single_and_split_time_progression_match",
+      "passed": true,
+      "evidence": {
+        "randomized_states": 100,
+        "split_points_per_case_up_to": 25,
+        "seed": 20261113,
+        "resource_and_complete_state_comparison": "exact"
+      }
+    },
+    {
+      "name": "submillisecond_threshold_uses_first_reaching_millisecond",
+      "passed": true,
+      "evidence": "6250 micro / 4000 micro per ms completes at ms 2; shop earns only ms 2..10"
+    },
+    {
+      "name": "all_644_price_table_cells_and_known_prices",
+      "passed": true,
+      "evidence": {
+        "verified_price_cells": 644,
+        "integer_power_and_ceiling_only": true
+      }
+    },
+    {
+      "name": "purchase_1_10_max_respects_actual_affordability",
+      "passed": true,
+      "evidence": {
+        "one": 1,
+        "ten_affordable": 2,
+        "max_affordable": 3,
+        "empty_wallet": 0
+      }
+    },
+    {
+      "name": "equipment_and_stage_specific_store_caps",
+      "passed": true,
+      "evidence": {
+        "packaging_cap": 50,
+        "crew_cap": 50,
+        "stage1_shop_cap": 5
+      }
+    },
+    {
+      "name": "shop_caps_for_all_five_stages",
+      "passed": true,
+      "evidence": [
+        5,
+        10,
+        20,
+        35,
+        50
+      ]
+    },
+    {
+      "name": "no_revaluation_of_existing_material_and_READY_snapshot",
+      "passed": true,
+      "evidence": "existing 3 stays 3; next session adds 3.75; buying during a session is rejected"
+    },
+    {
+      "name": "practice_session_has_fixed_equipment_snapshot",
+      "passed": true,
+      "evidence": "practice must end before equipment purchase"
+    },
+    {
+      "name": "active_session_cannot_invest_100_coins_in_a_plan",
+      "passed": true,
+      "evidence": {
+        "active_session_coins": "100.5",
+        "active_session_free_stock": "20",
+        "active_purchase_and_plan_start": "both rejected without mutation",
+        "after_session_plan_start_coins": "0.5",
+        "after_session_reserved_material": "20"
+      }
+    },
+    {
+      "name": "all_investment_and_plan_operations_reject_active_sessions",
+      "passed": true,
+      "evidence": {
+        "verified_entry_points": 11,
+        "session_modes": 5,
+        "cases": 55,
+        "all_rejections_leave_state_unchanged": true,
+        "details": [
+          {
+            "mode": "normal",
+            "operation": "packaging",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "crews",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "shops",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "start_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "pause_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "resume_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "open_district",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "railway",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "synergy",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "research",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "normal",
+            "operation": "new_city",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "packaging",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "crews",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "shops",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "start_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "pause_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "resume_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "open_district",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "railway",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "synergy",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "research",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "skip",
+            "operation": "new_city",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "packaging",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "crews",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "shops",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "start_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "pause_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "resume_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "open_district",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "railway",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "synergy",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "research",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "practice",
+            "operation": "new_city",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "packaging",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "crews",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "shops",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "start_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "pause_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "resume_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "open_district",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "railway",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "synergy",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "research",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "review",
+            "operation": "new_city",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "packaging",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "crews",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "shops",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "start_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "pause_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "resume_plan",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "open_district",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "railway",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "synergy",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "research",
+            "active": "rejected",
+            "after_session": "accepted"
+          },
+          {
+            "mode": "intro",
+            "operation": "new_city",
+            "active": "rejected",
+            "after_session": "accepted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "transport_purchase_accelerates_existing_queue_without_enlarging_it",
+      "passed": true,
+      "evidence": {
+        "kind": "crews",
+        "district_id": "residential",
+        "quantity": 1,
+        "count": 1,
+        "requested_count": 1,
+        "current": 1,
+        "after": 2,
+        "cap": 50,
+        "prices_coins": [
+          40
+        ],
+        "total_cost_coins": 40,
+        "total_cost_micro": "40000000",
+        "limited_by_cap": false,
+        "limited_by_funds": false,
+        "before_per_second_micro": "4000000",
+        "after_per_second_micro": "8000000",
+        "queue_micro": "600000000",
+        "before_wait_ms": 150000,
+        "after_wait_ms": 75000,
+        "wait_assumption": "no_additional_arrivals"
+      }
+    },
+    {
+      "name": "empty_queue_displays_no_transport_wait",
+      "passed": true,
+      "evidence": [
+        0,
+        0,
+        "no_additional_arrivals"
+      ]
+    },
+    {
+      "name": "existing_stock_can_finish_plan_without_repaying_arrival",
+      "passed": true,
+      "evidence": "existing stock completes stage2 immediately; plan transfer generates zero delivery coins"
+    },
+    {
+      "name": "finished_plan_does_not_start_next_development_automatically",
+      "passed": true,
+      "evidence": [
+        1,
+        null,
+        470000000
+      ]
+    },
+    {
+      "name": "route_unlock_uses_current_stage_sum_not_achievements",
+      "passed": true,
+      "evidence": "100 stamps do not unlock market; current stage sum 2 plus 150 coins does"
+    },
+    {
+      "name": "research_prices_1_to_5_and_additive_quarter_multipliers",
+      "passed": true,
+      "evidence": {
+        "costs": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "multipliers": [
+          "1",
+          "5/4",
+          "3/2",
+          "7/4",
+          "2",
+          "9/4"
+        ],
+        "total_cost": 15
+      }
+    },
+    {
+      "name": "first_three_blueprints_create_immediate_research_choices",
+      "passed": true,
+      "evidence": {
+        "split_first_building_base_materials": 24,
+        "focused_rank2_first_building_base_materials": 20
+      }
+    },
+    {
+      "name": "new_city_reward_3_6_9_and_next_threshold",
+      "passed": true,
+      "evidence": {
+        "rewards": [
+          0,
+          3,
+          3,
+          6,
+          6,
+          9
+        ],
+        "next_after_100000": 400000
+      }
+    },
+    {
+      "name": "new_city_reset_preserves_research_and_records_and_blocks_old_city_facts",
+      "passed": true,
+      "evidence": {
+        "old_city_id": "city-1",
+        "city_id": "city-2",
+        "earned_blueprints": 3,
+        "unspent_blueprints": 5
+      }
+    },
+    {
+      "name": "new_city_requires_all_stages_and_exact_arrival_threshold",
+      "passed": true,
+      "evidence": "all six stage3 and the exact 100000-material threshold are both required"
+    },
+    {
+      "name": "input_fact_identity_prevents_duplicates_including_after_save",
+      "passed": true,
+      "evidence": "word base and shipment bonus use separate sequences; each survives save/reload without reapplication"
+    },
+    {
+      "name": "same_timestamp_arrival_then_construction_then_purchase",
+      "passed": true,
+      "evidence": "at ms7500 arrival grants 60, construction completes, then purchase spends 50"
+    },
+    {
+      "name": "session_generation_and_arrivals_including_previous_queue_are_distinct",
+      "passed": true,
+      "evidence": {
+        "session_id": "summary",
+        "city_id": "city-1",
+        "district_id": "residential",
+        "mode": "normal",
+        "start_ms": 0,
+        "end_ms": 2000,
+        "generated_micro": "5000000",
+        "arrived_during_session_micro": "8000000",
+        "delivery_coins_micro": "16000000",
+        "shop_coins_micro": "200000",
+        "arrivals_include_preexisting_queue": true,
+        "remaining_queue_micro": "97000000"
+      }
+    },
+    {
+      "name": "all_synergy_prerequisites_prices_effects_and_single_ownership",
+      "passed": true,
+      "evidence": {
+        "delivery_reward": 3,
+        "transport_factor": 2,
+        "shop_income_factor": 2
+      }
+    },
+    {
+      "name": "delivery_synergy_applies_only_to_future_arrivals",
+      "passed": true,
+      "evidence": "first 4 materials pay 8; next 4 pay 12; past deliveries are unchanged"
+    },
+    {
+      "name": "store_and_transport_milestone_formulas",
+      "passed": true,
+      "evidence": {
+        "stage5_50_shops_coins_per_second": 640,
+        "50_crews_material_per_second": 1600
+      }
+    },
+    {
+      "name": "saved_resources_are_decimal_strings_and_roundtrip_exactly",
+      "passed": true,
+      "evidence": {
+        "micro_fields_checked": 31,
+        "float_resource_save": "rejected"
+      }
+    },
+    {
+      "name": "six_district_stage5_and_railway_cost_totals",
+      "passed": true,
+      "evidence": {
+        "stage_1_to_5_materials_micro": "767340000000",
+        "stage_1_to_5_coins_micro": "1178100000000",
+        "unlock_coins_micro": "51150000000",
+        "railway_materials_micro": "31500000000",
+        "railway_coins_micro": "189000000000",
+        "crews_1_to_10_coins_micro": "42318000000",
+        "development_plus_railway_materials_micro": "798840000000",
+        "development_unlock_railway_and_required_crews_coins_micro": "1460568000000"
+      }
+    },
+    {
+      "name": "three_declared_input_profiles_have_reproducible_first_building_values",
+      "passed": true,
+      "evidence": {
+        "profiles": [
+          [
+            6,
+            2,
+            180000,
+            "16000000"
+          ],
+          [
+            6,
+            1,
+            46250,
+            "64000000"
+          ],
+          [
+            5,
+            1,
+            12500,
+            "450000000"
+          ]
+        ],
+        "interpretation": "model values under stated assumptions; no playtest claim"
+      }
+    },
+    {
+      "name": "profile_mistakes_discard_held_cargo_but_keep_completed_word_material",
+      "passed": true,
+      "evidence": {
+        "discarded_cargo": [
+          {
+            "session": 1,
+            "word": 5,
+            "clock_ms": 37500,
+            "discarded_count": 4,
+            "discarded_score": 200
+          },
+          {
+            "session": 1,
+            "word": 10,
+            "clock_ms": 75000,
+            "discarded_count": 4,
+            "discarded_score": 200
+          }
+        ],
+        "surviving_deadline_shipment": [
+          {
+            "session": 1,
+            "clock_ms": 90000,
+            "reason": "deadline",
+            "score_sum": 100,
+            "cargo_count": 2,
+            "applied": true,
+            "bonus_points": 40,
+            "generated_micro": "4000000",
+            "legacy_delivery_counted": false,
+            "district_id": "residential"
+          }
+        ],
+        "base_material_preserved": "60",
+        "bonus_material": "4",
+        "generated_material": "64",
+        "arrived_material": "59",
+        "queued_material": "5"
+      }
+    },
+    {
+      "name": "all_profile_word_events_precede_the_90second_input_deadline",
+      "passed": true,
+      "evidence": {
+        "completion_counts": {
+          "低速・誤打あり": 3,
+          "標準仮定": 12,
+          "高速仮定": 45
+        },
+        "all_word_event_offsets_lt_ms": 90000,
+        "last_word_event_ms": 89000,
+        "deadline_shipment_at_ms": 90000
+      }
+    },
+    {
+      "name": "offline_progress_does_not_invent_words_or_vocabulary",
+      "passed": true,
+      "evidence": "offline progression changes transport and shop income only"
+    },
+    {
+      "name": "offline_arrivals_do_not_complete_paused_plan",
+      "passed": true,
+      "evidence": "8 h leaves paused stage0 unchanged; 10 reserved plus 100 stock remain separate"
+    },
+    {
+      "name": "landscape_choice_has_no_economic_effect",
+      "passed": true,
+      "evidence": "all three landscapes have identical economic state"
+    }
+  ],
+  "balance": {
+    "scope": "Declared deterministic input assumptions; not measured play time or a test of enjoyment.",
+    "profiles": [
+      {
+        "name": "低速・誤打あり",
+        "assumptions": {
+          "session_ms": 90000,
+          "consecutive_sessions_without_break": true,
+          "base_length_every_word": 5,
+          "nominal_completion_interval_ms": 30000,
+          "completion_times_ms": [
+            30000,
+            60000,
+            89000
+          ],
+          "last_completion_ms": 89000,
+          "completed_words_per_session": 3,
+          "clean_pattern": [
+            false,
+            false,
+            true
+          ],
+          "mistakes_per_bad_word": 5,
+          "mistake_discards_all_held_cargo": true,
+          "clean_words_in_first_session": 1,
+          "mistakes_in_first_session": 10,
+          "manual_shipments": 0,
+          "full_at_five_clean_words": true,
+          "deadline_ships_remaining_clean_cargo": true,
+          "packaging_level": 0,
+          "research_rank": 0,
+          "crews": 1,
+          "purchases": false
+        },
+        "first_building_sufficient_material_at_ms": 179000,
+        "completed_words_needed_to_generate_30": 6,
+        "sessions_needed_to_generate_30": 2,
+        "first_building_completed_at_ms": 180000,
+        "completed_words_by_construction": 6,
+        "first_session": {
+          "session_id": "低速・誤打あり-1",
+          "city_id": "city-1",
+          "district_id": "residential",
+          "mode": "normal",
+          "start_ms": 0,
+          "end_ms": 90000,
+          "generated_micro": "16000000",
+          "arrived_during_session_micro": "14000000",
+          "delivery_coins_micro": "28000000",
+          "shop_coins_micro": "0",
+          "arrivals_include_preexisting_queue": true,
+          "remaining_queue_micro": "2000000"
+        },
+        "first_session_end_queue_clear_ms_no_more_input": 500,
+        "cargo_losses": [
+          {
+            "session": 1,
+            "word": 1,
+            "clock_ms": 30000,
+            "discarded_count": 0,
+            "discarded_score": 0
+          },
+          {
+            "session": 1,
+            "word": 2,
+            "clock_ms": 60000,
+            "discarded_count": 0,
+            "discarded_score": 0
+          },
+          {
+            "session": 2,
+            "word": 4,
+            "clock_ms": 120000,
+            "discarded_count": 0,
+            "discarded_score": 0
+          },
+          {
+            "session": 2,
+            "word": 5,
+            "clock_ms": 150000,
+            "discarded_count": 0,
+            "discarded_score": 0
+          }
+        ],
+        "shipment_facts": [
+          {
+            "session": 1,
+            "clock_ms": 90000,
+            "reason": "deadline",
+            "score_sum": 50,
+            "cargo_count": 1,
+            "applied": true,
+            "bonus_points": 10,
+            "generated_micro": "1000000",
+            "legacy_delivery_counted": false,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 180000,
+            "reason": "deadline",
+            "score_sum": 50,
+            "cargo_count": 1,
+            "applied": true,
+            "bonus_points": 10,
+            "generated_micro": "1000000",
+            "legacy_delivery_counted": false,
+            "district_id": "residential"
+          }
+        ]
+      },
+      {
+        "name": "標準仮定",
+        "assumptions": {
+          "session_ms": 90000,
+          "consecutive_sessions_without_break": true,
+          "base_length_every_word": 5,
+          "nominal_completion_interval_ms": 7500,
+          "completion_times_ms": [
+            7500,
+            15000,
+            22500,
+            30000,
+            37500,
+            45000,
+            52500,
+            60000,
+            67500,
+            75000,
+            82500,
+            89000
+          ],
+          "last_completion_ms": 89000,
+          "completed_words_per_session": 12,
+          "clean_pattern": [
+            true,
+            true,
+            true,
+            true,
+            false
+          ],
+          "mistakes_per_bad_word": 1,
+          "mistake_discards_all_held_cargo": true,
+          "clean_words_in_first_session": 10,
+          "mistakes_in_first_session": 2,
+          "manual_shipments": 0,
+          "full_at_five_clean_words": true,
+          "deadline_ships_remaining_clean_cargo": true,
+          "packaging_level": 0,
+          "research_rank": 0,
+          "crews": 1,
+          "purchases": false
+        },
+        "first_building_sufficient_material_at_ms": 45000,
+        "completed_words_needed_to_generate_30": 6,
+        "sessions_needed_to_generate_30": 1,
+        "first_building_completed_at_ms": 46250,
+        "completed_words_by_construction": 6,
+        "first_session": {
+          "session_id": "標準仮定-1",
+          "city_id": "city-1",
+          "district_id": "residential",
+          "mode": "normal",
+          "start_ms": 0,
+          "end_ms": 90000,
+          "generated_micro": "64000000",
+          "arrived_during_session_micro": "59000000",
+          "delivery_coins_micro": "118000000",
+          "shop_coins_micro": "4375000",
+          "arrivals_include_preexisting_queue": true,
+          "remaining_queue_micro": "5000000"
+        },
+        "first_session_end_queue_clear_ms_no_more_input": 1250,
+        "cargo_losses": [
+          {
+            "session": 1,
+            "word": 5,
+            "clock_ms": 37500,
+            "discarded_count": 4,
+            "discarded_score": 200
+          },
+          {
+            "session": 1,
+            "word": 10,
+            "clock_ms": 75000,
+            "discarded_count": 4,
+            "discarded_score": 200
+          },
+          {
+            "session": 2,
+            "word": 15,
+            "clock_ms": 112500,
+            "discarded_count": 2,
+            "discarded_score": 100
+          },
+          {
+            "session": 2,
+            "word": 20,
+            "clock_ms": 150000,
+            "discarded_count": 4,
+            "discarded_score": 200
+          }
+        ],
+        "shipment_facts": [
+          {
+            "session": 1,
+            "clock_ms": 90000,
+            "reason": "deadline",
+            "score_sum": 100,
+            "cargo_count": 2,
+            "applied": true,
+            "bonus_points": 40,
+            "generated_micro": "4000000",
+            "legacy_delivery_counted": false,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 180000,
+            "reason": "deadline",
+            "score_sum": 200,
+            "cargo_count": 4,
+            "applied": true,
+            "bonus_points": 160,
+            "generated_micro": "16000000",
+            "legacy_delivery_counted": false,
+            "district_id": "residential"
+          }
+        ]
+      },
+      {
+        "name": "高速仮定",
+        "assumptions": {
+          "session_ms": 90000,
+          "consecutive_sessions_without_break": true,
+          "base_length_every_word": 5,
+          "nominal_completion_interval_ms": 2000,
+          "completion_times_ms": [
+            2000,
+            4000,
+            6000,
+            8000,
+            10000,
+            12000,
+            14000,
+            16000,
+            18000,
+            20000,
+            22000,
+            24000,
+            26000,
+            28000,
+            30000,
+            32000,
+            34000,
+            36000,
+            38000,
+            40000,
+            42000,
+            44000,
+            46000,
+            48000,
+            50000,
+            52000,
+            54000,
+            56000,
+            58000,
+            60000,
+            62000,
+            64000,
+            66000,
+            68000,
+            70000,
+            72000,
+            74000,
+            76000,
+            78000,
+            80000,
+            82000,
+            84000,
+            86000,
+            88000,
+            89000
+          ],
+          "last_completion_ms": 89000,
+          "completed_words_per_session": 45,
+          "clean_pattern": [
+            true
+          ],
+          "mistakes_per_bad_word": 0,
+          "mistake_discards_all_held_cargo": true,
+          "clean_words_in_first_session": 45,
+          "mistakes_in_first_session": 0,
+          "manual_shipments": 0,
+          "full_at_five_clean_words": true,
+          "deadline_ships_remaining_clean_cargo": true,
+          "packaging_level": 0,
+          "research_rank": 0,
+          "crews": 1,
+          "purchases": false
+        },
+        "first_building_sufficient_material_at_ms": 10000,
+        "completed_words_needed_to_generate_30": 5,
+        "sessions_needed_to_generate_30": 1,
+        "first_building_completed_at_ms": 12500,
+        "completed_words_by_construction": 6,
+        "first_session": {
+          "session_id": "高速仮定-1",
+          "city_id": "city-1",
+          "district_id": "residential",
+          "mode": "normal",
+          "start_ms": 0,
+          "end_ms": 90000,
+          "generated_micro": "450000000",
+          "arrived_during_session_micro": "340000000",
+          "delivery_coins_micro": "680000000",
+          "shop_coins_micro": "7750000",
+          "arrivals_include_preexisting_queue": true,
+          "remaining_queue_micro": "110000000"
+        },
+        "first_session_end_queue_clear_ms_no_more_input": 27500,
+        "cargo_losses": [],
+        "shipment_facts": [
+          {
+            "session": 1,
+            "clock_ms": 10000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 20000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 30000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 40000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 50000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 60000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 70000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 80000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 1,
+            "clock_ms": 89000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 100000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 110000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 120000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 130000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 140000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 150000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 160000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 170000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          },
+          {
+            "session": 2,
+            "clock_ms": 179000,
+            "reason": "full",
+            "score_sum": 250,
+            "cargo_count": 5,
+            "applied": true,
+            "bonus_points": 250,
+            "generated_micro": "25000000",
+            "legacy_delivery_counted": true,
+            "district_id": "residential"
+          }
+        ]
+      }
+    ],
+    "first_purchase_example": {
+      "initial_queued_micro": "30000000",
+      "construction_at_ms": 7500,
+      "coins_before_purchase_micro": "60000000",
+      "purchase": {
+        "kind": "packaging",
+        "district_id": null,
+        "quantity": 1,
+        "count": 1,
+        "requested_count": 1,
+        "current": 0,
+        "after": 1,
+        "cap": 50,
+        "prices_coins": [
+          50
+        ],
+        "total_cost_coins": 50,
+        "total_cost_micro": "50000000",
+        "limited_by_cap": false,
+        "limited_by_funds": false,
+        "before_multiplier": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "after_multiplier": {
+          "numerator": 5,
+          "denominator": 4
+        }
+      },
+      "coins_after_purchase_micro": "10000000",
+      "next_word_L3_materials_micro": "3750000",
+      "shop_income_per_second_micro": "100000"
+    },
+    "transport_purchase_example": {
+      "kind": "crews",
+      "district_id": "residential",
+      "quantity": 1,
+      "count": 1,
+      "requested_count": 1,
+      "current": 1,
+      "after": 2,
+      "cap": 50,
+      "prices_coins": [
+        40
+      ],
+      "total_cost_coins": 40,
+      "total_cost_micro": "40000000",
+      "limited_by_cap": false,
+      "limited_by_funds": false,
+      "before_per_second_micro": "4000000",
+      "after_per_second_micro": "8000000",
+      "queue_micro": "600000000",
+      "before_wait_ms": 150000,
+      "after_wait_ms": 75000,
+      "wait_assumption": "no_additional_arrivals"
+    },
+    "early_stalls": {
+      "stage2_coin_cost_micro": "100000000",
+      "stage2_incremental_materials_micro": "150000000",
+      "after_first_building_coins_micro": "60000000",
+      "coins_missing_without_equipment_micro": "40000000",
+      "additional_arrivals_for_40_coins_micro": "20000000",
+      "passive_only_wait_for_40_coins_ms": 400000,
+      "coins_after_first_packaging_micro": "10000000",
+      "passive_only_wait_for_90_coins_ms": 900000,
+      "material_generation_without_input_micro": "0",
+      "remaining_coins_after_residential_stage2_and_market_open_excluding_shop_income_micro": "110000000"
+    },
+    "research": [
+      {
+        "rank": 0,
+        "next_price_blueprints": 1,
+        "cumulative_price_blueprints": 0,
+        "multiplier": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "first_building_base_materials": {
+          "numerator": 30,
+          "denominator": 1
+        }
+      },
+      {
+        "rank": 1,
+        "next_price_blueprints": 2,
+        "cumulative_price_blueprints": 1,
+        "multiplier": {
+          "numerator": 5,
+          "denominator": 4
+        },
+        "first_building_base_materials": {
+          "numerator": 24,
+          "denominator": 1
+        }
+      },
+      {
+        "rank": 2,
+        "next_price_blueprints": 3,
+        "cumulative_price_blueprints": 3,
+        "multiplier": {
+          "numerator": 3,
+          "denominator": 2
+        },
+        "first_building_base_materials": {
+          "numerator": 20,
+          "denominator": 1
+        }
+      },
+      {
+        "rank": 3,
+        "next_price_blueprints": 4,
+        "cumulative_price_blueprints": 6,
+        "multiplier": {
+          "numerator": 7,
+          "denominator": 4
+        },
+        "first_building_base_materials": {
+          "numerator": 120,
+          "denominator": 7
+        }
+      },
+      {
+        "rank": 4,
+        "next_price_blueprints": 5,
+        "cumulative_price_blueprints": 10,
+        "multiplier": {
+          "numerator": 2,
+          "denominator": 1
+        },
+        "first_building_base_materials": {
+          "numerator": 15,
+          "denominator": 1
+        }
+      },
+      {
+        "rank": 5,
+        "next_price_blueprints": null,
+        "cumulative_price_blueprints": 15,
+        "multiplier": {
+          "numerator": 9,
+          "denominator": 4
+        },
+        "first_building_base_materials": {
+          "numerator": 40,
+          "denominator": 3
+        }
+      }
+    ],
+    "first_three_blueprints": {
+      "split_ranks": {
+        "materials": 1,
+        "logistics": 1,
+        "commerce": 1
+      },
+      "split_first_building_base_materials": {
+        "numerator": 24,
+        "denominator": 1
+      },
+      "split_transport_per_second_micro": "5000000",
+      "split_first_shop_income_per_second_micro": "125000",
+      "concentrated_material_rank": 2,
+      "concentrated_first_building_base_materials": {
+        "numerator": 20,
+        "denominator": 1
+      },
+      "rank2_cost_blueprints": 3
+    },
+    "district_totals": [
+      {
+        "id": "residential",
+        "name": "住宅地",
+        "multiplier": 1,
+        "stage_1_to_5_materials_micro": "12180000000",
+        "stage_1_to_5_coins_micro": "18700000000",
+        "unlock_coins_micro": "0",
+        "railway_materials_micro": "500000000",
+        "railway_coins_micro": "3000000000",
+        "crews_1_to_10_coins_micro": "674000000"
+      },
+      {
+        "id": "market",
+        "name": "商店街",
+        "multiplier": 2,
+        "stage_1_to_5_materials_micro": "24360000000",
+        "stage_1_to_5_coins_micro": "37400000000",
+        "unlock_coins_micro": "150000000",
+        "railway_materials_micro": "1000000000",
+        "railway_coins_micro": "6000000000",
+        "crews_1_to_10_coins_micro": "1345000000"
+      },
+      {
+        "id": "workshop",
+        "name": "工房街",
+        "multiplier": 4,
+        "stage_1_to_5_materials_micro": "48720000000",
+        "stage_1_to_5_coins_micro": "74800000000",
+        "unlock_coins_micro": "600000000",
+        "railway_materials_micro": "2000000000",
+        "railway_coins_micro": "12000000000",
+        "crews_1_to_10_coins_micro": "2689000000"
+      },
+      {
+        "id": "park",
+        "name": "公園通り",
+        "multiplier": 8,
+        "stage_1_to_5_materials_micro": "97440000000",
+        "stage_1_to_5_coins_micro": "149600000000",
+        "unlock_coins_micro": "2400000000",
+        "railway_materials_micro": "4000000000",
+        "railway_coins_micro": "24000000000",
+        "crews_1_to_10_coins_micro": "5375000000"
+      },
+      {
+        "id": "station",
+        "name": "駅前",
+        "multiplier": 16,
+        "stage_1_to_5_materials_micro": "194880000000",
+        "stage_1_to_5_coins_micro": "299200000000",
+        "unlock_coins_micro": "9600000000",
+        "railway_materials_micro": "8000000000",
+        "railway_coins_micro": "48000000000",
+        "crews_1_to_10_coins_micro": "10747000000"
+      },
+      {
+        "id": "harbor",
+        "name": "港町",
+        "multiplier": 32,
+        "stage_1_to_5_materials_micro": "389760000000",
+        "stage_1_to_5_coins_micro": "598400000000",
+        "unlock_coins_micro": "38400000000",
+        "railway_materials_micro": "16000000000",
+        "railway_coins_micro": "96000000000",
+        "crews_1_to_10_coins_micro": "21488000000"
+      }
+    ],
+    "totals": {
+      "stage_1_to_5_materials_micro": "767340000000",
+      "stage_1_to_5_coins_micro": "1178100000000",
+      "unlock_coins_micro": "51150000000",
+      "railway_materials_micro": "31500000000",
+      "railway_coins_micro": "189000000000",
+      "crews_1_to_10_coins_micro": "42318000000",
+      "development_plus_railway_materials_micro": "798840000000",
+      "development_unlock_railway_and_required_crews_coins_micro": "1460568000000"
+    },
+    "all_districts_stage3_materials_micro": "49140000000",
+    "new_city_examples": [
+      {
+        "arrived_materials": 99999,
+        "blueprints": 0
+      },
+      {
+        "arrived_materials": 100000,
+        "blueprints": 3
+      },
+      {
+        "arrived_materials": 399999,
+        "blueprints": 3
+      },
+      {
+        "arrived_materials": 400000,
+        "blueprints": 6
+      },
+      {
+        "arrived_materials": 899999,
+        "blueprints": 6
+      },
+      {
+        "arrived_materials": 900000,
+        "blueprints": 9
+      },
+      {
+        "arrived_materials": 1600000,
+        "blueprints": 12
+      }
+    ],
+    "maximum_rates": {
+      "materials_multiplier": {
+        "numerator": 243,
+        "denominator": 1
+      },
+      "one_route_materials_per_second_micro": "28800000000",
+      "all_shops_coins_per_second_micro": "181440000000",
+      "eight_hour_shop_coins_micro": "5225472000000000"
+    }
+  }
+}
