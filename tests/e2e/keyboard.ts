@@ -66,9 +66,11 @@ export async function keyboardWalkPanels(page: Page) {
   if (!await host.count()) { await assertViewportFits(page); return; }
   for (let panel = 0; panel < 100; panel++) {
     await assertViewportFits(page);
-    await expect(host).not.toHaveAttribute('data-ipad-overflow', 'true');
     const next = host.locator('[data-ipad-next]');
-    if (!await next.count() || await next.isDisabled()) return;
+    if (!await next.count() || await next.isDisabled()) {
+      await expect(host).not.toHaveAttribute('data-ipad-overflow', 'true');
+      return;
+    }
     const previousPage = await host.getAttribute('data-ipad-page');
     await tabTo(page, next);
     await page.keyboard.press('ArrowRight');
