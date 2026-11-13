@@ -1,0 +1,1776 @@
+[
+  {
+    "id": "baseline-seaside-png",
+    "path": "history/terrain_seaside.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 5296977,
+    "sha256": "6e13ca7acab195e959632897cf552b343e4e8b3c1cdd96e02193a0efcd11ea1f",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1364.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1308.5,
+          "delta_map_px": -1.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1278.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1238.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.0,
+          "delta_map_px": -2.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.6666666666667425,
+        0.23486238532109383
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.6666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 16.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "baseline-seaside-webp",
+    "path": "history/terrain_seaside.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 3998038,
+    "sha256": "ca078fd281e0b354cedb781e9fa04c6ba9d1c00863a728baf188cfeedeb930b9",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1364.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1308.5,
+          "delta_map_px": -1.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1278.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1238.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.0,
+          "delta_map_px": -2.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.6666666666667425,
+        0.23486238532109383
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.6666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 16.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "baseline-highland-png",
+    "path": "history/terrain_highland.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 5043519,
+    "sha256": "dae1b25d67200540e7e331767c0778765e70cbb0a346372337f5b7d4faaa6864",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1245.5,
+          "delta_map_px": -0.703125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.5,
+          "delta_map_px": -1.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.1666666666667425,
+        0.662499999999909
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.1666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "baseline-highland-webp",
+    "path": "history/terrain_highland.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 3934722,
+    "sha256": "70f673d8d12ab1799b436e18f8eae02e47fceb6a8e6069ce8d4967d251a87413",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1245.5,
+          "delta_map_px": -0.703125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.5,
+          "delta_map_px": -1.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.1666666666667425,
+        0.662499999999909
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.1666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "highland-r1",
+    "path": "candidates/highland-r1.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 4388138,
+    "sha256": "17e9ed57c4bee3af24998da5cb7db6d1c65de1073d3827a21b20fb3a230824c7",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.0,
+          "delta_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.5,
+          "delta_map_px": -1.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.0,
+        0.724999999999909
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.0,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1585,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "cebf4e86dc44e2073a29b92389f937734ff3a8a9cc44964830e9755564a5e00b",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "highland-r1-q92",
+    "path": "candidates/highland-r1.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 272538,
+    "sha256": "a3e9974558fe38b9581a1a4c6eda65dc45706c35ff660e5c7960c0d839c50f38",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.0,
+          "delta_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.5,
+          "delta_map_px": -1.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.1666666666667425,
+        0.6875
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.1666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "seaside-r1",
+    "path": "candidates/seaside-r1.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 4705045,
+    "sha256": "927bf66fc1a1e3760def6493bd4db5f639b49170c0d8c47d25d3af7540cf9e64",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1196.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.0,
+          "delta_map_px": -2.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.3333333333332575,
+        1.0
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.3333333333332575,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1585,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "c9a731727fd3e0e6cf7b33a7b6946fb3239eaa624507030c23a875d0e79c320b",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "seaside-r1-q92",
+    "path": "candidates/seaside-r1.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 306282,
+    "sha256": "4b70b346cd04cd494f8bcbc0909c535a194ea265eca01a357071c3ea5fe7b700",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1238.5,
+          "delta_map_px": -1.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1128.0,
+          "delta_map_px": -2.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.5,
+        0.900000000000091
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.5,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "seaside-r2",
+    "path": "candidates/seaside-r2.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 4348641,
+    "sha256": "0f0f65fbc23871864fca9176bc382975779c073fb261a76c1e52dda4200bd7e2",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1371.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1361.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1280.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1247.0,
+          "delta_map_px": 0.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1241.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1197.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1151.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1129.5,
+          "delta_map_px": -0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -1.8333333333332575,
+        2.181818181818244
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.181818181818244,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1585,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "f45661e713e7f5358b7c50c075a966f7e33e03393f2c15003e021049b69da813",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "seaside-r2-q92",
+    "path": "candidates/seaside-r2.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 291522,
+    "sha256": "eda2d4ec0e4bfe13f7c70edbf96dd08d03f1ba27a0309c0e6a1fe38419c6392c",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1280.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1247.0,
+          "delta_map_px": 0.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1241.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1197.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1151.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1129.0,
+          "delta_map_px": -1.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -1.8333333333332575,
+        2.0909090909090082
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.0909090909090082,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "seaside-r3",
+    "path": "candidates/seaside-r3.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 4236080,
+    "sha256": "c80219f5956a78014ca29aea1e6ed687eace3ccd5ecd699585a01e2212e588ac",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1371.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1361.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1341.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1311.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1281.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1248.5,
+          "delta_map_px": 2.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1243.0,
+          "delta_map_px": 3.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1240.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1198.5,
+          "delta_map_px": 3.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1153.0,
+          "delta_map_px": 3.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.5,
+          "delta_map_px": 0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.8333333333332575,
+        3.5384615384614335
+      ],
+      "all_source_rows_max_abs_delta_map_px": 3.5384615384614335,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 19.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "a9860c7ff9d1595c13c8a5c0736e424c5a4b73126ba4e1cf8a9679073d346f7c",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "seaside-r3-q92",
+    "path": "candidates/seaside-r3.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 291498,
+    "sha256": "43adb5e9b78b8762a8d612e1517f6eb892f5dde9d16e0e962a871af9756e4c08",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1371.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1361.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1341.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1281.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1248.0,
+          "delta_map_px": 1.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1242.5,
+          "delta_map_px": 2.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1198.0,
+          "delta_map_px": 3.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1152.5,
+          "delta_map_px": 2.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.5,
+          "delta_map_px": 0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.8333333333332575,
+        3.4090909090909918
+      ],
+      "all_source_rows_max_abs_delta_map_px": 3.4090909090909918,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 19.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "seaside-r4",
+    "path": "candidates/seaside-r4.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 5592818,
+    "sha256": "b9a765bb384d70f73e6ef0eeeda973a724178460228f5aeeb0216bdbf8559567",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1280.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1247.0,
+          "delta_map_px": 0.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.5,
+          "delta_map_px": 0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.6333333333334394,
+        1.6818181818182438
+      ],
+      "all_source_rows_max_abs_delta_map_px": 1.6818181818182438,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "e8c0986fba3963808e4e2aaa33a7d4803b85169205cf47727f20736df138d03b",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "seaside-r4-q92",
+    "path": "candidates/seaside-r4.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "bytes": 410106,
+    "sha256": "84e2de3db6bf26863a3ff243dd660ff4b498b2084cabc5f6af2ee4541eeec7a0",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1280.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1247.0,
+          "delta_map_px": 0.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1131.0,
+          "delta_map_px": 1.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.7000000000000455,
+        1.5
+      ],
+      "all_source_rows_max_abs_delta_map_px": 1.5,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  }
+]

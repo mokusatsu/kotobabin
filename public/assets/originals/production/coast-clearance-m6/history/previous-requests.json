@@ -1,0 +1,37 @@
+{
+  "requested_assets": [
+    "terrain_seaside",
+    "terrain_highland"
+  ],
+  "coordinate_source": "spec/initial/data/city_catalog.json map_layout",
+  "policy": "Actual imagegen terrain art conditioned by coordinate guide and canonical art. Entire native canvas resized to3200x2000RGB only; no crop, mask, threshold editing, shoreline fitting or procedural runtime replacement.",
+  "guide_policy": "coordinate-guide.svg copied from prior geometry production; PNG is diagnostic conditioning diagram rasterized from canonical points via Pillow, not runtime artwork.",
+  "attempts": [
+    {
+      "id": "seaside-1",
+      "asset": "terrain_seaside",
+      "prompt": "Create SEASIDE biome variation of the SECOND reference terrain, preserving the FIRST reference's exact land/water silhouette and full 8:5 canvas. FIRST is a coordinate control guide only, SECOND is canonical warm Japanese watercolor game map style. The guide's left cream region stays flat pale cream buildable land; right turquoise region becomes a calm coastal bay with broad quiet blue-green watercolor bands, no white breaking waves. Keep the shoreline fixed exactly, apply texture ONLY INSIDE regions. No rounding, erosion, beach or grass extending across the edge. Place tiny rounded coastal pines and low coastal grasses ONLY at far LEFT outer edge x0..180 and TOP-LEFT perimeter x0..700,y0..90 in logical1600x1000 coordinates. No hills beyond low distant coastal vegetation. Center and all land x300..shoreline stay very quiet light flat empty paper-colored ground. All six district grounds and route corridors remain free of objects. Coastline logical points: (1370,0),(1365,200),(1360,400),(1340,550),(1310,640),(1280,695),(1246.203125,737.578125),(1240,770),(1240,820),(1195,875),(1150,940),(1130,1000). The vertical segment x1240,y770..820 must stay exact; port unloading rectangle x1158..1222,y760..808 stays fully dry land with at least18 logical pixels to the water. Preserve full frame and composition. OPAQUE RGB landscape, no transparent center or alpha. No buildings, houses, roads, rails, bridges, piers, boats, lighthouse, seawall, vehicles, rocks, words, labels, numbers, UI, border or markers. Output requested3200x2000, same8:5aspect as references. Beautiful restrained watercolor paper grain, no horizon/perspective vanishing point. Exact geometry first, seaside texture second.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/terrains-m6/coordinate-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/terrain_riverside.png"
+      ],
+      "transparent_background": false,
+      "native_generated_path": "/workspace/generated_images/exec-e5be4adc-e605-40f3-b993-0181f14fefe2.png",
+      "disposition": "Selected imagegen candidate; exact geometry acceptance unresolved."
+    },
+    {
+      "id": "highland-1",
+      "asset": "terrain_highland",
+      "prompt": "Create HIGHLAND LAKE biome variation of the SECOND reference terrain, preserving FIRST reference's exact land/water silhouette and full 8:5 canvas. FIRST is a coordinate control guide only, SECOND is canonical warm Japanese watercolor game map style. Left cream region remains level pale cream buildable land; right blue region becomes a clear cool blue highland LAKE with subtle broad quiet horizontal watercolor tones, no ocean waves or whitecaps. Keep the shoreline fixed exactly, texture ONLY INSIDE regions. No rounding, erosion, beach, rocks or grass crossing the edge. At far UPPER LEFT perimeter ONLY paint low soft blue-green distant mountain shapes and small gentle groups of conifers within logical x0..700,y0..95; tiny soft conifers may also sit at far LEFT edge x0..160. All six district grounds and center/right land remain quiet flat bright cream paper, no slopes or elevation steps underneath districts. Logical1600x1000 shoreline: (1370,0),(1365,200),(1360,400),(1340,550),(1310,640),(1280,695),(1246.203125,737.578125),(1240,770),(1240,820),(1195,875),(1150,940),(1130,1000). Keep vertical segment x1240,y770..820 exact. Port unloading rectangle x1158..1222,y760..808 remains completely DRY LAND, at least18 logical pixels left of water. Preserve full frame and exact map composition. Fully OPAQUE RGB landscape, NO transparent region. No ice, boats, docks, piers, buildings, houses, roads, rails, bridges, vehicles, labels, letters, numbers, UI, guide marks or border. No strong horizon or perspective vanishing point. Requested output3200x2000, same8:5aspect. Beautiful restrained Japanese watercolor paper grain, exact geometry first and highland atmosphere second.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/terrains-m6/coordinate-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/terrain_riverside.png"
+      ],
+      "transparent_background": false,
+      "native_generated_path": "/workspace/generated_images/exec-8ffd9850-ae14-48cd-97ca-46b7b35a5f88.png",
+      "disposition": "Selected imagegen candidate; exact geometry acceptance unresolved."
+    }
+  ],
+  "rejections": [],
+  "native_dimensions_claim": "Actual native1586x992RGB, not3200x2000; normalized fullcanvas at declared output."
+}

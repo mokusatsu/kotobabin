@@ -1,0 +1,17 @@
+{
+  "purpose": "Static QA only; harbor not baked into terrain.",
+  "source": "public/assets/originals/city_harbor_s5.png",
+  "sha256": "131e7fb5017af78cadae018038198af0e7738c6c41e391c40f763581dd9a134d",
+  "logical_canvas": [
+    1600,
+    1000
+  ],
+  "harbor_placement": [
+    1058,
+    570
+  ],
+  "harbor_display_size": [
+    264,
+    198
+  ]
+}

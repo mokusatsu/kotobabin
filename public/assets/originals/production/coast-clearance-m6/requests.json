@@ -1,0 +1,80 @@
+{
+  "assets": [
+    "terrain_seaside",
+    "terrain_highland"
+  ],
+  "base_art_head": "13060ba",
+  "policy": "Actual imagegen local harbor edits only. Complete native canvas retained; only full-canvas RGB resize and PNG/WebP encoding after generation. No crop, mask, alpha/color-threshold image alteration or shoreline fitting. Color thresholds are diagnostic only.",
+  "attempts": [
+    {
+      "id": "seaside-r1",
+      "prompt": "Precise LOCAL HARBOR SHORELINE cleanup of this existing game terrain. Preserve its entire art style, vegetation, water bands, quiet flat land, full8:5canvas and all coastline OUTSIDE the small harbor interval unchanged. In logical1600x1000 coordinates the canonical harbor shoreline is a STRAIGHT VERTICAL x1240 fromy770toy820, connected above through(1246.203125,737.578125). The current image has thin blue water pixels leaking LEFT ofx1240 near y770..808. Remove only that landward blue fringe: every pixel leftofx1240 in this interval becomes matching pale cream LAND, with water starting ATx1240 or right of it. Keep true boundary atx1240, do not invent an extra safety margin or shift the whole shoreline. The unloading rectangle ends atx1222 and requires at least18map_px dry clearance, not16.5 or17.5. Preserve all other shore points and full framing, no zoom/recenter/crop, no smoothing the vertical segment. Only fix premature blue bleed near the harbor. OPAQUE RGB landscape, no alpha, no new buildings, piers, roads, rails, boats, text, numbers, labels, UI or border. Keep the existing SEASIDE coastal vegetation and calm turquoise bay style exactly; do not add hills, sea waves, ships or facilities.",
+      "references": [
+        "history/terrain_seaside.native.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-88fdf7d7-5df9-4e32-a48e-ae45d3de3acc.png",
+      "transparent_background": false,
+      "disposition": "Superseded: PNG dry clearance17.0, under18.",
+      "actual_native_size": [
+        1585,
+        992
+      ]
+    },
+    {
+      "id": "highland-r1",
+      "prompt": "Precise LOCAL HARBOR SHORELINE cleanup of this existing game terrain. Preserve its entire art style, vegetation, water bands, quiet flat land, full8:5canvas and all coastline OUTSIDE the small harbor interval unchanged. In logical1600x1000 coordinates the canonical harbor shoreline is a STRAIGHT VERTICAL x1240 fromy770toy820, connected above through(1246.203125,737.578125). The current image has thin blue water pixels leaking LEFT ofx1240 near y770..808. Remove only that landward blue fringe: every pixel leftofx1240 in this interval becomes matching pale cream LAND, with water starting ATx1240 or right of it. Keep true boundary atx1240, do not invent an extra safety margin or shift the whole shoreline. The unloading rectangle ends atx1222 and requires at least18map_px dry clearance, not16.5 or17.5. Preserve all other shore points and full framing, no zoom/recenter/crop, no smoothing the vertical segment. Only fix premature blue bleed near the harbor. OPAQUE RGB landscape, no alpha, no new buildings, piers, roads, rails, boats, text, numbers, labels, UI or border. Keep the existing HIGHLAND low mountain/conifer silhouettes and cool blue lake style exactly; no ocean waves, ice or facilities.",
+      "references": [
+        "history/terrain_highland.native.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-4e305b5e-b719-4e60-bc7e-94332aadbbe4.png",
+      "transparent_background": false,
+      "disposition": "Measured improvement candidate: PNG and q92 clearance18.0; coastline not worse under color diagnostics; exact geometry identity unproven.",
+      "actual_native_size": [
+        1585,
+        992
+      ]
+    },
+    {
+      "id": "seaside-r2",
+      "prompt": "One final tiny LOCAL HARBOR color-bleed correction. This seaside image is already correct elsewhere. Preserve full8:5canvas, all vegetation, bay texture, flat land and EVERY shoreline portion outside the harbor interval unchanged. Diagnostics still observe premature blue water around logicalx1239 near y770..808; it must begin atx1240, not1239. Make the true vertical edge x1240 fromy770toy820 crisp: the thin strip LEFT ofx1240 is matching cream LAND, not blue fringe. Keep water ATx1240/right of it; no extra safety buffer. Harbor unloading rectangle ends atx1222 and needs18map_px dry clearance. Preserve neighboring fractional contact(1246.203125,737.578125). Do not move the whole image or whole coast, do not expand/round the shoreline, do not change tree or water styles. Remove only the leftover landward blue fringe, not a global repaint. Same opaqueRGB landscape, no alpha, no crop/zoom/recenter, no new facilities, buildings, boats, piers, roads, text, numbers, labels or UI.",
+      "references": [
+        "native/seaside-r1.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-7e6be58a-6b75-4bd5-bd65-bee467370735.png",
+      "transparent_background": false,
+      "disposition": "Superseded: PNG dry clearance17.5, under18.",
+      "actual_native_size": [
+        1585,
+        992
+      ]
+    },
+    {
+      "id": "seaside-r3",
+      "prompt": "Tiny LOCAL cleanup of this already accurate SEASIDE terrain. KEEP THE ENTIRE LANDSCAPE, every shore position outside the harbor interval, coastal trees/grasses, paper texture, turquoise bay bands and full8:5frame EXACTLY unchanged. In logical1600x1000 coordinates the harbor's straight shoreline is x1240 fromy770toy820. A faint BLUE ANTIALIAS FRINGE still leaks a fraction of a pixel LEFT ofx1240 near y770..808. Remove ONLY that landward blue fringe: pixels LEFT ofx1240 must be pale cream LAND, blue water starts ATx1240 or to its right. Keep the true boundary atx1240, DO NOT add an extra margin or move the whole shore. Preserve vertical segment and neighboring fractional harbor contact(1246.203125,737.578125). Dry unloading rectangle ends atx1222 and must retain exact18px dry clearance, never17.5. Minute color-bleed cleanup, not a new layout. NO changes to upper/lower coast, vegetation, water texture, camera or framing. Same opaqueRGB, no alpha, no crop/zoom/recenter, no text/numbers/buildings/piers/roads/boats/UI.",
+      "references": [
+        "native/seaside-r2.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-1c5801fe-baef-4881-8528-5d170ad06f7a.png",
+      "transparent_background": false,
+      "disposition": "Rejected: clearance19.0 but all-row max drift3.538 exceeds baseline2.667; do not promote.",
+      "actual_native_size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "id": "seaside-r4",
+      "prompt": "Apply only subtle beautiful Japanese watercolor TEXTURE INSIDE the two regions of this EXACT SEASIDE MAP geometry diagram. Preserve its boundary at every original position and samefull8:5frame. NO shift, safetyoffset, smoothing, rounding, widening, erosion, crop or zoom. Beige area becomes very pale warm cream flat buildable ground with faint sage paper washes; blue area becomes a calm turquoise COASTAL BAY with broad quiet watercolor light/dark bands, no foam or breaking waves. At FAR LEFT exterior edge x0..180 and TOP LEFT perimeter x0..700,y0..90 (logical1600x1000) add tiny rounded coastal pine groups and low coastal grasses, using the existing cozy Japanese village game's delicate restrained watercolor treatment. NO hills or mountains. Keep land center/right quiet empty flat pale paper. Border is ALREADY canonical:1370,0;1365,200;1360,400;1340,550;1310,640;1280,695;1246.203125,737.578125;1240,770;1240,820;1195,875;1150,940;1130,1000. Copy all guide segments exactly, especially straight vertical x1240 fromy770toy820, not sloped or curved. Water starts ATx1240/right of it throughouty760..808;18px harbor dryclearance is built into guide and must not be expanded/reduced. No blue fringe into creamland. Texture-only fixed-shape pass. Requested3200x2000 OPAQUERGB, no alpha. No guide marks, writing, numbers, labels, border, UI, buildings, roads, rails, piers, bridge, boats, lighthouse or other facilities. Watercolor grain confined inside existing regions; exact geometry first, coastal atmosphere second.",
+      "references": [
+        "canonical-shore-guide-3200.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-a7d16c0c-d739-4fa2-b1fa-a127cdfb84da.png",
+      "transparent_background": false,
+      "disposition": "Selected: PNG and runtime clearance18.0, maximum shoreline drift improves against baseline.",
+      "actual_native_size": [
+        1586,
+        992
+      ]
+    }
+  ]
+}
