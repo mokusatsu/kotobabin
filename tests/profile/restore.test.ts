@@ -67,6 +67,7 @@ it('validates achievement imports and clears both record histories and frozen ba
   achievement = beginAchievementSession(achievement,{sessionId:'achievement-save',mode:'PRACTICE',context,atMs:0});
   for (const key of game.snapshot(0).remainingGuide) game.input(key,1);
   achievement = applyAchievementFacts(achievement,game.drainEvents(),context);
+  achievement.notificationMode = 'result';
   const profile = createProfileDocument(); profile.extensions.achievements = achievement;
   expect(validateProfileDocument(profile)).toBe(true);
   const bad = structuredClone(profile);
@@ -74,6 +75,9 @@ it('validates achievement imports and clears both record histories and frozen ba
   expect(() => parseProfileBackup(bad)).toThrow('形式・版・整合性');
   const repo = await ProfileRepository.open({indexedDB:null});
   await repo.restoreData(profile,{confirmed:true});
+  await repo.resetSettings();
+  expect((repo.snapshot.extensions.achievements as typeof achievement).notificationMode).toBe('live');
+  expect((repo.snapshot.extensions.achievements as typeof achievement).unlocks).toEqual(achievement.unlocks);
   await repo.resetRecords();
   const after = repo.snapshot.extensions.achievements as typeof achievement;
   expect(after.unlocks).toEqual(achievement.unlocks); expect(after.rewards).toEqual(achievement.rewards);

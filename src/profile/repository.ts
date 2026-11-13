@@ -342,6 +342,9 @@ export class ProfileRepository {
   resetSettings(): Promise<void> {
     return this.mutateDocument(document => ({ ...document,
       settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] },
+      extensions: { ...document.extensions, ...(document.extensions.achievements === undefined ? {} : {
+        achievements: { ...document.extensions.achievements as AchievementState, notificationMode: 'live' },
+      }) },
     }));
   }
   resetRecords(): Promise<void> {
