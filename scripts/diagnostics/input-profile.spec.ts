@@ -20,6 +20,25 @@ test('profile the confirmed native input call chain in the populated production 
   }, fixture);
   await page.reload(); await expect(page.locator('[data-action="start"]')).toBeEnabled();
   await beginMain(page, { fromHome: true });
+  await page.evaluate(() => {
+    type Clone = { ms: number; stack: string };
+    type Dispatch = { started: number; ms: number; clones: Clone[] };
+    const samples: Dispatch[] = []; let current: Dispatch | null = null;
+    const original = window.structuredClone;
+    window.structuredClone = function<T>(value: T, options?: StructuredSerializeOptions): T {
+      const started = performance.now(); const result = original(value, options); const ms = performance.now() - started;
+      if (current) current.clones.push({ ms, stack: new Error().stack ?? '' });
+      return result;
+    };
+    document.addEventListener('input', event => {
+      if (event.isTrusted && (event.target as HTMLElement)?.id === 'game-input') current = { started: performance.now(), ms: 0, clones: [] };
+    }, true);
+    document.addEventListener('input', event => {
+      if (!current || !event.isTrusted || (event.target as HTMLElement)?.id !== 'game-input') return;
+      current.ms = performance.now() - current.started; samples.push(current); current = null;
+    });
+    Object.assign(window, { nativeCloneDiagnostic: { samples, restore: () => { window.structuredClone = original; } } });
+  });
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Profiler.enable'); await cdp.send('Profiler.setSamplingInterval', { interval: 100 }); await cdp.send('Profiler.start');
   let keys = 0;
@@ -28,6 +47,11 @@ test('profile the confirmed native input call chain in the populated production 
     expect(guide.length).toBeGreaterThan(0); await page.keyboard.type(guide, { delay: 12 }); keys += guide.length;
     if (word % 8 === 2) await page.keyboard.press('Space');
   }
+  const native = await page.evaluate(() => {
+    const diagnostic = (window as unknown as { nativeCloneDiagnostic: { samples: { ms: number; clones: { ms: number; stack: string }[] }[]; restore(): void } }).nativeCloneDiagnostic;
+    diagnostic.restore(); return diagnostic.samples;
+  });
+  console.log('INPUT_NATIVE_CLONES', JSON.stringify({ samples: native.length, worst: [...native].sort((a, b) => b.ms - a.ms).slice(0, 5) }));
   const { profile } = await cdp.send('Profiler.stop');
   const counts = new Map<number, number>();
   for (const id of profile.samples ?? []) counts.set(id, (counts.get(id) ?? 0) + 1);
@@ -52,6 +76,6 @@ test('profile the confirmed native input call chain in the populated production 
   }).sort((a, b) => b.samples - a.samples).slice(0, 35);
   await mkdir(info.outputDir, { recursive: true });
   await writeFile(info.outputPath('input.cpuprofile'), JSON.stringify(profile));
-  await writeFile(info.outputPath('summary.json'), JSON.stringify({ keys, top }, null, 2));
+  await writeFile(info.outputPath('summary.json'), JSON.stringify({ keys, top, native }, null, 2));
   console.log('INPUT_CPU_PROFILE', JSON.stringify({ keys, top }));
 });
