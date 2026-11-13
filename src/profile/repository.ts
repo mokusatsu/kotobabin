@@ -198,6 +198,8 @@ export class ProfileRepository {
     });
   }
 
+  /** Metadata-only session fence: reading it must not clone the profile history. */
+  get generation(): number { return this.document.metadata.generation; }
   get snapshot(): ProfileDocument { return structuredClone(this.document); }
   get status(): RepositoryStatus { return { ...this.state }; }
   subscribe(listener: () => void): () => void { this.listeners.add(listener); return () => this.listeners.delete(listener); }

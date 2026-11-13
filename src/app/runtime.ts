@@ -85,7 +85,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   }
   let destination = readDestination(repo.snapshot, city);
   const readAchievements = (document: ProfileDocument): AchievementState => document.extensions.achievements === undefined
-    ? createAchievementState() : structuredClone(document.extensions.achievements as AchievementState);
+    ? createAchievementState() : document.extensions.achievements as AchievementState;
   let achievements = readAchievements(repo.snapshot);
   let publicAchievements: { source: AchievementState; value: AchievementState } | undefined;
   const observeCity = (value: AchievementState, state: CityState, atMs: number) => applyAchievementCity(value, {
@@ -172,10 +172,10 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   const runtime: AppRuntime = {
     get profile() { return progress; },
     get achievements() {
-      // A read may occur several times for every key and timer tick. Clone and
-      // freeze only when a confirmed projection changes, keeping old views safe.
+      // Reducers copy every branch they write. Freeze only the new branches;
+      // shared frozen history keeps old views safe without cloning all records.
       if (publicAchievements?.source !== achievements) publicAchievements = {
-        source: achievements, value: freezeSnapshot(structuredClone(achievements)),
+        source: achievements, value: freezeSnapshot(achievements),
       };
       return publicAchievements.value;
     },
@@ -191,7 +191,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     },
     beginSession(sessionId, mode, selected = destination, context) {
       if (!runtime.status.writable || busy) return false;
-      const time = capture(); const generation = repo.snapshot.metadata.generation;
+      const time = capture(); const generation = repo.generation;
       const candidate = new CityEconomy(structuredClone(city));
       advance(candidate, time);
       if (candidate.state.activeSession?.sessionId === sessionId) return true;
@@ -210,7 +210,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     },
     endSession(sessionId) {
       if (!runtime.status.writable || city.activeSession?.sessionId !== sessionId) return;
-      const time = capture(); const generation = sessions.get(sessionId)?.generation ?? repo.snapshot.metadata.generation;
+      const time = capture(); const generation = sessions.get(sessionId)?.generation ?? repo.generation;
       const candidate = new CityEconomy(structuredClone(city)); advance(candidate, time); candidate.endSession(); city = candidate.snapshot();
       achievements = interruptAchievements(achievements, sessionId);
       achievements = observeCity(achievements, city, time.wallMs);
@@ -234,7 +234,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     },
     async cityCommand(command) {
       if (!runtime.status.writable || busy) throw new Error('処理が終わってから、もう一度お試しください。');
-      const time = capture(); const generation = repo.snapshot.metadata.generation;
+      const time = capture(); const generation = repo.generation;
       const key = JSON.stringify([command.cityId, command.economyEventId]);
       const previous = city.commandLedger[key];
       // A retransmission keeps the original command's logical time, including after reload.
@@ -287,7 +287,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
     achievementAction(action) {
       if (!runtime.status.writable || busy) return;
       const fixed = structuredClone(action);
-      const generation = repo.snapshot.metadata.generation;
+      const generation = repo.generation;
       achievements = applyAchievementAction(achievements, fixed);
       void persist(() => repo.mutateDocument(document => ({ ...document, extensions: { ...document.extensions,
         achievements: applyAchievementAction(readAchievements(document), fixed) } }), { generation }));
@@ -333,7 +333,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
       const reduce = (document: ProfileDocument): ProfileDocument => putCity(
         { ...document, progress: reduceProgress(document.progress), extensions: { ...document.extensions,
           achievements: reduceAchievements(readAchievements(document)) } }, reduceCity(readCity(document, time.wallMs)), time.wallMs);
-      if (identity.generation !== repo.snapshot.metadata.generation) { errorMessage = '記録が削除されたため、古い便の成果は保存しません。新しい配達を始めてください。'; emit(); return; }
+      if (identity.generation !== repo.generation) { errorMessage = '記録が削除されたため、古い便の成果は保存しません。新しい配達を始めてください。'; emit(); return; }
       const nextProgress = reduceProgress(progress);
       const nextCity = reduceCity(city);
       achievements = observeCity(reduceAchievements(achievements), nextCity, time.wallMs);
