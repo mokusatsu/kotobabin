@@ -184,7 +184,7 @@
 | city_harbor_s3 | 未着手 | — | 未検証 | — |
 | city_harbor_s4 | 未着手 | — | 未検証 | — |
 | city_harbor_s5 | 未着手 | — | 未検証 | — |
-| terrain_riverside | 実装済み・未検証 | 寸法・形式確認、目視済み | 未検証 | `assets/terrain/terrain_riverside.webp` |
+| terrain_riverside | 実装済み・未検証 | 寸法・形式確認、目視済み | UI統合済み・CI画像確認、厳密座標は未検証 | `assets/terrain/terrain_riverside.webp` |
 | terrain_seaside | 未着手 | — | 未検証 | — |
 | terrain_highland | 未着手 | — | 未検証 | — |
 | equipment_packaging_0 | 未着手 | — | 未検証 | — |
@@ -222,11 +222,11 @@
 | board_foil | 未着手 | — | 未検証 | — |
 | album_base | 未着手 | — | 未検証 | — |
 | brand_mark | 実装済み・未検証 | XML・viewBox確認 | 未検証 | `assets/brand/brand_mark.svg` |
-| city_hub | 実装済み・未検証 | 寸法・形式確認、目視済み | 未検証 | `assets/city_shared/city_hub.webp` |
+| city_hub | 実装済み・未検証 | 寸法・形式確認、目視済み | UI統合済み・CI画像確認、厳密座標は未検証 | `assets/city_shared/city_hub.webp` |
 | scaffold_small | 未着手 | — | 未検証 | — |
 | scaffold_medium | 未着手 | — | 未検証 | — |
 | scaffold_large | 未着手 | — | 未検証 | — |
-| cargo_parcel | 実装済み・未検証 | 寸法・形式確認、目視済み | 未検証 | `assets/cargo/cargo_parcel.webp` |
+| cargo_parcel | 実装済み・未検証 | 寸法・形式確認、目視済み | UI接続済み・荷物表示検収待ち | `assets/cargo/cargo_parcel.webp` |
 | ui_home | 実装済み・未検証 | XML・viewBox確認 | 未検証 | `assets/ui_icon/ui_home.svg` |
 | ui_play | 実装済み・未検証 | XML・viewBox確認 | 未検証 | `assets/ui_icon/ui_play.svg` |
 | ui_practice | 実装済み・未検証 | XML・viewBox確認 | 未検証 | `assets/ui_icon/ui_practice.svg` |
