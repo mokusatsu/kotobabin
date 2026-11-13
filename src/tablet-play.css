@@ -129,3 +129,6 @@
 .typing-game-stage .game-practice-progress-hud { margin-bottom: 4px; padding: 2px 6px; width: fit-content; max-width: 100%; border-radius: 6px; background: #fffbeaeb; line-height: 1.2; }
 .typing-game-stage .game-practice-progress-hud:empty { display: none; }
 .typing-game-stage .game-practice-progress-hud p { margin: 0; }
+/* A pinned target is a narrow side HUD, outside every reserved prompt row. */
+.typing-game-stage .game-inspector:has([data-game-panel="goal"]:not([hidden]) [data-goal-kind="pinned"]) .game-panel-body { width: 180px; left: 0; transform: none; }
+.typing-game-stage .goal-strip[data-goal-kind="pinned"] .target-mark { display: none; }

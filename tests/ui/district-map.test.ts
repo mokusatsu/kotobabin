@@ -33,16 +33,18 @@ test('committed district and global equipment states have separate visual footpr
   expect(markup.match(/data-action="district-feature"/g)).toHaveLength(7);
 });
 
-test('missing district art stays an explicitly identified schematic instead of an empty developed district', () => {
+test('every developed district uses its distinct registered stage artwork instead of an empty plot', () => {
   const city = initialCityState();
-  city.districts.harbor.stage = 5; city.districts.harbor.open = true;
-  const markup = renderDistrictMap(city, 'harbor');
-  expect(markup).toContain('data-art-kind="schematic"');
-  expect(markup).toContain('地区外観は模式図');
-  expect(markup).toContain('港');
-  expect(markup).toContain('dm-water');
-  expect(markup).toContain('data-world-x="1190"');
-  expect(markup).not.toContain('city_stage/city_harbor_s5.webp');
+  for (const id of ['residential', 'market', 'workshop', 'park', 'station', 'harbor']) {
+    city.districts[id].open = true;
+    for (let stage = 1; stage <= 5; stage++) {
+      city.districts[id].stage = stage;
+      const markup = renderDistrictMap(city, id);
+      expect(markup).toContain(`city_stage/city_${id}_s${stage}.webp`);
+      expect(markup).not.toContain('city_plot/city_plot_empty.webp');
+      expect(markup).not.toContain('data-art-kind="schematic"');
+    }
+  }
 });
 
 test('every equipment unit changes visible rack geometry after representative sprites reach their cap', () => {

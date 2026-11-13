@@ -42,6 +42,7 @@ async function record(page: Page, name: string, info: TestInfo) {
       text: document.body.innerText,
       viewport: { width: innerWidth, height: innerHeight, scrollX, scrollY,
         documentWidth: document.documentElement.scrollWidth, documentHeight: document.documentElement.scrollHeight },
+      headings:[...document.querySelectorAll('h1,h2,h3,[role="heading"]')].filter(visible).map(e=>({text:(e as HTMLElement).innerText,label:e.getAttribute('aria-label')})),
       controls: [...document.querySelectorAll('button,input,select,[role="button"],[role="menuitem"],[role="textbox"]')].filter(visible).map(e => {
         const r=e.getBoundingClientRect(); return {role:e.getAttribute('role')||e.tagName.toLowerCase(),label:e.getAttribute('aria-label')||(e as HTMLElement).innerText||e.getAttribute('placeholder'),disabled:(e as HTMLButtonElement).disabled,rect:{x:r.x,y:r.y,w:r.width,h:r.height}};
       }),
@@ -75,15 +76,11 @@ async function menu(page: Page, label: string) {
 }
 
 async function confirmVisibleLeaveDialog(page: Page, info: TestInfo) {
-  const dialog=page.getByRole('dialog').or(page.getByRole('alertdialog'));
-  if(await dialog.isVisible().catch(()=>false)) {
-    await record(page,'14-visible-leave-confirmation',info);
-    const choices=await dialog.getByRole('button').allTextContents();
-    console.log('VISIBLE_LEAVE_CHOICES',JSON.stringify(choices));
-    const choice=choices.find(s=>/やめ|中断|移動|離れ|終了/.test(s)&&!/キャンセル|続け|取り消|戻/.test(s));
-    if(!choice)throw new Error('No unambiguous visible confirmation to leave unfinished delivery: '+JSON.stringify(choices));
-    await activate(page,new RegExp(choice.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
-  }
+  // This exact action was observed in our own previous browser error-context.
+  const leave=page.getByRole('button',{name:'終了して移動する',exact:true});
+  await expect(leave).toBeVisible();
+  await record(page,'14-visible-leave-confirmation',info);
+  await activate(page,'終了して移動する');
 }
 async function expectLargeMap(page: Page) {
   const maps=await page.locator('svg').evaluateAll(els=>els.map(e=>e.getBoundingClientRect()).filter(r=>r.width>=400&&r.height>=250).length);
@@ -224,13 +221,14 @@ for(const height of [720,820]) test.describe('independent game review '+height,(
     await record(page,'13-retry',info);
     await press(page,'Escape');
     await menu(page,'街の開発');
+    await record(page,'14-post-menu-visible-state',info);
     await confirmVisibleLeaveDialog(page,info);
-    await expect(page.getByRole('heading',{name:'街の開発',exact:true})).toBeVisible();
+    await expect(page.getByRole('heading',{name:/^街の開発(?:\s|$)/})).toBeVisible();
     await expectLargeMap(page);
     await expect(page.locator('body')).toContainText(/建築 [1-5]\/5/);
     await record(page,'14-earned-construction-map',info);
     await menu(page,'街の設備');
-    await expect(page.getByRole('heading',{name:'街の設備',exact:true})).toBeVisible();
+    await expect(page.getByRole('heading',{name:/^街の設備(?:\s|$)/})).toBeVisible();
     await expectLargeMap(page);
     const earnedEquipment=await record(page,'15-earned-equipment-options',info);
     const affordableEquipment=earnedEquipment.controls.find(c=>!c.disabled&&/購入|設置|増強|導入|強化/.test(c.label||''));

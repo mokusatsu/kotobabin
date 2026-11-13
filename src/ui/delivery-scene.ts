@@ -105,7 +105,7 @@ export function deliveryPosition(state: DeliverySceneState): number {
   return batch ? deliveryBatchPosition(batch) : 0;
 }
 function batchMarkup(batch: DeliveryBatch, destination: DistrictId): string {
-  return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><span class="delivery-vehicle-parcel">✉</span></div>`;
+  return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><img class="delivery-vehicle-parcel" src="${asset('cargo/cargo_parcel.webp')}" alt=""></div>`;
 }
 /** One continuous road across the playfield; exact throughput chooses the point. */
 export function deliveryPathPoint(progress: number): { x: number; y: number } {
@@ -131,7 +131,7 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
     <svg class="delivery-district-art" data-delivery-district data-stage="${city.districts[destination].stage}" viewBox="330 70 540 405" aria-hidden="true">${renderDistrictCore(city, destination)}</svg>
     <div class="delivery-arrival-glow" data-arrival-revision="0" aria-hidden="true">✓</div>
-    <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><div class="delivery-word-letter" data-delivery-effect="word" data-state="issued">✉</div><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
+    <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><img class="delivery-word-letter" data-delivery-effect="word" data-state="issued" src="${asset('cargo/cargo_parcel.webp')}" alt=""><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
     <div class="delivery-place delivery-origin"><strong>ことば倉庫</strong><span data-scene-cargo>まとめ便 0 / 5</span><span class="delivery-envelope-rack" aria-hidden="true">${'<i>✉</i>'.repeat(5)}</span></div>
     <div class="delivery-place delivery-destination"><strong>${escapeCityText(districtName(destination))}</strong><span data-scene-arrived title="画面を開いてからの到着。開始前の輸送待ちを含みます。">到着 0資材</span></div>
     <p class="delivery-route-state" data-scene-status>${sceneStatus(state)}</p>

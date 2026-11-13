@@ -104,7 +104,9 @@ export function installGameLayout(root: HTMLElement): () => void {
       const panel = panels[layout.selected];
       if (!panel) return;
       label.textContent = `${panel.label} ${layout.selected + 1}/${panels.length}`;
-      previous.disabled = layout.selected === 0;
+      previous.disabled = layout.selected === 0 && (!consoleStage || !expanded);
+      previous.textContent = consoleStage && layout.selected === 0 && expanded ? '×' : '←';
+      if (consoleStage && layout.selected === 0 && expanded) previous.setAttribute('aria-label', '情報を閉じる');
       next.disabled = layout.selected === panels.length - 1;
       previous.setAttribute('aria-controls', panel.element.id);
       next.setAttribute('aria-controls', panel.element.id);
@@ -126,7 +128,8 @@ export function installGameLayout(root: HTMLElement): () => void {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-game-panel-step]');
     if (button && !button.disabled) {
       const step = Number(button.dataset.gamePanelStep);
-      layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
+      if (consoleStage && step === -1 && layout.selected === 0 && layout.expanded) layout.show(0, false);
+      else layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
     }
   }, { signal: abort.signal });
   input?.addEventListener('keydown', event => {
@@ -136,7 +139,8 @@ export function installGameLayout(root: HTMLElement): () => void {
     if (!step) return;
     // Information paging never leaves confirmed typing focus or mutates the session.
     event.preventDefault();
-    layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
+    if (consoleStage && step === -1 && layout.selected === 0 && layout.expanded) layout.show(0, false);
+    else layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
   const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));

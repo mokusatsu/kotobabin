@@ -22,7 +22,7 @@ export const formatMultiplier = (value: Rational) => formatMicro(value.numerator
 const time = (ms: bigint) => `${formatMicro(ms * 1000n)}秒`;
 // Only approved, integrated stage art is listed. Missing stages keep exact DOM state.
 const availableStageArt = new Set(['city_residential_s1']);
-const candidateStageArt = new Set(['city_residential_s2', 'city_residential_s3', 'city_residential_s4', 'city_residential_s5', 'city_market_s1', 'city_market_s2', 'city_market_s3', 'city_market_s4', 'city_market_s5', 'city_workshop_s1', 'city_workshop_s2', 'city_workshop_s3', 'city_workshop_s4', 'city_workshop_s5']);
+const candidateStageArt = new Set(['city_residential_s2', 'city_residential_s3', 'city_residential_s4', 'city_residential_s5', 'city_market_s1', 'city_market_s2', 'city_market_s3', 'city_market_s4', 'city_market_s5', 'city_workshop_s1', 'city_workshop_s2', 'city_workshop_s3', 'city_workshop_s4', 'city_workshop_s5', 'city_park_s1', 'city_park_s2', 'city_park_s3', 'city_park_s4', 'city_park_s5', 'city_station_s1', 'city_station_s2', 'city_station_s3', 'city_station_s4', 'city_station_s5', 'city_harbor_s1', 'city_harbor_s2', 'city_harbor_s3', 'city_harbor_s4', 'city_harbor_s5']);
 export function districtArtwork(city: CityState, id: DistrictId) {
   const stage = city.districts[id].stage;
   const requested = `city_${id}_s${stage}`;
@@ -33,7 +33,7 @@ export function districtArtwork(city: CityState, id: DistrictId) {
 export function districtFigure(city: CityState, id: DistrictId, extraClass = ''): string {
   const art = districtArtwork(city, id);
   const scaffold = city.districts[id].plan && city.districts[id].plan!.targetStage === 1;
-  const shop = ['residential','market','workshop'].includes(id) && city.districts[id].shops > 0;
+  const shop = ['residential','market','workshop','park','station','harbor'].includes(id) && city.districts[id].shops > 0;
   return `<figure class="district-figure ${extraClass}"><div class="district-composite"><img class="district-base-art" src="${asset(art.path)}" alt="${districtName(id)} ${art.ready ? `段階${art.stage}の外観` : '地区の区画'}">${scaffold ? `<img class="district-scaffold-art" src="${asset('construction/scaffold_small.webp')}" alt="建築中の足場">` : ''}${shop ? `<img class="district-shop-art" src="${asset(`shop_scene/shop_${id}.webp`)}" alt="${districtName(id)}の代表店舗">` : ''}</div><figcaption>${districtName(id)} · 段階 ${art.stage}/5${art.candidate ? '<span class="art-pending">外観は調整中です。</span>' : art.ready ? '' : '<span class="art-pending">この段階の外観は制作中です。</span>'}</figcaption></figure>`;
 }
 export function cityIncome(city: CityState): bigint {
@@ -66,7 +66,7 @@ export function gameWorldMap(city: CityState, destination: DistrictId): string {
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     return `<image href="${asset('construction/scaffold_small.webp')}" x="${anchor.x - 132}" y="${anchor.y - 165}" width="264" height="198"/>`;
   }).join('');
-  const shop = ['residential','market','workshop'].map(id=>{const anchor=catalogue.map_layout.anchors[id as keyof typeof catalogue.map_layout.anchors];return city.districts[id].shops>0?`<image href="${asset(`shop_scene/shop_${id}.webp`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>`:'';}).join('');
+  const shop = ['residential','market','workshop','park','station','harbor'].map(id=>{const anchor=catalogue.map_layout.anchors[id as keyof typeof catalogue.map_layout.anchors];return city.districts[id].shops>0?`<image href="${asset(`shop_scene/shop_${id}.webp`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>`:'';}).join('');
   const art = config.districts.map(item => {
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     const scale = 264 / DISTRICT_CORE_BOUNDS.width;
