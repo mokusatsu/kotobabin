@@ -138,10 +138,20 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear(); focusScreen('[data-action="start"]');
   }
   function beginHomeMapObservation() {
-    // The world is a persistent game stage; never replace it with a webpage list.
     mapObserver?.disconnect();
-    const map = root.querySelector<HTMLElement>('.town-map');
-    if (map) map.hidden = false;
+    const world = root.querySelector<HTMLElement>('.game-world-map');
+    if (!world) return;
+    // The container chooses the full map or six-district game scene. Keep the
+    // same keyboard destination when a resize hides the focused representation.
+    mapObserver = new ResizeObserver(() => {
+      const active = document.activeElement;
+      if (!(active instanceof HTMLButtonElement) || !world.contains(active) || active.getBoundingClientRect().width > 0) return;
+      const id = active.dataset.districtId;
+      if (!id) return;
+      Array.from(world.querySelectorAll<HTMLButtonElement>(`[data-district-id="${id}"]`))
+        .find(button => button.getBoundingClientRect().width > 0)?.focus({ preventScroll: true });
+    });
+    mapObserver.observe(world);
   }
   function updateAudioStatus() { renderAudioStatus(root, runtime.settings.sound, audio.status); }
   function applySettings() {
@@ -474,12 +484,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function rememberCityOrigin() { if (screen !== 'city' && screen !== 'equipment') cityOrigin = screen === 'result' ? 'result' : 'home'; }
   function openCityPage(id = selectedDistrict) {
     const world = root.querySelector<HTMLElement>('.world-stage');
-    const source = world?.querySelector<SVGGraphicsElement>(`[data-world-district-id="${id}"]`)?.getBoundingClientRect();
+    const source = Array.from(world?.querySelectorAll<SVGGraphicsElement | HTMLElement>(`[data-world-district-id="${id}"],[data-world-choice-id="${id}"]`) ?? [])
+      .map(element => element.getBoundingClientRect()).find(rect => rect.width > 0 && rect.height > 0);
     const reduced = runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches;
     const canvas = world?.querySelector<HTMLElement>('.town-map');
     const worldBounds = canvas?.getBoundingClientRect();
     const worldSvg = canvas?.querySelector('svg');
-    const ghost = worldSvg && source && !reduced ? document.createElement('div') : undefined;
+    const ghost = worldSvg && source && worldBounds && worldBounds.width > 0 && !reduced ? document.createElement('div') : undefined;
     if (ghost && worldSvg) { ghost.className = 'canonical-map world-transition-ghost'; ghost.append(worldSvg.cloneNode(true)); }
     rememberCityOrigin();
     confirmReplacement(() => {

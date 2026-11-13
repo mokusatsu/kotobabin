@@ -11,11 +11,20 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
     const helperSize = await page.locator('.keyboard-note').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
     expect(helperSize).toBeGreaterThanOrEqual(16);
     await expect(page.locator('.world-stage.game-stage')).toBeVisible();
-    await expect(page.locator('.town-map')).toBeVisible();
-    await expect(page.locator('.town-map .map-label')).toHaveCount(6);
-    await expect(page.locator('.compact-town')).toBeHidden();
+    const world = page.locator('.town-map');
+    if (await world.isVisible()) {
+      const box = await world.boundingBox();
+      expect(box!.width).toBeGreaterThanOrEqual(800);
+      expect(box!.height).toBeGreaterThanOrEqual(500);
+      await expect(world.locator('.map-label')).toHaveCount(6);
+      await expect(page.locator('.compact-world-map')).toBeHidden();
+    } else {
+      await expect(page.locator('.compact-world-map')).toBeVisible();
+      await expect(page.locator('.compact-world-map button')).toHaveCount(6);
+      await expect(page.locator('.compact-world-preview svg')).toBeVisible();
+    }
     await assertViewportFits(page);
-    const labels = await page.locator('.town-map .map-label').evaluateAll(elements => elements.map(element => {
+    const labels = await page.locator('.game-world-map button:visible').evaluateAll(elements => elements.map(element => {
       const { x, y, width, height } = element.getBoundingClientRect();
       return { name: element.textContent, x, y, width, height };
     }));
