@@ -46,9 +46,11 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   await expect(page.locator('#handbook-count')).toContainText('/72');
   await expect(page.locator('article[data-achievement-id="A01"]')).toHaveAttribute('data-state', 'earned');
   await page.screenshot({ path: testInfo.outputPath('handbook-earned-stamps.png'), fullPage: false });
+  await keyboardRevealControl(page, page.locator('[data-action="handbook-tab"][data-tab="rewards"]'));
   await page.locator('[data-action="handbook-tab"][data-tab="rewards"]').click();
   const title = page.locator('select[data-equip-slot="titleId"]');
   await expect(title).toHaveValue('');
+  await keyboardRevealControl(page, title);
   await title.selectOption('title_a01');
   await expect.poll(async () => (await savedAchievements(page)).equipped.titleId).toBe('title_a01');
   const after = await savedAchievements(page);
@@ -58,7 +60,9 @@ test('practice earns stamps without opening the handbook or choosing a goal and 
   expect(Object.keys(after.unlocks).filter(id => !before.unlocks[id]).every(id => ['I01', 'J01'].includes(id))).toBe(true);
   await page.locator('[data-action="handbook-back"]').click();
   await page.locator('nav [data-action="handbook"]').click();
+  await keyboardRevealControl(page, page.locator('[data-action="handbook-tab"][data-tab="rewards"]'));
   await page.locator('[data-action="handbook-tab"][data-tab="rewards"]').click();
+  await keyboardRevealControl(page, page.locator('select[data-equip-slot="titleId"]'));
   await expect(page.locator('select[data-equip-slot="titleId"]')).toHaveValue('title_a01');
 });
 
@@ -68,10 +72,13 @@ test('a normal delivery achievement stays provisional until completion and becom
   await typeCurrentGuide(page); await page.keyboard.press('Space');
   await page.keyboard.press('Escape');
   await page.locator('#paused-layer [data-action="handbook"]').click();
+  await keyboardRevealControl(page, page.locator('[data-action="achievement-family"][data-family-id="B"]'));
   await page.locator('[data-action="achievement-family"][data-family-id="B"]').click();
   const card = page.locator('article[data-achievement-id="B01"]');
   await expect(card).toHaveAttribute('data-state', 'provisional');
+  await keyboardRevealControl(page, card.locator('[data-action="achievement-select"]'));
   await card.locator('[data-action="achievement-select"]').click();
+  await keyboardRevealControl(page, page.locator('[data-action="achievement-target"][data-achievement-id="B01"]'));
   await page.locator('[data-action="achievement-target"][data-achievement-id="B01"]').click();
   await page.screenshot({ path: testInfo.outputPath('normal-achievement-provisional.png'), fullPage: false });
   await page.locator('[data-action="handbook-back"]').click();
@@ -79,6 +86,7 @@ test('a normal delivery achievement stays provisional until completion and becom
   await page.locator('#paused-layer [data-action="skip"]').click();
   await page.locator('[data-action="confirm-skip"]').click();
   await page.locator('#paused-layer [data-action="handbook"]').click();
+  await keyboardRevealControl(page, page.locator('[data-action="achievement-family"][data-family-id="B"]'));
   await page.locator('[data-action="achievement-family"][data-family-id="B"]').click();
   await expect(page.locator('article[data-achievement-id="B01"]')).toHaveAttribute('data-state', 'ineligible');
   await page.screenshot({ path: testInfo.outputPath('normal-achievement-ineligible.png'), fullPage: false });
