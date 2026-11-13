@@ -270,7 +270,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime & CityUiRuntime)
     if (balance) {
       // Keep the resource row stable while its numbers advance in real time.
       const template = document.createElement('template'); template.innerHTML = balanceStrip(city);
-      for (const id of ['city-coin', 'city-income']) { const current = balance.querySelector(`#${id}`); const next = template.content.querySelector(`#${id}`); if (current && next && current.textContent !== next.textContent) current.textContent = next.textContent; }
+      for (const id of ['city-coin', 'city-income', 'city-warehouse']) { const current = balance.querySelector(`#${id}`); const next = template.content.querySelector(`#${id}`); if (current && next && current.textContent !== next.textContent) current.textContent = next.textContent; }
     }
     if (screen === 'home') {
       const town = root.querySelector<HTMLElement>('.home-city-slot'); if (town) renderMarkup(town, homeTown(city, runtime.destination));
