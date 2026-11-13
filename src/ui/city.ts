@@ -1,4 +1,5 @@
 import config from '../../spec/initial/data/economy_config.json';
+import { shopOverlayArtwork, vehicleArtworkId } from './equipment-visuals';
 import catalogue from '../../spec/initial/data/city_catalog.json';
 import { renderDistrictMap, renderDistrictCore, DISTRICT_CORE_BOUNDS, type DistrictMapFeature } from './district-map';
 import { CityEconomy, EconomyFormulas, MICRO_UNIT, summarizeCity, type CityState, type DistrictId, type EquipmentKind, type Rational } from '../economy';
@@ -54,11 +55,11 @@ export function gameWorldMap(city: CityState, destination: DistrictId): string {
   }).join('');
   const vehicles = catalogue.map_layout.routes.map(route => {
     const district = city.districts[route.district_id];
-    if (!district.open || district.railway || district.crews < 1 || district.crews >= 10) return '';
+    if (!district.open || district.crews < 1) return '';
     const point = district.queueMicro > 0n ? route.points[1] : route.points[route.points.length - 1];
     const direction = district.queueMicro > 0n ? route.points[2] : route.points[route.points.length - 1];
     const dx = direction[0] - point[0]; const dy = direction[1] - point[1];
-    const sprite = dy < 0 ? 'vehicle_cart_rear' : 'vehicle_cart_front';
+    const sprite = vehicleArtworkId(district.crews, district.railway, dy < 0 ? 'rear' : 'front');
     return `<g transform="translate(${point[0]} ${point[1]})"><ellipse cx="0" cy="1" rx="16" ry="4" fill="#203d36" opacity=".16"/><g transform="scale(${dx < 0 ? -1 : 1} 1)"><image href="${asset(`vehicle/${sprite}.webp`)}" x="-24" y="-30" width="48" height="36"/></g></g>`;
   }).join('');
   const scaffolds = config.districts.map(item => {
@@ -66,7 +67,7 @@ export function gameWorldMap(city: CityState, destination: DistrictId): string {
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     return `<image href="${asset('construction/scaffold_small.webp')}" x="${anchor.x - 132}" y="${anchor.y - 165}" width="264" height="198"/>`;
   }).join('');
-  const shop = ['residential','market','workshop','park','station','harbor'].map(id=>{const anchor=catalogue.map_layout.anchors[id as keyof typeof catalogue.map_layout.anchors];return city.districts[id].shops>0?`<image href="${asset(`shop_scene/shop_${id}.webp`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>`:'';}).join('');
+  const shop = ['residential','market','workshop','park','station','harbor'].map(id=>{const anchor=catalogue.map_layout.anchors[id as keyof typeof catalogue.map_layout.anchors];return city.districts[id].shops>0?`<image href="${asset(`shop_scene/shop_${id}.webp`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>${shopOverlayArtwork(city.districts[id].shops).map(overlay=>`<image href="${asset(`shop_overlay/${overlay}.svg`)}" x="${anchor.x-110.375}" y="${anchor.y-47.75}" width="64" height="64"/>`).join('')}`:'';}).join('');
   const art = config.districts.map(item => {
     const anchor = catalogue.map_layout.anchors[item.id as keyof typeof catalogue.map_layout.anchors];
     const scale = 264 / DISTRICT_CORE_BOUNDS.width;

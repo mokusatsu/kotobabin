@@ -1,6 +1,7 @@
 import catalogue from '../../spec/initial/data/city_catalog.json';
 import config from '../../spec/initial/data/economy_config.json';
 import type { CityState, DistrictId } from '../economy';
+import { shopOverlayArtwork, vehicleArtworkId } from './equipment-visuals';
 
 export type DistrictMapFeature = 'plan' | 'shops' | 'crews' | 'railway' | 'packaging' | 'research' | 'synergies';
 export interface DistrictMapOptions { interactive?: boolean; selectedFeature?: DistrictMapFeature }
@@ -49,16 +50,13 @@ function packaging(level: number): string {
 function fleet(city: CityState, id: DistrictId): string {
   const district = city.districts[id];
   if (!district.open || !district.crews) return '';
-  const units = Math.min(4, district.crews);
-  return `<g class="dm-fleet" data-visual-feature="crews" data-district-id="${id}" data-crews="${district.crews}">${Array.from({ length: units }, (_, index) => {
-    const x = 840 + (index % 2) * 90; const y = 400 + Math.floor(index / 2) * 48;
-    if (district.crews < 10) return image('vehicle/vehicle_cart_front.webp', x, y, 88, 66);
-    return `<g transform="translate(${x} ${y})" class="dm-schematic-truck"><path d="M0 0l50 -24 32 16v42l-50 24 -32 -16z"/><path d="M0 0v42m32 -18v34m0 -34 50 -24m-50 24 -32 -24"/><circle cx="16" cy="44" r="8"/><circle cx="65" cy="39" r="8"/></g>`;
-  }).join('')}</g>${capacityRack('crews', district.crews, 845, 545)}`;
+  // One representative vehicle per route; the exact owned count remains in the rack/HUD.
+  const vehicle = district.railway ? '' : image(`vehicle/${vehicleArtworkId(district.crews, false, 'front')}.webp`, 845, 400, 144, 108);
+  return `<g class="dm-fleet" data-visual-feature="crews" data-district-id="${id}" data-crews="${district.crews}">${vehicle}</g>${capacityRack('crews', district.crews, 845, 545)}`;
 }
 function railway(owned: boolean): string {
   if (!owned) return '<path class="dm-route" data-visual-feature="railway" data-owned="false" d="M1180 610H860L700 690H60"/>';
-  return `<g class="dm-railway" data-visual-feature="railway" data-owned="true"><path d="M1180 598H860L700 678H60M1180 622H860L700 702H60"/>${Array.from({ length: 28 }, (_, i) => `<path d="M${70 + i * 24} 670v40"/>`).join('')}<g transform="translate(870 580)"><path class="dm-train" d="M0 0h90v40H0zM90 12h38v28H90zM18 0v-22h22V0"/><circle cx="20" cy="42" r="10"/><circle cx="70" cy="42" r="10"/><circle cx="113" cy="42" r="10"/></g></g>`;
+  return `<g class="dm-railway" data-visual-feature="railway" data-owned="true"><path d="M1180 598H860L700 678H60M1180 622H860L700 702H60"/>${Array.from({ length: 28 }, (_, i) => `<path d="M${70 + i * 24} 670v40"/>`).join('')}<g class="dm-train">${image('vehicle/vehicle_train_front.webp', 850, 535, 160, 120)}</g></g>`;
 }
 function research(city: CityState): string {
   return `<g class="dm-research" data-visual-feature="research" data-scope="city" transform="translate(970 90)" data-materials="${city.research.materials}" data-logistics="${city.research.logistics}" data-commerce="${city.research.commerce}"><path d="M-75 30l70 -35 90 40 -70 35zM-75 30v42l90 40 70 -35V35"/>${(['materials', 'logistics', 'commerce'] as const).map((kind, i) => {
@@ -80,7 +78,7 @@ export function renderDistrictMap(city: CityState, id: DistrictId, options: Dist
   const artId = `city_${id}_s${district.stage}`;
   const actualArt = district.stage > 0 && stages.has(artId);
   const core = renderDistrictCore(city, id);
-  const shopArt = district.shops > 0 ? shops.has(id) ? image(`shop_scene/shop_${id}.webp`, 100, 345, 200, 200)
+  const shopArt = district.shops > 0 ? shops.has(id) ? image(`shop_scene/shop_${id}.webp`, 100, 345, 200, 200) + shopOverlayArtwork(district.shops).map(overlay => image(`shop_overlay/${overlay}.svg`, 100, 345, 200, 200)).join('')
     : `<g class="dm-shop-schematic" transform="translate(150 365)"><path d="M-45 15l65 -34 65 34 -65 34zM-45 15v80l65 34 65 -34V15m-65 34v80M-30 75l40 20V58l-40 -20z"/>${Array.from({ length: Math.min(6, district.shops) }, (_, i) => `<path d="M${-25 + i * 14} 5v25"/>`).join('')}</g>` : plot(120, 440, 200);
   const names: Record<DistrictMapFeature, string> = {
     plan: district.open ? district.stage === 0 ? '空き区画 · 建築計画' : `${definition.name} ${district.stage}/5` : '未開通の区画',
