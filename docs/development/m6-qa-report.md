@@ -1,6 +1,8 @@
 # M6 独立技術QA
 
-基準: main `cc1beef`。起動回復差分 `73d9b0b` を検査用worktreeへ適用。以下は実行前の監査と試験計画であり、成功報告ではない。製品コード・共有CI・既存74件の試験は変更しない。
+以下の初回計画/失敗は履歴。現状は末尾「配信版8での更新」を優先する。
+
+初回基準: main `cc1beef`。起動回復差分 `73d9b0b` を検査用worktreeへ適用。以下は実行前の監査と試験計画であり、成功報告ではない。製品コード・共有CI・既存74件の試験は変更しない。
 
 | 正本箇所 | 監査結果と不足 | 追加する実ブラウザー検査 |
 |---|---|---|
@@ -23,7 +25,7 @@
 
 この4件は起動・縮退の受入根拠であり、性能予算の合格根拠には使わない。転送量・低速cold開始・実native入力・960語進捗と72定義の手帳の性能は、別のChromium専用測定で記録する。物理iPad／Windows・macOSのIME、実機性能は引き続き未検証。
 
-## 性能計測の独立CI（未実行）
+## 性能計測の独立CI（作成時点の計画・現在は実行済み）
 
 `.github/workflows/m6-performance.yml` は `feat/measure-performance` のpush、またはworkflow_dispatchのみで動作する。既存の障害復旧4例とは別ジョブ・別設定である。製品コードと共有CI設定は変更しない。
 
@@ -43,3 +45,16 @@
 大きいhandler標本は語完成に対応する周期で現れる。コードではnativeInput→onCharacter→mutate→commitFacts→runtime.applyFactsの同期経路で、960語を含む実績状態のstructuredClone／reducerと描画が行われる。これは調査すべき具体的な経路であり、各関数の寄与率はCPU profile採取前には断定しない。閾値の緩和、語数・実績条件の削減はしていない。
 
 計測側の不備も1点見つかった。list reporterの`info.attach({body})`だけでは、JSON標本がupload-artifact対象ディレクトリに実ファイルとして残らず、当該artifactはerror-contextのみだった。したがってcoldが3秒／3MB以下で合格した事実は確認できるが、coldの正確なP95・転送値は当該実行から回収できない。次回用にJSONをoutputPathへ明示保存し、要約値もnative logに出すようテストだけ修正した。合否基準と計測対象は変更しない。再実行の理由は製品性能改善またはこの標本保存の修正であり、旧4例の障害復旧を繰り返す理由にはしない。
+
+
+## 配信版8での更新（2026-11-14 JST）
+
+独立QAはmain文書 `d645d9e`／配信source `3c636ff92ec2c83c71653459ab857e2d2d874976` を再照合した。初回の「未計測」「未統合」「都市reload待ち」を現在の状態へ流用しない。製品を変更せず、既存GitHub native logs・実配信ログ・ソースを確認した。
+
+- mainの[43519098385](https://github.com/mokusatsu/kotobabin/actions/runs/43519098385)は全5success。native verifyログは307単体/33files・101機能E2E成功。配信sourceに一致する[曲線43519098393](https://github.com/mokusatsu/kotobabin/actions/runs/43519098393)も両engine成功。
+- 同じsrc/public/spec/tests treeの329f489：[43515540738](https://github.com/mokusatsu/kotobabin/actions/runs/43515540738)のnative job132196471966は2/2成功。handler P95 **5.0ms**、表示 **15.8ms**、long task **0**、242native入力、全72定義・全960語filter **48.76ms**。20coldの開始P95 **570.81ms**、最大実wire **732,970bytes**。初回65ms失敗と修正履歴は残すが、同じ閾値・同じ計測suiteの統合後合格へ更新する。CI環境の実測であり、物理iPad性能やSites CDNの同一数値とはしない。
+- 329f489の都市43515540825は両engineの終盤→再出発→UI復元→reload/明示引継ぎまで各1成功。復帰43515540841は両4成功。Firefox43515541143は独立2/音声3成功。旧endpoint skip・研究focus・reload owner誤期待を現在の未実装項目へ数えない。
+- [43516884760](https://github.com/mokusatsu/kotobabin/actions/runs/43516884760)（bc6752d、同製品/tests tree）のnative両jobは各25成功。4装着枠・readonlyと引継ぎ・両高さ/3倍率・caption/操作矩形を確認した。
+- 実Site保存版8はChromium15/15(4.9分)。`/workspace/work/m6-live-e2e-artifacts/sanitized.log`を再集計し、寸法標本86/86がviewport一致・scroll=(0,0)だった。認証情報は参照/記録せず、既存の除去済みログだけを読んだ。表示用全所有fixtureは通常の全72獲得証拠には使わない。
+
+正本由来の残件と独自gateの区別は[対応表](requirements_traceability.md#残る項目の分類goalmdとの照合)に記録した。具体的な未実装は技術§13の隔離開発用画面/調整値設定（I1）、実観察された品質課題は初回WebKit手帳transient(Q1)。OS/IMEの明記試験・人6名観察・200%browser zoom/contrast/発話・個別美術検収は検証/検収不足として区別する。物理iPad専用の性能合格、人による全960/72完遂、色閾値の数学的全画素一致等を正本以上の追加必須へしない。旧互換性はD012で対象外。今回は書面・既存証拠の監査で、ローカルサーバーや新ブラウザーは起動していない。
