@@ -111,7 +111,7 @@ export class AudioPlayer {
       for (const file of files) {
         try {
           if (this.disposed || !this.context) return null;
-          const response = await this.fetchAudio(`${this.baseUrl}assets/sound_effect/${file}`, { signal: this.abort.signal });
+          const response = await this.fetchAudio(`${this.baseUrl}assets/${kind === 'theme' ? 'bgm' : 'sound_effect'}/${file}`, { signal: this.abort.signal });
           if (!response.ok) continue;
           const buffer = await this.context.decodeAudioData(await response.arrayBuffer());
           if (this.disposed) return null;
