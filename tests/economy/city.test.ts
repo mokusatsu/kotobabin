@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CityEconomy, MICRO_UNIT, initialCityState, type CityState, type EquipmentKind, type ResearchKind, type EconomyMode, type ShipmentReason } from '../../src/economy';
+import { CityEconomy, executeCityCommand, MICRO_UNIT, initialCityState, type CityState, type EquipmentKind, type ResearchKind, type EconomyMode, type ShipmentReason } from '../../src/economy';
 import fixtures from './transaction_fixtures.json';
 
 function json(value: unknown): unknown { return JSON.parse(JSON.stringify(value, (_, v: unknown) => typeof v === 'bigint' ? v.toString() : v)); }
@@ -25,6 +25,7 @@ function setup(name: string) {
   return new CityEconomy(s);
 }
 function execute(c: CityEconomy, name: string, args: Record<string, unknown>) {
+  const envelope = {cityId:c.state.cityId,economyEventId:`python-parity-${Object.keys(c.state.commandLedger).length}`,atMs:args.at_ms as number | undefined};
   const str = (key: string) => args[key] as string; const num = (key: string) => args[key] as number;
   switch (name) {
     case 'begin_session': return c.beginSession(str('session_id'), args.district_id as string | undefined, args.mode as EconomyMode | undefined, args.at_ms as number | undefined);
@@ -34,15 +35,15 @@ function execute(c: CityEconomy, name: string, args: Record<string, unknown>) {
     case 'advance': return c.advance(num('elapsed_ms'));
     case 'advance_to': return c.advanceTo(num('target_ms'));
     case 'restore_at': return c.restoreAt(num('wall_ms'));
-    case 'start_plan': return c.startPlan(str('district_id'));
-    case 'pause_plan': return c.pausePlan(str('district_id'));
-    case 'resume_plan': return c.resumePlan(str('district_id'));
-    case 'open_district': return c.openDistrict(str('district_id'));
-    case 'purchase': return c.purchase(str('kind') as EquipmentKind, args.quantity as 1 | 10 | 'max' | undefined, args.district_id as string | undefined, args.at_ms as number | undefined);
-    case 'buy_railway': return c.buyRailway(str('district_id'));
-    case 'buy_synergy': return c.buySynergy(str('synergy_id'));
-    case 'buy_research': return c.buyResearch(str('kind') as ResearchKind);
-    case 'start_new_city': return c.startNewCity({confirmed: args.confirmed as boolean, location: args.location as 'HOME' | 'RESULT', landscape: str('landscape')});
+    case 'start_plan': return executeCityCommand(c,{...envelope,type:'startPlan',districtId:str('district_id')});
+    case 'pause_plan': return executeCityCommand(c,{...envelope,type:'pausePlan',districtId:str('district_id')});
+    case 'resume_plan': return executeCityCommand(c,{...envelope,type:'resumePlan',districtId:str('district_id')});
+    case 'open_district': return executeCityCommand(c,{...envelope,type:'openDistrict',districtId:str('district_id')});
+    case 'purchase': return executeCityCommand(c,{...envelope,type:'purchase',kind:str('kind') as EquipmentKind,quantity:args.quantity as 1 | 10 | 'max' | undefined,districtId:args.district_id as string | undefined});
+    case 'buy_railway': return executeCityCommand(c,{...envelope,type:'buyRailway',districtId:str('district_id')});
+    case 'buy_synergy': return executeCityCommand(c,{...envelope,type:'buySynergy',synergyId:str('synergy_id')});
+    case 'buy_research': return executeCityCommand(c,{...envelope,type:'buyResearch',kind:str('kind') as ResearchKind});
+    case 'start_new_city': return executeCityCommand(c,{...envelope,type:'startNewCity',confirmed:args.confirmed as boolean,location:args.location as 'HOME' | 'RESULT',landscape:str('landscape')});
     default: throw new Error(`Unsupported test action ${name}`);
   }
 }
