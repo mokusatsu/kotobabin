@@ -88,3 +88,7 @@
 .city-effects-note { margin: 4px 0 0; color: var(--secondary); }
 /* The parent game grid allocates the exact remainder after the scaled HUD. */
 #app .city-game-stage { block-size: 100%; padding: 8px 12px; }
+/* Clear the earlier equipment sidebar's grid-column rule inside the shared map viewport. */
+.city-stage-map > #district-map-slot { grid-column: 1; grid-row: 1; }
+.city-stage-map > #equipment-district-summary { grid-column: 1; grid-row: 2; }
+.game-world-map .world-map-canvas { overflow: visible; }
