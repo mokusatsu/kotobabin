@@ -202,3 +202,9 @@ export class WorldClock {
 
 export { CityEconomy, initialCityState } from './city';
 export type { CityState, EconomySession, SessionEconomySummary, CompletedWordFact, ShippedCargoFact, MaterialReceipt, EconomyMode, ShipmentReason } from './city';
+export { executeCityCommand } from './commands';
+export type { CityCommand, CityCommandReceipt } from './commands';
+export { encodeCityState, decodeCityState, CityStateError } from './codec';
+export type { EncodedCityState } from './codec';
+export { summarizeCity } from './summary';
+export type { CitySummary } from './summary';
