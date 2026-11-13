@@ -35,8 +35,14 @@ export async function assertViewportFits(page: Page) {
       .map(element => ({ element: element.outerHTML.slice(0, 160), rectangle: element.getBoundingClientRect() }))
       .filter(({ rectangle: r }) => r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1)
       .map(({ element, rectangle: r }) => ({ element, x: r.x, y: r.y, width: r.width, height: r.height }));
+    const overflowElements = document.documentElement.scrollWidth > innerWidth + 1 || document.documentElement.scrollHeight > innerHeight + 1
+      ? [...document.querySelectorAll<Element>('body *')]
+        .filter(element => !element.closest('.sr-only') && element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden')
+        .map(element => ({ element: element.outerHTML.slice(0, 150), rectangle: element.getBoundingClientRect() }))
+        .filter(({ rectangle: r }) => r.width > 0 && r.height > 0 && (r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1))
+        .slice(0, 20).map(({ element, rectangle: r }) => ({ element, x: r.x, y: r.y, width: r.width, height: r.height })) : [];
     return { width: innerWidth, height: innerHeight, documentWidth: document.documentElement.scrollWidth,
-      documentHeight: document.documentElement.scrollHeight, scrollX, scrollY, outside };
+      documentHeight: document.documentElement.scrollHeight, scrollX, scrollY, outside, overflowElements };
   });
   expect(report.documentWidth, JSON.stringify(report)).toBeLessThanOrEqual(report.width + 1);
   expect(report.documentHeight, JSON.stringify(report)).toBeLessThanOrEqual(report.height + 1);
