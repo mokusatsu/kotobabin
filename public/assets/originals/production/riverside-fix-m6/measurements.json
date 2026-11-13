@@ -1,0 +1,1026 @@
+[
+  {
+    "id": "baseline-master",
+    "path": "history/terrain_riverside.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "a3007db3259a768b8a8c9093c5c2f4b22f6c23faf59bcba2fc7ba32e16471ca3",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.0,
+          "delta_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1129.5,
+          "delta_map_px": -0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -1.6666666666667425,
+        0.525000000000091
+      ],
+      "all_source_rows_max_abs_delta_map_px": 1.6666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "baseline-runtime",
+    "path": "history/terrain_riverside.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "fd7ffee4105d5b1fe9d622315879c8a3e1275f73371256e4c5d9b174b8a768ed",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1360.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.0,
+          "delta_map_px": -0.203125
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1149.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1129.5,
+          "delta_map_px": -0.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -1.6666666666667425,
+        0.537499999999909
+      ],
+      "all_source_rows_max_abs_delta_map_px": 1.6666666666667425,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "r1",
+    "path": "candidates/r1.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "4a0e71f4d66a2a173d645c111ec8c550bed652e6d4db4f7f861f12f22c2ae0f4",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1372.5,
+          "delta_map_px": 2.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1366.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1361.5,
+          "delta_map_px": 1.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1342.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1312.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1282.5,
+          "delta_map_px": 2.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1248.0,
+          "delta_map_px": 1.796875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1243.5,
+          "delta_map_px": 3.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1243.0,
+          "delta_map_px": 3.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1197.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1152.0,
+          "delta_map_px": 2.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1131.5,
+          "delta_map_px": 1.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        0.5,
+        3.727272727272748
+      ],
+      "all_source_rows_max_abs_delta_map_px": 3.727272727272748,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 21.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "638f088a6a07bace55e9631fcb97942760a9fe3792831899f7c019b847eaac82",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "r2",
+    "path": "candidates/r2.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "a46aeaad7f4a98f0ea82b16cf849be39b646eff4590c5cd7028ff734ef4d1fbd",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1368.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1363.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1309.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1280.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1242.5,
+          "delta_map_px": 2.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1241.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1196.0,
+          "delta_map_px": 1.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1127.5,
+          "delta_map_px": -2.5
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -2.8333333333332575,
+        2.904337349397565
+      ],
+      "all_source_rows_max_abs_delta_map_px": 2.904337349397565,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 19.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1585,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "9c7e3535a0816171d44b62f6ecdaececca4c509c240f30f889fee6180b4337b2",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "r3",
+    "path": "candidates/r3.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "2cbfd3f308d15f3bc9f58076356003b8bcacb3f134621db171c0197fb6a11607",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.0,
+          "delta_map_px": 0.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.871743119266057,
+        0.7374999999999545
+      ],
+      "all_source_rows_max_abs_delta_map_px": 0.871743119266057,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "98036d613dff6906cb36fab1ee6935759ed3f3dc088a75ba32b8be3e14e69d77",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "r3-q92",
+    "path": "candidates/r3.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "0f92ba34e201df037424f2574cd985e019c9e018dd17b70be95d480402205309",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.0,
+          "delta_map_px": 0.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -1.0,
+        0.712500000000091
+      ],
+      "all_source_rows_max_abs_delta_map_px": 1.0,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  },
+  {
+    "id": "r4",
+    "path": "candidates/r4.png",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "57d72be5603ba4bc085c1b6fc5a1b622fecf7dcd5f9d2b5da4281bb393718135",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.0,
+          "delta_map_px": 0.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.8333333333332575,
+        0.8636363636362603
+      ],
+      "all_source_rows_max_abs_delta_map_px": 0.8636363636362603,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    },
+    "native_size": [
+      1585,
+      992
+    ],
+    "native_mode": "RGB",
+    "native_sha256": "bb813697187a6e557bb731c60d8b663d11302ceececae74b542b28501789ea7f",
+    "whole_canvas_resize": [
+      3200,
+      2000
+    ],
+    "scale": [
+      2.0189274447949526,
+      2.0161290322580645
+    ],
+    "crop": false,
+    "lossless_rgb_equal": true
+  },
+  {
+    "id": "r4-q92",
+    "path": "candidates/r4.q92.webp",
+    "size": [
+      3200,
+      2000
+    ],
+    "mode": "RGB",
+    "sha256": "82ae0be48c947abc17744c07cdedec8350fb9d00b56e8de995df76f36741125d",
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "canonical": [
+            1370,
+            0
+          ],
+          "observed_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1365,
+            200
+          ],
+          "observed_x": 1365.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1360,
+            400
+          ],
+          "observed_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1340,
+            550
+          ],
+          "observed_x": 1340.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1310,
+            640
+          ],
+          "observed_x": 1310.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1280,
+            695
+          ],
+          "observed_x": 1279.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1246.203125,
+            737.578125
+          ],
+          "observed_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "canonical": [
+            1240,
+            770
+          ],
+          "observed_x": 1240.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1240,
+            820
+          ],
+          "observed_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "canonical": [
+            1195,
+            875
+          ],
+          "observed_x": 1195.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "canonical": [
+            1150,
+            940
+          ],
+          "observed_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "canonical": [
+            1130,
+            1000
+          ],
+          "observed_x": 1130.0,
+          "delta_map_px": 0.0
+        }
+      ],
+      "all_source_rows_delta_range_map_px": [
+        -0.8333333333332575,
+        0.775000000000091
+      ],
+      "all_source_rows_max_abs_delta_map_px": 0.8333333333332575,
+      "harbor_water_pixels": 0,
+      "harbor_pixel_count": 12288,
+      "harbor_min_dry_clearance_map_px": 18.0,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixel_count": 551579
+    }
+  }
+]

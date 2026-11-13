@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/workspace/kotobabin/public/assets/originals/terrain_riverside.png",
+    "sha256": "a3007db3259a768b8a8c9093c5c2f4b22f6c23faf59bcba2fc7ba32e16471ca3",
+    "bytes": 5243839
+  },
+  {
+    "path": "/workspace/kotobabin/public/assets/terrain/terrain_riverside.webp",
+    "sha256": "fd7ffee4105d5b1fe9d622315879c8a3e1275f73371256e4c5d9b174b8a768ed",
+    "bytes": 406786
+  },
+  {
+    "path": "/workspace/work/riverside-m6/public/assets/originals/terrain_riverside.png",
+    "sha256": "a3007db3259a768b8a8c9093c5c2f4b22f6c23faf59bcba2fc7ba32e16471ca3",
+    "bytes": 5243839
+  },
+  {
+    "path": "/workspace/work/riverside-m6/public/assets/terrain/terrain_riverside.webp",
+    "sha256": "fd7ffee4105d5b1fe9d622315879c8a3e1275f73371256e4c5d9b174b8a768ed",
+    "bytes": 406786
+  }
+]

@@ -1,0 +1,84 @@
+{
+  "asset_id": "terrain_riverside",
+  "policy": "Actual imagegen edits only; output image changes limited to complete-canvas RGB resize and conventional PNG/WebP encoding. No masks, alpha/color threshold editing, raster shoreline fitting, procedural replacement, crop or shape deformation. Near-color diagnostics never edit the artwork.",
+  "guide_policy": "3200x2000 canonical control diagram rasterized from shared twelve vertices, not runtime art.",
+  "attempts": [
+    {
+      "id": "r1",
+      "prompt": "Precise RIVERSIDE map geometry correction. FIRST image is the EXACT canonical land/water control diagram at3200x2000. SECOND image is current Japanese watercolor riverside game terrain STYLE. Repaint watercolor texture INSIDE the first guide's regions while preserving FIRST boundary exactly at every pixel; do not copy second image's 1px landward blue fringe. Left cream region is pale flat empty buildable land, right blue region a calm turquoise river widening toward bottom-right. Tiny rounded riverbank trees at FAR LEFT edge and very pale low hills at UPPER LEFT only. Preserve full8:5frame and all quiet empty central land. Logical1600x1000 shore point sequence: (1370,0),(1365,200),(1360,400),(1340,550),(1310,640),(1280,695),(1246.203125,737.578125),(1240,770),(1240,820),(1195,875),(1150,940),(1130,1000). Copy all straight guide segments EXACTLY, including vertical x1240,y770..820 and fractional harbor contact. Critical: water starts ON OR RIGHT of the guide edge, never left of it; no blue antialias halo/bleeding on cream land. Harbor unloading rectangle x1158..1222,y760..808 is completely LAND and must have at least18 map_px horizontal dry clearance to water. Keep every blue pixel at x>=1240 in that vertical harbor interval. No smoothing/rounding/erosion/beach/grass/foam crossing the guide boundary. Full source3200x2000 RGB requested; OPAQUE landscape, no alpha, no transparent center. No buildings, roads, rails, bridges, docks, piers, boats, vehicles, text, numbers, labels, UI or border. Warm subtle watercolor paper grain only inside existing regions; boundary geometry takes priority over free brushwork. This is a fixed-coordinate texture pass, not a new map layout.",
+      "references": [
+        "canonical-shore-guide-3200.png",
+        "history/terrain_riverside.generated.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-f6585f1b-14c2-4157-bd5f-05617f5aa150.png",
+      "transparent_background": false,
+      "disposition": "Rejected: dry clearance21.5 but all-row max coast drift3.727 map_px, worse than baseline1.667.",
+      "actual_native_size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "id": "r2",
+      "prompt": "Precise LOCAL SHORELINE POSITION CORRECTION only. FIRST image is current candidate watercolor terrain, SECOND is exact canonical shoreline guide. Preserve all texture, trees, quiet land, water style and full8:5frame. Current candidate water edge is about2 logical map pixels TOO FAR RIGHT along most shoreline. Move ONLY the land/water interface LEFT by2 logical pixels (4 pixels on3200x2000 canvas), keeping all other art positions fixed. Match SECOND guide, not an added safety buffer. Current observed logicalx values vs target: y0 current1372.5 target1370; y2001366.5 target1365; y4001361.5 target1360; y5501342 target1340; y6401312 target1310; y6951282.5 target1280; y737.578 current1248 target1246.203125; y7701243.5 target1240; y8201243 target1240; y8751197 target1195; y9401152 target1150; bottom1131.5 target1130. Maintain straight vertical shoreline near x1240,y770..820. No blue antialias wash onto land. Harbor water must never start left ofx1240 in y760..808; retain minimum18px clearance from unloading rectangle's right edge1222. Copy exact guide shape with crisp watercolor-region border, no coast smoothing/rounding/foam/beach/bank addition. OpaqueRGB, no alpha. Requestedfull3200x2000, no crop/recenter/zoom, no entireimage translation. No new buildings, roads, piers, boats, text, numbers or UI. Only adjust the boundary toward canonical guide; no style redesign.",
+      "references": [
+        "native/r1.png",
+        "canonical-shore-guide-3200.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-da854519-c6b9-48aa-8450-4c830c6dc6a9.png",
+      "transparent_background": false,
+      "disposition": "Rejected: dry clearance19.5 but all-row max drift2.904 worse than baseline.",
+      "actual_native_size": [
+        1585,
+        992
+      ]
+    },
+    {
+      "id": "r3",
+      "prompt": "Apply only beautiful subtle Japanese watercolor TEXTURE INSIDE the two existing regions of this exact geometry diagram. Do not redesign its silhouette. Keep every land/water boundary location exactly as the input, same full8:5frame; NO shift, smooth, round, erode, widen, safety-offset, crop or zoom. Beige region becomes very pale cream flat land with faint sage paper washes; blue region becomes calm turquoise river water with soft quiet bands. Keep the existing crisp border, with no color bleed to the other region. Add only tiny round leafy trees at far left outer edge x0..180 and very pale low hills at upperleft x0..650,y0..90, using logical1600x1000 coordinates. All land farther right stays empty flat light paper. The boundary is already canonical: top1370,0;1365,200;1360,400;1340,550;1310,640;1280,695;1246.203125,737.578125;1240,770;1240,820;1195,875;1150,940;1130,1000. Especially copy the STRAIGHT VERTICAL x1240 segment fromy770toy820 exactly, not a diagonal or rounded bend. The blue region must start atx1240 or to its right for y760..808; the 18px dry harbor clearance is already built into this guide and must not be expanded or reduced. No blue halo on cream land. Texture-only fixed-shape pass; do not move the boundary for painterly effect. OpaqueRGB landscape requested3200x2000, no alpha. No guide marks, border, text, numbers, UI, buildings, roads, rails, piers, bridges, boats or other facilities. Preserve full input canvas and region geometry; watercolor grain is confined to the interiors.",
+      "references": [
+        "canonical-shore-guide-3200.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-a6b69fdf-5589-4e39-b541-93205e0e64d0.png",
+      "transparent_background": false,
+      "disposition": "Superseded: improves all-row max drift0.872 but PNG harbor dry clearance17.5 remains under18.",
+      "actual_native_size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "id": "r4",
+      "prompt": "Tiny LOCAL cleanup of this already accurate riverside terrain. KEEP THE ENTIRE LANDSCAPE, all shore positions outside the harbor interval, trees, hills, texture and full frame EXACTLY unchanged. In logical1600x1000 coordinates the harbor's straight shoreline is x1240 fromy770toy820. A faint BLUE ANTIALIAS FRINGE currently leaks a fraction of a pixel LEFT ofx1240 near y770..808. Remove only that landward blue fringe: pixels LEFT ofx1240 must be pale cream LAND, and blue water must start ATx1240 or to its right. Keep the true boundary atx1240, DO NOT add an extra margin or shift the whole shore. Preserve the vertical segment and the neighboring fractional harbor contact(1246.203125,737.578125). The dry unloading rectangle ends atx1222 and must retain its exact18px dry clearance, never17.5. This is a minute cleanup of color bleed near the vertical shore, not a new drawing or geometric redesign. NO changes to upper shoreline, lower shoreline, camera, land, hills, vegetation, water texture or framing. Same8:5canvas and OPAQUERGB output. No crop, zoom, recenter, text, numbers, buildings, piers, roads, boats or UI.",
+      "references": [
+        "native/r3.png"
+      ],
+      "generated_path": "/workspace/generated_images/exec-849c4694-6bbe-4968-8bba-93a6d1d540ff.png",
+      "transparent_background": false,
+      "disposition": "Selected improvement candidate: PNG all-row max drift0.864 and harbor clearance18.0 under diagnostic color rule. Exact geometric identity is not claimed.",
+      "actual_native_size": [
+        1585,
+        992
+      ]
+    }
+  ],
+  "normalization": {
+    "whole_frame": true,
+    "source_actual": [
+      1585,
+      992
+    ],
+    "output": [
+      3200,
+      2000
+    ],
+    "crop": false,
+    "geometry_mask": false,
+    "runtime_webp": {
+      "quality": 92,
+      "method": 6,
+      "reason": "Same established encoding as existing runtime, not chosen by scanning qualities for threshold result."
+    }
+  },
+  "current_baseline_correction": "Old tens-of-pixels shoreline-failure notes do not describe current a3007db PNG / fd7ffee WebP; hashes matched root integration files before changes."
+}

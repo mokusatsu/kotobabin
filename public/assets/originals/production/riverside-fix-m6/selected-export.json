@@ -1,0 +1,59 @@
+{
+  "selected_attempt": "r4",
+  "source_actual": [
+    1585,
+    992
+  ],
+  "whole_canvas_output": [
+    3200,
+    2000
+  ],
+  "source_to_output_scale": [
+    2.0189274447949526,
+    2.0161290322580645
+  ],
+  "source_aspect_difference_from_8_5_percent": -0.138608870967738,
+  "crop": false,
+  "post_generation_geometry_edit": false,
+  "webp_encoding": {
+    "quality": 92,
+    "method": 6,
+    "reason": "Established existing runtime encoding; no quality scan to select a threshold result."
+  },
+  "exports": [
+    {
+      "source": "native/r4.png",
+      "output": "public/assets/originals/terrain_riverside.generated.png",
+      "size": [
+        1585,
+        992
+      ],
+      "mode": "RGB",
+      "bytes": 1756793,
+      "sha256": "bb813697187a6e557bb731c60d8b663d11302ceececae74b542b28501789ea7f"
+    },
+    {
+      "source": "candidates/r4.png",
+      "output": "public/assets/originals/terrain_riverside.png",
+      "size": [
+        3200,
+        2000
+      ],
+      "mode": "RGB",
+      "bytes": 4248028,
+      "sha256": "57d72be5603ba4bc085c1b6fc5a1b622fecf7dcd5f9d2b5da4281bb393718135"
+    },
+    {
+      "source": "candidates/r4.q92.webp",
+      "output": "public/assets/terrain/terrain_riverside.webp",
+      "size": [
+        3200,
+        2000
+      ],
+      "mode": "RGB",
+      "bytes": 233406,
+      "sha256": "82ae0be48c947abc17744c07cdedec8350fb9d00b56e8de995df76f36741125d"
+    }
+  ],
+  "acceptance": "Improved art candidate and raster diagnostics; exact geometric identity and live E2E not claimed."
+}
