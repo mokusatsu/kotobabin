@@ -72,3 +72,27 @@ test('unowned preview does not equip and viewing objects never require equipment
   expect(await equipped(page)).toEqual(before);
   await keyboardWalkPanels(page);
 });
+
+for (const height of [720, 820] as const) for (const font of [100, 125, 150] as const) test(`four-choice gallery survives readonly reload and keyboard ownership handoff at1180x${height} ${font}%`, async ({ page }, info) => {
+  await page.setViewportSize({ width: 1180, height });
+  await seed(page, font);
+  await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
+  const before = await equipped(page);
+  for (const slot of ['titleId', 'frameId', 'ornamentId', 'homeBackgroundId']) expect(before[slot]).toBeTruthy();
+  await page.reload();
+  const warning = page.locator('#ownership-status');
+  await expect(warning).toHaveAttribute('data-ownership', 'readonly');
+  await expect(warning).toBeVisible();
+  expect(await equipped(page)).toEqual(before);
+  await page.screenshot({ path: info.outputPath(`readonly-gallery-1180x${height}-${font}.png`) });
+  console.log('GALLERY_READONLY_LAYOUT', JSON.stringify(await page.evaluate(() => ({ width: innerWidth, height: innerHeight, documentHeight: document.documentElement.scrollHeight,
+    parts: ['.site-header', '#ownership-status', '.cosmetic-home-gallery', '.home-city-balance', '.world-command-dock', '.home-city-slot'].map(selector => ({ selector, rectangle: document.querySelector(selector)?.getBoundingClientRect().toJSON() })) }))));
+  await assertViewportFits(page);
+  const takeover = warning.locator('[data-action="takeover"]');
+  await tabTo(page, takeover); await page.keyboard.press('Enter');
+  await expect(warning).toHaveAttribute('data-ownership', 'owner');
+  await expect(warning).toBeHidden();
+  expect(await equipped(page)).toEqual(before);
+  await expect(page.locator('.cosmetic-home-gallery')).toBeVisible();
+  await assertViewportFits(page);
+});

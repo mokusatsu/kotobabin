@@ -1,0 +1,31 @@
+name: M6 equipped gallery ownership layout
+on:
+  push:
+    branches: [fix/m6-gallery-ownership]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: m6-gallery-ownership-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  native-gallery-handoff:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test tests/e2e/cosmetics.spec.ts --grep 'four-choice gallery survives readonly' --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-gallery-ownership-${{ matrix.browser }}
+          path: test-results/
