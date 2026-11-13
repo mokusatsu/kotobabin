@@ -56,7 +56,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let resultStage: ResultStageController | undefined;
   let resultStageState: ResultStageState | undefined;
   let resultStageSessionId = '';
-  function releaseResultStage() { if (resultStage) { resultStageState = resultStage.snapshot(); resultStage.destroy(); resultStage = undefined; } }
+  function releaseScreenPresentation() { document.querySelectorAll('.world-transition-ghost').forEach(element => element.remove()); if (resultStage) { resultStageState = resultStage.snapshot(); resultStage.destroy(); resultStage = undefined; } }
   let displayedPurchaseQuote: ReturnType<CityEconomy['quotePurchase']> | undefined;
   let purchaseStructureKey = '';
   let returnNoticeDismissed = false;
@@ -116,12 +116,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function ownershipStatus() { return `<aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中 · このタブは閲覧のみです。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer>`; }
   function renderHome() {
-    releaseResultStage();
+    releaseScreenPresentation();
     audio.leaveSession();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
-    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}<p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></main>${footer()}`;
+    root.innerHTML = `${header()}<main id="main" class="home-layout game-stage world-stage" data-ipad-exclude aria-label="街の全体マップ"><div class="home-city-slot">${homeTown(runtime.city, runtime.destination)}</div><aside class="home-intro world-command-dock"><p class="eyebrow">ことばの配達便</p><h1>配達に出かけよう</h1><fieldset class="course-picker"><legend>コース <span class="dock-key-hint">1 / 2 / 3</span></legend><div class="course-options">${courses.map((item, index) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${index + 1} ${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><label for="home-destination">届け先</label><select id="home-destination" class="destination-select">${destinationOptions(runtime.city, runtime.destination)}</select></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる</button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字 · 90秒'}</p><button class="text-button" data-action="catalogue">ことばの練習</button><span class="save-status" data-save-status data-save-state="${runtime.status.storage}"></span></aside><div class="home-city-balance" id="city-balance-strip">${balanceStrip(runtime.city)}</div><div class="home-goal-slot" id="home-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div>${practiceAwardCarry.size ? `<p class="practice-awards-hud" id="practice-awards-summary">練習で切手${practiceAwardCarry.size}枚獲得 <button class="text-button" data-action="handbook">手帳へ</button></p>` : ''}<p class="world-map-help">地区を選んで拡大 <kbd>Tab</kbd> 選択 <kbd>Enter</kbd> 決定 <kbd>F2</kbd> メニュー</p></main>${footer()}`;
     beginHomeMapObservation(); updateStorageStatus(); showReturnNotice(); updateAchievementDisplays(); practiceAwardCarry.clear(); focusScreen('[data-action="start"]');
   }
   function beginHomeMapObservation() {
@@ -215,7 +215,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     confirmReplacement(() => { launchTarget = { mode: 'PRACTICE', wordIds: ids }; launch(); });
   }
   function renderCatalogue() {
-    releaseResultStage();
+    releaseScreenPresentation();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'catalogue'; cataloguePage = 0;
     root.innerHTML = `${header()}${catalogueShell(runtime.profile)}${footer()}`;
@@ -259,7 +259,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     return getAchievementViews(runtime.achievements, session?.snapshot(performance.now()), session?.sessionId);
   }
   function openHandbook() {
-    releaseResultStage();
+    releaseScreenPresentation();
     if (screen !== 'handbook') {
       handbookOrigin = screen === 'check' ? (rechecking ? 'game' : 'home') : screen;
       if (screen === 'game') pause();
@@ -440,11 +440,14 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const world = root.querySelector<HTMLElement>('.world-stage');
     const source = world?.querySelector<SVGGraphicsElement>(`[data-world-district-id="${id}"]`)?.getBoundingClientRect();
     const reduced = runtime.settings.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ghost = world && source && !reduced ? world.cloneNode(true) as HTMLElement : undefined;
-    const worldBounds = world?.getBoundingClientRect();
+    const canvas = world?.querySelector<HTMLElement>('.town-map');
+    const worldBounds = canvas?.getBoundingClientRect();
+    const worldSvg = canvas?.querySelector('svg');
+    const ghost = worldSvg && source && !reduced ? document.createElement('div') : undefined;
+    if (ghost && worldSvg) { ghost.className = 'canonical-map world-transition-ghost'; ghost.append(worldSvg.cloneNode(true)); }
     rememberCityOrigin();
     confirmReplacement(() => {
-      releaseResultStage(); selectedDistrict = id; disposeGameLayout?.(); disposeGameLayout = undefined; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city';
+      releaseScreenPresentation(); selectedDistrict = id; disposeGameLayout?.(); disposeGameLayout = undefined; gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'city';
       root.innerHTML = `${header()}${cityShell(runtime.city, selectedDistrict)}${footer()}`; updateCityViews(); updateStorageStatus(); focusScreen();
       const map = root.querySelector<HTMLElement>('.district-map');
       if (map && source) animateDistrictEntry(map, source, reduced);
@@ -463,7 +466,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     confirmReplacement(renderEquipment);
   }
   function renderEquipment() {
-    releaseResultStage();
+    releaseScreenPresentation();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect(); screen = 'equipment';
     purchaseStructureKey = '';
@@ -569,7 +572,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelector('main')?.prepend(notice);
   }
   function renderCheck() {
-    releaseResultStage();
+    releaseScreenPresentation();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'check'; checkPassed = false; pending = undefined;
@@ -592,7 +595,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     sidebar.append(primary, details); main.append(root.querySelector('.play-bottom')!);
   }
   function renderGame() {
-    releaseResultStage();
+    releaseScreenPresentation();
     disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined;
     screen = 'game';
@@ -648,7 +651,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const resume = root.querySelector<HTMLButtonElement>('[data-action="resume"]'); if (resume) resume.disabled = !runtime.status.writable || (snapshot.mode === 'MAIN' && window.innerWidth < 768);
   }
   function renderResult(snapshot: Snapshot) {
-    releaseResultStage(); disposeGameLayout?.(); disposeGameLayout = undefined;
+    releaseScreenPresentation(); disposeGameLayout?.(); disposeGameLayout = undefined;
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'result'; lastResult = snapshot;
     const sessionId = session?.sessionId ?? resultStageSessionId;
@@ -660,10 +663,11 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       result: { score: snapshot.score, baseScore: snapshot.baseScore, bonusScore: snapshot.bonusScore, completedWords: snapshot.completedWords, accuracy: snapshot.accuracy, canonicalKpm: snapshot.canonicalKpm, courseName: `${course().name} · ${districtName(sessionDestination)}ゆき`, assisted: snapshot.skips > 0, guideUsed: snapshot.guideUsed },
       newAchievementIds: ids, reducedMotion: runtime.settings.reducedMotion, resumeState: resultStageState,
       hasReview: reviewIds(snapshot).length > 0,
-      onStateChange: next => { resultStageState = next; },
+      onStateChange: next => { resultStageState = next; updateStorageStatus(); },
       onAction: action => {
         if (action === 'retry') { launchTarget = { mode: 'MAIN', preferredWordId: mainPreferredWordId }; launch(); }
         else if (action === 'new-round') { seed = newSeed(); launchTarget = { mode: 'MAIN' }; launch(); }
+        else if (action === 'navigation') openNavigationMenu();
         else if (action === 'home') renderHome();
         else if (action === 'handbook') openHandbook();
         else if (action === 'review') { practiceFilter = {}; startPractice(reviewIds(snapshot)); }
@@ -973,5 +977,5 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   const ipadLayout = installIPadPagination(root);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
-  return () => { releaseResultStage(); disposeDistrictMap(); audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
+  return () => { releaseScreenPresentation(); disposeDistrictMap(); audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };
 }

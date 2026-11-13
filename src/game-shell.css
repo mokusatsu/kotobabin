@@ -81,3 +81,6 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 #app .site-header:has(> .ownership-warning:not([hidden])) { flex-wrap: wrap; }
 #app .site-header > .ownership-warning { flex-basis: 100%; min-width: 0; max-width: 100%; }
 #app .site-header > .ownership-warning p { min-width: 0; overflow-wrap: anywhere; }
+.world-transition-ghost { border: 0; margin: 0; }
+.world-transition-ghost > svg { display: block; width: 100%; height: 100%; }
+@media (max-width: 959px) { .world-stage .home-city-slot { right: 0; } }
