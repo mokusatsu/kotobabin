@@ -3,6 +3,7 @@ import { assertViewportFits, keyboardMenuTo, keyboardRevealControl, tabTo } from
 
 async function wholeMap(page: Page, map: Locator) {
   await expect(map).toBeVisible();
+  await expect(async () => {
   const box = await map.boundingBox();
   expect(box).not.toBeNull();
   expect(box!.width).toBeGreaterThan(200);
@@ -11,6 +12,7 @@ async function wholeMap(page: Page, map: Locator) {
   expect(box!.x + box!.width).toBeLessThanOrEqual((await page.viewportSize())!.width + 1);
   expect(box!.y + box!.height).toBeLessThanOrEqual((await page.viewportSize())!.height + 1);
   await assertViewportFits(page);
+  }).toPass({ timeout: 5000 });
 }
 
 for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
