@@ -16,4 +16,11 @@
 
 ## 検証
 
-`tests/dev/comparison.test.ts` は正式既定の同値、3個満載の係数整合、seed、カスタム語、公開操作による各事実を検査する。専用 `playwright.dev-comparison.config.ts` と `dev-comparison.yml` は静的本番buildの開発入口をChromium/WebKitで操作し、入力・調整・IME確認・seed再開始・書出し・通常保存不変・1180×720/820の表示を検査する。結果は公式CI後に追記する。単体の成功を実E2E成功と混同しない。
+`tests/dev/comparison.test.ts` は正式既定の同値、3個満載の係数整合、seed、カスタム語、公開操作による各事実を検査する。専用 `playwright.dev-comparison.config.ts` と `dev-comparison.yml` は静的本番buildの開発入口をChromium/WebKitで操作し、入力・調整・IME確認・seed再開始・書出し・通常保存不変・1180×720/820の表示を検査する。単体の成功を実E2E成功と混同しない。
+
+### 公式実E2E記録
+
+- 対象source: `4eab4e0`（開発入口`4abd331`＋フォーカス/検査修正`fb53581`・`4eab4e0`）。
+- [専用公式CI 43524059361](https://github.com/mokusatsu/kotobabin/actions/runs/43524059361): 2026-11-13、Chromium 5/5（15.8秒）、WebKit 5/5（11.9秒）成功。Ubuntu GitHub runnerのブラウザー操作であり、iPad実機Safari/OS IME試験の代替とはしない。
+- 実Tab/Enter/文字入力、保存済み通常profile不変と開発側IDB open 0、3個荷物/20点係数の満載360点、IME停止条件での非採点a確認、seed再開始、カスタム語の期限196点、1180×720/820の全条件・設定・対応表ページと40字表示を検査。キャプチャは補助資料だけに使用。
+- 最初の公式CIではPlaywrightのfieldset無効判定とWebKitのページ末尾フォーカスを検出した。fieldsetは属性と内部inputの実無効を検査し、無効化される現在ページボタンから対向の有効ボタンへフォーカスを引き継いだ後、両ブラウザーで全件を再実行して成功。
