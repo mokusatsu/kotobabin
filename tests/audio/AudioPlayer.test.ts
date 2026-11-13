@@ -74,8 +74,11 @@ describe('optional nonblocking AudioPlayer', () => {
     expect(context.gains.at(-1)!.gain.value).toBeCloseTo(0.5 * 0.25);
     expect(fetched).toContain('/kotobabin/assets/sound_effect/audio_key.wav');
     expect(fetched).toContain('/kotobabin/assets/bgm/audio_theme.ogg');
-    const exports = manifest.assets.filter(asset => asset.kind === 'audio').flatMap(asset => asset.runtime_exports);
+    const audioAssets = manifest.assets.filter(asset => asset.kind === 'audio');
+    expect(audioAssets).toHaveLength(7);
+    const exports = audioAssets.flatMap(asset => asset.runtime_exports);
     expect(fetched.every(url => exports.includes(url.slice('/kotobabin/'.length)))).toBe(true);
+    for (const asset of audioAssets) expect(asset.runtime_exports.some(path => fetched.includes(`/kotobabin/${path}`)), asset.id).toBe(true);
     player.settings({ master: 0.8, effects: 0.4, music: 0.2 });
     expect(context.gains[0].gain.value).toBeCloseTo(0.32);
     expect(context.gains[1].gain.value).toBeCloseTo(0.16);
@@ -127,6 +130,8 @@ describe('optional nonblocking AudioPlayer', () => {
       await player.startFromGesture(); await flush(); player.play('theme'); player.play('theme'); await flush();
       expect(fetched.filter((url) => url.endsWith('.ogg'))).toHaveLength(1);
       expect(fetched.filter((url) => url.endsWith('.mp3'))).toHaveLength(1);
+      const theme = manifest.assets.find(asset => asset.id === 'audio_theme')!;
+      expect(fetched.filter(url => url.endsWith('.ogg') || url.endsWith('.mp3')).map(url => url.slice('/kotobabin/'.length))).toEqual(theme.runtime_exports);
       expect(context.active).toHaveLength(1); expect(context.active[0].loop).toBe(true);
       player.dispose();
     });
