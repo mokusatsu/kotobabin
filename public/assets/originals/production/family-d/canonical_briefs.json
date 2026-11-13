@@ -1,0 +1,518 @@
+{
+  "assets": [
+    {
+      "id": "stamp_d01",
+      "name": "軽やかな足どりの切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。配達靴が丸い飛び石を軽く踏み、鞄の裾が上方に少しだけ見える。歩幅と足元の弧を大きく描く。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D01",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d01.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "stamp_d02",
+      "name": "軽快な配達の切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。前籠に封筒を載せた配達自転車が曲がった道を進む。大きな二つの車輪と揺れる布の旗を主役にする。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D02",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d02.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "stamp_d03",
+      "name": "風を切る便の切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。翼を広げたツバメが一通の封筒を運び、長い風の帯を斜めに切って飛ぶ。空に大きく抜けを作る。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D03",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d03.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "stamp_d04",
+      "name": "ひとつ先の記録の切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。短い階段の上段に小包と小さな旗が置かれ、下段には以前の目印が残る。段差を横から明確に描く。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D04",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d04.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "stamp_d05",
+      "name": "流れが速くなったの切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。小さな列車が駅の屋根を抜けて前へ進み、窓から細いスカーフが後方へ伸びる。車体とホームに深い遠近を付ける。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D05",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d05.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "stamp_d06",
+      "name": "速くて丁寧の切手絵柄",
+      "kind": "raster",
+      "visual_brief": "独立した枠なし正方形の彩色画。羽ペンをしっかり支える一輪の配送小車が、まっすぐな細い線路を進む。羽の整った筋と車輪を対角へ配置する。文字・数字・名称・UIの状態は画像に含めない。",
+      "category": "achievement_stamp",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HANDBOOK",
+        "RESULT"
+      ],
+      "render_layer": "stamp_art",
+      "profile_id": "stamp",
+      "status": "planned",
+      "used_by": [
+        "achievement:D06",
+        "family:D"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/achievement_stamp/stamp_d06.webp"
+      ],
+      "production_phase": "P2",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    }
+  ],
+  "achievements": [
+    {
+      "id": "D01",
+      "name": "軽やかな足どり",
+      "condition": "基準打鍵毎分60以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d01",
+      "title_id": "title_d01",
+      "asset_refs": [
+        "stamp_d01",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "standard_keystrokes_per_minute",
+          "label": "今回の基準打鍵毎分",
+          "current": "この便で完成した語の基準長合計÷90×60。進行中も90秒基準で算出し、判定は未丸め値",
+          "target": 60,
+          "unit": "打/分",
+          "display": "今回の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "historical_best_speed",
+          "label": "自己最高の基準打鍵毎分",
+          "current": "通常完走で確定した過去の最高基準打鍵毎分",
+          "target": 60,
+          "unit": "打/分",
+          "display": "自己最高の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "完成語の基準長合計から求めた基準打鍵毎分が60以上となる便を、スキップなしで90秒完走した時に解除する。",
+      "reset_policy": "便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。入力中の綴りの長さや誤打の打鍵数を速度へ加算しない。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "配達靴が丸い飛び石を軽く踏み、鞄の裾が上方に少しだけ見える。歩幅と足元の弧を大きく描く。",
+      "visual_differentiator": "足と飛び石の低い斜め構図。車輪・翼・階段・列車を主役にする他5枚から輪郭で区別する。"
+    },
+    {
+      "id": "D02",
+      "name": "軽快な配達",
+      "condition": "基準打鍵毎分100以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d02",
+      "title_id": "title_d02",
+      "asset_refs": [
+        "stamp_d02",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "standard_keystrokes_per_minute",
+          "label": "今回の基準打鍵毎分",
+          "current": "この便で完成した語の基準長合計÷90×60。進行中も90秒基準で算出し、判定は未丸め値",
+          "target": 100,
+          "unit": "打/分",
+          "display": "今回の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "historical_best_speed",
+          "label": "自己最高の基準打鍵毎分",
+          "current": "通常完走で確定した過去の最高基準打鍵毎分",
+          "target": 100,
+          "unit": "打/分",
+          "display": "自己最高の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "完成語の基準長合計から求めた基準打鍵毎分が100以上となる便を、スキップなしで90秒完走した時に解除する。",
+      "reset_policy": "便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。入力中の綴りの長さや誤打の打鍵数を速度へ加算しない。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "前籠に封筒を載せた配達自転車が曲がった道を進む。大きな二つの車輪と揺れる布の旗を主役にする。",
+      "visual_differentiator": "横長の車体と離れた二つの車輪。D06の一輪の小車とは支持形も大きさも異なる。"
+    },
+    {
+      "id": "D03",
+      "name": "風を切る便",
+      "condition": "基準打鍵毎分160以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d03",
+      "title_id": "title_d03",
+      "asset_refs": [
+        "stamp_d03",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "standard_keystrokes_per_minute",
+          "label": "今回の基準打鍵毎分",
+          "current": "この便で完成した語の基準長合計÷90×60。進行中も90秒基準で算出し、判定は未丸め値",
+          "target": 160,
+          "unit": "打/分",
+          "display": "今回の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "historical_best_speed",
+          "label": "自己最高の基準打鍵毎分",
+          "current": "通常完走で確定した過去の最高基準打鍵毎分",
+          "target": 160,
+          "unit": "打/分",
+          "display": "自己最高の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "完成語の基準長合計から求めた基準打鍵毎分が160以上となる便を、スキップなしで90秒完走した時に解除する。",
+      "reset_policy": "便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。入力中の綴りの長さや誤打の打鍵数を速度へ加算しない。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "翼を広げたツバメが一通の封筒を運び、長い風の帯を斜めに切って飛ぶ。空に大きく抜けを作る。",
+      "visual_differentiator": "尖った翼の横幅と空中の斜線。地上の道具を描く他5枚から一目で分かる飛翔の輪郭。"
+    },
+    {
+      "id": "D04",
+      "name": "ひとつ先の記録",
+      "condition": "同条件の過去自己最高得点を更新。または得点1000以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d04",
+      "title_id": "title_d04",
+      "asset_refs": [
+        "stamp_d04",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "score",
+          "label": "今回の得点",
+          "current": "この便の確定完成点と配達済みボーナスの合計",
+          "target": 1000,
+          "unit": "点",
+          "display": "今回{current}点・絶対目標1000点"
+        },
+        {
+          "key": "comparison_best_score",
+          "label": "開始前の同条件最高",
+          "current": "適格な過去の同条件最高得点。比較元がない時は値なし",
+          "target": null,
+          "unit": "",
+          "display": "前回最高{current}点／比較元なし"
+        },
+        {
+          "key": "comparison_completed_words",
+          "label": "更新条件の完成語数",
+          "current": "この便で確定完成した語数。10語条件は過去記録の更新経路だけに適用する",
+          "target": 10,
+          "unit": "語",
+          "display": "更新条件の完成語数 {current}/{target}語"
+        },
+        {
+          "key": "record_improvement",
+          "label": "更新経路の成立",
+          "current": "比較元が存在し、今回10語以上で、その比較元の得点を厳密に上回ったか",
+          "target": true,
+          "unit": "",
+          "display": "更新経路：成立／未達／比較元なし。1000点以上の代替条件とは別に表示"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "スキップなしの90秒完走時に、適格な同条件の過去最高得点を更新しているか、得点1000以上であれば解除する。更新経路では今回も10語以上を必要とし、絶対値経路へこの語数条件を追加しない。",
+      "reset_policy": "比較元は便の開始前に固定した、問題順・コース・問題集と規則の版・ガイド使用区分が一致する適格記録とする。過去と今回がともに10語以上の通常完走である時だけ更新経路を使う。初回は更新扱いにせず絶対値の経路を使える。自己記録の削除で比較履歴も消えるが、解除済みは残す。便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "短い階段の上段に小包と小さな旗が置かれ、下段には以前の目印が残る。段差を横から明確に描く。",
+      "visual_differentiator": "階段状の上り外形と最上段の旗。D05の流れる列車とは角のある垂直段差で区別する。"
+    },
+    {
+      "id": "D05",
+      "name": "流れが速くなった",
+      "condition": "同条件の過去自己最高速度を毎分10以上更新。または基準打鍵毎分180以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d05",
+      "title_id": "title_d05",
+      "asset_refs": [
+        "stamp_d05",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "standard_keystrokes_per_minute",
+          "label": "今回の基準打鍵毎分",
+          "current": "この便で完成した語の基準長合計÷90×60。進行中も90秒基準で算出し、判定は未丸め値",
+          "target": 180,
+          "unit": "打/分",
+          "display": "今回の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "comparison_best_speed",
+          "label": "開始前の同条件最高速度",
+          "current": "適格な過去の同条件最高基準打鍵毎分。比較元がない時は値なし",
+          "target": null,
+          "unit": "",
+          "display": "前回最高{current}打/分／比較元なし"
+        },
+        {
+          "key": "speed_improvement",
+          "label": "同条件の最高からの増分",
+          "current": "今回の未丸め基準打鍵毎分から開始前の同条件最高速度を引いた値。比較元なしは値なし",
+          "target": 10,
+          "unit": "打/分",
+          "display": "更新経路：{signed_delta}/10打/分／比較元なし",
+          "format": "差分が正なら+、負なら−、0なら0。符号を重ねず小数1桁で表示。判定は未丸め値。"
+        },
+        {
+          "key": "comparison_completed_words",
+          "label": "更新条件の完成語数",
+          "current": "この便で確定完成した語数。10語条件は過去記録の更新経路だけに適用する",
+          "target": 10,
+          "unit": "語",
+          "display": "更新条件の完成語数 {current}/{target}語"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "スキップなしの90秒完走時に、適格な同条件の過去最高速度を毎分10以上更新しているか、基準打鍵毎分180以上であれば解除する。更新経路では今回も10語以上を必要とし、絶対値経路へこの語数条件を追加しない。",
+      "reset_policy": "比較元は便の開始前に固定した、問題順・コース・問題集と規則の版・ガイド使用区分が一致する適格記録とする。過去と今回がともに10語以上の通常完走である時だけ更新経路を使う。初回は更新扱いにせず絶対値の経路を使える。自己記録の削除で比較履歴も消えるが、解除済みは残す。便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "小さな列車が駅の屋根を抜けて前へ進み、窓から細いスカーフが後方へ伸びる。車体とホームに深い遠近を付ける。",
+      "visual_differentiator": "列車の大きな前面と、奥へ引くホームの庇。D02の横向き自転車とは遠近と車体の質量を変える。"
+    },
+    {
+      "id": "D06",
+      "name": "速くて丁寧",
+      "condition": "20語以上、基準打鍵毎分100以上、正確率95%以上",
+      "scope": "通常",
+      "hidden": false,
+      "hidden_hint": null,
+      "family_id": "D",
+      "stamp_asset_id": "stamp_d06",
+      "title_id": "title_d06",
+      "asset_refs": [
+        "stamp_d06",
+        "family_d"
+      ],
+      "progress_fields": [
+        {
+          "key": "completed_words",
+          "label": "今回の完成語",
+          "current": "この便で確定完成した語数",
+          "target": 20,
+          "unit": "語",
+          "display": "今回の完成語 {current}/{target}語"
+        },
+        {
+          "key": "standard_keystrokes_per_minute",
+          "label": "今回の基準打鍵毎分",
+          "current": "この便で完成した語の基準長合計÷90×60。進行中も90秒基準で算出し、判定は未丸め値",
+          "target": 100,
+          "unit": "打/分",
+          "display": "今回の基準打鍵毎分 {current}/{target}打/分"
+        },
+        {
+          "key": "accuracy_percent",
+          "label": "今回の正確率",
+          "current": "この便の正解打鍵数÷（正解打鍵数＋誤打数）×100。実績表示は小数1桁切り捨て、判定は未丸め値",
+          "target": 95,
+          "unit": "%",
+          "display": "正確率 {current}/{target}%・終了時に{target}%以上。分母0は未達"
+        },
+        {
+          "key": "normal_completion",
+          "label": "確定条件",
+          "current": "この便の完走状態とスキップ使用履歴",
+          "target": "90秒完走・スキップなし",
+          "unit": "",
+          "display": "プレイ中：完走で確定／スキップ使用後：今回は対象外／適格な完走後：確定"
+        }
+      ],
+      "confirm_event": "同じ便で20語以上完成、基準打鍵毎分100以上、終了時正確率95%以上をすべて満たし、通常として90秒完走した時に解除する。",
+      "reset_policy": "便内の現在値・仮達成は新しい便で数え直す。スキップ使用または途中終了ではその便から解除せず、適格な完走で確定した履歴だけを保持する。語数・速度・正確率は同一便の値を並べ、別便の最高値を組み合わせない。解除済みの切手・称号・報酬は後の誤打、設定変更、街の再出発で取り消さない。「街・実績・収集を削除」を確定した場合だけ、実績進捗と所有報酬を消去する。",
+      "visual_motif": "羽ペンをしっかり支える一輪の配送小車が、まっすぐな細い線路を進む。羽の整った筋と車輪を対角へ配置する。",
+      "visual_differentiator": "一本の羽根と一つの大きな車輪が作る斜めの対角構図。二輪車や飛ぶ鳥の輪郭を流用しない。"
+    }
+  ],
+  "profile": {
+    "source_size": [
+      512,
+      512
+    ],
+    "display_css": [
+      128,
+      128
+    ],
+    "minimum_css": [
+      72,
+      72
+    ],
+    "transparent": true,
+    "anchor": [
+      256,
+      256
+    ],
+    "safe_rect": [
+      32,
+      32,
+      480,
+      480
+    ],
+    "layer": "stamp_art",
+    "notes": "共通枠の内窓へ合成。枠、文字、状態印は別レイヤー。"
+  }
+}
