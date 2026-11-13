@@ -90,8 +90,8 @@ export function purchaseCard(city: CityState, districtId: DistrictId, kind: Equi
   const economy = new CityEconomy(structuredClone(city)); const quote = economy.quotePurchase(kind, quantity, districtId);
   const current = kind === 'packaging' ? city.packagingLevel : city.districts[districtId][kind];
   const name = config.equipment[kind].name;
-  const before = 'beforeMultiplier' in quote ? `${formatMultiplier(quote.beforeMultiplier!)}倍` : `${formatMicro(('beforePerSecondMicro' in quote ? quote.beforePerSecondMicro : 0n)!)} ${kind === 'crews' ? '資材' : 'コイン'} /秒`;
-  const after = 'afterMultiplier' in quote ? `${formatMultiplier(quote.afterMultiplier!)}倍` : `${formatMicro(('afterPerSecondMicro' in quote ? quote.afterPerSecondMicro : 0n)!)} ${kind === 'crews' ? '資材' : 'コイン'} /秒`;
+  const before = 'beforeMultiplier' in quote ? `資材 ${formatMultiplier(quote.beforeMultiplier!)}倍` : `${formatMicro(('beforePerSecondMicro' in quote ? quote.beforePerSecondMicro : 0n)!)} ${kind === 'crews' ? '資材' : 'コイン'} /秒`;
+  const after = 'afterMultiplier' in quote ? `資材 ${formatMultiplier(quote.afterMultiplier!)}倍` : `${formatMicro(('afterPerSecondMicro' in quote ? quote.afterPerSecondMicro : 0n)!)} ${kind === 'crews' ? '資材' : 'コイン'} /秒`;
   const capReached = current === quote.cap;
   const nextPrice = capReached ? null : formulas.nextPriceCoins(kind, current, districtId) * MICRO_UNIT;
   const short = nextPrice && nextPrice > city.coinsMicro ? nextPrice - city.coinsMicro : 0n;
