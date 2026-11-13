@@ -1,4 +1,4 @@
-import { keyboardRevealControl, keyboardMenuTo } from './keyboard';
+import { keyboardRevealControl, keyboardMenuTo, assertViewportFits } from './keyboard';
 import { expect, test, type Page } from '@playwright/test';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -128,4 +128,53 @@ test('revealing a hidden condition changes its display without granting progress
   await keyboardMenuTo(page, 'handbook');
   await keyboardRevealControl(page, select);
   await expect(card).toContainText('荷物2個の手動配達の後');
+});
+
+test('five real qualified practice words keep F04 card compact and every word detail reachable on the target iPad', async ({ page }, testInfo) => {
+  test.setTimeout(60000);
+  await page.setViewportSize({ width: 1180, height: 720 });
+  await page.goto('/');
+  await keyboardMenuTo(page, 'settings');
+  const scale = page.locator('.settings-dialog input[name="fontScale"][value="150"]');
+  await keyboardRevealControl(page, scale); await scale.check(); await page.keyboard.press('Escape');
+  await keyboardMenuTo(page, 'catalogue');
+  for (const [selector, value] of [['#catalogue-set', 'kotobabin-ja-relaxed-v2'], ['#catalogue-topic', 'living']]) {
+    const filter = page.locator(selector); await keyboardRevealControl(page, filter); await filter.selectOption(value);
+  }
+  const start = page.locator('[data-action="practice-word"][data-word-id="living_r01"]');
+  await keyboardRevealControl(page, start); await start.click(); await confirmHalfWidthInput(page);
+  const names: string[] = [];
+  for (let word = 0; word < 5; word++) {
+    names.push((await page.locator('#prompt-word').innerText()).trim());
+    for (let completion = 0; completion < 3; completion++) {
+      await typeCurrentGuide(page);
+      if (completion < 2) await page.locator('[data-action="repeat-word"]').click();
+    }
+    await expect(page.locator('#practice-progress')).toContainText('3/3');
+    if (word < 4) await page.locator('[data-action="next-practice-word"]').click();
+  }
+  expect(new Set(names).size).toBe(5);
+  await expect.poll(async () => !!(await savedAchievements(page)).unlocks.F04).toBe(true);
+  await page.locator('[data-action="practice-end"]').click();
+  await keyboardMenuTo(page, 'handbook');
+  const family = page.locator('[data-action="achievement-family"][data-family-id="F"]');
+  await keyboardRevealControl(page, family); await family.click();
+  const card = page.locator('article[data-achievement-id="F04"]');
+  const select = card.locator('[data-action="achievement-select"]');
+  await keyboardRevealControl(page, select);
+  await expect(card).toHaveAttribute('data-state', 'earned');
+  await expect(card.locator('.achievement-progress > div')).toHaveCount(2);
+  await expect(card).toContainText(/ほか\d+項目は詳細へ/);
+  await assertViewportFits(page);
+  await page.screenshot({ path: testInfo.outputPath('f04-qualified-card-150.png') });
+  await select.click();
+  const lines = page.locator('#achievement-detail .achievement-progress > div');
+  expect(await lines.count()).toBeGreaterThan(2);
+  for (const name of names) {
+    const line = lines.filter({ hasText: `${name}：` });
+    await keyboardRevealControl(page, line); await expect(line).toBeVisible();
+    await expect(line).toContainText('3/3回');
+    await assertViewportFits(page);
+  }
+  await page.screenshot({ path: testInfo.outputPath('f04-qualified-detail-150.png') });
 });
