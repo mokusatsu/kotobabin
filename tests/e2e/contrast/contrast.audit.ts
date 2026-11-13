@@ -26,7 +26,24 @@ test('read-only computed text contrast across actual main UI states', async ({ p
   await page.locator('[data-action="start"]').click(); await panels('input-check');
   await confirmHalfWidthInput(page); await capture('tutorial');
   await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
-  await capture('main-ready'); await typeCurrentGuide(page); await capture('main-playing');
+  await capture('main-ready');
+  const [buttonFrames] = await Promise.all([page.evaluate(async () => {
+    const frames = []; const start = performance.now();
+    while (performance.now() - start < 450) {
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      const button = document.querySelector<HTMLButtonElement>('#deliver-button')!;
+      const label = document.querySelector<HTMLElement>('#deliver-label')!;
+      const style = window.getComputedStyle(button); const text = window.getComputedStyle(label);
+      const rgb = (value: string) => /^rgb\(([^)]+)\)$/.exec(value)?.[1].split(/[, ]+/).filter(Boolean).map(Number);
+      const luminance = (channels: number[]) => channels.map(value => { const c = value / 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; }).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+      const foreground = rgb(text.color); const background = rgb(style.backgroundColor);
+      const a = foreground && luminance(foreground); const b = background && luminance(background);
+      frames.push({ atMs: performance.now() - start, disabled: button.disabled, color: text.color, background: style.backgroundColor,
+        transition: style.transition, ratio: a === undefined || b === undefined ? null : (Math.max(a, b) + .05) / (Math.min(a, b) + .05) });
+    }
+    return frames;
+  }), typeCurrentGuide(page)]);
+  await capture('main-playing-settled');
   await page.keyboard.press('Escape'); await capture('pause');
   await keyboardMenuTo(page, 'settings'); await panels('settings'); await page.keyboard.press('Escape');
   await page.locator('[data-action="resume"]').click(); await page.clock.runFor(90001);
@@ -41,9 +58,10 @@ test('read-only computed text contrast across actual main UI states', async ({ p
   await capture('practice'); await typeCurrentGuide(page); await capture('practice-complete');
   const low = screens.flatMap(screen => screen.measurement.results.filter(row => row.status === 'low').map(row => ({ screen: screen.name, ...row })));
   const unmeasured = screens.flatMap(screen => screen.measurement.results.filter(row => row.status === 'unmeasured').map(row => ({ screen: screen.name, ...row })));
-  const report = { browser: browser.version(), source: process.env.GITHUB_SHA ?? 'local-not-browser-executed', method: 'Computed foreground; solid ancestor background alpha composition until opaque; WCAG sRGB ratio4.5. Images/gradients/painted pseudo/blends/opacity unresolved; decorativeSVG/disabled/inert excluded. No application state injection.', screens, low, unmeasured };
+  const report = { browser: browser.version(), source: process.env.GITHUB_SHA ?? 'local-not-browser-executed', method: 'Computed foreground; solid ancestor background alpha composition until opaque; WCAG sRGB ratio4.5. Images/gradients/painted pseudo/blends/opacity unresolved; decorativeSVG/disabled/inert excluded. No application state injection.', screens, low, unmeasured, buttonFrames };
   const file = info.outputPath('computed-contrast.json'); await mkdir(path.dirname(file), { recursive: true }); await writeFile(file, JSON.stringify(report, null, 2));
   await info.attach('computed-contrast', { path: file, contentType: 'application/json' });
+  console.log('BUTTON_CONTRAST_FRAMES', JSON.stringify(buttonFrames));
   console.log('CONTRAST_SUMMARY', JSON.stringify({ browser: report.browser, screens: screens.length, measured: screens.flatMap(s => s.measurement.results).filter(r => r.ratio !== null).length, low: low.map(({ screen, selector, text, foreground, background, ratio }) => ({ screen, selector, text, foreground, background, ratio })), unmeasured: unmeasured.length }));
   expect(screens.length).toBeGreaterThan(12);
 });

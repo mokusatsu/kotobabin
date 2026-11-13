@@ -13,3 +13,13 @@
 外観のアンチエイリアス・影による輪郭や画像領域全体の最悪コントラスト、全OS/全解像度、未訪問の全状態はこの監査の測定範囲ではない。特に画像上HUDは不確定として残し、必要なら実画像の背面/haloを別途検査する。低contrastが観測されたら親へ具体的に報告し、製品修正は親の担当にする。
 
 JSON全標本はtest-results/contrast配下へ実ファイル保存し、native logへ低値の要約を出す。low/unmeasuredを隠すため監査を止めず全巡回してから報告するため、job successはcontrast全件合格の意味ではない。公式CIのみで実browserを動かし、代替ローカルserverは起動しない。
+
+## 初回の実ブラウザー観測
+
+source `2e777bb`（製品base d0da1aa）、[CI43522125762](https://github.com/mokusatsu/kotobabin/actions/runs/43522125762)、job132218763421、実Chromium158.0.8127.18。監査1例は11.8秒で完走し、33画面/panel・単色計算773標本・複雑背景等で未測定194標本を記録した。artifact14083421403の実JSONも取得して確認した。
+
+確定した低contrastはcity/equipmentの `#city-coin`／`#city-income`／`#city-warehouse`。通常16px/700の数値で、foreground `rgb(179,78,57)`／opaque背景 `rgb(216,231,215)`、比率 **4.0169956827:1**（2画面×3、disabledでも装飾SVGでもない）。親へ報告し、親が製品修正を担当する。
+
+main-playing/practice-completeで有効な `#deliver-label` は白／その瞬間のopaque背景 `rgb(211,219,210)`、**1.4157609506:1**を観測した。初回は語完成の直後2RAFで採取しており、`button`のbackground .15s transition中か定常かを断定しない。次の限定追観測では、native語完成を開始する前から450msを毎RAF観測してdisabled状態・実color/background・比率・transitionを保存し、同じ便の定常状態も採取する。低い瞬間を待って隠す変更ではない。
+
+主な採取済みinputは、確認画面の黒／(255,254,247)が20.77:1、gameの(32,61,54)／(255,254,248)が11.66:1。homeの測定可能最小4.91、停止6.32、設定6.20、手帳4.86、図鑑4.52。これらは当該単色確定標本の最小であり、画像/gradient上の未測定文字を含む画面全体の合格値ではない。結果はopacity/画像/gradientを含み多くが未測定、タイピングの背景画像上HUDも一括合格にはしない。全標本のselectorと不確定理由はJSONに残す。
