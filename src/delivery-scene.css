@@ -29,3 +29,5 @@
 @keyframes delivery-bonus{0%{opacity:1;transform:translateX(0)}70%{opacity:1}100%{opacity:0;transform:translateX(170px)}}
 .delivery-reduced-motion .delivery-dispatch-cart{display:none}
 @media(prefers-reduced-motion:reduce){.delivery-dispatch-cart{display:none}}
+
+.delivery-warehouse-art,.delivery-district-art{position:absolute;top:0;width:23%;height:120px;object-fit:contain;filter:drop-shadow(0 8px 3px #36543a22)}.delivery-warehouse-art{left:2%}.delivery-district-art{right:1%}
