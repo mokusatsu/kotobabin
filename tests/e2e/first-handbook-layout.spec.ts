@@ -6,11 +6,14 @@ for (const height of [720, 820]) for (const font of [100, 125, 150]) test(`first
   await page.addInitScript(() => {
     type Sample = { phase: string; elapsed: number; height: number; documentHeight: number; scrollY: number; pages?: string; focus: string; outside: string[] };
     const samples: Sample[] = []; Object.assign(window, { firstHandbookSamples: samples });
-    let seen = false;
+    let seen = false; let enteredAt = 0;
+    document.addEventListener('keydown', event => {
+      if (event.isTrusted && event.key === 'Enter' && (event.target as HTMLElement).dataset.action === 'handbook') enteredAt = performance.now();
+    }, true);
     new MutationObserver(() => {
       const handbook = document.querySelector<HTMLElement>('.handbook-page');
       if (seen || !handbook) return; seen = true;
-      const start = performance.now();
+      const start = enteredAt || performance.now();
       const sample = (phase: string) => samples.push({ phase, elapsed: performance.now() - start, height: innerHeight,
         documentHeight: document.documentElement.scrollHeight, scrollY, pages: handbook.dataset.ipadPages,
         focus: document.activeElement?.textContent?.trim() ?? '',
