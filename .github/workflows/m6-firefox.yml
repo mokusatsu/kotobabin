@@ -34,6 +34,15 @@ jobs:
           const browser=await firefox.launch();
           console.log(JSON.stringify({os:os.platform(),release:os.release(),browser:"Firefox",version:browser.version(),physicalTarget:false}));
           await browser.close();'
+      - name: Provide a real OS audio service for the headless Firefox runner
+        if: matrix.suite == 'native-audio'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=ci_output
+          pactl set-default-sink ci_output
+          pactl list short sinks
       - name: Diagnose native Firefox audio environment without altering playback
         if: matrix.suite == 'native-audio'
         run: |
