@@ -31,7 +31,7 @@
     "bytes": 99094,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "20d4b0a68f7cd4d364cdb5510dfa73c1b90e76ada8e21b9086a650acc017973f",
-    "png_sha256": "4dd21ddf060f3038dac43010dfaad3fad2b700ac3a65298b82785d5e75a67c7d",
+    "png_sha256": "182e0423fb53f5668c309fbba9a6f14eef68e818bbdc7c4426465990d1831f04",
     "runtime_sha256": "30896e9a501463fef3fdd02ebb1612ca9bee29936139d157cd779b09550b8e25"
   },
   {
@@ -66,7 +66,147 @@
     "bytes": 83920,
     "png_webp_alpha_and_visible_equal": true,
     "native_sha256": "264cbac442928a70b21303b53ce67da213178c65d9b27a6817e29567990fa4cc",
-    "png_sha256": "30342f7356fd6ac699d25ba19c6180f2f06b353bae57ea3b23c43d5c0b38d73a",
+    "png_sha256": "7f936dc476958428e4924c5a8a91a5d22879a9b1ecfb4982cf7993966a904104",
     "runtime_sha256": "d661f272c0de24966f62fb64a0fd69571aaa0765aeb35779b6b13f8d02c010f6"
+  },
+  {
+    "id": "stamp_h03",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      52,
+      32,
+      457,
+      480
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 181226,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "5f86e9fd402ab42137264c7dfb70e57f48c44da08eeae576186595f20ed3b4fa",
+    "png_sha256": "6061817d41f267b154d93973d034b8edbdffe0a3510f3392b55c6df12802924f",
+    "runtime_sha256": "30b57aea325bcd85fd33d58b36ea3c2bfd500500e8e04732c6a1aded1a227ccb"
+  },
+  {
+    "id": "stamp_h04",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      42,
+      50,
+      474,
+      469
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 177544,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "501bfaac4e0a1f62e9edf4cdaed66b28192197350a015a79444aa742027cfb3c",
+    "png_sha256": "66e459ac0532e59b61529aee9b8e7249094b4f603bf3d2d66a510f904c45af98",
+    "runtime_sha256": "527789756f89f1f756404749086f6c65c691f7c417dd7cda08d1d11da9663e65"
+  },
+  {
+    "id": "stamp_h05",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      48,
+      78,
+      464,
+      458
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 142008,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "dc6f1e272ee3fa93943a6905dd720b66e48ac1a2adf2ae8b417eae1497b7d26b",
+    "png_sha256": "fa69ac01a0323b4315d3a317e2dd40f079956ec69d5161693af9eabff0d8eccb",
+    "runtime_sha256": "3eae809c8253835ab6a6d722231ca562b5a85d2761faaa6ab6b1e273ccae3168"
+  },
+  {
+    "id": "stamp_h06",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "output": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "resize": [
+      448,
+      448
+    ],
+    "translate": [
+      32,
+      32
+    ],
+    "alpha_bbox": [
+      32,
+      90,
+      479,
+      428
+    ],
+    "outside_safe_alpha_max": 0,
+    "bytes": 175602,
+    "png_webp_alpha_and_visible_equal": true,
+    "native_sha256": "f671e6b7599363467b544bd26a313bf0b4d0ed0216a231882b151f49fcb343f8",
+    "png_sha256": "61d363076e703a62ca936cf1c7f5fa4bea306d052dc36d881609438d63c6dc2f",
+    "runtime_sha256": "04b5feb650b5c394c486b9fb578ddddc199ab7914428b228b57198d62bf9b6c0"
   }
 ]

@@ -5,6 +5,8 @@ from io import BytesIO
 import cairosvg
 b=Path('public/assets');d=b/'originals/production/family-h'
 r=json.loads((d/'requests.json').read_text());out=[]
+extra=d/'requests-additional.json'
+if extra.exists():r['attempts'].extend(json.loads(extra.read_text())['attempts'])
 for item in r['attempts']:
  if not item['selected_id']:continue
  aid=item['selected_id'];native=b/'originals'/f'{aid}.generated.png';png=b/'originals'/f'{aid}.png';web=b/'achievement_stamp'/f'{aid}.webp'

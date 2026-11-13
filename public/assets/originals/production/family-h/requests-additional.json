@@ -1,0 +1,37 @@
+{
+  "client_date": "2026-11-13 Asia/Tokyo",
+  "method": "Actual imagegen H03–H06 + H06 bridgecontinuity edit; native original preservation, no crop/mask/alpha removal. References viewed stamp_b01; H06 edit references original H06.",
+  "attempts": [
+    {
+      "key": "stamp_h03",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. A LARGE rustic WINDMILL with four wide pale canvas SAILS occupying UPPERHALF. Atitsbase a FULLY LOADED CONNECTED WAGON TRAIN of THREE little timbercargo wagons followsONE curving route in LOWERHALF, so distinct windmillsailsabove and wagontrainbelow. Wagonsconnectedbymetalbars, largeparcelshapes nottinycountable clutter. Circularsweepincomposition, no actualroad drawnontheground. Windmillstonebase/simplewood, noletters/numbers.",
+      "native_generation": "exec-7b6591c9-4b7d-421c-b2f8-27d7c7156f26.png",
+      "selected_id": "stamp_h03"
+    },
+    {
+      "key": "stamp_h04",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. A wooden SORTING TABLE with THREE OUTWARD HANDOVER BRANCHES inthree clearlydifferent directions. One SMALL PARCEL goesleftbranch, one THICK BUNDLE OF PACKAGES goesrearbranch, one FULL BASKET goesrightbranch. Incenter a LARGE SIMPLE SWITCH LEVER withwoodenknob, visiblychoosebranch, mainfocalshape. Viewfromaboveatthreequartermakes3forktablereadable. No arrows, labels, writing, numbers, peopleormachines. Broadshapes, onlythese3kindsofcargo, noextraarms.",
+      "native_generation": "exec-17bd4d05-af47-4fa3-9c38-9a5cfab6b807.png",
+      "selected_id": "stamp_h04"
+    },
+    {
+      "key": "stamp_h05",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. One OPEN UNLETTERED BOOK withcream blankpages. Fromit a NARROW LEAF-SHAPED PATH stretchesoutintotheforegrounddistance. A small BLUE BIRD stands onthatpath gazing STRAIGHT AHEAD alongit. A LITTLE WOOD MAILBOX waits at farfrontendofpath. Bookcornerlarge, leafpathclearnarrowflow, birdandmailboxdistinct, no textualmarkings, no repeatedmanypagefan. No houses/people. Do notdrawleaftextsymbols.",
+      "native_generation": "exec-b1f400af-05d4-43a5-bab0-caa1e2894685.png",
+      "selected_id": "stamp_h05"
+    },
+    {
+      "key": "stamp_h06",
+      "prompt": "New ORIGINAL kotobabin achievement stamp ARTWORK, warm refined handpainted watercolor/gouache with fine natural papergrain inside painted forms, honey ochre/cream/sage/powderblue, quiet storybookworld matchingattachedstyle referenceonly. SQUAREcanvas genuine transparentbackground outside freestandingpaintedscene. Frame-FREE no border/perforations, no text/letters/numbers/labels/UIstate. Clearbigshapes at72px. Generoustransparentoutermargin,noopaque white/beige canvas, no castshadow outsidepainting. Attachedreferencehand/door/parcelmustnotberepeated. THREE DISTINCT MOUNTAIN PEAKS at differentheights, each topped withONE small differentgate. ONE CONTINUOUS slender arched footBRIDGE connects valleysbetweenALLthree peaks, visiblyunbroken windingline fromleftpeakthroughmiddleto rightpeak. Foregroundaquiet hill withwide panoramicview. Largecleartriad silhouettes, sageandbluehills withochrewoodbridge. No separateparallelbridges/roadfork, no numbers, noletters, no signs. Makeallthreegatesvisible.",
+      "native_generation": "exec-7d9812c8-bfca-4fb1-af39-87f39524c08c.png",
+      "selected_id": null,
+      "reason": "Bridge appeared as twounconnectedspans near centralpeak."
+    },
+    {
+      "key": "stamp_h06_connect",
+      "prompt": "EDIT this threepeaksgates scene keepingallmountains/gates/foreground unchanged. FixBRIDGE CONTINUITY only. Current leftwoodbridgeends belowcentralarch atnative~630,380; rightwoodbridgestarts atnative~680,500, appearingasTWOUNCONNECTED bridges. AddaSHORT CLEAR WOODEN BRIDGE SEGMENT that CURVES AROUND FRONT/RIGHT ofmiddlepeaktojointhoseexactends, a smoothdescendingSturnnative630,380→650,425→680,500. Thewoodrailingsanddeck mustbe visibleandcontinuous alongthislink, nothidden behindrock/foliage, not a pathpaintedonground. Entirebridge fromleftgatepastmiddlegateanddown torightgate mustbe visuallytraceable asONE continuous bridge (withjoinedrailing). Keep 3distinctpeakheightsand3gates, noextra bridgebranches, noextraroads, no textnumbers. Preservewarmwatercolorstyle andtransparentouterbackground.",
+      "native_generation": "exec-49951281-b80b-4745-8dae-ea2c3373146b.png",
+      "selected_id": "stamp_h06"
+    }
+  ]
+}
