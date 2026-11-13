@@ -172,3 +172,32 @@ describe('optional nonblocking AudioPlayer', () => {
     player.dispose(); expect(context.active).toHaveLength(0);
   });
 });
+
+describe('audio lifecycle and retry status', () => {
+  it('stops all voices at pause and needs an explicit gesture before playback resumes', async () => {
+    const { player, context } = await ready();
+    player.play('key'); player.play('theme'); await flush();
+    player.pause();
+    expect(player.status).toBe('paused'); expect(context.active).toHaveLength(0);
+    player.play('word'); player.play('theme'); expect(context.active).toHaveLength(0);
+    expect(await player.startFromGesture()).toBe(true);
+    player.play('theme'); await flush(); expect(context.active.filter(source => source.loop)).toHaveLength(1);
+    player.dispose(); expect(player.status).toBe('disposed');
+  });
+  it('can stop only the background loop while final delivery feedback finishes', async () => {
+    const { player, context } = await ready();
+    player.play('theme'); await flush(); player.play('dispatch_full');
+    const delivery = context.sources.at(-1)!;
+    player.stopTheme();
+    expect(context.active).toEqual([delivery]); delivery.end(); await flush();
+    expect(context.active).toHaveLength(0); player.dispose();
+  });
+  it('reports unavailable feedback after decoding failure and recovers on a fresh explicit gesture', async () => {
+    const { player, context } = fixture();
+    context.decodeAudioData.mockRejectedValueOnce(new Error('Temporary decode failure'));
+    await player.startFromGesture(); await flush();
+    expect(player.status).toBe('unavailable');
+    expect(await player.startFromGesture()).toBe(true); await flush();
+    expect(player.status).toBe('ready'); player.play('key'); expect(context.active).toHaveLength(1); player.dispose();
+  });
+});
