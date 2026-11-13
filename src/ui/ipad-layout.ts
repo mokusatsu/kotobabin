@@ -123,6 +123,8 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     setText(panel.nav.querySelector('[data-ipad-count]'), `表示 ${Math.max(1,panel.items.length)} / ${Math.max(1,panel.items.length)}`);
     const indices = panel.items.map((_, i) => i); const bottom = viewport().bottom - 12;
     const focused = document.activeElement;
+    const selection = (focused instanceof HTMLInputElement || focused instanceof HTMLTextAreaElement) && focused.selectionStart !== null
+      ? { start: focused.selectionStart, end: focused.selectionEnd!, direction: focused.selectionDirection ?? undefined } : null;
     const focusedItem = panel.items.findIndex(item => item.nodes.some(node => node === focused || node.contains(focused)));
     const fits = (candidate: readonly number[]) => {
       show(panel, candidate);
@@ -132,6 +134,17 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     panel.target.dataset.ipadOverflow = String(panel.pages.some(page => !fits(page)));
     if (focusedItem >= 0) panel.page = panel.pages.findIndex(page => page.includes(focusedItem));
     go(panel, panel.page, false);
+    // Measurement temporarily hides candidate controls, which can send native focus to the body.
+    // Restore only the same surviving, visible control; never steal focus from another modal/action.
+    const active = document.activeElement;
+    const modal = [...document.querySelectorAll<HTMLDialogElement>('dialog[open]')].at(-1);
+    if (focused instanceof HTMLElement && focused !== document.body && focused !== document.documentElement
+      && focused.isConnected && panel.target.contains(focused) && !focused.closest('[hidden],[inert],[data-ipad-exclude]')
+      && focused.getClientRects().length > 0 && getComputedStyle(focused).visibility !== 'hidden'
+      && (!modal || modal.contains(focused)) && (active === document.body || active === document.documentElement || active === null)) {
+      focused.focus({ preventScroll: true });
+      if (selection && (focused instanceof HTMLInputElement || focused instanceof HTMLTextAreaElement)) focused.setSelectionRange(selection.start, selection.end, selection.direction);
+    }
   }
   function refreshNow() {
     frame = 0; if (destroyed || !root.isConnected) { for (const pending of pendingReveals.splice(0)) pending.resolve(); return; }
