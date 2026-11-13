@@ -31,12 +31,14 @@ for (const reduced of [false, true]) {
     await expect.poll(async () => BigInt((await scene.getAttribute('data-queued-micro'))!)).toBeGreaterThan(0n);
     const moving = scene.locator('[data-delivery-transport][data-state="in-transit"]').first();
     await expect(moving).toBeVisible();
-    const effectId = await moving.getAttribute('data-effect-id'); expect(effectId).toBeTruthy();
-    const transport = scene.locator(`[data-delivery-transport][data-effect-id=${JSON.stringify(effectId)}]`);
-    const startX = (await transport.boundingBox())!.x;
+    const initialVehicle = await moving.evaluate(element => ({ id: element.getAttribute('data-effect-id'), x: element.getBoundingClientRect().x }));
+    expect(initialVehicle.id).toBeTruthy();
+    const transport = scene.locator(`[data-delivery-transport][data-effect-id=${JSON.stringify(initialVehicle.id)}]`);
+    const startX = initialVehicle.x;
     await page.clock.runFor(500);
-    if (reduced && await transport.getAttribute('data-state') === 'in-transit') {
-      expect((await transport.boundingBox())!.x).toBeCloseTo(startX, 0);
+    const progressed = await transport.evaluate(element => ({ state: element.getAttribute('data-state'), x: element.getBoundingClientRect().x }));
+    if (reduced && progressed.state === 'in-transit') {
+      expect(progressed.x).toBeCloseTo(startX, 0);
     } else {
       await expect.poll(async () => (await transport.boundingBox())!.x).toBeGreaterThan(startX);
     }
