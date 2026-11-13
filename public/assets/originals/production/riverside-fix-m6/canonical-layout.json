@@ -1,0 +1,420 @@
+{
+  "shared_water_landward_boundary": [
+    {
+      "x": 1370,
+      "y": 0
+    },
+    {
+      "x": 1365,
+      "y": 200
+    },
+    {
+      "x": 1360,
+      "y": 400
+    },
+    {
+      "x": 1340,
+      "y": 550
+    },
+    {
+      "x": 1310,
+      "y": 640
+    },
+    {
+      "x": 1280,
+      "y": 695
+    },
+    {
+      "x": 1246.203125,
+      "y": 737.578125
+    },
+    {
+      "x": 1240,
+      "y": 770
+    },
+    {
+      "x": 1240,
+      "y": 820
+    },
+    {
+      "x": 1195,
+      "y": 875
+    },
+    {
+      "x": 1150,
+      "y": 940
+    },
+    {
+      "x": 1130,
+      "y": 1000
+    }
+  ],
+  "shared_water_policy": "共通境界を滑らかにつなぎ、右側を水域とする。桟橋の陸側接点を必ず通る。港の積み下ろし場x1158〜1222・y760〜808は陸地とし、水際を最低18map_px右へ離す。川沿いは川の拡幅部、海辺は入り江、高原は湖岸として、同じ水域と同じ港の地区画を使う。",
+  "harbor_pier": {
+    "land_contact_source": {
+      "x": 730,
+      "y": 650
+    },
+    "outer_tip_source": {
+      "x": 904,
+      "y": 716
+    },
+    "land_contact_map": {
+      "x": 1246.203125,
+      "y": 737.578125
+    },
+    "outer_tip_map": {
+      "x": 1291.0625,
+      "y": 754.59375
+    },
+    "rule": "段階1〜5で陸側接点と先端位置を固定する。水面を地区原画に含めず、この構造だけを背景の水域へ重ねる。",
+    "land_building_footprint_policy": "港の建物と柱の接地は原画x720以下・y640以下を基本とし、手前の広場の腰掛けはx680以下・y700以下に置く。屋根の張り出しは許容するが、桟橋以外の床・柱を水域へ接地させない。"
+  },
+  "freight_unloading_site": {
+    "placement_map_offset": {
+      "x": 0,
+      "y": 65
+    },
+    "source_canvas": {
+      "width": 512,
+      "height": 384
+    },
+    "display_size": {
+      "width": 64,
+      "height": 48,
+      "unit": "map_px"
+    },
+    "source_anchor": {
+      "x": 256,
+      "y": 320
+    },
+    "display_bounds_relative_to_district_anchor": {
+      "left": -32,
+      "right": 32,
+      "top": 25,
+      "bottom": 73
+    },
+    "composition_rule": "共通部品として原画の外へ置く。表示矩形が地区画の下端と8map_px重なる部分は前景として扱う。表示条件は物流の共通状態表で管理する。",
+    "harbor_land_keepout_rect": {
+      "left": 1158,
+      "right": 1222,
+      "top": 760,
+      "bottom": 808
+    },
+    "harbor_water_clearance_map_px": 18
+  },
+  "routes": [
+    {
+      "id": "route_residential",
+      "district_id": "residential",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          700,
+          580
+        ],
+        [
+          370,
+          415
+        ]
+      ],
+      "vehicle_endpoint": [
+        370,
+        415
+      ],
+      "terminal_socket": [
+        370,
+        415
+      ],
+      "terminal_connector": [
+        [
+          370,
+          415
+        ],
+        [
+          370,
+          415
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    },
+    {
+      "id": "route_market",
+      "district_id": "market",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          740,
+          560
+        ],
+        [
+          540,
+          460
+        ],
+        [
+          760,
+          350
+        ]
+      ],
+      "vehicle_endpoint": [
+        760,
+        350
+      ],
+      "terminal_socket": [
+        760,
+        345
+      ],
+      "terminal_connector": [
+        [
+          760,
+          350
+        ],
+        [
+          760,
+          345
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    },
+    {
+      "id": "route_workshop",
+      "district_id": "workshop",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          830,
+          585
+        ],
+        [
+          1160,
+          420
+        ]
+      ],
+      "vehicle_endpoint": [
+        1160,
+        420
+      ],
+      "terminal_socket": [
+        1160,
+        415
+      ],
+      "terminal_connector": [
+        [
+          1160,
+          420
+        ],
+        [
+          1160,
+          415
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    },
+    {
+      "id": "route_park",
+      "district_id": "park",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          780,
+          560
+        ],
+        [
+          520,
+          690
+        ],
+        [
+          610,
+          735
+        ],
+        [
+          420,
+          830
+        ],
+        [
+          370,
+          805
+        ]
+      ],
+      "vehicle_endpoint": [
+        370,
+        805
+      ],
+      "terminal_socket": [
+        370,
+        800
+      ],
+      "terminal_connector": [
+        [
+          370,
+          805
+        ],
+        [
+          370,
+          800
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    },
+    {
+      "id": "route_station",
+      "district_id": "station",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          1040,
+          690
+        ],
+        [
+          910,
+          755
+        ],
+        [
+          1020,
+          810
+        ],
+        [
+          810,
+          915
+        ],
+        [
+          760,
+          890
+        ]
+      ],
+      "vehicle_endpoint": [
+        760,
+        890
+      ],
+      "terminal_socket": [
+        760,
+        885
+      ],
+      "terminal_connector": [
+        [
+          760,
+          890
+        ],
+        [
+          760,
+          885
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    },
+    {
+      "id": "route_harbor",
+      "district_id": "harbor",
+      "points": [
+        [
+          760,
+          550
+        ],
+        [
+          1040,
+          690
+        ],
+        [
+          950,
+          735
+        ],
+        [
+          1140,
+          830
+        ],
+        [
+          1190,
+          805
+        ]
+      ],
+      "vehicle_endpoint": [
+        1190,
+        805
+      ],
+      "terminal_socket": [
+        1190,
+        800
+      ],
+      "terminal_connector": [
+        [
+          1190,
+          805
+        ],
+        [
+          1190,
+          800
+        ]
+      ],
+      "line_method": "SVGの折れ線。経路の本線は傾き±1/2で、車両4方向と一致。終端の0〜5px接続は積み下ろし場の下に隠す。",
+      "width_map_px": 8,
+      "track_sleeper_spacing_map_px": 12,
+      "protected_corridor_radius_map_px": 24,
+      "asset_count": 0
+    }
+  ],
+  "anchors": {
+    "residential": {
+      "x": 370,
+      "y": 350
+    },
+    "market": {
+      "x": 760,
+      "y": 280
+    },
+    "workshop": {
+      "x": 1160,
+      "y": 350
+    },
+    "park": {
+      "x": 370,
+      "y": 735
+    },
+    "station": {
+      "x": 760,
+      "y": 820
+    },
+    "harbor": {
+      "x": 1190,
+      "y": 735
+    }
+  },
+  "central_depot_anchor": {
+    "x": 760,
+    "y": 510
+  }
+}

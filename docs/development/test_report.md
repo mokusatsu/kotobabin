@@ -217,3 +217,21 @@ PR #19で得点画面はEnterまたはTabによる明示選択で進むように
 同じ統合SHAからビルドし、同じオーナー限定Sitesの保存版7へ配信した。保存版ID `appgprj_6af71c8369c88191b2d3b1093f2dbdda~appgver_5779c23d8f508191875df8d1e8b59dbb` のsource provenanceが一致し、配信 `appgdep_6af766546510819185257be8ffd4bc6a` はsucceeded。実公開URL https://kotobabin.mokusatsu.chatgpt.site に対して、同じ独立シナリオを実Chromiumで2件成功（3.9分）。1180×720通常/1180×820動き軽減、自然90.452/90.545秒、各22件の実績開封、再挑戦、実資源による建設・50コイン設備購入を確認。86観測地点すべて文書寸法=画面寸法、scroll=(0,0)。ログ `/workspace/work/m5-handoff-live-e2e-artifacts/sanitized.log`。認証は公式サービスアクセスをNode側の同一Site通信だけへ付与し、trace/videoを無効化した。スクリーンショットは実操作の補助であり代替ではない。物理iPad/OS IME/実機性能/試聴/全資材の厳密検収は未完。
 
 この記録の追記は文書のみで、公開版のアプリ・テスト・資材を変更していない。配信のソースは上記保存版のprovenanceで追跡する。
+
+
+## M6 最終候補108da49の公式実ブラウザー検証
+
+[通常CI43510839854](https://github.com/mokusatsu/kotobabin/actions/runs/43510839854)は全5ジョブ成功。307単体/33ファイル、83機能E2E、独立本番のChromium/WebKit各2経路、実音声各3。1180×720/820と真の文字100/125/150%で、4枠装着のホーム・報酬鑑賞・台紙ページ・キーボード操作を検証した。動的OS軽減は実media changeのイベント内と次の3RAFを記録し、輸送中の静止・解除・得点/完成数不変・次語受付を確認した。別タブ通知の遅延だけを明示的に注入した試験は、実IDBの所有権拒否から未保存保護・実キーボード確認・控えdownload・引継ぎへ到達した。
+
+[性能43510839690](https://github.com/mokusatsu/kotobabin/actions/runs/43510839690)も同じ独立suite/閾値で2成功。実入力250打でhandler P953.5ms、表示17.1ms、longTasks0、72定義/960語filter37.56ms。これはCIホストの指標で、物理iPadの性能ではない。
+
+[曲線輸送43510839791](https://github.com/mokusatsu/kotobabin/actions/runs/43510839791)両engine成功、[発展都市43510839755](https://github.com/mokusatsu/kotobabin/actions/runs/43510839755)の都市両job成功、[復帰43510839888](https://github.com/mokusatsu/kotobabin/actions/runs/43510839888)は各4成功、[Firefox43510839805](https://github.com/mokusatsu/kotobabin/actions/runs/43510839805)は自然90秒2件と実音声3件成功。都市は全6段階5・鉄道・研究3種5・再出発・実UIバックアップ復元・再読込の明示引継ぎを確認した。
+
+新規独立sakuraiの4組×両engineは実行完了、担当自身の観察・出典付きレビュー判定待ち。追加のフル装着後のreadonly reload状態は別CIで確認中。Sites配信前であり、108da49を公開済みと扱わない。OS実機/IME/JIS・US/実ブラウザー200%/初見6名/残る資材最終検収は未完。全72表示用の合成都市fixtureを通常の全解除証拠にはしない。
+
+
+## M6 追修正329の受入
+
+通常43515540759は307単体・101機能E2E・独立両2・音声各3を含む全5成功。view-onlyの4枠装着fixtureでreadonly reloadを追加し、全文/文字/原画最小サイズを保ったままHUDを分離した。全25画面条件の43516884760（workflowのみ異なるbc6752d、src/tests tree同一）はChromium/WebKit各25成功。12の所有状態caption検査とhelp/地名/footerの非重複を含む。
+
+独立担当は同一無改変シナリオで再び8経路を自然90秒・27個別開封・まとめ・鑑賞まで完遂し、所有状態の指摘解消を確認した。出典・因果・元の留保は reviews/sakurai-m6-retest.md へ保存。初回WebKit手帳の一時的な縦はみ出しは318msに存在し、キー操作なしで1856msまでに収束したと観測し、無条件の瞬間的な画面一致には合格を広げない。

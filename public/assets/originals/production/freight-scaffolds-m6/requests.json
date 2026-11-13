@@ -1,0 +1,23 @@
+[
+  {
+    "id": "city_freight_terminal",
+    "prompt": "Production game sprite, warm watercolor and matte gouache on a TRULY TRANSPARENT RGBA 4:3 canvas, no paper rectangle. Japanese storybook postal town style, ivory #F5F1E7, forest green #24594F, ochre timber, subdued vermilion accents. Soft upper-left light. Elevated orthographic isometric perspective, horizontal ground axes slope +1/2 and -1/2, vertical posts vertical. Broad legible silhouettes, no fine text. NO text, letters, numerals, progress bars, labels, ground, foundation slab, scenery, people, rails, road, watercolor wash outside object. Entire object isolated with generous transparent padding. A LOW freight loading platform, not a passenger station: low timber deck with sturdy short legs, a small open-sided forest-green roof shelter over plain tan parcels on one side. No enclosed house. Roof about half platform width; low broad horizontal silhouette, distinct from a large postal hub or station. Three quarter isometric loading front visible. Main object inside x8%-92% y10%-84%; bottom center at 50%,83.33%. NO rails or trains. Minimal short soft contact shadow only tightly under deck, no broad ground wash.",
+    "transparent_background": true,
+    "references": [],
+    "native_source": "/workspace/generated_images/exec-3e76a3b6-e762-4c90-972c-fb030c7cafcc.png"
+  },
+  {
+    "id": "scaffold_medium",
+    "prompt": "Production game sprite, warm watercolor and matte gouache on a TRULY TRANSPARENT RGBA 4:3 canvas, no paper rectangle. Japanese storybook postal town style, ivory #F5F1E7, forest green #24594F, ochre timber, subdued vermilion accents. Soft upper-left light. Elevated orthographic isometric perspective, horizontal ground axes slope +1/2 and -1/2, vertical posts vertical. Broad legible silhouettes, no fine text. NO text, letters, numerals, progress bars, labels, buildings, ground, foundation slab, scenery, people, rails, road, watercolor wash outside object. Entire object isolated with generous transparent padding. Exactly TWO stacked levels of open wooden construction scaffold framing, long horizontal ochre beams, stout posts and diagonal bracing, a single small ivory cloth panel attached to RIGHT side only, no building concealed or painted inside, all gaps transparent. One coherent open frame with small wooden plank stack. Broad enough to wrap a small house facade. 4:3 canvas, scaffold object entirely inside x40%-92%, y30%-83.33%; bottom around y83.33%. The LEFT LOWER RECTANGLE x6.25%-34.375%, y57.29%-95.83% MUST be completely alpha zero: reserved for a separate shop. No beams, planks, cloth, shadow or splashes in that rectangle. Leave it empty by composition, not painted white.",
+    "transparent_background": true,
+    "references": [],
+    "native_source": "/workspace/generated_images/exec-cb97d2ac-d8b6-4596-8a7c-2f770094bc7d.png"
+  },
+  {
+    "id": "scaffold_large",
+    "prompt": "Production game sprite, warm watercolor and matte gouache on a TRULY TRANSPARENT RGBA 4:3 canvas, no paper rectangle. Japanese storybook postal town style, ivory #F5F1E7, forest green #24594F, ochre timber, subdued vermilion accents. Soft upper-left light. Elevated orthographic isometric perspective, horizontal ground axes slope +1/2 and -1/2, vertical posts vertical. Broad legible silhouettes, no fine text. NO text, letters, numerals, progress bars, labels, buildings, ground, foundation slab, scenery, people, rails, road, watercolor wash outside object. Entire object isolated with generous transparent padding. Exactly THREE stacked levels of open wooden construction scaffold framing, wide lower work enclosure made of posts and beams with open center, stout ochre posts and diagonal bracing, a small folded ivory work cloth on RIGHT side only, no building concealed or painted inside, all frame gaps transparent. Larger and taller than a two-level scaffold; sturdy broad shape. 4:3 canvas, scaffold entirely inside x40%-92%, y16%-83.33%; bottom around y83.33%. The LEFT LOWER RECTANGLE x6.25%-34.375%, y57.29%-95.83% MUST be completely alpha zero: reserved for separate shop. No beams, cloth, planks, shadow or splashes in that rectangle. Leave it empty by composition, not painted white.",
+    "transparent_background": true,
+    "references": [],
+    "native_source": "/workspace/generated_images/exec-86312b06-0b51-4b51-8a2b-186eb433f382.png"
+  }
+]

@@ -1,0 +1,76 @@
+{
+  "method": "Actual imagegen transparent_background:true. Six new generations and two imagegen edits. Existing F/I art and all five screen refs inspected visually, not supplied to generator. No masking, threshold, trimming or crop.",
+  "correction": "Initial L02/L05 previews showed brown/green hidden RGB and were mistakenly suspected of visible haze. RGBA samples and opaque paper composites verified background alpha0: viewer false positive, no real background defect. Unnecessary edits were already generated and selected as square compositions. Legacy rejected-haze filenames retain initial classification only, and are not evidence of a true defect.",
+  "attempts": [
+    {
+      "id": "stamp_l01",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A THIN OPEN BOOK STANDS UPRIGHT like a welcoming DOUBLE DOOR GATE, its two covers and cream page thickness clearly visible. Through the broad central doorway a NEW SMALL PATH recedes into a tiny green garden of UNUSUAL SHAPED FLOWERS. Make the book-gate and path entrance large and clear. A compact self-contained vignette, no shelf, no book pile.",
+      "native_generation": "exec-87cebdbc-5127-4024-85a4-4ff6226dd4af.png",
+      "selected": true,
+      "rejected": false,
+      "classification": "Selected original"
+    },
+    {
+      "id": "stamp_l02",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A symmetrical TWO-DOOR WOODEN BOOKCASE opens sideways like a hinged cabinet. The LEFT WING holds orderly rows of cream, sage, and terracotta books. The RIGHT WING reveals an airy small READING ALCOVE with one welcoming wooden CHAIR. Clear central brass HINGE and generous central open space. Wide balanced double-wing silhouette, visible wood thickness, no text on any books.",
+      "native_generation": "exec-e02eaf61-3a7c-4de8-902e-77a1687dde87.png",
+      "selected": false,
+      "rejected": false,
+      "classification": "Unselected initial version; viewer false-positive prompted unnecessary edit."
+    },
+    {
+      "id": "stamp_l03",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A TALL ROUND-ARCH TOP BOOKCASE with large simple orderly books rises vertically, with short broad STEPS at its foot and a HIGH LADDER leaning up along the front. A small green-and-ochre GLOBE sits above its rounded top, visibly spherical with no labels. Strong tall silhouette, big arch and ladder, little ground footprint, no other furniture.",
+      "native_generation": "exec-cc587673-78ac-4063-85af-edb165788403.png",
+      "selected": true,
+      "rejected": false,
+      "classification": "Selected original"
+    },
+    {
+      "id": "stamp_l04",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LOW WIDE SHALLOW WOODEN BOX holds several SHORT ROUNDED-COVER BOOKLETS arranged like an open FAN. Beside the box a SMALL BIRD leans forward to PECK one booklet. Honey wood, cream pages, sage and terracotta covers, tiny brown-and-cream bird. Make the low box, fan of short booklets, and bird distinct large simple shapes. No full bookcase or tall book.",
+      "native_generation": "exec-923b66af-4c2e-48d0-9f16-1a01f65f2156.png",
+      "selected": true,
+      "rejected": false,
+      "classification": "Selected original"
+    },
+    {
+      "id": "stamp_l05",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LARGE WIDE OPEN ENCYCLOPEDIA with a clear CENTRAL BINDING and stepped FOLDOUT PAGES extending sideways. From the cream paper rises a small charming POPUP SCENE of a HOUSE, a TREE, and a BRIDGE. Large legible paper folds, a broad horizontal silhouette, sage house roof and terracotta bridge, no printing or text anywhere on the blank pages.",
+      "native_generation": "exec-ce5b14dc-4624-47be-b90d-656ff0b8f425.png",
+      "selected": false,
+      "rejected": false,
+      "classification": "Unselected initial version; viewer false-positive prompted unnecessary edit."
+    },
+    {
+      "id": "stamp_l06",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream paper, forest sage greenery, restrained terracotta, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A LONG BLANK PARCHMENT SCROLL flows in a continuous broad S CURVE down from a small WOODEN DESK, then its lower end curls upward like a little BRIDGE. Beside it stands a LARGE DEEP FOREST-GREEN INK POT holding one CREAM FEATHER QUILL. The flowing S-shaped paper and prominent round ink pot are the main identifying shapes. Show empty cream paper with absolutely no writing, strokes, symbols or letters.",
+      "native_generation": "exec-c0740a5d-d335-4da2-ba58-cf0a7beec963.png",
+      "selected": true,
+      "rejected": false,
+      "classification": "Selected original"
+    }
+  ],
+  "edits": [
+    {
+      "id": "stamp_l02",
+      "prompt": "Edit this artwork to preserve the hinged bookcase, books, and reading chair composition and watercolor style, but REMOVE ALL brown surrounding glow, haze, background paint, vignette and shadow. Outside the wooden cabinet must be genuine fully transparent empty space, with clean natural watercolor object edges. Place the whole object comfortably centered inside a SQUARE transparent canvas with 12 percent empty transparent margin. No cropping, lettering, symbols or frames. The two panels retain the clear central hinges; left books and right chair.",
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-e02eaf61-3a7c-4de8-902e-77a1687dde87.png"
+      ],
+      "native_generation": "exec-7b1543a8-f40d-47bd-92e5-7b05c1c0b6c1.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_l05",
+      "prompt": "Edit this artwork to preserve the pop-up encyclopedia, house, tree, bridge and visible central book binding, but REMOVE ALL surrounding glow, green/brown haze, background paint, vignette and shadow. Outside the book and its pop-up objects must be genuine fully transparent empty space, with clean natural watercolor object edges. Place the whole object comfortably centered inside a SQUARE transparent canvas with 12 percent empty transparent margin. No cropping, lettering, symbols or frames. Preserve the sideways foldout pages and wide book silhouette.",
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-ce5b14dc-4624-47be-b90d-656ff0b8f425.png"
+      ],
+      "native_generation": "exec-a3195114-cb79-402f-84f9-6ffda73fc37f.png",
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}

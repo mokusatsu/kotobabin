@@ -1,0 +1,45 @@
+{
+  "method": "Five independent actual image_gen calls, one per final image; opaque backgrounds. Existing A/B and five representative screens inspected for style only; no image references submitted. No rejected attempts or image editing.",
+  "attempts": [
+    {
+      "id": "postcard_c",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A meticulously cared-for FLORIST'S WINDOW WORKSPACE. Large foreground focus: two natural human hands carefully wrapping a fresh bouquet in thin translucent cream wrapping paper on a wooden counter. View close enough to see hands gently folding paper around stems, not a portrait; arms enter from bottom edge. Midground a broad sunny window, behind it and beside it tidy shelves with clear glass vases of water, flowers and potted plants. Big quiet areas of thin wrapping paper and glowing water droplets express precise calm work. Flowers include soft cream daisies, muted rust blossoms and green foliage. No price tags, packaging writing or shop names. Make bouquet-wrapping hands and window unmistakable.",
+      "native_generation": "exec-cb587b90-2086-49a2-9a40-4986c9ee3f70.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "postcard_d",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A broad STATION FORECOURT SIDEWALK with sweeping curved roadway leads toward a long railway PLATFORM CANOPY receding deeply into distance at right. In foreground, a cheerful delivery rider actively pedaling a rust red BICYCLE with a large tan postal satchel moves lightly across the scene, whole bicycle readable inside composition. Beyond the sidewalk, a dark forest-green passenger TRAIN waiting beside the platform before departure. Simple cloth flags blow in wind; flag shapes and curved road convey brisk movement. Old cream station, terracotta roof, warm early sunshine. Any clock has a completely plain unmarked dial with two hands only; no station name, signage, numbers or writing.",
+      "native_generation": "exec-45e1a009-bf00-43d2-980d-3eed990bd18e.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "postcard_e",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A HIGH-CEILINGED LIBRARY READING ROOM, generous tall interior with high arching wooden roof beams. Large CENTRAL WOODEN READING TABLE holds ONE OPEN BOOK with entirely blank cream pages. TALL BOOKSHELVES flank BOTH LEFT AND RIGHT sides, book spines entirely plain without lettering, decorative colored cloth only. Far wall has a large window pouring soft daylight inward. A visible warm wood floor pathway leads the viewer from foreground toward the OPEN BOOK spread at center, a journey following words implied by space rather than printed words. Warm cream walls, sage details, ochre timber, few terracotta book covers. Peaceful, no people needed, no text anywhere.",
+      "native_generation": "exec-7532cf3d-4c42-4695-99b2-8866240bfe8f.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "postcard_f",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A WOODWORKER'S WORKBENCH beside a large sunny WINDOW. In the near foreground, a visibly UNFINISHED SMALL WOODEN BOX of a simple rectangular design: rough uneven top rim, still-being-planed outer faces, curly fresh shavings and a hand plane nearby. At CENTER, prominently show a FINISHED SMALL BOX OF THE SAME DESIGN, with precisely smooth straight contour, fitted neat lid and clean corners. Both boxes read as the same form at different craftsmanship stages. On back wall an orderly organized set of hand tools hangs on wooden pegs: saw, mallet, chisels. Soft sun from window makes neat finished edges glow. Practicing the same shape leads to mastery. No tool labels, marked ruler, drawn plans, digits or writing.",
+      "native_generation": "exec-4840890d-5998-4a6c-ab97-1ca754592e23.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "postcard_g",
+      "prompt": "Paint one original full-scene kotobabin reward postcard, LANDSCAPE aspect ratio 8:5. Warm hand-painted Japanese storybook watercolor and gouache, gentle visible paper grain, soft handmade pigment edges, painterly sunlight, cream plaster, honey wood, sage and forest green, restrained rust terracotta. Rich affectionate specific lived-in scene with coherent perspective, broad readable shapes, refined illustration matching a small postal town. OPAQUE edge-to-edge full rectangular scene, no transparency, no blank outer margin, no frame. Important subject safely inside central 90% of canvas. Absolutely no typography, readable letters, digits, names, signs, captions, logos, watermarks, interfaces, badges or achievement states. A serene COBBLESTONE RIVERSIDE QUAY following a gently CURVING RIVER. In foreground, a wooden JETTY prominently holds several STACKED LARGE SHIPPING CRATES, plain wood boxes with rope and entirely blank tags. In middle and far distance, a LOW STONE ARCH BRIDGE crosses the river, and a small wooden CARGO BOAT carrying parcels glides slowly along it. Broad turquoise-green water flow and broad stacked crate shapes form the main composition, quiet everyday continuing deliveries. Cream houses with rust roofs, soft trees and flowers line the far bank, gentle upper-left morning light. Show both stone quay and wooden jetty clearly, no writing on cargo tags or anywhere.",
+      "native_generation": "exec-8b2fc8c1-09fb-469b-bfbb-089926676b91.png",
+      "transparent_background": false,
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}

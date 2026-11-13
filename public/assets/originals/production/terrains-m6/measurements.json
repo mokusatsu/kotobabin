@@ -1,0 +1,252 @@
+[
+  {
+    "id": "terrain_seaside",
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "output_size": [
+      3200,
+      2000
+    ],
+    "output_mode": "RGB",
+    "transparent": false,
+    "source_to_output_scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "aspect_ratio_rounding_difference_percent": -0.07560483870967527,
+    "logical_canvas": [
+      1600,
+      1000
+    ],
+    "anchor": [
+      1600,
+      1000
+    ],
+    "safe_rect": [
+      0,
+      0,
+      3200,
+      2000
+    ],
+    "crop": false,
+    "sha256": {
+      "originals/production/terrains-m6/native/terrain_seaside.png": "b4608c1f180a317de048310d1a2479754a7c74b226d49a8880f341b9d67d98a0",
+      "originals/terrain_seaside.png": "6e13ca7acab195e959632897cf552b343e4e8b3c1cdd96e02193a0efcd11ea1f",
+      "terrain/terrain_seaside.webp": "ca078fd281e0b354cedb781e9fa04c6ba9d1c00863a728baf188cfeedeb930b9"
+    },
+    "rgb_lossless_roundtrip_equal": true,
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "y": 0,
+          "canonical_x": 1370,
+          "observed_first_three_water_x": 1370.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "y": 200,
+          "canonical_x": 1365,
+          "observed_first_three_water_x": 1364.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 400,
+          "canonical_x": 1360,
+          "observed_first_three_water_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 550,
+          "canonical_x": 1340,
+          "observed_first_three_water_x": 1339.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 640,
+          "canonical_x": 1310,
+          "observed_first_three_water_x": 1308.5,
+          "delta_map_px": -1.5
+        },
+        {
+          "y": 695,
+          "canonical_x": 1280,
+          "observed_first_three_water_x": 1278.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "y": 737.578125,
+          "canonical_x": 1246.203125,
+          "observed_first_three_water_x": 1246.5,
+          "delta_map_px": 0.296875
+        },
+        {
+          "y": 770,
+          "canonical_x": 1240,
+          "observed_first_three_water_x": 1240.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "y": 820,
+          "canonical_x": 1240,
+          "observed_first_three_water_x": 1238.0,
+          "delta_map_px": -2.0
+        },
+        {
+          "y": 875,
+          "canonical_x": 1195,
+          "observed_first_three_water_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 940,
+          "canonical_x": 1150,
+          "observed_first_three_water_x": 1150.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "y": 1000,
+          "canonical_x": 1130,
+          "observed_first_three_water_x": 1128.0,
+          "delta_map_px": -2.0
+        }
+      ],
+      "all_integer_rows_delta_range_map_px": [
+        -2.6666666666667425,
+        0.15000000000009095
+      ],
+      "harbor_unloading_water_pixels": 0,
+      "harbor_unloading_pixel_count": 12288,
+      "harbor_right_edge_to_first_water_min_map_px": 16.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixels": 551579
+    }
+  },
+  {
+    "id": "terrain_highland",
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "output_size": [
+      3200,
+      2000
+    ],
+    "output_mode": "RGB",
+    "transparent": false,
+    "source_to_output_scale": [
+      2.01765447667087,
+      2.0161290322580645
+    ],
+    "aspect_ratio_rounding_difference_percent": -0.07560483870967527,
+    "logical_canvas": [
+      1600,
+      1000
+    ],
+    "anchor": [
+      1600,
+      1000
+    ],
+    "safe_rect": [
+      0,
+      0,
+      3200,
+      2000
+    ],
+    "crop": false,
+    "sha256": {
+      "originals/production/terrains-m6/native/terrain_highland.png": "94efa25eb67d0b07e432a1f517739f8130cf9aef13fa0ebe36cc6b2cc8beb825",
+      "originals/terrain_highland.png": "dae1b25d67200540e7e331767c0778765e70cbb0a346372337f5b7d4faaa6864",
+      "terrain/terrain_highland.webp": "70f673d8d12ab1799b436e18f8eae02e47fceb6a8e6069ce8d4967d251a87413"
+    },
+    "rgb_lossless_roundtrip_equal": true,
+    "diagnostics": {
+      "shoreline_samples": [
+        {
+          "y": 0,
+          "canonical_x": 1370,
+          "observed_first_three_water_x": 1370.5,
+          "delta_map_px": 0.5
+        },
+        {
+          "y": 200,
+          "canonical_x": 1365,
+          "observed_first_three_water_x": 1365.0,
+          "delta_map_px": 0.0
+        },
+        {
+          "y": 400,
+          "canonical_x": 1360,
+          "observed_first_three_water_x": 1359.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 550,
+          "canonical_x": 1340,
+          "observed_first_three_water_x": 1339.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 640,
+          "canonical_x": 1310,
+          "observed_first_three_water_x": 1309.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 695,
+          "canonical_x": 1280,
+          "observed_first_three_water_x": 1279.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 737.578125,
+          "canonical_x": 1246.203125,
+          "observed_first_three_water_x": 1245.5,
+          "delta_map_px": -0.703125
+        },
+        {
+          "y": 770,
+          "canonical_x": 1240,
+          "observed_first_three_water_x": 1239.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 820,
+          "canonical_x": 1240,
+          "observed_first_three_water_x": 1239.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 875,
+          "canonical_x": 1195,
+          "observed_first_three_water_x": 1194.5,
+          "delta_map_px": -0.5
+        },
+        {
+          "y": 940,
+          "canonical_x": 1150,
+          "observed_first_three_water_x": 1149.0,
+          "delta_map_px": -1.0
+        },
+        {
+          "y": 1000,
+          "canonical_x": 1130,
+          "observed_first_three_water_x": 1128.5,
+          "delta_map_px": -1.5
+        }
+      ],
+      "all_integer_rows_delta_range_map_px": [
+        -2.1666666666667425,
+        0.650000000000091
+      ],
+      "harbor_unloading_water_pixels": 0,
+      "harbor_unloading_pixel_count": 12288,
+      "harbor_right_edge_to_first_water_min_map_px": 17.5,
+      "route_corridor_water_pixels": 0,
+      "route_corridor_pixels": 551579
+    }
+  }
+]

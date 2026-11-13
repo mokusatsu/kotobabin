@@ -1,0 +1,110 @@
+{
+  "policy": "Actual imagegen edits with coordinate templates; alloldnative/export/provenance preserved history; fullcanvasportrait normalization only, no crop/mask/threshold/paintfitting.",
+  "attempts": [
+    {
+      "id": "s1-fullguide",
+      "prompt": "GEOMETRY-CORRECTED HARBOR STAGE 1. FIRST image is a structural placement guide on1024x768 transparent canvas. SECOND image is the existing watercolor harbor style reference. Paint a beautiful cozy Japanese wooden waiting hut and ONE narrow wooden pier in the EXACT FIRST GUIDE POSITIONS, preserving full4:3canvas. Do NOT center, enlarge, zoom or crop the structure. Guide is only a template, not final rendering. Hut occupies x440..720,y340..640: low gray-green tiled gable roof, warm plank walls, front long bench and one tiny waiting person at doorway. Front supporting step must touch(512,640). Main building floors and columns stay LEFT of x720 and ABOVE y640. A single thin plank pier runs diagonally DOWN-RIGHT from centerline contact(730,650) to final-plank center(904,716), with roughly24px deck width; its final plank must visibly cover pixel(904,716), not end before it. The pier deck must also visibly cover(730,650). Copy guide pier's direction,length and endpoints EXACTLY. Pier may extend to x922,y730; that is still inside safe area. Add one low mooring bollard and a small coiled rope on pier, but keep tip point on wood. Entire art within x64..959,y48..735. Reserved shop rectangle x64..351,y440..735 must remain alpha0, as must every empty background pixel. NO terrain, water, shoreline, grass plane, ground shadow, opaque backdrop, boats, fish, birds, text, numbers, signs, labels or UI. Warm fine watercolor grain inside physical objects with crisp readable outlines. Same original muted slate roof and honey plank palette. Transparent RGBA background and clean gaps under benches and structural supports. Geometry guide takes priority over old incorrectly positioned pier.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s1-structural-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/city_harbor_s1.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-72bc93af-99a0-423b-ba7c-10403db032a3.png",
+      "disposition": "Rejected: physical art17px high; requiredpoints empty; alpha1 outside safe/reserved.",
+      "transparent_background": true,
+      "style_reference_preserved_snapshot": "history/city_harbor_s1.png"
+    },
+    {
+      "id": "s1-down17-edit",
+      "prompt": "Precise correction of attached harbor stage1 sprite. KEEP the SAME 4:3 full transparent canvas and exactly the same building/pier sizes and x positions. Move ALL PHYSICAL ART DOWN exactly17 pixels in logical1024x768 coordinates (24 pixels on native1448x1086). Do not move canvas. Current front step ends near y623; its supporting bottom must reach y640 and cover point(512,640). Current pier deck lies above required coordinates: after moving down, its actual wooden deck must cover both(730,650) and(904,716). The outer final plank center is(904,716), its bottom may reach y732 but NEVER beyond736. Keep one diagonal narrow pier, same length and direction. Main building supports stay x<=720 and y<=640; only pier extends beyond. Clean up ALL faint stray background pixels: outside real physical illustration every pixel must be fully alpha0, including all outer margins and reserved shop rectangle x64..351,y440..735. No background haze or colored noise, no semitransparent speckles. Whole illustration must fit safe x64..959,y48..735. Preserve watercolor illustration, hut, bench, person, rope and bollard with no redesign or new objects. Transparent background; no terrain, water, floor, text, numbers or UI. This is a position and transparent-noise correction only.",
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-72bc93af-99a0-423b-ba7c-10403db032a3.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-1425cb1b-36ea-4e74-ad70-bcf9ba6b8a0e.png",
+      "disposition": "Rejected: pierA filled but mainfoot/tip empty; reservedalpha1 remains.",
+      "transparent_background": true
+    },
+    {
+      "id": "s1-portrait",
+      "prompt": "Paint the FIRST structural template into the beautiful watercolor architectural STYLE of SECOND image. FIRST IMAGE is a PORTRAIT608x688 canvas and its geometry takes absolute priority; output SAME PORTRAIT ASPECT, not4:3. Do NOT center or zoom the buildings. Preserve all FIRST IMAGE physical positions and transparent margins. This portrait will later be placed unchanged at(352,48) on1024x768 canvas. Therefore local coordinates matter: hut front step at(160,592); pier centerline contact(378,602); final-plank center(552,668). Actual opaque wooden deck must visibly cover BOTH pier points and extend through the final point, not end before it. Keep guide's diagonal long narrow pier and low wooden hut, not old reference's short pier. Hut has low gray-green tiled gable roof, warm plank walls, front long bench, one tiny waiting person, muted sage curtain. Add low bollard and coiled rope at outer pier end. Preserve guide's hut footprint with front supporting bottomstep covering local(160,592). Main building supports stay left of localx368 and above localy592; only pier extends right/down. No building, floor, posts or terrain over water except pier. Delicate warm Japanese watercolor grain only inside opaque physical objects. Genuine transparent background and clear gaps. No scenery, water, ground, grass, floor plane, shadows outside structures, letters, words, numbers, labels, UI or border. Preserve portrait608:688 framing and first guide shapes exactly, even if much of upper canvas is empty. No black background painted.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s1-portrait-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/city_harbor_s1.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-95b79631-f3be-44de-82e7-ae0a9fff1918.png",
+      "disposition": "Selected; measuredafterfullcanvas608x688 placement352,44. Allcontactsopaque, safe/reservedalpha0.",
+      "transparent_background": true,
+      "style_reference_preserved_snapshot": "history/city_harbor_s1.png"
+    },
+    {
+      "id": "s2-grow",
+      "prompt": "Edit attached corrected harbor STAGE1 into STAGE2. Preserve the SAME PORTRAIT608:688 canvas and framing, no zoom/recentering. Keep the existing waiting hut, its front step and single diagonal pier in EXACTLY the same positions, size and direction. ADD a compact LOW ROOFED L-SHAPED waiting corridor extending behind and toward the LEFT of the hut, with one shared bench and simple wooden handrail. The rear-left corridor starts around localx15,y250 and connects around localx150,y390; stay a small low addition, not another main warehouse. Add a hint of one low plank building behind the corridor on land. New supports remain within localx0..368 and localy<596. This portrait is exported608x688 at(352,44) on1024x768: required actual wood contacts in LOCAL coordinates are front step(160,596), pier shore contact(378,606), outer final plank(552,672). Keep opaque illustrated wood at ALL THREE POINTS, do not shift them. The pier must remain the same one narrow pier, one low bollard and rope, no added length or extra dock. Keep open corridor gaps transparent. Main floor/columns are left of localx368 and above596; pier alone extends over water. Warm Japanese watercolor grain confined to wooden architecture, muted slate tiled roofs, honey plank walls and small sage curtains. Clean transparent background, no land/water/shore, ground shadow, broad platform, buildings under pier, boats, freight, labels, letters, numbers or UI. Preserve stage1 recognizable as stage2 grows left and backward.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/native/city_harbor_s1.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-e9c060fb-1807-4ab0-8c24-433d0587dc3a.png",
+      "transparent_background": true,
+      "disposition": "Rejected: left added roof touched canvas edge; saved rejected/s2-left-roof-framing.png."
+    },
+    {
+      "id": "s2-frame-edit",
+      "prompt": "Localized framing repair ONLY to NEW LEFT CORRIDOR/REAR HUT. Preserve main waiting hut, front step and entire diagonal pier pixel positions and size exactly. Current new left rear roof touches and is cut by left canvas edge. Move/reduce ONLY the added left corridor and its tiny rear hut slightly RIGHT so their leftmost roof/support is at localx20 or greater on608x688 portrait canvas, leaving visible transparent margin. Connect corridor naturally to old hut's left wall. Retain low L-shaped roof, bench, handrail and transparent gaps. No other changes. All physical mainhut/pier contacts stay exactly: local(160,596),(378,606),(552,672) opaque wood. Keep same portrait canvas/frame, no zoom/center/crop. No background, water, ground, haze, text or newobjects. Exact existing watercolor style. Whole added structure must fit inside image with no cut roof at left edge.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/rejected/s2-left-roof-framing.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-e76421b3-fa5c-4cf8-87af-a13a1b6f3a36.png",
+      "transparent_background": true,
+      "disposition": "Selected with fullcanvas608x686+(352,45)."
+    },
+    {
+      "id": "s3-grow",
+      "prompt": "Edit this corrected STAGE2 harbor into STAGE3: a tall broad-gabled WOODEN HARBOR WAREHOUSE becomes the recognizable main building. Keep SAME PORTRAIT608:688 canvas, no zoom/recenter, same single diagonal pier EXACTLY unchanged, same opaque support/contact pixels. Existing low hut grows UPWARD into a low-rise timber warehouse: large gray tiled gable apex around localy140 (finaly184), a low louvered ventilation cupola reaching localy125 (final169), broad sliding plank doors with visible timber framing. Main building facade and supporting feet stay in the same lower footprint, main front step at local(160,596). Actual main columns/floor remain LEFT of localx368 and ABOVE localy596; roofs may overhang. Keep the low waiting corridors at both sides on LAND, with slim wooden handrail and bench, allowing transparent openings. New building growth should be above and slightly left/back, not moving right into water or down into the pier. Existing pier contact wood MUST remain at local(378,606), and final plank wood at local(552,672); maintain the same length, direction, single bollard and rope. Do not add another pier or cargo boxes. Keep clear transparent margin around the full illustration, including left roofs at least localx10 inside image. Warm Japanese village watercolor, honey plank timber, muted slate gray roofs, delicate brown outlines. Genuine fully transparent background, no terrain, water, shore, ground plane, island platform, shadows outside architecture, freight rail, crane, vessel, text, labels, numbers, signs or UI. Preserve stage2 continuity while the higher warehouse gable makes stage3 clearly taller.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/native/city_harbor_s2.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-f75f62b5-ed4b-4b9f-8352-33f66825c07f.png",
+      "transparent_background": true,
+      "disposition": "Rejected: warehouse too low; cupola aroundy260 ratherthan170."
+    },
+    {
+      "id": "s3-guide-edit",
+      "prompt": "Geometry-conditioned STAGE3 harbor warehouse. FIRST IMAGE structural template takes priority for ALL positions and sizes on portrait608x688 canvas. SECOND IMAGE supplies the watercolor rendering style and warehouse details only; its warehouse is too short, so DO NOT copy second image's roof height. Paint FIRST shape with warm honey plank walls, broad sliding wooden doors, timber braces, large slate tiled gable and low louvered cupola. The FIRST guide's cupola top is localy122, main gable apexlocal172 (final map source170/220 after placement). Warehouse must really occupy this TALL template, not remain low at y260. Keep floor/frontstep and single pier in EXACT first-guide positions: step local(160,592), shore pier deck(378,602), final deck(552,668), all covered by real wood. Keep narrow diagonal pier, one low bollard/rope. Low left waiting corridor with bench and transparent gaps stays on land. Main columns/floors left oflocal368 and above592, roof may overhang. Preserve full portrait608:688 framing with transparent margins; no zoom/recenter/crop. Genuine transparent background. No terrain, water, shore, broad floorisland, shadowwash, boats, freight, crane, rails, labels, text, numbers or UI. Exact FIRST silhouette geometry first, watercolorstyle second. Final physicalstep/deck coordinates must be preserved, not decorated with markers.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s3-portrait-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/rejected/s3-too-low-cupola.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-2f5c1afc-6854-4167-abe7-655ed4a659d8.png",
+      "transparent_background": true,
+      "disposition": "Selected with fullcanvas608x656+(352,94). Native vertical stretching corrected by disclosed wholecanvas normalization; allpaint preserved."
+    },
+    {
+      "id": "s4-grow",
+      "prompt": "Edit this corrected STAGE3 warehouse into STAGE4. Preserve SAME608:656 portrait canvas and framing, same main warehouse size and position, same tall gable/cupola, same front step, and EXACT same diagonal pier length/direction/position. Add LOW REAR WINGS AND ROOFED CORRIDORS around the warehouse LEFT and RIGHT/BACK, forming an open U-shaped group toward foreground water. Make the low wing/handrail silhouette visibly wider than stage3 even without lamp glow. Put small wooden lantern fixtures at two outer corridor corners, with restrained warm panes. New structural floors/support feet must remain on LAND: localx0..368, localy0..546, never extend columns/floor to water. Right wing may be behind the main building and its ROOF can overhang toward localx430, but its supports must stay leftof368. Left wing should extend to localx15 while leaving transparent margin. Keep open U courtyard gaps TRANSPARENT, no broad platform or groundisland. Keep physical wooden contacts exactly at LOCAL(160,546) front step, pier shore deck(378,556), outer final plank(552,622). All must be visibly covered with real wood. Only the one existing pier goes over water; no added dock, freight, crane or boats. Honey timber, muted slate roof tiles, fine Japanese watercolor village art consistent with source. No text/numbers/signs, water/shore/land/roads/rails/UI, scenery, haze or castgroundshadow. Same portrait framing, no zoom,recenter,crop; preserve all stage3 architecture recognizably.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s3-conditioning-full-canvas.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-79ded75f-0c8d-4236-aa51-d3f3323cfba1.png",
+      "transparent_background": true,
+      "disposition": "Rejected: right courtyard corridor posts/floor overwater."
+    },
+    {
+      "id": "s4-rear-wing-edit",
+      "prompt": "CORRECT ONLY THE NEW RIGHT-HAND CORRIDOR, which is wrongly over water. REMOVE the whole large right courtyard corridor and its standing posts/bench/floor at the far right. Replace with a SMALL LOW REAR-WING ROOF peeking from BEHIND the main warehouse at its upper right: localx310..430,y150..280 on608x656 canvas. Its walls/supports must be obscured behind the existing main building or remain left oflocalx368; NO visible columns, floor, legs or handrails to the right of main wall(localx368). Do not make a long rightward porch. Preserve main warehouse, tall gable/cupola, LEFT low corridor and left cornerlamp, existing frontstep and single diagonal pier EXACTLY, same scale/positions. Put the second modest lantern on the main building's right corner, on the wall leftof368. Stage4 should gain low rear wings and lamps without expanding foundations into water. Keep actual wood atlocal(160,546),(378,556),(552,622), same pier direction/length/tip. All background openings fully transparent; no ground/water, haze, text/numbers/UI. Same portrait608:656 frame, no crop/recenter/zoom. Architectural growth is LEFT and BACK ONLY, not a freestanding right addition.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/rejected/s4-right-corridor-over-water.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-5bb740a6-e25b-43a9-936e-b2f299c5f6d6.png",
+      "transparent_background": true,
+      "disposition": "Selected with fullcanvas608x648+(352,100). Right floors/posts removed by actualimagegen edit; compact rearroof replaces them."
+    },
+    {
+      "id": "s5-grow",
+      "prompt": "Edit corrected STAGE4 harbor into final STAGE5. Preserve SAME608:648 portrait framing, existing warehouse gable/cupola and low rear wings/lanterns, existing frontstep and EXACTLY same diagonal pier and bollard/rope. ADD a LARGE TRIANGULAR STRETCHED CREAM CLOTH CANOPY over a shared forecourt in front of the warehouse. Its sail-like architectural cloth apex near local(215,220), lower cloth corners roughly(70,440) and(365,470). Thin timber canopy supports remain on LAND, localx<=368 and localy<=540; no supports over water. Keep warehouse roof/cupola visible behind canopy. Add one gently CURVED SHARED WOODEN BENCH in front, entirely in localx90..310 and localy500..565 so its feet remain landward and below finaly665. This is a calm communal waiting plaza, no ship sails, no decorative boat. Floor only narrow actual timber architectural members, no broad ground island/plaza background. Preserve actual opaque contacts LOCAL(160,540) at main frontstep, pier deck(378,550), final plank(552,616). All these pixels must remain real wood, no marker dots. The single pier is unchanged length/direction/location; no extra pier. Crisp transparent gaps under bench/canopy and between supports, fully transparent background. Warm Japanese watercolor, slate rooftiles, honey timber, cream cloth, restrained subtle red/orange lantern panes. No water/shore/terrain/groundwash/roads/rails/boats/crates/text/numbers/labels/UI. No zoom/recenter/crop. Strong triangular canopy silhouette must distinguish stage5 from4 even in grayscale.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s4-conditioning-full-canvas.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-277b81ea-be37-49a9-9726-beb959906fef.png",
+      "transparent_background": true,
+      "disposition": "Selected with fullcanvas608x610+(352,130)."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+# M6 confirmed-input performance repair
+
+Technical specification §14 keeps the handler P95 ≤5 ms, key-to-display P95 ≤50 ms, and no application long tasks ≥50 ms. The independent populated workload, thresholds, scoring, awards, and durable transaction boundaries are unchanged.
+
+## Diagnosis
+
+The actual CI baseline run 43498989069 / job 132139489051, source 567247d, reported handler P95 65 ms and display P95 67.7 ms across 243 trusted native keys. All 243 feedback frames changed; the valid fixture contained 960 words and 30 records. There were 51 long tasks of 50–95 ms.
+
+A separate diagnostic exercised `GameSession.input → drainEvents → runtime.applyFacts → runtime.achievements`, retaining all confirmed facts, using the same `performanceProfile()` fixture generator. Node inspector CPU sampling at 100 µs covered 200 completed words / 1,200 keys, with repository work drained after each word. This isolates the confirmed runtime call chain; it is not a browser acceptance measurement. Linux cloud executor, Node v24.22.1, no browser or display scaling applies.
+
+Before the repair, the nine largest self-sample stacks were full-state `structuredClone` calls. They included `applyFacts → repository.snapshot`, the public achievement getter, `reduceAchievements → applyAchievementFacts`, `observeCity → applyAchievementCity`, and repeated achievement clones in persisted reduction. The diagnostic synchronous P95 was 29.91 ms. The local diagnostic source is retained under ignored `work/perf-diagnostic/profile.ts` and inspector output at `/tmp/input-runtime.cpuprofile` during this session.
+
+## Repair
+
+Achievement fact and city reducers now copy only the branches they mutate. Each touched session gets a new summary and manual-delivery array; prior sessions, immutable record histories, evidence, context, and word entries remain shared. Award maps, unread lists, counters, and round qualification maps retain their existing updates. Public achievement views recursively freeze the confirmed state, skipping already frozen history. A metadata-only repository generation accessor removes the full-profile clone previously used just to read the deletion fence. Repository public snapshots still return detached clones, and mutation callbacks still run against cloned documents within the existing atomic persistence path.
+
+The same local diagnostic after this change measured synchronous P95 2.53 ms. This is supporting diagnosis only; actual CI browser results are required before declaring §14 passed.
+
+## Checks
+
+- TypeScript check passed.
+- All 97 existing app/profile unit tests passed.
+- Two added regressions pass: deeply frozen old views survive completed words, automatic deliveries, terminal awards, and city purchase/replay; immutable previous evidence and event deduplication are retained.
+- Repository schema remains v4; no old data, backups, eligibility conditions, cosmetic contracts, or workload thresholds are rewritten.
+- The baseline unused `AchievementView` import in `src/ui/reward-art.ts` was removed separately with root authorization; whole-tree lint now passes.
+
+## First actual repair measurement and saved-path follow-up
+
+Actual production CI run 43500486035 on bd1e4f0 measured handler P95 10.4 ms, display P95 15.6 ms, frame P95 16.7 ms, zero long tasks, and changed feedback in all 242 trusted input frames. All 72 handbook entries and the 960-word qualified filter were verified; cold-load P95 was 561 ms across 20 trials, largest actual wire transfer 922,847 bytes. The handler still exceeded 5 ms, so this is not an acceptance pass.
+
+The saved repository path reconciles a detached persisted snapshot after each successful write. That snapshot loses the previous in-memory frozen object identities; freezing its full history on the next word completion repeated unnecessary work inside native input. Reconciliation now freezes the detached canonical achievement snapshot at the existing persistence-completion boundary. Subsequent synchronous confirmed fact reducers share its frozen history and freeze only their new branches. Award calculation remains synchronous, and canonical reconciliation, transaction checks, records, and views are preserved. The initial Node diagnostic used memory storage (unsaved status), so it did not cover this saved-path reconciliation cost.
+
+## Actual browser profile and animation restart repair
+
+The saved-path follow-up still failed the handler budget: actual run 43501035356 attempt 2 measured 14.5 ms handler / 17 ms display, zero long tasks, and 243 changed native frames. Its first attempt failed a handbook `:focus-visible` assertion before the native report was saved; that failure remains recorded. Run 43501934603 on the same app code measured 13.9 ms handler / 18 ms display, zero long tasks, and 252 changed frames.
+
+A separate diagnostic workflow, run 43501935059, sampled Chromium's production call chain at 100 µs across 247 native keys. Its source-mapped CPU summary confirms `getBoundingClientRect → pulse → paint → observe → commitFacts → mutate` inside native input (330 self samples). V8 also reports substantial unattributed native/browser `(program)` work; CPU sampling alone does not assign all of that to layout. The raw CPU profile is retained in the `m6-native-input-cpu` artifact. This diagnostic uses source maps and profiling and does not replace independent acceptance measurements.
+
+The confirmed word/dispatch/arrival pulse previously reset `animationName`, read `getBoundingClientRect()` to force layout, then restored the animation. With the root's explicit narrow UI lease, pulse now alternates between two equivalent keyframe names using only the element's inline style. Each actual pulse toggles names even when its confirmed revision jumps by two; `data-revision` keeps the true counter. The original three keyframes and their aliases have identical frames. Existing pause and reduced-motion CSS still apply. No node is replaced, and fact deduplication, queues, arrival/resource accounting, input, and timing are unchanged. The effect on the remaining handler cost must be measured in the unchanged acceptance workflow.
+
+## Native event microtask checkpoint and durable write scheduling
+
+After the pulse repair, actual acceptance run 43502535079 measured handler P95 10.5 ms, display P95 16.3 ms, zero long tasks, and 247 changed feedback frames. Its handler still failed 5 ms. The post-repair CDP profile 43502535114 no longer contained the pulse's layout read, but retained substantial repository snapshot work.
+
+Diagnostic run 43503029422 then recorded every `structuredClone` between trusted native-input capture and the document's bubble listener. In each of its five slowest instrumented dispatches, the repository write callback's full-document clone ran before the bubble listener and took 7.6–12.0 ms; city clones took 0–0.4 ms. This directly confirms that the Promise queue's persistence work was included in native dispatch: browsers perform microtask checkpoints between listeners. The instrumented diagnostic includes profiler/wrapper overhead and is not an acceptance latency report.
+
+Confirmed input batches now request one task boundary before the repository starts their existing cloned-document reduction and atomic durable transaction. Other operations keep their existing scheduling. The same ordered Promise tail is retained, and ownership, revision, deletion generation, retry, backup, export, and callback-failure checks remain unchanged. Runtime scoring, award calculation, progress, and city projection are still synchronously confirmed before feedback renders. Its existing pending-write counter keeps storage marked saving until completion. No state is called durable before the repository confirms it. Independent acceptance continues to measure real changed feedback, next-frame latency, and long tasks including the scheduled storage work.
+
+## Passing independent production measurement
+
+The unchanged independent performance workflow passed both tests on application source `07cd1b930175e29383d9d5f20e96200d137573e4`: [run 43503453951](https://github.com/mokusatsu/kotobabin/actions/runs/43503453951), job 132154904692. The actual native handler P95 was **4.1 ms**, keydown-to-changed-frame proxy P95 **15.7 ms**, frame interval P95 **16.8 ms**, and **zero application long tasks**. All **242/242 native feedback frames changed**. The test also inspected all 72 handbook IDs and verified the qualified filter returned all 960 words (31.4 ms). Twenty uncached 10 Mbps / 100 ms trials measured start-ready P95 **558.7 ms** and largest actual wire transfer **922,968 bytes**; this is measured transfer, not a claim that identity delivery was compressed.
+
+The report records Linux 7.0.0-1019-azure, AMD EPYC 9V45 (four logical CPUs exposed), 16,759,439,360 bytes RAM, Node v24.22.2, Chromium 158.0.8127.18, viewport 1180×720, and 100% scale. This is a CI proxy (`physicalTarget: false`), not physical iPad/JIS/IME validation. The benchmark remains the valid domain-generated synthetic 960-word / 30-record profile, not player records.
+
+Inspectable reports are in artifact `m6-chromium-performance` / ID 14075541322, digest `sha256:b24a7e578560688c79e29dc691c57c7ecf10375e1e943787fbfe5d8d3db6d180`. A local copy is retained under ignored `work/perf-diagnostic/ci-passing-43503453951/`. The separate diagnostic run 43503454229 confirms full repository clones now occur outside native dispatch; all 301 unit tests, typecheck, and whole-tree lint passed locally on this source. Final integrated-source CI and the actual Site review remain release gates owned by the root task.
+
+## Timer-independent persistence task correction
+
+The regular CI run 43503453971 on `07cd1b9` completed with four green browser jobs and a failed verify job: 301 unit tests passed, while `result-stage.spec.ts:103` failed in both motion settings (72 other E2E tests passed). Those two cases pause the Playwright game clock at the natural deadline and require actual IndexedDB persistence to reach `saved` before advancing the clock again. The input task's `setTimeout(0)` was queued behind earlier IndexedDB work after the clock stopped, so it could not start. This was not evidence of an IndexedDB transaction failure: storage never reached the queued write. It nevertheless exposed an unnecessary product dependency between autosave scheduling and timer progression/throttling.
+
+The task boundary now uses a private `MessageChannel` rather than a timer. Both ports close immediately when its single task runs. Persistence still runs outside native dispatch and uses the same ordered tail, cloned reducer input, transaction, and ownership/revision/generation fences. It progresses independently of game timers. No E2E assertion, clock progression, deadline, or performance budget was changed.
+
+A new regression freezes timers, queues a real confirmed word batch plus a replay and a record reset, then verifies queue order, exactly-once progress, old-snapshot immutability, and rejection by the old deletion generation without advancing timers. It timed out before the correction and passes afterward. All 302 unit tests, typecheck, and lint pass with the correction; fresh ordinary CI and the unchanged performance workflow are required before integration.
+
+## Timer correction verified; remaining display aggregation
+
+Regular CI [43506039390](https://github.com/mokusatsu/kotobabin/actions/runs/43506039390) on `14356e2` passed all five jobs. Its verify job passed all 74 E2E tests, including both formerly failing natural-deadline cases with the clock paused (3.7 s and 4.0 s). The two independent browser reviews and two audio jobs also passed. The same source's independent performance run 43506039269 still failed handler P95 at **5.6 ms**, with display P95 15.5 ms, zero long tasks, 245 changed native frames, and all 72 handbook IDs. This remains a failed performance result, not an acceptance pass.
+
+Actual CDP run 43506039377 retained repeated `getAchievementViews → metrics` work in native input, including completed-word scans, topic scans, practice totals, and sorting the 960-word map. Display aggregation now computes those word-only totals together and reuses them only when both the word map and every counter record are frozen. Mutable and shallow-frozen fixtures recalculate their counters. Live accepted keys, mistakes, guide/streak state, session conditions, and all view objects/progress lines remain fresh; every one of the 72 achievements and every practice word detail remains available. Award eligibility/reduction, records, and persistence are unchanged.
+
+Three added regressions verify frozen/mutable full-view parity and fresh returned progress lines, live accuracy changes with unchanged frozen word counters, and fresh results when a shallow-frozen map's mutable counter changes. All 305 unit tests, typecheck, and changed-file lint pass locally before renewed actual CI measurement.
+
+## Timer-independent and display-aggregation correction: actual CI result
+
+Both required workflows pass on `137c4d15cb22d04af37be02d3ec08dbcc4ec721f`. [Regular CI 43506899388](https://github.com/mokusatsu/kotobabin/actions/runs/43506899388) passed all five jobs: 305 unit tests and 74 E2E tests in verify, both independent Chromium/WebKit reviews, and both audio jobs. The two previously failing natural-deadline save cases passed again with their original paused-clock steps and `saved` assertions (2.8 s / 3.1 s).
+
+[Unchanged performance run 43506899719](https://github.com/mokusatsu/kotobabin/actions/runs/43506899719), job 132166795313, passed both tests: handler P95 **4.9 ms**, changed-frame proxy P95 **15.3 ms**, frame P95 **16.7 ms**, **zero long tasks**, all **244/244 native feedback frames changed**, 72 handbook IDs, and 960-word qualified filtering in 48.8 ms. Cold start P95 was **566.8 ms** over 20 uncached 10 Mbps / 100 ms trials, largest actual wire transfer **923,241 bytes**. No workload, threshold, existing E2E clock operation, or assertion was changed. The handler margin is only 0.1 ms, so the final integrated art/UI source still requires its own measurement.
+
+The report records Intel Xeon Platinum 8370C @ 2.80 GHz (four logical CPUs exposed), Linux 7.0.0-1019-azure, 16,758,403,072 bytes RAM, Node v24.22.2, Chromium 158.0.8127.18, 1180×720 at 100%, `physicalTarget: false`. Artifact ID **14076867274**, digest `sha256:d23c3611c9c593777595617028d8099cad8ac0526dec64b8bbad5b804942bd05`, is copied locally under ignored `work/perf-diagnostic/ci-passing-43506899719/`. The final integrated Site and physical-device coverage remain separate release checks.

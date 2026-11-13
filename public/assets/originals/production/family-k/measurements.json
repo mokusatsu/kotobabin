@@ -1,0 +1,230 @@
+[
+  {
+    "id": "stamp_k01",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      33,
+      1234,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      44,
+      75,
+      468,
+      447
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 1926508,
+      "png": 215702,
+      "webp": 147044
+    },
+    "native_sha256": "0f67eef610b192cfde397cd58656424171485a1edd982b9e3e64e697bf9c600d",
+    "png_sha256": "33953471c5fde4142b0efd0791e81a78529547421f28ae58f7875ef377f4bd21",
+    "runtime_sha256": "dbf6ba3ec70b9bafc2d8fa6ad1104e7ef8763246b1910fd0ea456fa422591720",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1253,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      36,
+      79,
+      475,
+      457
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 2265148,
+      "png": 270041,
+      "webp": 187442
+    },
+    "native_sha256": "4a6d4ecc6fb7d7f4e4df9dc21035832ccd1ea7e92b047f38b7f82e37fb3f676e",
+    "png_sha256": "78767ca5d4c8ffac85f12b34016863bdf5d6ceddfb4d21adcb4675eaa9da610e",
+    "runtime_sha256": "1d12b2d87d42c6063c5ce5caef822b1bb5c3b6f2af718005e408bd096c01efb0",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k03",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      23,
+      1242,
+      1230
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      43,
+      73,
+      467,
+      440
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 2164777,
+      "png": 259734,
+      "webp": 190336
+    },
+    "native_sha256": "21bbeea79b8543fbf2d58e72663f612f3c13330c9b9ccc5eee281808711bdc91",
+    "png_sha256": "7f4e62b320fd9a6dac27f6a7f4a3774b0373d7e7d9b23d72a0e3a29005710ed0",
+    "runtime_sha256": "aba4a2d6899c6fb053c1e48d224f18cb4ce35fab1b274f51953075e1e41de6bc",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k04",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      19,
+      1250,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      42,
+      44,
+      455,
+      469
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 1571695,
+      "png": 207529,
+      "webp": 147626
+    },
+    "native_sha256": "3c113bc3d2ee3417e571964e7cab9bd2e8e21d9e9920bcf91998e28f8ed95554",
+    "png_sha256": "49851a9c237fe736533ee72317192aadac378521eb82f622bd5bb704a65b6cd7",
+    "runtime_sha256": "869e408636ec3e68f25696006e60f9e21fab2593bbe166a9c6fe2e5aef6785d9",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k05",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      4,
+      1242,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      36,
+      67,
+      475,
+      469
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 2531607,
+      "png": 324981,
+      "webp": 234288
+    },
+    "native_sha256": "c15aa02971d110130d0a7f34d1b868acf7c2462c115d6e282c527dd175a36c74",
+    "png_sha256": "dcecc4cf48641222c28c9e1a1e3bafa3b6ed4f50954bdde0552ad3618b84b19c",
+    "runtime_sha256": "ccdb512ee0114a37a858d7fcdcbec24f3071bb779aa7e745b34474e054badc9e",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k06",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      19,
+      1254,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      32,
+      77,
+      480,
+      446
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": "Entire native canvas resized proportionally to 448x448 using ImageMagick default resize filter, composited at (32,32) on 512x512 transparent canvas. No crop, threshold, mask, or repaint. 8-bit PNG32 with export metadata stripped, and lossless WebP.",
+    "bytes": {
+      "native": 1865291,
+      "png": 222196,
+      "webp": 153982
+    },
+    "native_sha256": "7fb0cfb4490ec43029537bd50864485dbc48f3e0e70685a16f6623637d3c7fb9",
+    "png_sha256": "756184ed280c887a1d2adce8d30192028d1c2745515d084f0586042f7dd39443",
+    "runtime_sha256": "6988dd61316efddde1ec77cd8287aaedbeef8e6b6e27cccf21827acccb07bb03",
+    "png_webp_alpha_and_paper_composite_equal": true
+  }
+]

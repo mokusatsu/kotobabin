@@ -1,0 +1,212 @@
+[
+  {
+    "id": "postcard_c",
+    "native_size": [
+      1586,
+      992
+    ],
+    "output_size": [
+      1600,
+      1000
+    ],
+    "native_mode": "RGB",
+    "png_mode": "RGB",
+    "runtime_mode": "RGB",
+    "opaque": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "method": "Pillow LANCZOS entire native canvas to 1600x1000 RGB; no crop, trim, mask, repaint or padding",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "aspect_correction_percent": 0.07566204287516864
+    },
+    "bytes": {
+      "native": 3360536,
+      "png": 3097736,
+      "webp": 2408394
+    },
+    "sha256": {
+      "native": "13c6497cfd6d374ed952d2b27d30d909a69f28159e229c81ad9028e7afd26e1a",
+      "png": "f7d56bceeabcb33dda5bdc9c536cfec4bdd926484f54ab50e5ab458ce76c8868",
+      "webp": "3a500621ac04f028c1a45e94f7abaca88c3e483fd3eee9d74cf8dd41003f722a"
+    },
+    "lossless_webp_all_rgb_pixels_equal": true
+  },
+  {
+    "id": "postcard_d",
+    "native_size": [
+      1586,
+      992
+    ],
+    "output_size": [
+      1600,
+      1000
+    ],
+    "native_mode": "RGB",
+    "png_mode": "RGB",
+    "runtime_mode": "RGB",
+    "opaque": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "method": "Pillow LANCZOS entire native canvas to 1600x1000 RGB; no crop, trim, mask, repaint or padding",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "aspect_correction_percent": 0.07566204287516864
+    },
+    "bytes": {
+      "native": 3624119,
+      "png": 3330020,
+      "webp": 2595856
+    },
+    "sha256": {
+      "native": "f071eca86678f4dc55f8c354e20b4d8e56658fbce79716ad40f560598af2df3e",
+      "png": "43e3bc67a1457d59900d3e06c908e005d8697f09369902773c0b1148053a9361",
+      "webp": "6c55f4130c6e6f401e5fe93e56f5e03c4986936e619f87f181069457cd89104e"
+    },
+    "lossless_webp_all_rgb_pixels_equal": true
+  },
+  {
+    "id": "postcard_e",
+    "native_size": [
+      1586,
+      992
+    ],
+    "output_size": [
+      1600,
+      1000
+    ],
+    "native_mode": "RGB",
+    "png_mode": "RGB",
+    "runtime_mode": "RGB",
+    "opaque": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "method": "Pillow LANCZOS entire native canvas to 1600x1000 RGB; no crop, trim, mask, repaint or padding",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "aspect_correction_percent": 0.07566204287516864
+    },
+    "bytes": {
+      "native": 3445281,
+      "png": 3157963,
+      "webp": 2460930
+    },
+    "sha256": {
+      "native": "90558004f3b9ab26856133891bbe417f283ce534030952dcbbe6de6a0f01bc5a",
+      "png": "aa012b28eb9b01169c4a0118ee6aa2c4b83feb5bffa2043c4c7017790868615f",
+      "webp": "1c8f85d8447180f1a94e66d16d0ff06d3dbe528a3666605e1a0d0e5d63d5fd44"
+    },
+    "lossless_webp_all_rgb_pixels_equal": true
+  },
+  {
+    "id": "postcard_f",
+    "native_size": [
+      1586,
+      992
+    ],
+    "output_size": [
+      1600,
+      1000
+    ],
+    "native_mode": "RGB",
+    "png_mode": "RGB",
+    "runtime_mode": "RGB",
+    "opaque": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "method": "Pillow LANCZOS entire native canvas to 1600x1000 RGB; no crop, trim, mask, repaint or padding",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "aspect_correction_percent": 0.07566204287516864
+    },
+    "bytes": {
+      "native": 3395210,
+      "png": 3074178,
+      "webp": 2365786
+    },
+    "sha256": {
+      "native": "ce38ca028b5a886e115b77f60470d763756c0ca6ea4c0fdcba57658801e6977a",
+      "png": "ee75b461e42d811c26c974c59d199257424110b009cdf2a628146158165ab20a",
+      "webp": "74228e15b01f6737be8bc401961297c604a3e9626ac23b3402e4b9d215fc3a0a"
+    },
+    "lossless_webp_all_rgb_pixels_equal": true
+  },
+  {
+    "id": "postcard_g",
+    "native_size": [
+      1586,
+      992
+    ],
+    "output_size": [
+      1600,
+      1000
+    ],
+    "native_mode": "RGB",
+    "png_mode": "RGB",
+    "runtime_mode": "RGB",
+    "opaque": true,
+    "anchor": [
+      800,
+      500
+    ],
+    "safe_rect": [
+      80,
+      50,
+      1520,
+      950
+    ],
+    "transform": {
+      "method": "Pillow LANCZOS entire native canvas to 1600x1000 RGB; no crop, trim, mask, repaint or padding",
+      "scale_x": 1.008827238335435,
+      "scale_y": 1.0080645161290323,
+      "aspect_correction_percent": 0.07566204287516864
+    },
+    "bytes": {
+      "native": 3570155,
+      "png": 3253641,
+      "webp": 2584708
+    },
+    "sha256": {
+      "native": "62533f7b54be9cc7deefaeb18a557e8a7c0ad1d764481c3203aff8884bcfed2e",
+      "png": "331efc13b6e6b55c8536f26486a7f77f138b33e81da38e11880964f0bb473f23",
+      "webp": "b45221798a8eb5add476748e5cc31521b090d3cae9e8ddba1592dea0197ab79c"
+    },
+    "lossless_webp_all_rgb_pixels_equal": true
+  }
+]

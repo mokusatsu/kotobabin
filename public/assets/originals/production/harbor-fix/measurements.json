@@ -1,0 +1,412 @@
+[
+  {
+    "id": "city_harbor_s1",
+    "native_size": [
+      1179,
+      1334
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      688
+    ],
+    "offset": [
+      352,
+      44
+    ],
+    "scale": [
+      0.5156912637828668,
+      0.5157421289355323
+    ],
+    "vertical_to_horizontal_scale_ratio": 1.00009863489308,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      381,
+      65,
+      941,
+      732
+    ],
+    "opaque_bbox": [
+      436,
+      332,
+      918,
+      731
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 223,
+      "730,650": 253,
+      "904,716": 251
+    },
+    "pier_segment_sample_count": 201,
+    "pier_segment_min_alpha": 251,
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s1.png": "e92e7771b67558cb5901fcc10c100891a736a8633134b958d8a8b880a12f7169",
+      "originals/city_harbor_s1.png": "2aee53c0f8f6b6d80200d8c47cd496df065559a945691ddd7fcc2d1f4b4e3b84",
+      "originals/city_harbor_s1.generated.png": "e92e7771b67558cb5901fcc10c100891a736a8633134b958d8a8b880a12f7169",
+      "city_stage/city_harbor_s1.webp": "96b78c3c4a717494bf5e97a0133573f2b8684ecd7e97461358abbc71f25cdd83"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  },
+  {
+    "id": "city_harbor_s2",
+    "native_size": [
+      1179,
+      1334
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      686
+    ],
+    "offset": [
+      352,
+      45
+    ],
+    "scale": [
+      0.5156912637828668,
+      0.5142428785607196
+    ],
+    "vertical_to_horizontal_scale_ratio": 0.9971913714195534,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      359,
+      61,
+      929,
+      731
+    ],
+    "opaque_bbox": [
+      363,
+      332,
+      918,
+      730
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 165,
+      "730,650": 253,
+      "904,716": 252
+    },
+    "pier_segment_sample_count": 201,
+    "pier_segment_min_alpha": 252,
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s2.png": "c8e839664c68c568f55042bbb0cf72423ea7df632900205a1c98da9f95313f4a",
+      "originals/city_harbor_s2.png": "e176a9a37515216590f7d43eb11c785f76f28f0687f76f6d260a4a69ee110022",
+      "originals/city_harbor_s2.generated.png": "c8e839664c68c568f55042bbb0cf72423ea7df632900205a1c98da9f95313f4a",
+      "city_stage/city_harbor_s2.webp": "50056d076ea270a9e0596a8eccda1a34ddfdc4518638a893b0dfb41f1623a55c"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  },
+  {
+    "id": "city_harbor_s3",
+    "native_size": [
+      1179,
+      1334
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      656
+    ],
+    "offset": [
+      352,
+      94
+    ],
+    "scale": [
+      0.5156912637828668,
+      0.4917541229385307
+    ],
+    "vertical_to_horizontal_scale_ratio": 0.9535824193166575,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      352,
+      98,
+      948,
+      736
+    ],
+    "opaque_bbox": [
+      361,
+      180,
+      917,
+      732
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 199,
+      "730,650": 253,
+      "904,716": 172
+    },
+    "pier_segment_sample_count": 201,
+    "pier_segment_min_alpha": 172,
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s3.png": "fbcb48bd539b006a00fd9ca4a99c75b2a96479496e689473f29de4a111509b47",
+      "originals/city_harbor_s3.png": "66f78bbc7575110abe3eb2a448044c03fae0d0d897f2833afd68de9f1814a476",
+      "originals/city_harbor_s3.generated.png": "fbcb48bd539b006a00fd9ca4a99c75b2a96479496e689473f29de4a111509b47",
+      "city_stage/city_harbor_s3.webp": "ba0dbb6b02b649bd0445bef614d5caca4a37db9df3de2d529c461a049e08fd7a"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  },
+  {
+    "id": "city_harbor_s4",
+    "native_size": [
+      1207,
+      1303
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      648
+    ],
+    "offset": [
+      352,
+      100
+    ],
+    "scale": [
+      0.503728251864126,
+      0.49731389102072143
+    ],
+    "vertical_to_horizontal_scale_ratio": 0.9872662277335703,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      352,
+      153,
+      921,
+      736
+    ],
+    "opaque_bbox": [
+      355,
+      184,
+      918,
+      730
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 223,
+      "730,650": 254,
+      "904,716": 255
+    },
+    "pier_segment_sample_count": 201,
+    "pier_segment_min_alpha": 248,
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s4.png": "39b27e1fc5c9235eb4414f0c0e01b51b1c99e4f509b68b4fd8dab407f8ed5763",
+      "originals/city_harbor_s4.png": "e9a9c15ccbfab28751ce540bddfed51fa32c5556369d39d0ebf8746f83086e84",
+      "originals/city_harbor_s4.generated.png": "39b27e1fc5c9235eb4414f0c0e01b51b1c99e4f509b68b4fd8dab407f8ed5763",
+      "city_stage/city_harbor_s4.webp": "503fb0f8df486d20ee0f1b741d25e88bc33298bb2584480e80a8d7c787b200a9"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  },
+  {
+    "id": "city_harbor_s5",
+    "native_size": [
+      1214,
+      1295
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      610
+    ],
+    "offset": [
+      352,
+      130
+    ],
+    "scale": [
+      0.500823723228995,
+      0.47104247104247104
+    ],
+    "vertical_to_horizontal_scale_ratio": 0.9405354602723024,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      352,
+      138,
+      954,
+      736
+    ],
+    "opaque_bbox": [
+      353,
+      203,
+      925,
+      725
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 178,
+      "730,650": 253,
+      "904,716": 251
+    },
+    "pier_segment_sample_count": 201,
+    "pier_segment_min_alpha": 251,
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s5.png": "a7d2a31c4d45f2f82c5c654c0add596abe90f870c7d1891f91d0f0272465c642",
+      "originals/city_harbor_s5.png": "131e7fb5017af78cadae018038198af0e7738c6c41e391c40f763581dd9a134d",
+      "originals/city_harbor_s5.generated.png": "a7d2a31c4d45f2f82c5c654c0add596abe90f870c7d1891f91d0f0272465c642",
+      "city_stage/city_harbor_s5.webp": "7494cc96b479dc4169055d084c4d12d20401bfb011acf996e0cb4ded647b426c"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  }
+]

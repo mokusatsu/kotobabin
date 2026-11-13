@@ -108,6 +108,8 @@ export class GenerationMismatchError extends Error { constructor() { super('削�
 export interface MutationOptions {
   /** Capture at session READY and reuse for every fact batch from that session. */
   generation?: number;
+  /** Runtime has already confirmed input synchronously; start durable work in a task. */
+  afterInput?: boolean;
 }
 export class BackupValidationError extends Error { constructor() { super('復元するデータの形式・版・整合性を確認できません。元データは変更していません。'); } }
 export interface RestoreOptions {
@@ -138,6 +140,17 @@ const STORE = 'profile';
 const KEY = 'current';
 const BACKUPS_KEY = 'restoreBackups';
 const MEMORY_NOTICE = 'この回の街と切手は、ページを閉じると残りません。複数ページ間の同期はできません。';
+
+/** A browser task independent of the game clock and timer throttling. */
+function afterInputTask(): Promise<void> {
+  return new Promise(resolve => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => {
+      channel.port1.close(); channel.port2.close(); resolve();
+    };
+    channel.port2.postMessage(null);
+  });
+}
 
 export class ProfileRepository {
   private document = createProfileDocument();
@@ -198,6 +211,8 @@ export class ProfileRepository {
     });
   }
 
+  /** Metadata-only session fence: reading it must not clone the profile history. */
+  get generation(): number { return this.document.metadata.generation; }
   get snapshot(): ProfileDocument { return structuredClone(this.document); }
   get status(): RepositoryStatus { return { ...this.state }; }
   subscribe(listener: () => void): () => void { this.listeners.add(listener); return () => this.listeners.delete(listener); }
@@ -255,8 +270,12 @@ export class ProfileRepository {
     }
   }
 
-  private write(mutation: Mutation): Promise<void> {
+  private write(mutation: Mutation, afterInput = false): Promise<void> {
     return this.queue(async () => {
+      // Browsers run Promise checkpoints between native event listeners. Keep
+      // durable snapshot/replay work in its own task, after confirmed input.
+      // The ordered tail and every ownership/revision/generation fence still apply.
+      if (afterInput) await afterInputTask();
       if (this.closed) throw new Error('保存処理は終了しています。');
       if (this.state.ownership !== 'owner') throw new OwnershipError();
       const next = mutation(structuredClone(this.document));
@@ -316,7 +335,7 @@ export class ProfileRepository {
       if (current.metadata.generation !== generation) throw new GenerationMismatchError();
       const metadata = { ...current.metadata };
       return { ...reducer(current), metadata };
-    });
+    }, options.afterInput);
   }
 
   commitFacts(facts: readonly SessionFact[], recordContext: RecordContext, options: MutationOptions = {}): Promise<void> {

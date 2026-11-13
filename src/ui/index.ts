@@ -1,3 +1,5 @@
+import './reward-art.css';
+import { equippedDecoration } from './reward-art';
 import { AudioPlayer } from '../audio/AudioPlayer';
 import { GameAudio, renderAudioStatus } from './audio';
 import wordsData from '../../spec/initial/data/words.json';
@@ -72,6 +74,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let handbookFilter: HandbookFilter = 'all';
   let handbookScope = '';
   let handbookTab: HandbookTab = 'stamps';
+  let rewardPreviewId: string | null = null;
+  let rewardPreviewPage = 0;
   let sessionUnlocksAtStart = new Set(Object.keys(runtime.achievements.unlocks));
   let knownUnlocks = new Set(Object.keys(runtime.achievements.unlocks));
   const practiceAwardCarry = new Set<string>();
@@ -98,6 +102,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const contained = Boolean(active && element.contains(active));
     const action = contained ? active?.dataset.action : undefined;
     const equipSlot = contained ? active?.dataset.equipSlot : undefined;
+    const stableId = contained ? active?.id : undefined;
+    const controlValue = contained && (active instanceof HTMLSelectElement || active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) ? active.value : undefined;
     const wordId = active?.dataset.wordId;
     const matches = (candidate: HTMLElement) => candidate.dataset.action === action && candidate.dataset.equipSlot === equipSlot && candidate.dataset.wordId === wordId;
     const selector = equipSlot ? '[data-equip-slot]' : '[data-action]';
@@ -105,9 +111,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     element.innerHTML = markup;
     viewMarkup.set(element, markup);
     ipadLayout.refresh();
-    if ((action || equipSlot) && ordinal >= 0) {
-      const next = [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal];
-      if (next) { suppressBlur = true; next.focus({ preventScroll: true }); suppressBlur = false; }
+    const byId = stableId ? [...element.querySelectorAll<HTMLElement>('[id]')].find(candidate => candidate.id === stableId) : undefined;
+    const next = byId ?? ((action || equipSlot) && ordinal >= 0 ? [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal] : undefined);
+    if (next) {
+      // Preserve a native selection across its own change-triggered redraw. Never choose a missing option.
+      if (controlValue !== undefined && next instanceof HTMLSelectElement && [...next.options].some(option => option.value === controlValue)) next.value = controlValue;
+      suppressBlur = true; next.focus({ preventScroll: true }); suppressBlur = false;
     }
   }
   function newSeed() { return crypto.getRandomValues(new Uint32Array(1))[0]!; }
@@ -115,7 +124,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function header(game = false) {
     const mode = session?.mode;
     const location = mode === 'PRACTICE' ? 'ことばの練習' : mode === 'TUTORIAL' ? 'はじめの配達' : `${course().name} ／ ${districtName(sessionDestination)}へ`;
-    return `<header class="site-header">${brand()}<button class="button button-small nav-menu-button" data-action="navigation-menu">画面移動 <kbd>F2</kbd></button>${game ? `<span class="route-label" data-route-original="${esc(location)}">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}${ownershipStatus()}</header>`;
+    return `<header class="site-header">${brand()}<button class="button button-small nav-menu-button" data-action="navigation-menu">画面移動 <kbd>F2</kbd></button>${game ? `<span class="route-label" data-route-original="${esc(location)}">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}${screen === 'home' ? '<div class="home-cosmetic-slot" data-cosmetic-slot="home"></div>' : ''}${ownershipStatus()}</header>`;
   }
   function ownershipStatus() { return `<aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中 · このタブは閲覧のみです。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer>`; }
@@ -311,8 +320,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       renderMarkup(root.querySelector<HTMLElement>('#handbook-cards')!, achievementCards(views, ledger, handbookFamily, selectedAchievementId, handbookFilter, handbookScope));
       const selected = views.find(view => view.id === selectedAchievementId)!;
       renderMarkup(root.querySelector<HTMLElement>('#achievement-detail')!, achievementDetail(selected, ledger, runtime.status.writable));
-    } else if (handbookTab === 'rewards') renderMarkup(root.querySelector<HTMLElement>('#handbook-rewards')!, rewardCollection(ledger, views, runtime.status.writable));
+    } else if (handbookTab === 'rewards') renderMarkup(root.querySelector<HTMLElement>('#handbook-rewards')!, rewardCollection(ledger, views, runtime.status.writable, { id: rewardPreviewId, page: rewardPreviewPage }));
     else renderMarkup(root.querySelector<HTMLElement>('#handbook-history')!, achievementHistory(ledger, views));
+    const decoration = root.querySelector<HTMLElement>('[data-cosmetic-slot="handbook"]');
+    if (decoration) renderMarkup(decoration, equippedDecoration(ledger, 'handbook'));
     updateStorageStatus();
   }
   function returnFromHandbook() {
@@ -333,8 +344,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     root.querySelectorAll<HTMLElement>('[data-unread-count]').forEach(element => { const text = ledger.unreadAchievements.length ? `未読${ledger.unreadAchievements.length}` : ''; if (element.textContent !== text) element.textContent = text; });
     const views = achievementViews();
     for (const id of ['home-goal-slot', 'game-goal-slot', 'result-goal-slot']) { const element = root.querySelector<HTMLElement>(`#${id}`); if (element) renderMarkup(element, goalStrip(views, ledger, { recommend: id === 'game-goal-slot' })); }
+    root.querySelectorAll<HTMLElement>('[data-cosmetic-slot]').forEach(element => {
+      const destination = element.dataset.cosmeticSlot;
+      if (destination === 'home' || destination === 'handbook') renderMarkup(element, equippedDecoration(ledger, destination));
+    });
     const title = handbookCatalog.achievements.find(definition => definition.title_id === ledger.equipped.titleId)?.name ?? '';
-    root.querySelectorAll<HTMLElement>('[data-equipped-title]').forEach(element => { element.textContent = title; element.hidden = !title; });
+    root.querySelectorAll<HTMLElement>('[data-equipped-title]').forEach(element => { renderMarkup(element, title ? `<img class="reward-check" src="${asset('ui_icon/ui_check.svg')}" alt="">装着中：${esc(title)}` : ''); element.hidden = !title; });
     const result = root.querySelector<HTMLElement>('#result-achievements-slot'); if (result) renderMarkup(result, resultAchievements());
     if (screen === 'handbook') updateHandbook();
   }
@@ -831,6 +846,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       case 'achievement-select': selectedAchievementId = target.dataset.achievementId!; handbookFamily = selectedAchievementId[0]; handbookTab = 'stamps'; updateHandbook(); markSelectedRead(); revealSelectedAchievement(); break;
       case 'achievement-target': runtime.achievementAction({ type: 'target', id: runtime.achievements.targetId === target.dataset.achievementId ? null : target.dataset.achievementId! }); updateHandbook(); break;
       case 'achievement-reveal': runtime.achievementAction({ type: 'reveal', id: target.dataset.achievementId! }); updateHandbook(); revealHandbookElement('#achievement-detail .achievement-detail-condition'); break;
+      case 'reward-preview-choice': rewardPreviewId = root.querySelector<HTMLSelectElement>('#reward-view-choice')!.value; rewardPreviewPage = 0; updateHandbook(); revealHandbookElement('#reward-view-title'); break;
+      case 'reward-preview': rewardPreviewId = target.dataset.rewardId!; rewardPreviewPage = 0; updateHandbook(); revealHandbookElement('#reward-view-title'); break;
+      case 'reward-page': rewardPreviewPage = Number(target.dataset.rewardPage); updateHandbook(); revealHandbookElement('.reward-family-heading'); break;
+      case 'reward-close': rewardPreviewId = null; rewardPreviewPage = 0; updateHandbook(); revealHandbookElement('.collection-heading'); break;
       case 'reward-equip': { const slot = target.dataset.equipSlot as EquipmentSlot; const id = target.dataset.rewardId!; runtime.achievementAction({ type: 'equip', slot, id: runtime.achievements.equipped[slot] === id ? null : id }); updateHandbook(); break; }
       case 'settings': openSettings(); break;
       case 'enable-audio': if (event.isTrusted) audio.retryFromGesture(); break;
@@ -985,6 +1004,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   const interval = setInterval(() => { if (screen === 'game' && session) mutate(session.tick(gameInput?.deadlineTime(performance.now()) ?? performance.now())); }, 80);
   const disposeDistrictMap = installDistrictMap(root);
   const ipadLayout = installIPadPagination(root);
+  on(matchMedia('(prefers-reduced-motion: reduce)'), 'change', applySettings);
   const unsubscribe = runtime.subscribe(() => { applySettings(); updateStorageStatus(); updateCityViews(); refreshAchievementState(); });
   applySettings(); renderHome();
   return () => { releaseScreenPresentation(); disposeDistrictMap(); audio.dispose(); disposeGameLayout?.(); ipadLayout.destroy(); gameInput?.destroy(); mapObserver?.disconnect(); unsubscribe(); abort.abort(); clearInterval(interval); clearTimeout(feedbackTimer); clearTimeout(liveNoticeTimer); root.innerHTML = ''; };

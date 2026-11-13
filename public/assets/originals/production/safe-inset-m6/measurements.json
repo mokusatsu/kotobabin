@@ -1,0 +1,625 @@
+[
+  {
+    "id": "city_plot_empty",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.898,
+    "forward_matrix": [
+      0.898,
+      0,
+      52.22399999999999,
+      0,
+      0.898,
+      65.27999999999999
+    ],
+    "inverse_matrix": [
+      1.1135857461024499,
+      0,
+      -58.15590200445433,
+      0,
+      1.1135857461024499,
+      -72.69487750556792
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        52.22399999999999,
+        65.27999999999999
+      ],
+      [
+        971.7760000000001,
+        65.27999999999999
+      ],
+      [
+        52.22399999999999,
+        754.944
+      ],
+      [
+        971.7760000000001,
+        754.944
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      98,
+      276,
+      1008,
+      702
+    ],
+    "after_alpha_bbox": [
+      141,
+      313,
+      954,
+      680
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "ec49d32f2a6d69d2fe1c47151fdf62365344cb0ed1f4ce1d909ebd3fbfff7a6b",
+    "previous_webp_sha256": "f4cd827831e329bdca1b0e69f7dd060177ddb824fba77b2617d90ee797848f00",
+    "native_available": true,
+    "native_sha256": "5bc94c00416946152cf90f40f9c6a7c750a159ca6d1a9173d29677779610e891",
+    "png_sha256": "475cf702c497503a42af36008f820dc22cc51dd22fda35a9b92b25f8d7932af6",
+    "webp_sha256": "e95df951a0a95b9356d324407a7f9b46ce8d5c8e2e9e1cd463744d8e74987f96",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 255
+  },
+  {
+    "id": "city_residential_s4",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.993,
+    "forward_matrix": [
+      0.993,
+      0,
+      3.584000000000003,
+      0,
+      0.993,
+      4.480000000000004
+    ],
+    "inverse_matrix": [
+      1.0070493454179255,
+      0,
+      -3.609264853977848,
+      0,
+      1.0070493454179255,
+      -4.51158106747231
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        3.584000000000003,
+        4.480000000000004
+      ],
+      [
+        1020.4159999999999,
+        4.480000000000004
+      ],
+      [
+        3.584000000000003,
+        767.104
+      ],
+      [
+        1020.4159999999999,
+        767.104
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      365,
+      226,
+      961,
+      720
+    ],
+    "after_alpha_bbox": [
+      366,
+      229,
+      958,
+      605
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "a0a6fbae23b8f47b95b3d7c17cb8f6808a33f80b01a83c94b699c770f2b877fe",
+    "previous_webp_sha256": "4a1d993cece46c0c8ebd85c64cd17b36ea535576347e716911e450ceb6403634",
+    "native_available": true,
+    "native_sha256": "bbac8f5d2256c6e2262380a9c696ea1e3ed70399d3291e1f16e72b8d23ea575b",
+    "png_sha256": "be32fe4a7ba188f95b6a4cd0e47d0d21f9b2033fed8f7725d0959887b634c4b8",
+    "webp_sha256": "c789e04773e774a8dc2f4b66b9d4d1cc79ba026e744530882048da4f194be59a",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "city_market_s2",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.899,
+    "forward_matrix": [
+      0.899,
+      0,
+      51.71199999999999,
+      0,
+      0.899,
+      64.63999999999999
+    ],
+    "inverse_matrix": [
+      1.1123470522803114,
+      0,
+      -57.52169076751945,
+      0,
+      1.1123470522803114,
+      -71.90211345939932
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        51.71199999999999,
+        64.63999999999999
+      ],
+      [
+        972.288,
+        64.63999999999999
+      ],
+      [
+        51.71199999999999,
+        755.072
+      ],
+      [
+        972.288,
+        755.072
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      404,
+      260,
+      973,
+      746
+    ],
+    "after_alpha_bbox": [
+      416,
+      327,
+      926,
+      735
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "964639054f8b6a4fbf428cf3db0960e753d79f0becc63acca32de0e8087eb896",
+    "previous_webp_sha256": "09278cbf274f51ca136bd98255710b53181c42a549ba1e819ee27c1d6aab1d58",
+    "native_available": true,
+    "native_sha256": "55f1dde9b30ea67af6c692cee165889fb03f157b4ec7f4763b26913a0b4f4e66",
+    "png_sha256": "96c31d53a426e15e193ddec95a1d07d9f350195142a4bfa312a2a491fe4126ad",
+    "webp_sha256": "a231b8603e7ee7271e72fbf0dd081b3de1a9ae4a5676e02ff9f52a228961c0a6",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "city_market_s5",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.993,
+    "forward_matrix": [
+      0.993,
+      0,
+      3.584000000000003,
+      0,
+      0.993,
+      4.480000000000004
+    ],
+    "inverse_matrix": [
+      1.0070493454179255,
+      0,
+      -3.609264853977848,
+      0,
+      1.0070493454179255,
+      -4.51158106747231
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        3.584000000000003,
+        4.480000000000004
+      ],
+      [
+        1020.4159999999999,
+        4.480000000000004
+      ],
+      [
+        3.584000000000003,
+        767.104
+      ],
+      [
+        1020.4159999999999,
+        767.104
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      292,
+      193,
+      961,
+      736
+    ],
+    "after_alpha_bbox": [
+      294,
+      198,
+      957,
+      735
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "430ebf1938ea25b714cc47f29e38456d1af8624631d4546e32c1498fa1d0e188",
+    "previous_webp_sha256": "20d69af8bdcb22aab5c89765b8e888e8d47cc5142acda3aade615c9d790a6647",
+    "native_available": true,
+    "native_sha256": "3f14bd4c1ac817984d6aa8dff507927414e40a2077a99e9cf0f3fc7769bdc641",
+    "png_sha256": "39ee0656f8d1e2d55cf781057d79875e7a98ea3ee760586088ef48b05bcc9a8a",
+    "webp_sha256": "0ce8881dad85af34d334ef06f994cba3819ce66b0c38ae0327d0e3e7c288f68b",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "city_workshop_s3",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.907,
+    "forward_matrix": [
+      0.907,
+      0,
+      47.615999999999985,
+      0,
+      0.907,
+      59.51999999999998
+    ],
+    "inverse_matrix": [
+      1.1025358324145533,
+      0,
+      -52.49834619625136,
+      0,
+      1.1025358324145533,
+      -65.6229327453142
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        47.615999999999985,
+        59.51999999999998
+      ],
+      [
+        976.384,
+        59.51999999999998
+      ],
+      [
+        47.615999999999985,
+        756.096
+      ],
+      [
+        976.384,
+        756.096
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      427,
+      300,
+      916,
+      745
+    ],
+    "after_alpha_bbox": [
+      435,
+      332,
+      877,
+      735
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "8830bd0a337d0b0f7d093062ba773e5f2c292ef0ef6b42822c62a4d13793ba11",
+    "previous_webp_sha256": "63622e8a9e24f9a66ff8393b4fdc1de14a1f7112cdb96f3158d6efa10116815e",
+    "native_available": true,
+    "native_sha256": "d561604416c72b2089f17fca419f5426d62187895c9a8a24fcfaea41df4ae15a",
+    "png_sha256": "f3459caf676489c0fce423ea42446686120992af2de4a08720a5104f85fe935a",
+    "webp_sha256": "64d2dbd53be7b147d350fe4d7ffd35d374c96e795b1ac1000f1c3c751f555594",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "city_workshop_s4",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.89,
+    "forward_matrix": [
+      0.89,
+      0,
+      56.31999999999999,
+      0,
+      0.89,
+      70.39999999999999
+    ],
+    "inverse_matrix": [
+      1.1235955056179776,
+      0,
+      -63.280898876404486,
+      0,
+      1.1235955056179776,
+      -79.10112359550561
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        56.31999999999999,
+        70.39999999999999
+      ],
+      [
+        967.6800000000001,
+        70.39999999999999
+      ],
+      [
+        56.31999999999999,
+        753.92
+      ],
+      [
+        967.6800000000001,
+        753.92
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      359,
+      300,
+      950,
+      747
+    ],
+    "after_alpha_bbox": [
+      377,
+      338,
+      902,
+      734
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "06d45004ccffb45aff0024db1b495c20843a6af03b311854901dc3fa78ed9bcb",
+    "previous_webp_sha256": "531ccb2c4a6c487b8b72e3daba86be4c2b126da2ff08429bd9ea2c875a75eaa6",
+    "native_available": true,
+    "native_sha256": "6684076b03e7bb3e5a37a1e8ab75d4565a35b6916965e9d71701d0bc07251d89",
+    "png_sha256": "daab7f03b4e9f7170b591e3d72d3f0cc070393e1069e6fb406db2bb31a9027b2",
+    "webp_sha256": "604d3928d5934a551a26f8bf7ba1c869c23fdffe446a61341c0b91e9e6424d51",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "city_park_s4",
+    "size": [
+      1024,
+      768
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "scale": 0.993,
+    "forward_matrix": [
+      0.993,
+      0,
+      3.584000000000003,
+      0,
+      0.993,
+      4.480000000000004
+    ],
+    "inverse_matrix": [
+      1.0070493454179255,
+      0,
+      -3.609264853977848,
+      0,
+      1.0070493454179255,
+      -4.51158106747231
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        3.584000000000003,
+        4.480000000000004
+      ],
+      [
+        1020.4159999999999,
+        4.480000000000004
+      ],
+      [
+        3.584000000000003,
+        767.104
+      ],
+      [
+        1020.4159999999999,
+        767.104
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      355,
+      85,
+      961,
+      622
+    ],
+    "after_alpha_bbox": [
+      357,
+      89,
+      958,
+      622
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "fe5a4e678e40f83e781819698f876266539af131d2f3a8a5d1973519ee14b75d",
+    "previous_webp_sha256": "8cf92d73d6d92d0fd62819ad4564fcfffdfd568172220d3c419daee75a703772",
+    "native_available": true,
+    "native_sha256": "1fa5c5cb29e666998db6188158ecd7a68941695ae479531402729561b2a3a47b",
+    "png_sha256": "c723bbf5057259e5b355b8a503ce07e313f67009b68f5b7e514678d5cc0e2dbb",
+    "webp_sha256": "2068e8f5ce62fb16455ce8457e81413e7f15c2b4ee6d4774069f3af2e6f88ce0",
+    "png_webp_alpha_and_paper_equal": true,
+    "after_reserved_shop_alpha_max": 0
+  },
+  {
+    "id": "shop_harbor",
+    "size": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      448
+    ],
+    "safe_rect": [
+      32,
+      32,
+      480,
+      480
+    ],
+    "scale": 0.928,
+    "forward_matrix": [
+      0.928,
+      0,
+      18.431999999999988,
+      0,
+      0.928,
+      32.25599999999998
+    ],
+    "inverse_matrix": [
+      1.0775862068965516,
+      0,
+      -19.862068965517228,
+      0,
+      1.0775862068965516,
+      -34.758620689655146
+    ],
+    "transformed_full_canvas_corners": [
+      [
+        18.431999999999988,
+        32.25599999999998
+      ],
+      [
+        493.568,
+        32.25599999999998
+      ],
+      [
+        18.431999999999988,
+        507.392
+      ],
+      [
+        493.568,
+        507.392
+      ]
+    ],
+    "anchor_maps_to_itself": true,
+    "rounding": "Pillow BICUBIC inverse affine at native output grid, premultiplied RGBa, standard8bit quantization",
+    "crop": false,
+    "mask": false,
+    "threshold": false,
+    "before_alpha_bbox": [
+      16,
+      29,
+      440,
+      452
+    ],
+    "after_alpha_bbox": [
+      90,
+      59,
+      427,
+      451
+    ],
+    "outside_safe_alpha_max": 0,
+    "previous_png_sha256": "789e35d4e0ab8b213c453a73ddeb2320da16100f58150acd3c115b012281cb5a",
+    "previous_webp_sha256": "1abf8c0be1eb1535bfc6c21cbc3165589c7bb85576c2f3295bd3eab05ad1a46b",
+    "native_available": true,
+    "native_sha256": "a1e116a4bba9eac6ff16979d95f181f5ee6d2e7fbb6afed6cacbf565b42df039",
+    "png_sha256": "fdc5042abf07e4fdbb39f52a85fa3d9acd53f17885816bfed593658470639a91",
+    "webp_sha256": "5be9edc608a61325ad7135eeefb1658d11140c2488c38b98438094316878d8ef",
+    "png_webp_alpha_and_paper_equal": true
+  }
+]

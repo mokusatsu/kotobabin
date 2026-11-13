@@ -1,0 +1,194 @@
+[
+  {
+    "id": "reward_celebration_postcard",
+    "native_size": [
+      1586,
+      992
+    ],
+    "native_mode": "RGB",
+    "normalized_size": [
+      1600,
+      1000
+    ],
+    "normalized_mode": "RGB",
+    "alpha_bbox": [
+      0,
+      0,
+      1600,
+      1000
+    ],
+    "anchor": [
+      800,
+      500
+    ],
+    "transform": {
+      "method": "full-canvas aspect-preserving contain; no crop, mask, threshold or paint edits",
+      "source_canvas": [
+        1586,
+        992
+      ],
+      "resized_canvas": [
+        1439,
+        900
+      ],
+      "translate": [
+        80,
+        50
+      ],
+      "scale_x": 0.907313997477932,
+      "scale_y": 0.907258064516129,
+      "padding": "#F5F1E7"
+    },
+    "png_webp_alpha_and_paper_composite_equal": true,
+    "runtime_bytes": 2290586,
+    "sha256": {
+      "reward_celebration_postcard.generated.png": "85a1305b52474c56aa78d8c283ef4d00599ec47ef6fbba4e3b827028aa5f9371",
+      "reward_celebration_postcard.normalized.png": "fb4f12b26870b339e1ddb3af71d9090ce57268fc2f7d8f0238cec5f4100ca6fb",
+      "reward_celebration_postcard.webp": "a866fd20dd0c0774fab02bc8b57b32d6758bbd95ac8576c4cf6e87d0e53fe8e4"
+    }
+  },
+  {
+    "id": "reward_evening_panel",
+    "native_size": [
+      2172,
+      724
+    ],
+    "native_mode": "RGB",
+    "normalized_size": [
+      1600,
+      400
+    ],
+    "normalized_mode": "RGB",
+    "alpha_bbox": [
+      0,
+      0,
+      1600,
+      400
+    ],
+    "anchor": [
+      800,
+      200
+    ],
+    "transform": {
+      "method": "full-canvas aspect-preserving contain; no crop, mask, threshold or paint edits",
+      "source_canvas": [
+        2172,
+        724
+      ],
+      "resized_canvas": [
+        1200,
+        400
+      ],
+      "translate": [
+        200,
+        0
+      ],
+      "scale_x": 0.5524861878453039,
+      "scale_y": 0.5524861878453039,
+      "padding": "#F5F1E7"
+    },
+    "png_webp_alpha_and_paper_composite_equal": true,
+    "runtime_bytes": 611466,
+    "sha256": {
+      "reward_evening_panel.generated.png": "dc5f2bf01c77f7ea326ff7104fa56106d5f0ab427c45bff7f343a39194adb575",
+      "reward_evening_panel.normalized.png": "1bea9fa41afc33d8c13f1a6fb1abe42dfb72c94c26d32dd7d4d083695b1d9988",
+      "reward_evening_panel.webp": "0235d8fca6d08da115c1e5336a5dc746e2e28a9c6c260a9d9be34f622513c61e"
+    }
+  },
+  {
+    "id": "reward_first_collection_stamp_art",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_mode": "RGBA",
+    "normalized_size": [
+      512,
+      512
+    ],
+    "normalized_mode": "RGBA",
+    "alpha_bbox": [
+      32,
+      32,
+      477,
+      471
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": {
+      "method": "full-canvas aspect-preserving contain; no crop, mask, threshold or paint edits",
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "scale_x": 0.3572567783094099,
+      "scale_y": 0.3572567783094099,
+      "padding": "transparent"
+    },
+    "png_webp_alpha_and_paper_composite_equal": true,
+    "runtime_bytes": 312130,
+    "sha256": {
+      "reward_first_collection_stamp_art.generated.png": "0dd8e3ed9e21f03cba6a24e8e7ab8d4757c86178c0302df0f487341116a4bbbc",
+      "reward_first_collection_stamp_art.normalized.png": "c6e0b65c336b7ce1b92475bf40f4978c8faf7c2b277cff97be67b38fbcb34ca0",
+      "reward_first_collection_stamp_art.webp": "ace91cbfa6ffeff5b0e1a631cc7d82631953730acbfcb611918e921ed6c242db"
+    }
+  },
+  {
+    "id": "reward_collection_stamp_art",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_mode": "RGBA",
+    "normalized_size": [
+      512,
+      512
+    ],
+    "normalized_mode": "RGBA",
+    "alpha_bbox": [
+      32,
+      32,
+      480,
+      480
+    ],
+    "anchor": [
+      256,
+      256
+    ],
+    "transform": {
+      "method": "full-canvas aspect-preserving contain; no crop, mask, threshold or paint edits",
+      "source_canvas": [
+        1254,
+        1254
+      ],
+      "resized_canvas": [
+        448,
+        448
+      ],
+      "translate": [
+        32,
+        32
+      ],
+      "scale_x": 0.3572567783094099,
+      "scale_y": 0.3572567783094099,
+      "padding": "transparent"
+    },
+    "png_webp_alpha_and_paper_composite_equal": true,
+    "runtime_bytes": 276526,
+    "sha256": {
+      "reward_collection_stamp_art.generated.png": "17b86e1b77a8c32fc84dd6b3de0d04f19d55f58abcd50e8ec74418c22c57d54f",
+      "reward_collection_stamp_art.normalized.png": "07836d6b8fcfcc2242f5f0e104a8351db9e5d8a1043b39b49ef89e8369482cf8",
+      "reward_collection_stamp_art.webp": "ecf1cc4088e807544c74dfc91900245544011d1edcf1353e28b6071ffd085397"
+    }
+  }
+]

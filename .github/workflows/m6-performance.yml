@@ -1,0 +1,29 @@
+name: M6 production performance measurement
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/measure-performance, fix/m6-integrated-input, feat/m5-remaining-art, feat/m6-final-validation]
+permissions:
+  contents: read
+concurrency:
+  group: m6-performance-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  chromium-measurement:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx vitest run --config=tests/e2e/m6/vitest.fixture.config.ts
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config=tests/e2e/m6/playwright.performance.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-chromium-performance
+          path: test-results/m6-performance/
