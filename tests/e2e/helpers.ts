@@ -16,7 +16,7 @@ export async function beginTutorial(page: Page) {
 
 export async function beginMain(page: Page) {
   await beginTutorial(page);
-  await page.locator('[data-action="tutorial-skip"]').click();
+  await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
   await expect(page.locator('#game-input')).toBeFocused();
   await expect(page.locator('#time-left')).toHaveText('90');

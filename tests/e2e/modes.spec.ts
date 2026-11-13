@@ -39,7 +39,7 @@ test('three unsuccessful tutorial words offer practice without restarting the in
 
 test('selected-word practice earns three clean completions and enters a fixed preferred-word MAIN plan', async ({ page }, testInfo) => {
   await page.goto('/');
-  await page.locator('[data-action="catalogue"]').click();
+  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('猫');
   await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
   await confirmHalfWidthInput(page);
