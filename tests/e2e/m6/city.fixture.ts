@@ -32,12 +32,16 @@ export function finalCityFixture(wall: number) {
   command({ type: 'startNewCity', confirmed: true, location: 'HOME', landscape: 'riverside' });
   for (const id of districts) {
     if (!city.state.districts[id].open) command({ type: 'openDistrict', districtId: id });
-    deliver(id, 250_000_000_000n);
+    deliver(id, id === 'harbor' ? 500_000_000_000n : 250_000_000_000n);
     while (city.state.districts[id].stage < 4) {
       if (!city.state.districts[id].plan) command({ type: 'startPlan', districtId: id });
       city.advance(0);
     }
     while (city.state.districts[id].crews < 10) command({ type: 'purchase', kind: 'crews', districtId: id, quantity: 1 });
+    // Reduce synthetic ledger/artifact size through actual paid generation upgrades.
+    if (id === 'residential') while (city.state.packagingLevel < 15) command({ type: 'purchase', kind: 'packaging', quantity: 1 });
+    const finalPlan=city.formulas.developmentCost(id,5);
+    if (city.state.districts[id].stockMicro < finalPlan.materialsMicro + 500_000_000n * BigInt(2 ** districts.indexOf(id))) throw new Error(`Insufficient final plan and railway stock: ${id}`);
   }
   if (city.state.blueprints < 45 || !city.newCityPreview().eligible) throw new Error('Fixture failed public progression prerequisites');
   const result = encodeCityState(city.snapshot());decodeCityState(result);return result;
