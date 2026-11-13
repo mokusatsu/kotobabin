@@ -1,0 +1,50 @@
+[
+  {
+    "id": "reward_celebration_postcard",
+    "size": [
+      1600,
+      1000
+    ],
+    "transparent_background": false,
+    "prompt": "Warm hand-painted watercolor and gouache illustration for a cozy Japanese postal town game, visible pigment texture, cream stone, ochre timber, forest green and restrained rust-red palette. Soft upper-left light and short contact shadows, rich storybook physical objects, not vector icons, not photorealistic. Absolutely no text, letters, Japanese writing, numerals, labels, logos, UI, medals, status marks or stamp borders anywhere. A complete opaque landscape painting, aspect ratio 8:5, edge-to-edge painted scene. In front of a welcoming small cream postal building with an unlettered forest-green door, a little wooden table holds a wide open stamp album with small purely pictorial stamp miniatures, no written captions. Bouquets of flowers and plain closed envelopes surround the album arriving from both sides. Loose festive triangular pennants cross the upper part of the painting. Townspeople appear only as tiny indistinct silhouettes far behind the table. Main focus is the album, bouquets and envelopes, warm quiet celebration. Keep all main objects inside a generous five-percent safe margin. No thank-you message, no numbers or completion signs.",
+    "status": "selected-candidate",
+    "native_source_path": "/workspace/generated_images/exec-a01db5a5-075a-43ec-942b-8aca24190b5b.png",
+    "preserved_native": "reward_celebration_postcard.attempt-01.png"
+  },
+  {
+    "id": "reward_evening_panel",
+    "size": [
+      1600,
+      400
+    ],
+    "transparent_background": false,
+    "prompt": "Warm hand-painted watercolor and gouache illustration for a cozy Japanese postal town game, visible pigment texture, cream stone, ochre timber, forest green and restrained rust-red palette. Soft upper-left light and short contact shadows, rich storybook physical objects, not vector icons, not photorealistic. Absolutely no text, letters, Japanese writing, numerals, labels, logos, UI, medals, status marks or stamp borders anywhere. EXTREMELY WIDE PANORAMA, FOUR TIMES AS WIDE AS TALL, aspect ratio 4:1. A complete opaque edge-to-edge decorative landscape painting. A large low golden evening sun, long thin horizontal clouds in warm peach and dusty mauve sky, distant gentle roof silhouettes forming a shallow strip along the lower edge, a few glowing cream windows. Quiet atmospheric sunset over a tiny Japanese town, no foreground objects, no close buildings. The sky occupies most of this very wide low panoramic picture. Keep sun complete and away from edges. Composition must be a very low wide horizontal strip, not a square picture. No frame, no text.",
+    "status": "selected-candidate",
+    "native_source_path": "/workspace/generated_images/exec-a3c5ecf9-d91f-40be-8ee4-25aa57bc2e0a.png",
+    "preserved_native": "reward_evening_panel.attempt-01.png"
+  },
+  {
+    "id": "reward_first_collection_stamp_art",
+    "size": [
+      512,
+      512
+    ],
+    "transparent_background": true,
+    "prompt": "Warm hand-painted watercolor and gouache illustration for a cozy Japanese postal town game, visible pigment texture, cream stone, ochre timber, forest green and restrained rust-red palette. Soft upper-left light and short contact shadows, rich storybook physical objects, not vector icons, not photorealistic. Absolutely no text, letters, Japanese writing, numerals, labels, logos, UI, medals, status marks or stamp borders anywhere. Square frameless memorial stamp artwork, truly transparent background around a compact complete miniature landscape island, generous 12 percent clear margins on all four sides. Foreground an open rust-brown delivery satchel with several plain cream envelopes peeking out. Center a cream stone arched bridge over a small blue-green river. Beyond the bridge a small cream postal building with blank green door, and a broad pale delivery road winds from the building upward into distant hills to a tiny observation pavilion. The open winding road receding toward the hill lookout is the main theme. Strong simple silhouettes legible at 72px. No sky rectangle or page background, no stamp frame or text.",
+    "status": "selected-candidate",
+    "native_source_path": "/workspace/generated_images/exec-7ef9a815-902f-43fd-b2ee-1c28856e275d.png",
+    "preserved_native": "reward_first_collection_stamp_art.attempt-01.png"
+  },
+  {
+    "id": "reward_collection_stamp_art",
+    "size": [
+      512,
+      512
+    ],
+    "transparent_background": true,
+    "prompt": "Warm hand-painted watercolor and gouache illustration for a cozy Japanese postal town game, visible pigment texture, cream stone, ochre timber, forest green and restrained rust-red palette. Soft upper-left light and short contact shadows, rich storybook physical objects, not vector icons, not photorealistic. Absolutely no text, letters, Japanese writing, numerals, labels, logos, UI, medals, status marks or stamp borders anywhere. Square frameless memorial stamp artwork, truly transparent background, entire subject detached from edges with 12 percent clear margin on all sides. A large open cream-paged book viewed from above at a gentle isometric angle, its thick ochre cover and curved pages clearly visible. A miniature three-dimensional Japanese town grows from the open pages: one blue-green river, one stone arch bridge, small cream houses, a rust-awning shop, timber workshop, green station canopy, harbor pier and tiny boat, and grassy hills. A single broad pale delivery road connects all districts as it winds across both pages. The open-book silhouette and sculpted town must be dominant and readable at 72px. Book pages have NO writing or numbers. No labels, border, rectangular scenery backdrop or UI.",
+    "status": "selected-candidate",
+    "native_source_path": "/workspace/generated_images/exec-46a9c3bf-3fcf-4657-8175-d94d91438d44.png",
+    "preserved_native": "reward_collection_stamp_art.attempt-01.png"
+  }
+]
