@@ -6,7 +6,7 @@ export type HandbookFilter = 'all' | 'locked' | 'earned';
 export type HandbookTab = 'stamps' | 'rewards' | 'history';
 const asset = (path: string) => `${import.meta.env.BASE_URL}assets/${path}`;
 const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
-const availableStampArt = new Set(['stamp_a01', 'stamp_a02', 'stamp_a03', 'stamp_a04', 'stamp_a05', 'stamp_a06', 'stamp_b01', 'stamp_b02', 'stamp_b03', 'stamp_b04', 'stamp_b05', 'stamp_b06', 'stamp_c01', 'stamp_c02', 'stamp_c03', 'stamp_c04', 'stamp_c05', 'stamp_c06']);
+const availableStampArt = new Set(['stamp_a01', 'stamp_a02', 'stamp_a03', 'stamp_a04', 'stamp_a05', 'stamp_a06', 'stamp_b01', 'stamp_b02', 'stamp_b03', 'stamp_b04', 'stamp_b05', 'stamp_b06', 'stamp_c01', 'stamp_c02', 'stamp_c03', 'stamp_c04', 'stamp_c05', 'stamp_c06', 'stamp_e01', 'stamp_e02', 'stamp_e03', 'stamp_e04', 'stamp_e05', 'stamp_e06']);
 const scopes: Record<string, string> = { '全': 'すべての遊び方', '練': '練習・復習', '便': '本編の完走', '通常': '通常の便', '街': '街づくり' };
 const date = (atMs: number) => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(atMs));
 const definition = (id: string) => catalog.achievements.find(achievement => achievement.id === id)!;
