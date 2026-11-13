@@ -147,6 +147,15 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
   </div>`;
 }
 
+interface VehicleMotion {
+  node: HTMLElement;
+  sprite: HTMLImageElement | null;
+  from: number;
+  to: number;
+  startedAt: number;
+  lane: number;
+}
+
 /** Keep this controller across RESULT if the route remains visible. updateCity accepts
  * real city updates while typing is paused/hidden; it never starts an economy timer. */
 export class DeliverySceneController {
@@ -156,10 +165,13 @@ export class DeliverySceneController {
   private paintedWords = 0;
   private paintedDispatches = 0;
   private paintedArrivals = 0;
+  private vehicleMotions = new Map<HTMLElement, VehicleMotion>();
+  private vehicleFrame: number | null = null;
   constructor(city: CityState, destination: DistrictId) { this.city = city; this.state = createDeliverySceneState(city, destination); }
   view(): DeliverySceneState { return { ...this.state, batches: this.state.batches.map(batch => ({ ...batch })), factSequences: { ...this.state.factSequences } }; }
   render(): string { return renderDeliveryScene(this.city, this.state.destination); }
   attach(root: HTMLElement): void {
+    this.cancelVehicleAnimation();
     this.element = root.id === 'delivery-scene' ? root : root.querySelector('#delivery-scene');
     this.paint();
   }
@@ -169,7 +181,37 @@ export class DeliverySceneController {
   updateCity(city: CityState): void { this.city = city; this.state = projectDeliveryScene(this.state, city); this.paint(); }
   setPaused(paused: boolean): void { this.state = { ...this.state, paused }; this.paint(); }
   setReducedMotion(reducedMotion: boolean): void { this.state = { ...this.state, reducedMotion }; this.paint(); }
-  detach(): void { this.element = null; }
+  detach(): void { this.element = null; this.cancelVehicleAnimation(); }
+  private cancelVehicleAnimation(): void {
+    if (this.vehicleFrame !== null) cancelAnimationFrame(this.vehicleFrame);
+    this.vehicleFrame = null;
+    this.vehicleMotions.clear();
+  }
+  private visualProgress(motion: VehicleMotion, now: number): number {
+    const fraction = Math.min(1, Math.max(0, (now - motion.startedAt) / 160));
+    return fraction === 1 ? motion.to : motion.from + (motion.to - motion.from) * fraction;
+  }
+  private paintVehicle(motion: VehicleMotion, now: number): boolean {
+    const progress = this.visualProgress(motion, now);
+    const point = deliveryPathPoint(progress);
+    motion.node.style.left = `${point.x * 100}%`;
+    motion.node.style.top = `calc(${point.y * 100}% + ${motion.lane * 7}px)`;
+    const art = sceneVehicleArt(this.city, this.state.destination, progress);
+    if (motion.sprite && motion.sprite.dataset.assetId !== art) {
+      motion.sprite.src = asset(`vehicle/${art}.webp`); motion.sprite.dataset.assetId = art;
+    }
+    return progress !== motion.to;
+  }
+  private animateVehicles = (now: number): void => {
+    this.vehicleFrame = null;
+    if (!this.element) return;
+    let moving = false;
+    for (const [node, motion] of this.vehicleMotions) {
+      if (!node.isConnected) { this.vehicleMotions.delete(node); continue; }
+      moving = this.paintVehicle(motion, now) || moving;
+    }
+    if (moving) this.vehicleFrame = requestAnimationFrame(this.animateVehicles);
+  };
   private paint(): void {
     const el = this.element; if (!el) return;
     const s = this.state;
@@ -181,7 +223,11 @@ export class DeliverySceneController {
       arrivalRevision: String(s.arrivalRevision), words: String(s.words), dispatches: String(s.dispatches) });
     const batchRoot = el.querySelector<HTMLElement>('[data-delivery-batches]');
     if (batchRoot) {
-      for (const node of Array.from(batchRoot.children)) if (!s.batches.some(batch => batch.id === (node as HTMLElement).dataset.effectId)) node.remove();
+      const now = performance.now();
+      let moving = false;
+      for (const node of Array.from(batchRoot.children)) if (!s.batches.some(batch => batch.id === (node as HTMLElement).dataset.effectId)) {
+        this.vehicleMotions.delete(node as HTMLElement); node.remove();
+      }
       s.batches.forEach((batch, index) => {
         let node = Array.from(batchRoot.children).find(item => (item as HTMLElement).dataset.effectId === batch.id) as HTMLElement | undefined;
         if (!node) {
@@ -191,12 +237,20 @@ export class DeliverySceneController {
         Object.assign(node.dataset, { state: batch.remainingMicro > 0n ? 'in-transit' : 'arrived',
           amountMicro: String(batch.amountMicro), remainingMicro: String(batch.remainingMicro), combined: String(batch.combined) });
         const progress = s.reducedMotion && batch.remainingMicro > 0n ? .5 : deliveryBatchPosition(batch);
-        const art = sceneVehicleArt(this.city, s.destination, progress);
-        const sprite = node.querySelector<HTMLImageElement>('.delivery-vehicle-art');
-        if (sprite && sprite.dataset.assetId !== art) { sprite.src = asset(`vehicle/${art}.webp`); sprite.dataset.assetId = art; }
-        const point = deliveryPathPoint(progress);
-        node.style.left = `${point.x * 100}%`; node.style.top = `calc(${point.y * 100}% + ${(index % 3) * 7}px)`;
+        let motion = this.vehicleMotions.get(node);
+        if (!motion) {
+          motion = { node, sprite: node.querySelector<HTMLImageElement>('.delivery-vehicle-art'), from: progress, to: progress, startedAt: now, lane: index % 3 };
+          this.vehicleMotions.set(node, motion);
+        } else if (s.reducedMotion || motion.to !== progress) {
+          motion.from = s.reducedMotion ? progress : this.visualProgress(motion, now);
+          motion.to = progress; motion.startedAt = now;
+        }
+        motion.lane = index % 3;
+        // Interpolate the route parameter, then evaluate the curve on every frame.
+        // Independent left/top transitions take a chord through the grass on large updates.
+        moving = this.paintVehicle(motion, now) || moving;
       });
+      if (moving && this.vehicleFrame === null) this.vehicleFrame = requestAnimationFrame(this.animateVehicles);
     }
     const dispatchVehicle = el.querySelector<HTMLImageElement>('[data-dispatch-vehicle]');
     const dispatchArt = vehicleArtworkId(this.city.districts[s.destination].crews, this.city.districts[s.destination].railway, 'rear');
