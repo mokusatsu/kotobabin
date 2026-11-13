@@ -40,9 +40,10 @@ export function mountApp(root: HTMLElement): () => void {
   function footer() { return '<footer class="site-footer"><span>ひとつずつ、ことばを届けよう。</span><span>日本語タイピングゲーム</span></footer>'; }
   function renderHome() {
     screen = 'home'; session = undefined; pending = undefined;
-    root.innerHTML = `${header()}<main id="main" class="home-layout"><section class="home-intro"><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker"><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><span>届け先</span><strong>住宅地</strong><span class="destination-tag">最初の街</span></div><button class="button button-primary start-button" data-action="start">${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note">半角ローマ字で入力 · 90秒でひと便</p><button class="text-button" data-action="help">はじめての方へ <span aria-hidden="true">↗</span></button></section><section class="town-panel" aria-labelledby="town-heading"><div class="town-heading"><div><p class="eyebrow">YOUR TOWN</p><h2 id="town-heading">川沿いの街</h2></div><span class="opened-label">開通 <strong>1</strong> / 6</span></div><div class="town-map"><img class="terrain" src="${asset('terrain/terrain_riverside.webp')}" alt="川と山に囲まれた、水彩の小さな街の地形"><div class="map-paper-wash"></div><svg class="delivery-routes" viewBox="0 0 800 560" aria-hidden="true"><path d="M394 310 Q260 330 195 180"/><circle cx="394" cy="310" r="7"/><circle cx="195" cy="180" r="7"/></svg><img class="city-hub" src="${asset('city_shared/city_hub.webp')}" alt="中央集配所"><div class="map-label residential"><span class="map-dot"></span><strong>住宅地</strong><small>段階 0 / 5</small></div><div class="map-label locked market"><span aria-hidden="true">◇</span>商店街<small>段階合計2で開通</small></div><div class="map-label locked workshop"><span aria-hidden="true">◇</span>工房街<small>段階合計4で開通</small></div><div class="map-label locked park"><span aria-hidden="true">◇</span>公園通り<small>段階合計7で開通</small></div><div class="map-label locked station"><span aria-hidden="true">◇</span>駅前<small>段階合計11で開通</small></div><div class="map-label locked harbor"><span aria-hidden="true">◇</span>港町<small>段階合計16で開通</small></div><span class="map-caption">ことばから、はじまる街。</span></div><div class="development-note"><span class="plan-icon" aria-hidden="true">01</span><div><strong>住宅地に、最初の灯りを。</strong><p>最初の建築に必要な資材は30。</p></div><span class="plan-label">はじめの一歩</span></div></section><aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-note">この回の成績は、ページを閉じると残りません。</span></aside></main>${footer()}`;
+    root.innerHTML = `${header()}<main id="main" class="home-layout"><section class="home-intro"><p class="eyebrow">A LITTLE JOURNEY WITH WORDS</p><h1>届けたことばが、<br>街を育てる。</h1><p class="intro-copy">ひとつのことばを、ひとつの荷物に。<br>90秒の配達へ出かけませんか。</p><fieldset class="course-picker"><legend>今日のコース</legend><div class="course-options">${courses.map((item) => `<label class="course-option"><input type="radio" name="course" value="${item.id}" ${item.id === selectedCourse ? 'checked' : ''}><span><strong>${item.name}</strong><small>${item.description}</small></span></label>`).join('')}</div></fieldset><div class="destination"><span>届け先</span><strong>住宅地</strong><span class="destination-tag">最初の街</span></div><button class="button button-primary start-button" data-action="start" ${window.innerWidth < 768 ? 'disabled' : ''}>${envelope} 配達をはじめる <span aria-hidden="true">→</span></button><p class="keyboard-note">${window.innerWidth < 768 ? '本編には幅768px以上の画面と物理キーボードが必要です' : '半角ローマ字で入力 · 90秒でひと便'}</p><button class="text-button" data-action="help">はじめての方へ <span aria-hidden="true">↗</span></button></section><section class="town-panel" aria-labelledby="town-heading"><div class="town-heading"><div><p class="eyebrow">YOUR TOWN</p><h2 id="town-heading">川沿いの街</h2></div><span class="opened-label">開通 <strong>1</strong> / 6</span></div><div class="town-map"><img class="terrain" src="${asset('terrain/terrain_riverside.webp')}" alt="川と山に囲まれた、水彩の小さな街の地形"><div class="map-paper-wash"></div><svg class="delivery-routes" viewBox="0 0 800 560" aria-hidden="true"><path d="M394 310 Q260 330 195 180"/><circle cx="394" cy="310" r="7"/><circle cx="195" cy="180" r="7"/></svg><img class="city-hub" src="${asset('city_shared/city_hub.webp')}" alt="中央集配所"><div class="map-label residential"><span class="map-dot"></span><strong>住宅地</strong><small>段階 0 / 5</small></div><div class="map-label locked market"><span aria-hidden="true">◇</span>商店街<small>段階合計2で開通</small></div><div class="map-label locked workshop"><span aria-hidden="true">◇</span>工房街<small>段階合計4で開通</small></div><div class="map-label locked park"><span aria-hidden="true">◇</span>公園通り<small>段階合計7で開通</small></div><div class="map-label locked station"><span aria-hidden="true">◇</span>駅前<small>段階合計11で開通</small></div><div class="map-label locked harbor"><span aria-hidden="true">◇</span>港町<small>段階合計16で開通</small></div><span class="map-caption">ことばから、はじまる街。</span></div><div class="development-note"><span class="plan-icon" aria-hidden="true">01</span><div><strong>住宅地に、最初の灯りを。</strong><p>最初の建築に必要な資材は30。</p></div><span class="plan-label">はじめの一歩</span></div></section><aside class="welcome-note"><span class="note-number">POST 01</span><p><strong>まちがえても、完成したことばの得点は残ります。</strong><br>ゆっくりでも大丈夫。自分のペースで届けましょう。</p><span class="save-note">この回の成績は、ページを閉じると残りません。</span></aside></main>${footer()}`;
   }
   function launch() {
+    if (window.innerWidth < 768) { renderHome(); return; }
     if (!inputConfirmed) { rechecking = false; renderCheck(); return; }
     session = new GameSession({ generator: new CourseGenerator(wordsData.words as Word[], { seed, courseId: selectedCourse }) });
     lastMistakes = 0;
@@ -94,14 +95,19 @@ export function mountApp(root: HTMLElement): () => void {
     const overlay = root.querySelector<HTMLElement>('#paused-layer')!;
     if (snapshot.phase === 'PAUSED' && overlay.hidden) {
       overlay.hidden = false;
+      isolatePausedContent(true);
       overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="text-button" data-action="quit">ホームへ戻る</button></section>`;
       root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
-    } else if (snapshot.phase !== 'PAUSED') overlay.hidden = true;
+    } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
   }
   function renderResult(snapshot: Snapshot) {
     screen = 'result';
-    root.innerHTML = `${header()}<main id="main" class="result-page"><div class="result-heading"><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · 住宅地へ · 90秒の配達</p></div><div class="result-grid"><section class="paper-card score-card"><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter"><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">時間切れに残っていた荷物も届けました。<br>途中のことばには完成点を加えていません。</p></section></div><div class="result-actions"><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button><button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-note result-save">この回の成績は、ページを閉じると残りません。</p></main>${footer()}`;
+    root.innerHTML = `${header()}<main id="main" class="result-page"><div class="result-heading"><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · 住宅地へ · 90秒の配達</p></div><div class="result-grid"><section class="paper-card score-card"><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter"><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div class="result-actions"><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button><button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-note result-save">この回の成績は、ページを閉じると残りません。</p></main>${footer()}`;
     root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus();
+  }
+  function isolatePausedContent(paused: boolean) {
+    const elements = [...root.querySelectorAll<HTMLElement>('.site-header, .site-footer, .game-page > :not(#paused-layer)')];
+    for (const element of elements) { element.inert = paused; if (paused) element.setAttribute('aria-hidden', 'true'); else element.removeAttribute('aria-hidden'); }
   }
   function focusInput() { suppressBlur = true; root.querySelector<HTMLInputElement>('#game-input')?.focus(); suppressBlur = false; }
   function pause() { if (screen === 'game' && session) updateGame(session.pause(performance.now())); }
@@ -113,7 +119,7 @@ export function mountApp(root: HTMLElement): () => void {
     dialog.addEventListener('close', () => dialog.remove(), { once: true });
   }
   on(root, 'change', (event) => { const target = event.target as HTMLInputElement; if (target.name === 'course') selectedCourse = target.value as CourseId; });
-  on(root, 'pointerdown', (event) => { if ((event.target as HTMLElement).closest('[data-action="deliver"]')) event.preventDefault(); });
+  on(root, 'pointerdown', (event) => { if ((event.target as HTMLElement).closest('[data-action="deliver"], [data-action="guide"]')) event.preventDefault(); });
   on(root, 'click', (event) => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target || (target as HTMLButtonElement).disabled) return;
@@ -125,7 +131,7 @@ export function mountApp(root: HTMLElement): () => void {
       case 'confirm': if (checkPassed) { inputConfirmed = true; if (rechecking) { renderGame(); updateGame(state()); } else launch(); } break;
       case 'check-back': if (rechecking) { renderGame(); updateGame(state()); } else renderHome(); break;
       case 'pause': pause(); break;
-      case 'resume': { const overlay = root.querySelector<HTMLElement>('#paused-layer')!; overlay.hidden = true; focusInput(); if (document.activeElement === root.querySelector('#game-input')) updateGame(session!.resume(performance.now())); break; }
+      case 'resume': { if (!inputConfirmed) { rechecking = true; renderCheck(); break; } isolatePausedContent(false); const overlay = root.querySelector<HTMLElement>('#paused-layer')!; overlay.hidden = true; focusInput(); if (document.activeElement === root.querySelector('#game-input')) updateGame(session!.resume(performance.now())); break; }
       case 'recheck': rechecking = true; renderCheck(); break;
       case 'deliver': updateGame(session!.deliver(performance.now())); focusInput(); break;
       case 'guide': guideEnabled = !guideEnabled; if (session) updateGame(state()); break;
@@ -138,6 +144,15 @@ export function mountApp(root: HTMLElement): () => void {
   });
   on(root, 'keydown', (raw) => {
     const event = raw as KeyboardEvent;
+    const modal = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
+    if (modal && event.key === 'Tab') {
+      const buttons = [...modal.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
+      const first = buttons[0], last = buttons[buttons.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      return;
+    }
+    if (!event.isTrusted) return;
     if ((event.target as HTMLElement).id !== 'game-input') return;
     if (event.isComposing || event.key === 'Process' || event.keyCode === 229) { pending = undefined; if (screen === 'game') { inputConfirmed = false; pause(); } return; }
     if (event.repeat) { event.preventDefault(); return; }
@@ -147,6 +162,14 @@ export function mountApp(root: HTMLElement): () => void {
     if (/^[a-zA-Z'-]$/.test(event.key)) { pending = { key: event.key, at: performance.now() }; (event.target as HTMLInputElement).value = ''; }
     else pending = undefined;
   });
+  on(root, 'keyup', (raw) => {
+    const event = raw as KeyboardEvent;
+    if ((event.target as HTMLElement).id === 'game-input' && pending && event.key.toLowerCase() === pending.key.toLowerCase()) { pending = undefined; if (screen === 'game') { inputConfirmed = false; pause(); } }
+  });
+  on(root, 'beforeinput', (raw) => {
+    const event = raw as InputEvent;
+    if ((event.target as HTMLElement).id === 'game-input' && (event.isComposing || event.inputType !== 'insertText')) { pending = undefined; if (!event.isComposing) event.preventDefault(); if (screen === 'game') { inputConfirmed = false; pause(); } }
+  });
   on(root, 'input', (raw) => {
     const event = raw as InputEvent;
     const input = event.target as HTMLInputElement;
@@ -155,16 +178,17 @@ export function mountApp(root: HTMLElement): () => void {
     input.value = '';
     const confirmed = pending && event.isTrusted && !event.isComposing && !composing && event.inputType === 'insertText' && value.length === 1 && value.toLowerCase() === pending.key.toLowerCase();
     const operation = pending; pending = undefined;
-    if (!confirmed || !operation) { if (screen === 'game') { inputConfirmed = false; pause(); } else { const el = root.querySelector('#check-status'); if (el) el.textContent = 'IMEをオフにして、半角英字の a を入力してください'; } return; }
+    if (!confirmed || !operation) { if (screen === 'game') { inputConfirmed = false; pause(); } else { checkPassed = false; const confirm = root.querySelector<HTMLButtonElement>('[data-action="confirm"]'); if (confirm) confirm.disabled = true; const el = root.querySelector('#check-status'); if (el) el.textContent = 'IMEをオフにして、半角英字の a を入力してください'; } return; }
     if (screen === 'check') {
       if (value.toLowerCase() === 'a') { checkPassed = true; root.querySelector('#check-status')!.textContent = '半角入力を確認できました。'; root.querySelector<HTMLButtonElement>('[data-action="confirm"]')!.disabled = false; }
     } else if (screen === 'game') updateGame(session!.input(operation.key, operation.at));
   });
-  on(root, 'compositionstart', () => { composing = true; pending = undefined; inputConfirmed = false; pause(); });
+  on(root, 'compositionstart', () => { checkPassed = false; const confirm = root.querySelector<HTMLButtonElement>('[data-action="confirm"]'); if (confirm) confirm.disabled = true; composing = true; pending = undefined; inputConfirmed = false; pause(); });
   on(root, 'compositionend', () => { composing = false; pending = undefined; });
   on(root, 'paste', (event) => { if ((event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(root, 'drop', (event) => { if ((event.target as HTMLElement).id === 'game-input') { event.preventDefault(); pending = undefined; } });
   on(root, 'focusout', (event) => { if ((event.target as HTMLElement).id === 'game-input' && !suppressBlur) pause(); });
+  on(window, 'resize', () => { if (screen === 'home') renderHome(); });
   on(window, 'blur', () => { pending = undefined; pause(); });
   on(document, 'visibilitychange', () => { if (document.hidden) { pending = undefined; pause(); } });
   const interval = setInterval(() => { if (screen === 'game' && session && !pending) updateGame(session.tick(performance.now())); }, 80);
