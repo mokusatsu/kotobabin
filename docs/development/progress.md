@@ -8,7 +8,8 @@
 - [PR #2](https://github.com/mokusatsu/kotobabin/pull/2): Pythonと一致する経済式・WorldClock。mainへ統合済み。購入実行/台帳/経済UIは未実装。
 - [PR #3](https://github.com/mokusatsu/kotobabin/pull/3): 確定事実の図鑑/練習資格/記録の純粋関数。mainへ統合済み。IDB/72実績/UIは未実装。
 - ChatGPT Sites: https://kotobabin.mokusatsu.chatgpt.site 。project_idは `.openai/hosting.json` を再利用。custom accessはオーナー1名、外部閲覧者0。GitHub Pagesは使用しない。
-- 初回公開ソース `b3f657b49e2749cd2866bb480c996e8945a63116`。期限境界修正 `819b1b5` はCI成功済み。修正版の再デプロイをこのチェックポイント後に実施する。公開版の最新SHAはSitesバージョンとGitHubの最終状態を確認する。
+- 開発用依存のGHSA-g3hv-75wg-m249はPR #6で対象のminimatchだけ修正版へ更新し、npm audit 0件と関連検証を確認。
+- 初回公開ソース `b3f657b49e2749cd2866bb480c996e8945a63116`。期限境界修正 `819b1b5` はCI成功済み。公開版の最新SHAはSitesバージョンとGitHubの最終状態を確認する。更新は同じSiteへ行い、公開範囲を維持する。
 
 ## 検証済み
 
