@@ -1,3 +1,4 @@
+import { assertViewportFits, keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalOverflow, beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -47,7 +48,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
       }
     } else {
       await expect(page.locator('[data-action="start"]')).toBeDisabled();
-      await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+      await keyboardMenuTo(page, 'catalogue');
       await expect(page.locator('#catalogue-count')).toContainText('960');
       await assertNoHorizontalOverflow(page);
       await page.screenshot({ path: testInfo.outputPath('catalogue-767.png'), fullPage: true });
@@ -61,20 +62,25 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await page.goto('/');
   await page.locator('[data-action="settings"]').click();
   const settings = page.locator('.settings-dialog');
+  await keyboardRevealControl(page, settings.locator('input[name="fontScale"][value="150"]'));
   await settings.locator('input[name="fontScale"][value="150"]').check();
+  await keyboardRevealControl(page, settings.locator('input[name="deliveryKeys"][value="Enter"]'));
   await settings.locator('input[name="deliveryKeys"][value="Enter"]').check();
+  await keyboardRevealControl(page, settings.locator('input[name="guide"]'));
   await settings.locator('input[name="guide"]').uncheck();
+  await keyboardRevealControl(page, settings.locator('input[name="reducedMotion"]'));
   await settings.locator('input[name="reducedMotion"]').check();
   await settings.locator('[data-action="close-settings"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-reduced-motion', 'true');
   await assertNoHorizontalOverflow(page);
-  await page.screenshot({ path: testInfo.outputPath('home-font-150.png'), fullPage: true });
+  await assertViewportFits(page);
+  await page.screenshot({ path: testInfo.outputPath('home-font-150.png'), fullPage: false });
   await page.locator('[data-action="start"]').click();
   await confirmHalfWidthInput(page);
   await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
   await expect(page.locator('#romaji-guide')).toBeHidden();
   const promptSize = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
-  expect(promptSize).toBeGreaterThanOrEqual(72);
+  expect(promptSize).toBeGreaterThanOrEqual(48);
   const guide = await typeCurrentGuide(page);
   await expect(page.locator('#cargo-count')).toHaveText('1');
   const baseScore = guide.length * 10;
@@ -86,16 +92,28 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#score')).toHaveText(String(baseScore + Math.floor(baseScore / 5)));
   await assertNoHorizontalOverflow(page);
   await expect(page.locator('#paused-layer')).toBeHidden();
+  await assertViewportFits(page);
   await page.screenshot({ path: testInfo.outputPath('main-font-150-guide-off.png'), fullPage: false });
   await expect(page.locator('#paused-layer')).toBeHidden();
   await page.locator('#game-input').press('Escape');
   await page.locator('#paused-layer [data-action="settings"]').click();
+  const sizeAt150 = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="fontScale"][value="100"]'));
+  await page.locator('.settings-dialog input[name="fontScale"][value="100"]').check();
+  const sizeAt100 = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
+  expect(sizeAt100).toBeGreaterThanOrEqual(32);
+  expect(sizeAt150 / sizeAt100).toBeCloseTo(1.5, 4);
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="fontScale"][value="150"]'));
+  await page.locator('.settings-dialog input[name="fontScale"][value="150"]').check();
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
   await page.locator('.settings-dialog input[name="guide"]').check();
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
   await page.locator('.settings-dialog input[name="guide"]').uncheck();
   await page.locator('.settings-dialog [data-action="close-settings"]').click();
   await expect(page.locator('#paused-layer')).toBeVisible();
   await page.locator('[data-action="resume"]').click();
   await page.clock.runFor(90001);
   await expect(page.locator('.result-heading')).toContainText('ガイド表示あり');
-  await page.screenshot({ path: testInfo.outputPath('result-font-150.png'), fullPage: true });
+  await assertViewportFits(page);
+  await page.screenshot({ path: testInfo.outputPath('result-font-150.png'), fullPage: false });
 });

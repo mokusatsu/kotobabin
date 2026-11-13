@@ -51,6 +51,7 @@ button:hover:not(:disabled) {
 }
 #app {
   max-width:1600px;
+  font-size:calc(16px * var(--font-scale, 1));
   min-height:100vh;
   margin:auto;
   padding:0 40px;
@@ -1888,3 +1889,198 @@ body[data-reduced-motion="true"] *::after {
 .district-composite > .district-shop-art { position: absolute; left: 8.191287879%; top: 59.217171717%; width: 24.242424242%; height: 32.323232323%; object-fit: contain; }
 .play-city-strip .district-composite { width: 132px; min-width: 132px; height: 99px; }
 .play-city-strip .district-composite > .district-shop-art { width: 24.242424242%; height: 32.323232323%; }
+
+/* Profile changes use explicit scopes and a separate confirmation. */
+.profile-management { border-top: 1px solid var(--border); margin-top: 24px; padding-top: 16px; }
+.profile-management summary { cursor: pointer; min-height: 44px; }
+.profile-management > .button { margin-top: 12px; }
+.backup-file-label { display: flex; flex-direction: column; gap: 12px; margin: 24px 0 12px; }
+.backup-file-label input { width: 100%; min-height: 44px; font: inherit; }
+.profile-confirm-dialog { max-width: 720px; width: calc(100% - 36px); max-height: calc(100dvh - 40px); overflow: auto; color: var(--text); }
+.profile-confirm-dialog::backdrop { background: #203d3666; }
+.profile-confirm-dialog h2 { font-size: calc(26px * var(--font-scale)); margin: 0 0 20px; }
+.profile-confirm-dialog .button { width: 100%; margin-top: 14px; }
+.danger-button { color: var(--accent); border-color: var(--accent); }
+.profile-operation-status { color: var(--accent); }
+.backup-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; }
+.backup-preview dd { margin: 6px 0 0; font-weight: 700; }
+@media (max-width: 767px) { .backup-preview { grid-template-columns: 1fr; } }
+
+/* The handbook shows six cards at a time; conditions remain separate DOM text. */
+.handbook-page { max-width: 1450px; margin: auto; padding: 32px 0; }
+.handbook-summary { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+#handbook-count { font-size: calc(28px * var(--font-scale)); color: var(--accent); font-family: ui-monospace, monospace; }
+.handbook-tabs { display: flex; gap: 12px; margin: 24px 0; flex-wrap: wrap; }
+.handbook-tabs .selected { border: 2px solid var(--primary); background: #e8eddf; }
+.handbook-filters { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px; padding: 16px 0; }
+.handbook-filters fieldset { border: 0; padding: 0; margin: 0; }
+.handbook-filters legend { margin-bottom: 8px; }
+.handbook-filters > label { display: flex; flex-direction: column; gap: 8px; }
+.handbook-filters select, .reward-equipment select { min-height: 44px; padding: 8px 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; border-radius: 3px; }
+.handbook-layout { display: grid; grid-template-columns: 180px minmax(0, 1.3fr) minmax(300px, 1fr); gap: 20px; align-items: start; }
+#handbook-families { display: flex; flex-direction: column; gap: 8px; }
+#handbook-families .button { text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; }
+#handbook-families strong { font: inherit; color: var(--secondary); }
+.achievement-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.achievement-card { min-width: 0; border: 1px solid var(--border); background: var(--surface); border-radius: 4px; padding: 16px; }
+.achievement-card.selected { border: 2px solid var(--primary); padding: 15px; }
+.achievement-select { width: 100%; border: 0; background: none; color: var(--text); padding: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.achievement-select > strong { font-size: calc(18px * var(--font-scale)); }
+.achievement-scope { display: block; color: var(--secondary); }
+.achievement-badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.achievement-badges > span { border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px; }
+.achievement-card[data-state="earned"] .achievement-badges > span:first-child { color: var(--primary); background: #e9eee0; }
+.unread-mark { color: var(--accent); }
+.target-mark { border: 1px solid var(--primary); background: #edf1e4; color: var(--primary); padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.achievement-condition { margin: 16px 0 10px; }
+.achievement-progress p { margin: 8px 0; overflow-wrap: anywhere; }
+.achievement-progress progress { width: 100%; height: 10px; accent-color: var(--primary); }
+.stamp-placeholder, .stamp-art { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 128px; min-width: 90px; height: 128px; gap: 8px; flex-shrink: 0; }
+.stamp-placeholder { border: 2px dashed #9aa88f; background: #f1f2e8; border-radius: 5px; }
+.stamp-placeholder strong { font: calc(24px * var(--font-scale)) ui-monospace, monospace; }
+.stamp-placeholder span { font-size: calc(16px * var(--font-scale)); text-align: center; }
+.stamp-placeholder img { width: 32px; height: 32px; }
+.stamp-art .stamp-picture { position: absolute; width: 80%; height: 80%; left: 10%; top: 10%; object-fit: contain; }
+.stamp-art .stamp-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+.stamp-art.unearned .stamp-picture { filter: grayscale(.95) saturate(.15); }
+.stamp-art.small, .stamp-placeholder.small { width: 100px; height: 100px; }
+.achievement-detail-card { padding: 24px; }
+.achievement-detail-card .stamp-art, .achievement-detail-card .stamp-placeholder { margin: 20px auto; }
+.achievement-detail-card h2 { margin: 20px 0 12px; font-size: calc(24px * var(--font-scale)); }
+.achievement-detail-card .button { width: 100%; margin-top: 16px; }
+.achievement-detail-state { font-weight: 700; color: var(--primary); }
+.achievement-ineligible { border-left: 3px solid var(--accent); padding-left: 12px; }
+.achievement-confirmation { color: var(--secondary); }
+.family-reward-preview { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 24px; }
+.family-reward-preview h3 { font-size: calc(18px * var(--font-scale)); }
+.goal-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; border: 1px solid #bfcbb5; background: #eef2e6; border-radius: 4px; padding: 16px; margin: 20px 0; }
+.handbook-suggestions { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+.handbook-suggestions h2 { font-size: calc(20px * var(--font-scale)); }
+.handbook-suggestions > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.handbook-suggestions .button { text-align: left; }
+.handbook-suggestions .button > * { display: block; }
+.handbook-suggestions .button > span { font-weight: 400; margin-top: 8px; }
+.handbook-complete { padding: 24px; border: 1px solid var(--border); background: #e9efdf; }
+.reward-equipment { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; padding: 24px; }
+.reward-equipment h3 { grid-column: 1/-1; margin: 0; }
+.reward-equipment label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.reward-equipment select { max-width: 100%; }
+.reward-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }
+.reward-card { padding: 24px; min-width: 0; }
+.reward-card h3 { font-size: calc(20px * var(--font-scale)); }
+.reward-card > .button { width: 100%; }
+.reward-card[data-owned="false"] { background: #f5f5ec; }
+.achievement-history { padding-left: 24px; }
+.achievement-history li { padding: 20px 0; border-bottom: 1px solid var(--border); }
+.achievement-history time { display: block; color: var(--secondary); }
+.achievement-history .text-button { font-weight: 700; font-size: calc(20px * var(--font-scale)); }
+.achievement-history p { margin: 8px 0; }
+.new-achievements { padding: 24px 0; border-bottom: 1px solid var(--border); }
+.new-achievements h2 { font-size: calc(22px * var(--font-scale)); }
+.new-achievements > div { display: flex; gap: 20px; flex-wrap: wrap; }
+.new-stamp { border: 0; background: none; color: var(--text); padding: 8px; display: flex; flex-direction: column; gap: 12px; align-items: center; max-width: 200px; text-align: center; }
+#handbook-stamps[hidden], #handbook-rewards[hidden], #handbook-history[hidden] { display: none; }
+@media (min-width: 1450px) { .achievement-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1199px) { .handbook-layout { grid-template-columns: 160px minmax(0, 1fr); } #achievement-detail { grid-column: 2; } .reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 959px) { .handbook-layout { grid-template-columns: 1fr; } #handbook-families { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } #achievement-detail { grid-column: 1; } .handbook-suggestions > div { grid-template-columns: 1fr; } .reward-grid { grid-template-columns: 1fr; } }
+@media (max-width: 767px) { #handbook-families { grid-template-columns: repeat(2, minmax(0, 1fr)); } .achievement-card-grid { grid-template-columns: 1fr; } .reward-equipment { grid-template-columns: 1fr; } .achievement-detail-card { padding: 20px; } }
+.home-goal-slot, #practice-awards-summary, .profile-operation-notice { grid-column: 1/-1; }
+.home-goal-slot:empty { display: none; }
+.equipped-title { font-size: calc(16px * var(--font-scale)); color: var(--secondary); }
+.achievement-live { position: fixed; z-index: 8; right: 24px; bottom: 12px; border: 2px solid var(--primary); background: var(--surface); color: var(--text); padding: 8px 16px; pointer-events: none; font-size: calc(16px * var(--font-scale)); }
+/* Keep the lower station label within the map's visible paper. */
+.canonical-map [data-district-id="station"] { top: 83% !important; }
+.nav-menu-button { display: none; }
+.site-header:has(.pause-button) .nav-menu-button { display: inline-block; }
+.navigation-dialog { max-width: 540px; width: calc(100% - 36px); color: var(--text); max-height: calc(100dvh - 32px); overflow: auto; }
+.navigation-dialog::backdrop { background: #203d3666; }
+.navigation-dialog h2 { margin: 0 0 12px; }
+.navigation-dialog nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.navigation-dialog .text-button { margin-top: 12px; }
+@media (max-width: 1200px) { .site-header > nav { display: none; } .site-header .nav-menu-button { display: inline-block; margin-left: auto; } .site-header { min-height: 78px; } }
+@media (max-width: 1400px) and (max-height: 1050px) {
+  .centered-page { min-height: 0; padding: 12px 0; display: block; }
+  .input-check { margin: 0 auto; padding: 20px; }
+  .input-check h1 { margin-bottom: 12px; }
+  .input-check > p { margin: 10px 0; }
+  .check-label { margin-top: 12px; }
+  .input-check .button { margin-top: 12px; }
+  .home-layout { padding-top: 16px; gap: 16px 24px; }
+  .home-intro { padding-top: 0; }
+  .home-intro h1 { font-size: calc(32px * var(--font-scale)); line-height: 1.3; margin-bottom: 12px; }
+  .home-intro .eyebrow, .intro-copy { margin-bottom: 12px; }
+  .course-picker { margin-bottom: 12px; padding-top: 8px; }
+  .destination { margin-bottom: 12px; padding-bottom: 8px; }
+  .keyboard-note { margin-bottom: 8px; }
+  .welcome-note { padding: 12px 0; }
+  .result-page { padding-top: 12px; }
+  .result-heading { margin-bottom: 12px; }
+  .result-heading h1 { font-size: calc(26px * var(--font-scale)); }
+  .result-heading .eyebrow { margin-bottom: 4px; }
+  .result-actions { margin-top: 12px; gap: 8px; }
+  .result-actions .button { min-height: 44px; padding: 8px 12px; }
+  .handbook-page { padding-top: 12px; }
+  .handbook-tabs { margin: 12px 0; }
+  .handbook-summary { padding: 12px 0; }
+  .achievement-card .achievement-condition { display: none; }
+  .achievement-card { padding: 12px; }
+  .achievement-card.selected { padding: 11px; }
+  .achievement-card .stamp-art, .achievement-card .stamp-placeholder { width: 96px; height: 96px; }
+}
+.reward-postcard { display: block; width: 100%; min-width: 160px; max-width: 480px; aspect-ratio: 8/5; object-fit: contain; margin: 16px auto; }
+/* Ownership status participates in layout; it never covers panel navigation. */
+.site-header > .ownership-warning {
+  position: static;
+  order: 10;
+  flex: 1 0 100%;
+  max-width: none;
+  margin: 0;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-width: 1px;
+  box-shadow: none;
+}
+.site-header > .ownership-warning[hidden] { display: none; }
+.site-header > .ownership-warning p { flex: 1; min-width: 0; margin: 0; }
+.site-header > .ownership-warning .button { width: auto; min-height: 44px; padding: 6px 12px; white-space: nowrap; font-size: calc(16px * var(--font-scale)); }
+/* The persistent handbook row is concise; explanatory sections are real panels. */
+.handbook-title-panel h1 { margin: 0; font-size: calc(32px * var(--font-scale)); line-height: 1.25; }
+.handbook-title-panel > p { margin-block: 8px; }
+.handbook-summary { padding-block: 4px; gap: 8px 20px; }
+.handbook-summary #handbook-count { line-height: 1.15; }
+.handbook-summary .save-status { margin: 0 0 0 auto; }
+.handbook-summary .text-button { margin-left: 0; }
+.handbook-tabs { margin-block: 8px; }
+.handbook-tabs .button { min-height: 44px; padding: 8px 12px; }
+/* On landscape tablets, read each stamp beside its labels instead of stacking them. */
+@media (min-width: 960px) {
+  [data-ipad-layout] .achievement-select {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+    column-gap: 16px;
+    row-gap: 8px;
+    text-align: left;
+  }
+  [data-ipad-layout] .achievement-select > .stamp-art,
+  [data-ipad-layout] .achievement-select > .stamp-placeholder {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    align-self: center;
+  }
+  [data-ipad-layout] .achievement-select > :not(.stamp-art):not(.stamp-placeholder) { grid-column: 2; }
+  [data-ipad-layout] .achievement-select > .achievement-badges { justify-content: flex-start; }
+}
+
+/* Result rewards are individual measured panels alongside the fixed retry actions. */
+[data-ipad-layout] .new-achievements { padding-block: 8px; }
+[data-ipad-layout] .new-achievements h2 { margin-block: 0 8px; }
+[data-ipad-layout] .new-achievements > div { gap: 12px; }
+
+/* Keyboard paging shares the existing sidebar toolbar, without a separate row. */
+.game-panel-controls .game-panel-label { grid-column: 2; grid-row: 1; align-self: start; }
+.game-panel-controls .game-panel-shortcuts { grid-column: 2; grid-row: 1; align-self: end; text-align: center; line-height: 1.2; padding-top: calc(1.2em + 4px); color: var(--secondary); }
+.game-panel-controls > [data-game-panel-step="-1"] { grid-column: 1; grid-row: 1; }
+.game-panel-controls > [data-game-panel-step="1"] { grid-column: 3; grid-row: 1; }

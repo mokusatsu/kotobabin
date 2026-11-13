@@ -21,6 +21,8 @@ test('confirmed typing grows the first building, purchases once, and freezes the
     }
     expect(session.snapshot(mono).score).toBe(300);
     expect(runtime.city.generatedMicro).toBe(30n * MICRO_UNIT);
+    expect(runtime.achievements.unlocks.A01).toMatchObject({ acquiredAtMs: 100_000, mode: 'PRACTICE' });
+    expect(runtime.achievements.unlocks.F05).toBeDefined();
     mono = 8_000; wall += 8_000;
     runtime.advanceWorld();
     expect(runtime.city.districts.residential.stage).toBe(1);
@@ -31,9 +33,14 @@ test('confirmed typing grows the first building, purchases once, and freezes the
     await runtime.cityCommand(command);
     expect(runtime.city.packagingLevel).toBe(1);
     expect(runtime.city.coinsMicro).toBe(10_050_000n);
+    expect(runtime.achievements.unlocks.I01).toBeDefined();
+    expect(runtime.achievements.unlocks.K01).toBeDefined();
+    expect(runtime.achievements.paidEquipmentPurchases).toBe(1);
     const snapshot = runtime.city;
     await runtime.cityCommand(command);
     expect(runtime.city).toEqual(snapshot);
+    expect(runtime.achievements.paidEquipmentPurchases).toBe(1);
+    expect(new Set(runtime.achievements.unreadAchievements).size).toBe(runtime.achievements.unreadAchievements.length);
     const next = new GameSession({ words: [word], mode: 'PRACTICE' });
     expect(runtime.beginSession(next.sessionId, next.mode)).toBe(true);
     for (const key of 'inu') next.input(key, mono);
@@ -42,6 +49,7 @@ test('confirmed typing grows the first building, purchases once, and freezes the
     expect(runtime.city.generatedMicro).toBe(33_750_000n);
     await repository.refresh();
     expect(decodeCityState(repository.snapshot.extensions.city).generatedMicro).toBe(33_750_000n);
+    expect(repository.snapshot.extensions.achievements).toEqual(runtime.achievements);
   } finally { runtime.close(); }
 });
 

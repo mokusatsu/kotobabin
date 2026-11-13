@@ -189,7 +189,7 @@ export function applySessionFact(
     const result = fact.result;
     return applyProfileFact(state, { ...base, type: fact.type, completed: fact.completed, record: {
       sessionId: fact.sessionId, wordIds: [...result.wordIds],
-      context: { ...context, assisted: context.assisted || result.skips > 0 },
+      context: { ...context, guideUsed: context.guideUsed || result.guideUsed || fact.guideUsed, assisted: context.assisted || result.skips > 0 },
       score: result.score, completedWords: result.completedWords,
       canonicalLength: result.canonicalLengthSum, correctKeys: result.correctKeys, mistakes: result.mistakes,
     } });
@@ -198,3 +198,5 @@ export function applySessionFact(
 }
 
 export * from './repository';
+
+export * from './achievements';

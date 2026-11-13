@@ -30,6 +30,21 @@ test('memory fallback projects confirmed practice immediately, persists ordered 
   } finally { runtime.close(); }
 });
 
+test('achievement views are immutable snapshots and cannot change canonical ownership', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const before = runtime.achievements;
+    expect(() => { before.unlocks.A01 = { acquiredAtMs: 1, evidenceEventId: 'forged', conditionRevision: '1', mode: 'PRACTICE' }; }).toThrow();
+    expect(runtime.achievements.unlocks.A01).toBeUndefined();
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    expect(runtime.achievements.unlocks.A01).toBeDefined();
+    expect(before.unlocks.A01).toBeUndefined();
+  } finally { runtime.close(); }
+});
+
 test('queued settings cannot replace newer local projections with an older write completion', async () => {
   const repository = await ProfileRepository.open({ indexedDB: null });
   const runtime = await createAppRuntime(repository);
@@ -46,6 +61,52 @@ test('queued settings cannot replace newer local projections with an older write
     expect(runtime.settings.fontScale).toBe(150);
     expect(repository.snapshot.settings.deliveryKeys).toEqual(['Space', 'Enter']);
     expect(repository.snapshot.tutorialSeen).toBe(true);
+  } finally { runtime.close(); }
+});
+
+test('collection reset closes the old economic session and rejects its later confirmed facts', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    const oldGeneration = repository.snapshot.metadata.generation;
+    await runtime.resetProfile('collection');
+    expect(repository.snapshot.metadata.generation).toBe(oldGeneration + 1);
+    expect(runtime.city.activeSession).toBeNull();
+    expect(runtime.profile.totalCompleted).toBe(0);
+    session.repeatWord(2);
+    for (const key of 'neko') session.input(key, 3);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(0);
+    expect(runtime.city.generatedMicro).toBe(0n);
+    expect(runtime.status.message).toMatch(/前の便|記録が削除/);
+  } finally { runtime.close(); }
+});
+
+test('restore validates before closing a session and replaces data with a fresh local generation', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const backup = runtime.exportData();
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    runtime.beginSession(session.sessionId, 'PRACTICE');
+    await expect(runtime.restoreProfile('{invalid')).rejects.toThrow();
+    expect(runtime.city.activeSession?.sessionId).toBe(session.sessionId);
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    await repository.refresh();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    const generation = repository.snapshot.metadata.generation;
+    await runtime.restoreProfile(backup);
+    expect(runtime.profile.totalCompleted).toBe(0);
+    expect(repository.snapshot.metadata.generation).toBe(generation + 1);
+    expect(runtime.city.activeSession).toBeNull();
+    expect(JSON.parse(repository.exportData()).restoreBackups).toHaveLength(1);
   } finally { runtime.close(); }
 });
 

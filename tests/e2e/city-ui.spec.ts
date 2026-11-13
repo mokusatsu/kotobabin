@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { keyboardRevealControl } from './keyboard';
 import { confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
 test.use({ viewport: { width: 1366, height: 768 } });
@@ -24,6 +25,7 @@ async function savedCity(page: Page) {
 async function practiceDog(page: Page) {
   await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
   await page.locator('#catalogue-query').fill('犬');
+  await keyboardRevealControl(page, page.locator('[data-action="practice-word"][data-word-id="living_r02"]'));
   await page.locator('[data-action="practice-word"][data-word-id="living_r02"]').click();
   if (await page.locator('#check-status').count()) await confirmHalfWidthInput(page);
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'PRACTICE');
@@ -49,6 +51,8 @@ test('five real practice completions build the first district and fund a packagi
   await expect(page.locator('#purchase-current')).toHaveText('0');
   await expect(page.locator('#purchase-after')).toHaveText('1');
   await expect(page.locator('#purchase-cost')).toHaveText('50');
+  await keyboardRevealControl(page, page.locator('[data-action="city-purchase"]'));
+  for (const selector of ['#purchase-current', '#purchase-after', '#purchase-cost', '#purchase-count']) await expect(page.locator(selector)).toBeVisible();
   await expect(page.locator('[data-action="city-purchase"]')).toBeEnabled();
   await page.screenshot({ path: testInfo.outputPath('equipment-purchase-preview.png'), fullPage: true });
   await page.locator('[data-action="city-purchase"]').click();

@@ -1,9 +1,10 @@
 import content from '../../spec/initial/data/words.json';
 import {
-  applySessionFact, createProfileProgress,
-  type ProfileProgress, type RecordContext,
+  applySessionFact, createProfileProgress, validateAchievementState, resetAchievementRecords,
+  type ProfileProgress, type RecordContext, type AchievementState,
 } from './index';
 import type { SessionFact } from '../typing';
+import { decodeCityState } from '../economy';
 
 export interface ProfileSettings {
   guide: boolean;
@@ -49,6 +50,10 @@ function object(value: unknown): value is Record<string, unknown> {
 }
 function integer(value: unknown): value is number { return Number.isSafeInteger(value) && (value as number) >= 0; }
 function finiteText(value: unknown): value is string { return typeof value === 'string' && value.length > 0; }
+function metadata(value: unknown): value is ProfileDocument['metadata'] {
+  return object(value) && value.schemaVersion === 4 && (value.ownerTabId === null || finiteText(value.ownerTabId))
+    && integer(value.writeEpoch) && integer(value.revision) && integer(value.generation);
+}
 function settings(value: unknown): value is ProfileSettings {
   return object(value) && typeof value.guide === 'boolean' && [100, 125, 150].includes(value.fontScale as number)
     && Array.isArray(value.deliveryKeys) && value.deliveryKeys.length > 0 && value.deliveryKeys.length <= 2
@@ -65,9 +70,9 @@ function context(value: unknown): value is RecordContext {
 export function validateProfileDocument(value: unknown): value is ProfileDocument {
   if (!object(value) || !settings(value.settings) || typeof value.tutorialSeen !== 'boolean'
     || !object(value.extensions) || !object(value.metadata) || !object(value.progress)) return false;
-  const m = value.metadata;
-  if (m.schemaVersion !== 4 || !(m.ownerTabId === null || finiteText(m.ownerTabId))
-    || !integer(m.writeEpoch) || !integer(m.revision) || !integer(m.generation)) return false;
+  try { if (value.extensions.city !== undefined) decodeCityState(value.extensions.city); } catch { return false; }
+  if (value.extensions.achievements !== undefined && !validateAchievementState(value.extensions.achievements)) return false;
+  if (!metadata(value.metadata)) return false;
   const p = value.progress;
   if (!object(p.words) || !object(p.factCursors) || !integer(p.totalCompleted)
     || !Array.isArray(p.recentRounds) || p.recentRounds.length > 30 || !object(p.bestByComparison)) return false;
@@ -101,11 +106,34 @@ export interface MutationOptions {
   /** Capture at session READY and reuse for every fact batch from that session. */
   generation?: number;
 }
+export class BackupValidationError extends Error { constructor() { super('復元するデータの形式・版・整合性を確認できません。元データは変更していません。'); } }
+export interface RestoreOptions {
+  /** The caller confirms replacement after stopping the active game session. */
+  confirmed: boolean;
+  discardUnsaved?: boolean;
+  /** Explicitly replace an invalid current entry, retaining all original data. */
+  replaceProtectedData?: boolean;
+}
+
+/** Supported sources are actual v4 repository/runtime exports or a v4 document.
+ * Only the current v4 format is supported; backward compatibility is intentionally excluded by the user. */
+export function parseProfileBackup(source: string | unknown): ProfileDocument {
+  let value: unknown = source;
+  if (typeof source === 'string') {
+    try { value = JSON.parse(source) as unknown; } catch { throw new BackupValidationError(); }
+  }
+  if (object(value) && object(value.repository)) value = value.repository;
+  if (object(value) && 'current' in value) value = value.current;
+  if (!validateProfileDocument(value)) throw new BackupValidationError();
+  try { return structuredClone(value); } catch { throw new BackupValidationError(); }
+}
+
 export class RecoveryRequiredError extends Error { constructor() { super('保存データを確認できません。元データを保持して今回のみで続けます。'); } }
 
 type Mutation = (document: ProfileDocument) => ProfileDocument;
 const STORE = 'profile';
 const KEY = 'current';
+const BACKUPS_KEY = 'restoreBackups';
 const MEMORY_NOTICE = 'この回の街と切手は、ページを閉じると残りません。複数ページ間の同期はできません。';
 
 export class ProfileRepository {
@@ -118,6 +146,7 @@ export class ProfileRepository {
   private persistedRevision = 0;
   private persistedGeneration = 0;
   private rawRecovery: unknown = undefined;
+  private restoreBackups: unknown = undefined;
   private channel: BroadcastChannel | null = null;
   private closed = false;
 
@@ -128,17 +157,13 @@ export class ProfileRepository {
     try {
       const factory = options.indexedDB === undefined ? globalThis.indexedDB : options.indexedDB;
       if (!factory) return repository;
-      let legacy = false;
       const database = await new Promise<IDBDatabase>((resolve, reject) => {
         const request = factory.open(repository.dbName, 4);
         let rejected = false;
         request.onblocked = () => { rejected = true; reject(new Error('保存データを使う別のページを閉じてください。')); };
         request.onerror = () => reject(request.error);
-        request.onupgradeneeded = event => {
-          legacy = event.oldVersion > 0;
-          const store = request.result.objectStoreNames.contains(STORE)
-            ? request.transaction!.objectStore(STORE) : request.result.createObjectStore(STORE);
-          if (legacy) store.put({ fromVersion: event.oldVersion }, 'migrationPending');
+        request.onupgradeneeded = () => {
+          if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE);
         };
         request.onsuccess = () => { if (rejected) request.result.close(); else resolve(request.result); };
       });
@@ -148,17 +173,7 @@ export class ProfileRepository {
         repository.state = { ...repository.state, storage: 'memory', saveState: 'unsaved', notice: MEMORY_NOTICE };
         repository.emit();
       };
-      const marker = await new Promise<unknown>((resolve, reject) => {
-        const transaction = database.transaction(STORE, 'readonly');
-        const request = transaction.objectStore(STORE).get('migrationPending');
-        transaction.oncomplete = () => resolve(request.result);
-        transaction.onabort = () => reject(transaction.error);
-      });
-      if (legacy || marker !== undefined) {
-        repository.rawRecovery = await repository.captureDatabase();
-        repository.state = { ...repository.state, recoveryRequired: true, notice: '旧版の保存データを保持しています。移行未対応のため今回のみで続けます。' };
-        return repository;
-      }
+      repository.restoreBackups = await repository.readStored(BACKUPS_KEY);
       await repository.loadOrClaim();
       if (typeof BroadcastChannel !== 'undefined') {
         repository.channel = new BroadcastChannel(`${repository.dbName}:ownership`);
@@ -170,20 +185,12 @@ export class ProfileRepository {
     return repository;
   }
 
-  private captureDatabase(): Promise<Record<string, unknown>> {
+  private readStored(key: string): Promise<unknown> {
     const database = this.database!;
-    const names = Array.from(database.objectStoreNames);
     return new Promise((resolve, reject) => {
-      const transaction = database.transaction(names, 'readonly');
-      const records: Record<string, unknown> = {};
-      for (const name of names) {
-        const store = transaction.objectStore(name);
-        const values = store.getAll();
-        const keys = store.getAllKeys();
-        values.onsuccess = () => { records[name] = { values: values.result }; };
-        keys.onsuccess = () => { records[name] = { ...(records[name] as object), keys: keys.result }; };
-      }
-      transaction.oncomplete = () => resolve(records);
+      const transaction = database.transaction(STORE, 'readonly');
+      const request = transaction.objectStore(STORE).get(key);
+      transaction.oncomplete = () => resolve(request.result);
       transaction.onabort = () => reject(transaction.error);
     });
   }
@@ -199,7 +206,7 @@ export class ProfileRepository {
   }
 
   /** The callback and put run synchronously within one readwrite transaction. */
-  private transaction(update: (current: unknown) => ProfileDocument | undefined): Promise<ProfileDocument> {
+  private transaction(update: (current: unknown) => ProfileDocument | undefined, beforePut?: (store: IDBObjectStore, current: unknown) => void): Promise<ProfileDocument> {
     const database = this.database;
     if (!database || this.closed) return Promise.reject(new Error('保存データベースを利用できません。'));
     return new Promise((resolve, reject) => {
@@ -211,7 +218,7 @@ export class ProfileRepository {
         try {
           const next = update(request.result);
           result = next ?? request.result;
-          if (next) transaction.objectStore(STORE).put(next, KEY);
+          if (next) { beforePut?.(transaction.objectStore(STORE), request.result); transaction.objectStore(STORE).put(next, KEY); }
         } catch (error) { failure = error; transaction.abort(); }
       };
       transaction.oncomplete = () => resolve(result);
@@ -335,13 +342,18 @@ export class ProfileRepository {
   resetSettings(): Promise<void> {
     return this.mutateDocument(document => ({ ...document,
       settings: { ...defaultProfileSettings, deliveryKeys: [...defaultProfileSettings.deliveryKeys] },
+      extensions: { ...document.extensions, ...(document.extensions.achievements === undefined ? {} : {
+        achievements: { ...document.extensions.achievements as AchievementState, notificationMode: 'live' },
+      }) },
     }));
   }
   resetRecords(): Promise<void> {
     const generation = this.document.metadata.generation;
     return this.write(document => {
       if (document.metadata.generation !== generation) throw new GenerationMismatchError();
-      return { ...document, progress: { ...document.progress, recentRounds: [], bestByComparison: {} },
+      const extensions = { ...document.extensions };
+      if (extensions.achievements !== undefined) extensions.achievements = resetAchievementRecords(extensions.achievements as AchievementState);
+      return { ...document, extensions, progress: { ...document.progress, recentRounds: [], bestByComparison: {} },
         metadata: { ...document.metadata, generation: generation + 1 } };
     });
   }
@@ -352,7 +364,9 @@ export class ProfileRepository {
       const bestByComparison = Object.fromEntries(Object.entries(document.progress.bestByComparison).map(([key, best]) => [
         key, { ...best, growthBestScore: null, growthBestCanonicalLength: null },
       ]));
-      return { ...document, extensions: {}, progress: { ...createProfileProgress(),
+      const extensions = { ...document.extensions };
+      for (const key of ['city', 'cityDestination', 'achievements']) delete extensions[key];
+      return { ...document, extensions, progress: { ...createProfileProgress(),
         recentRounds: document.progress.recentRounds, bestByComparison,
         // Retain processed positions so displayed old results cannot replay facts.
         factCursors: document.progress.factCursors,
@@ -391,8 +405,59 @@ export class ProfileRepository {
       this.channel?.postMessage('ownership'); this.emit();
     });
   }
+  /** Replacement is atomic with backup creation; imported ownership metadata is never trusted. */
+  restoreData(source: string | unknown, options: RestoreOptions): Promise<void> {
+    let imported: ProfileDocument;
+    try {
+      if (!options?.confirmed) throw new Error('復元で置き換わる内容を確認してください。');
+      imported = parseProfileBackup(source);
+    } catch (error) { return Promise.reject(error); }
+    return this.queue(async () => {
+      if (this.closed) throw new Error('保存処理は終了しています。');
+      if (this.state.ownership !== 'owner') throw new OwnershipError();
+      if (this.pending.length && !options.discardUnsaved) throw new RevisionConflictError();
+      if (this.state.recoveryRequired && !options.replaceProtectedData) throw new RecoveryRequiredError();
+      const originalMemory = structuredClone(this.document);
+      const backup = { id: crypto.randomUUID(), createdAtMs: Date.now(), current: originalMemory, originalInvalidData: this.rawRecovery };
+      const replace = (currentMetadata: ProfileDocument['metadata']): ProfileDocument => {
+        if ([currentMetadata.revision, currentMetadata.generation, currentMetadata.writeEpoch].some(value => value >= Number.MAX_SAFE_INTEGER)) throw new RevisionConflictError();
+        return { ...structuredClone(imported), metadata: { ...currentMetadata, schemaVersion: 4, ownerTabId: this.tabId,
+          writeEpoch: currentMetadata.writeEpoch + (currentMetadata.ownerTabId === this.tabId ? 0 : 1),
+          revision: currentMetadata.revision + 1, generation: currentMetadata.generation + 1,
+        } };
+      };
+      if (!this.database) {
+        const previous = Array.isArray(this.restoreBackups) ? this.restoreBackups : this.restoreBackups === undefined ? [] : [this.restoreBackups];
+        this.restoreBackups = [...previous, backup];
+        this.document = replace(this.document.metadata); this.pending = [];
+        this.state = { storage: 'memory', ownership: 'owner', saveState: 'unsaved', recoveryRequired: false, notice: MEMORY_NOTICE };
+        this.emit(); return;
+      }
+      let savedBackups: unknown;
+      const saved = await this.transaction(raw => {
+        const valid = validateProfileDocument(raw);
+        if (!valid && !options.replaceProtectedData) throw new RecoveryRequiredError();
+        const currentMetadata = valid ? raw.metadata : object(raw) && metadata(raw.metadata) ? raw.metadata : this.document.metadata;
+        if (valid && (currentMetadata.ownerTabId !== this.tabId || currentMetadata.writeEpoch !== this.document.metadata.writeEpoch)) throw new OwnershipError();
+        if (valid && (currentMetadata.revision !== this.persistedRevision || currentMetadata.generation !== this.persistedGeneration)) throw new RevisionConflictError();
+        return replace(currentMetadata);
+      }, (store, raw) => {
+        const request = store.get(BACKUPS_KEY);
+        request.onsuccess = () => {
+          const previous = Array.isArray(request.result) ? request.result : request.result === undefined ? [] : [request.result];
+          savedBackups = [...previous, { ...backup, persistedCurrent: raw }];
+          store.put(savedBackups, BACKUPS_KEY);
+        };
+      });
+      this.restoreBackups = savedBackups;
+      this.document = saved; this.pending = []; this.persistedRevision = saved.metadata.revision; this.persistedGeneration = saved.metadata.generation;
+      this.state = { storage: 'indexeddb', ownership: 'owner', saveState: 'saved', recoveryRequired: false, notice: '' };
+      this.channel?.postMessage('restored'); this.emit();
+    });
+  }
+
   retry(): Promise<void> { return this.queue(async () => { if (this.state.ownership !== 'owner') throw new OwnershipError(); await this.flush(); }); }
-  exportData(): string { return JSON.stringify({ current: this.document, status: this.state, originalInvalidData: this.rawRecovery }, (_key, value) => typeof value === 'bigint' ? value.toString() : value, 2); }
+  exportData(): string { return JSON.stringify({ current: this.document, status: this.state, originalInvalidData: this.rawRecovery, restoreBackups: this.restoreBackups }, (_key, value) => typeof value === 'bigint' ? value.toString() : value, 2); }
   close(): void {
     this.closed = true; this.database?.close(); this.channel?.close(); this.listeners.clear();
   }

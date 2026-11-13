@@ -4,10 +4,12 @@ Vite + TypeScript + DOM/CSSの静的アプリ。サーバーAPI・アカウン�
 
 - `src/typing`: ローマ字のNFA、seed袋方式、状態・採点・単調時計。JSON正本を直接参照する。
 - `src/ui`: 表示・操作、入力フォーカス・ブラウザーイベントの接続。採点はGameSessionへ委譲。
-- `src/economy`: BigInt有理数の価格・倍率・資材、建築境界を分割するWorldClock。現在は独立基盤、UI未接続。
-- `src/profile`: 確定事実から図鑑・練習資格・記録を還元する基盤。IDB/72実績は後続。
+- `src/economy`: BigInt有理数の価格・倍率・資材、建築境界を分割するWorldClock、命令台帳と厳密な保存codec。街・投資画面と接続済み。
+- `src/profile`: 図鑑・練習資格・記録・全72実績と報酬の純粋な還元、IndexedDBの原子更新・所有権・削除世代・現行バックアップ復元。
+- `src/app/runtime.ts`: 確定事実と経済の時計をプロフィール・実績と同じ更新へ合成し、即時表示と耐久保存の状態を分ける。
+- `src/audio`: 遅延読込と任意の音声開始、失敗時の継続、8音の優先制御。音源候補は制作済みで、画面への音声接続と試聴は後続。
 - `public/assets`: 資材IDを維持した原画・WebP/SVG。制作/検収/統合を別管理。
 
 Vitestは重要な仕様境界と参照モデル比較、Playwrightは入力と表示の統合を担当。CIはPython正本検査、lint、型、単体、ビルド、ブラウザー試験を実行する。実機Windows/macOSのIME・物理配列はLinux上の自動試験で代替しない。
 
-保存は後続M4でIndexedDB transaction completeを成功点とする。描画・アニメーション・保存完了から得点や資材を生成しない。経済統合では確定事実IDとcityId/epochを使い原子的適用を行う。
+保存はIndexedDB transaction completeを成功点とする。描画・アニメーション・保存完了から得点や資材を生成しない。経済統合では確定事実IDとcityId/epochを使い原子的適用を行う。全体完成の判定は実装数から推定せず、Goalの未検証項目と独立レビューを残す。過去互換性はユーザー指示で対象外（D012）。

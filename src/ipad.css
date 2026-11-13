@@ -1,0 +1,79 @@
+/* Actual panel pagination preserves the selected type size; no clipping or scroll boxes. */
+[data-ipad-layout] {
+  padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)) !important;
+  padding-block-end: max(12px, env(safe-area-inset-bottom));
+  min-block-size: var(--ipad-viewport-height, 100dvh) !important;
+}
+[data-ipad-layout] .site-header { height: auto; min-height: 72px; padding-block: 8px; gap: 16px; flex-wrap: wrap; }
+[data-ipad-layout] .site-header nav { flex-wrap: wrap; gap: 4px 12px; margin-inline-start: auto; }
+[data-ipad-layout] .site-header .brand small,
+[data-ipad-layout] .section-heading .eyebrow,
+[data-ipad-layout] .section-heading p:not(.eyebrow),
+[data-ipad-layout] > .site-footer { display: none; }
+[data-ipad-layout] .ipad-page-host { padding-block: 12px; margin-block: 0; min-width: 0; }
+[data-ipad-layout] .section-heading { margin-block-end: 12px; gap: 12px; }
+[data-ipad-layout] .section-heading h1 { line-height: 1.25; }
+[data-ipad-layout] .city-detail-layout,
+[data-ipad-layout] .equipment-layout { display: block; margin-block-start: 8px; }
+[data-ipad-layout] .city-district-nav,
+[data-ipad-layout] .equipment-tabs { flex-direction: row; flex-wrap: wrap; margin-block: 8px; }
+[data-ipad-layout] .city-balance { padding-block: 8px; gap: 8px 20px; }
+[data-ipad-layout] .paper-card { padding: 16px; }
+[data-ipad-layout] .paper-card > h2 { margin-block: 0 8px; }
+[data-ipad-layout] .district-resources { margin-block: 8px; gap: 12px; }
+[data-ipad-layout] .plan-card,
+[data-ipad-layout] .unlock-requirements { padding-block-start: 8px; }
+[data-ipad-layout] .district-figure { margin-block: 8px; padding: 8px; }
+[data-ipad-layout] .district-composite { width: min(100%, 200px); max-width: 200px; max-height: none; }
+[data-ipad-layout] .packaging-art { max-height: 130px; }
+[data-ipad-layout] .purchase-comparison { margin-block: 8px; }
+[data-ipad-layout] .purchase-card p,
+[data-ipad-layout] .equipment-district-card p,
+[data-ipad-layout] .plan-card p { margin-block: 8px; }
+[data-ipad-layout] .purchase-card > .button { margin-block-start: 8px; }
+[data-ipad-layout] .collection-counts { padding-block: 8px; gap: 8px 16px; }
+[data-ipad-layout] .catalogue-filters { margin-block-start: 8px; gap: 8px 16px; }
+[data-ipad-layout] .catalogue-list-heading,
+[data-ipad-layout] .catalogue-pagination { margin-block-start: 8px; gap: 8px; }
+[data-ipad-layout] .word-list { margin-block: 8px; }
+[data-ipad-layout] .word-list li { padding-block: 10px; }
+[data-ipad-layout] .city-page-actions { margin-block: 8px; }
+[data-ipad-layout] .save-status:empty,
+[data-ipad-layout] .city-command-status:empty { display: none; }
+[data-ipad-layout] .ipad-dialog {
+  position: fixed; inset-block-start: var(--ipad-viewport-top, 0px); inset-block-end: auto;
+  max-height: none; overflow: visible;
+  margin: max(12px, env(safe-area-inset-top)) auto;
+  max-width: min(900px, calc(100vw - 32px));
+  width: calc(100vw - 32px); padding: 16px;
+}
+[data-ipad-layout] .ipad-dialog form { padding-block: 0; }
+[data-ipad-layout] .ipad-dialog fieldset { margin-block: 8px; padding-block: 8px; }
+[data-ipad-layout] .ipad-dialog h2 { margin-block: 0 8px; line-height: 1.3; }
+[data-ipad-layout] .ipad-dialog .setting-note { margin-block-end: 8px; }
+[data-ipad-layout] .ipad-dialog .button { margin-block-start: 8px; }
+.ipad-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-block-start: 12px; margin-block-start: 8px; border-top: 1px solid var(--border); }
+.ipad-pagination .button { min-height: 44px; width: auto !important; margin: 0 !important; flex-shrink: 0; }
+.ipad-pagination [data-ipad-count] { text-align: center; overflow-wrap: anywhere; }
+[data-ipad-managed][hidden] { display: none !important; }
+@media (max-width: 850px) {
+  [data-ipad-layout] .site-header { gap: 8px; }
+  [data-ipad-layout] .site-header nav { margin-inline-start: 0; }
+  [data-ipad-layout] .catalogue-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  [data-ipad-layout] .collection-counts { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  [data-ipad-layout] .district-resources { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+[data-ipad-layout] .ipad-dialog input,
+[data-ipad-layout] .ipad-dialog select { max-inline-size: 100%; min-inline-size: 0; }
+/* A paginated pane must not inherit an empty navigation column when its siblings are hidden. */
+[data-ipad-layout] .handbook-layout { display: block; }
+[data-ipad-layout] #handbook-families { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+[data-ipad-layout] #achievement-detail { grid-column: auto; }
+/* Keep the full quote together by using the available width, preserving every type size. */
+[data-ipad-layout] .purchase-card { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px 20px; align-items: center; }
+[data-ipad-layout] .purchase-card > * { grid-column: 1 / -1; }
+[data-ipad-layout] .purchase-card > #purchase-count,
+[data-ipad-layout] .purchase-card > #purchase-balance { grid-column: 1; margin-block: 0; }
+[data-ipad-layout] .purchase-card > p:has(> #purchase-cost),
+[data-ipad-layout] .purchase-card > [data-action="city-purchase"] { grid-column: 2; margin-block: 0; }
+[data-ipad-layout] .purchase-card > .purchase-comparison { margin-block: 0; }
