@@ -76,6 +76,6 @@ export function achievementHistory(state: AchievementState, views: readonly Achi
 export function newAchievementSummary(ids: readonly string[], views: readonly AchievementView[], source: string): string {
   const fresh = ids.map(id => views.find(view => view.id === id)).filter((view): view is AchievementView => Boolean(view));
   if (!fresh.length) return '';
-  return `<section id="${source.includes('練習') ? 'practice-new-achievements' : 'result-new-achievements'}" class="new-achievements"><h2>${source}切手を${fresh.length}枚獲得</h2><div>${fresh.slice(0, 3).map(view => `<button class="new-stamp" data-action="achievement-open" data-achievement-id="${view.id}">${stampArtwork(view, true)}<strong>${escape(view.name)}</strong></button>`).join('')}</div>${fresh.length > 3 ? `<p>ほか${fresh.length - 3}枚</p>` : ''}<button class="button" data-action="handbook">配達手帳で見る</button></section>`;
+  return `<section id="${source.includes('練習') ? 'practice-new-achievements' : 'result-new-achievements'}" class="new-achievements" data-page-children><h2>${source}切手を${fresh.length}枚獲得</h2><div data-page-children>${fresh.slice(0, 3).map(view => `<button class="new-stamp" data-action="achievement-open" data-achievement-id="${view.id}">${stampArtwork(view, true)}<strong>${escape(view.name)}</strong></button>`).join('')}</div>${fresh.length > 3 ? `<p>ほか${fresh.length - 3}枚</p>` : ''}<button class="button" data-action="handbook">配達手帳で見る</button></section>`;
 }
 export { catalog as handbookCatalog };

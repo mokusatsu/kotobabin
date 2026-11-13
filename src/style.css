@@ -2073,3 +2073,8 @@ body[data-reduced-motion="true"] *::after {
   [data-ipad-layout] .achievement-select > :not(.stamp-art):not(.stamp-placeholder) { grid-column: 2; }
   [data-ipad-layout] .achievement-select > .achievement-badges { justify-content: flex-start; }
 }
+
+/* Result rewards are individual measured panels alongside the fixed retry actions. */
+[data-ipad-layout] .new-achievements { padding-block: 8px; }
+[data-ipad-layout] .new-achievements h2 { margin-block: 0 8px; }
+[data-ipad-layout] .new-achievements > div { gap: 12px; }
