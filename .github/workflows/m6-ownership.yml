@@ -24,7 +24,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - run: npx playwright test --config=playwright.ownership.config.ts --grep='a second tab is read-only' --repeat-each=12 --browser=${{ matrix.browser }}
+      - run: npx playwright test --config=playwright.ownership.config.ts --grep='delayed ownership notice' --browser=${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
