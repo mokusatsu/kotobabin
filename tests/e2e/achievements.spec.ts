@@ -1,4 +1,4 @@
-import { keyboardRevealControl } from './keyboard';
+import { keyboardRevealControl, keyboardMenuTo } from './keyboard';
 import { expect, test, type Page } from '@playwright/test';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -10,7 +10,7 @@ async function savedAchievements(page: Page) {
       request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
     });
     try {
-      return await new Promise<{ unlocks: Record<string, unknown>; rewards: Record<string, unknown>; targetId: string | null; equipped: { titleId: string | null } }>((resolve, reject) => {
+      return await new Promise<{ unlocks: Record<string, unknown>; rewards: Record<string, unknown>; targetId: string | null; revealedIds: string[]; measuredProgress: { totalCompleted: number }; equipped: { titleId: string | null } }>((resolve, reject) => {
         const transaction = database.transaction('profile', 'readonly');
         const request = transaction.objectStore('profile').get('current');
         transaction.oncomplete = () => resolve(request.result.extensions.achievements);
@@ -97,4 +97,34 @@ test('a normal delivery achievement stays provisional until completion and becom
   await expect.poll(async () => !!(await savedAchievements(page)).unlocks.A05).toBe(true);
   const saved = await savedAchievements(page);
   expect(saved.unlocks.A01).toBeDefined(); expect(saved.unlocks.A02).toBeDefined(); expect(saved.unlocks.B01).toBeUndefined();
+});
+
+test('revealing a hidden condition changes its display without granting progress or rewards', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await keyboardMenuTo(page, 'handbook');
+  const family = page.locator('[data-action="achievement-family"][data-family-id="B"]');
+  await keyboardRevealControl(page, family); await family.click();
+  const card = page.locator('article[data-achievement-id="B05"]');
+  const select = card.locator('[data-action="achievement-select"]');
+  await keyboardRevealControl(page, select);
+  await expect(card).toContainText('小さく送ったあとに');
+  await expect(card).not.toContainText('荷物2個の手動配達の後');
+  await select.click();
+  const reveal = page.locator('[data-action="achievement-reveal"][data-achievement-id="B05"]');
+  await keyboardRevealControl(page, reveal);
+  const before = await savedAchievements(page);
+  await reveal.click();
+  const condition = page.locator('#achievement-detail .achievement-detail-condition');
+  await keyboardRevealControl(page, condition);
+  await expect(condition).toBeVisible();
+  await expect(condition).toContainText('荷物2個の手動配達の後');
+  await expect.poll(async () => (await savedAchievements(page)).revealedIds.includes('B05')).toBe(true);
+  const after = await savedAchievements(page);
+  expect(after.unlocks).toEqual(before.unlocks); expect(after.rewards).toEqual(before.rewards);
+  expect(after.measuredProgress.totalCompleted).toBe(0);
+  await page.screenshot({ path: testInfo.outputPath('hidden-condition-revealed.png'), fullPage: false });
+  await page.locator('[data-action="handbook-back"]').click();
+  await keyboardMenuTo(page, 'handbook');
+  await keyboardRevealControl(page, select);
+  await expect(card).toContainText('荷物2個の手動配達の後');
 });
