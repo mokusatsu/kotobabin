@@ -42,7 +42,7 @@ for (const reduced of [false, true]) {
     } else {
       await expect.poll(async () => (await transport.boundingBox())!.x).toBeGreaterThan(startX);
     }
-    await expect(transport).toHaveAttribute('data-from', 'warehouse'); await expect(transport).toHaveAttribute('data-to', 'destination');
+    await expect(transport).toHaveAttribute('data-from', 'warehouse'); await expect(transport).toHaveAttribute('data-to', districtId);
     await expect(page.locator('#game-input')).toBeFocused();
     // The sixth real word must remain playable while the actual aggregate queue is moving.
     await typeCurrentGuide(page); await expect(page.locator('#completed-count')).toHaveText('完成 6語');
