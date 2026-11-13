@@ -1,0 +1,53 @@
+name: M6 game acceptance
+on:
+  push:
+    branches: [feat/m5-remaining-art]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: m6-acceptance-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  independent-inventory:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config=playwright.collection-inventory.config.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-independent-inventory-${{ matrix.browser }}
+          path: test-results/m6-inventory/
+  mature-city:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --config=playwright.m6-city.config.ts --browser=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-city-${{ matrix.browser }}
+          path: test-results/m6-city/
