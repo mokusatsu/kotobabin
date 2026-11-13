@@ -18,7 +18,7 @@ test('read-only computed text contrast across actual main UI states', async ({ p
     }
     throw new Error('Contrast traversal exceeded40 actual panels');
   };
-  await page.clock.install(); await page.goto('/'); await expect(page.locator('[data-action="start"]')).toBeEnabled();
+  await page.goto('/'); await expect(page.locator('[data-action="start"]')).toBeEnabled();
   await capture('home');
   await keyboardMenuTo(page, 'city'); await capture('city');
   await keyboardMenuTo(page, 'equipment'); await capture('equipment');
@@ -46,8 +46,8 @@ test('read-only computed text contrast across actual main UI states', async ({ p
   await capture('main-playing-settled');
   await page.keyboard.press('Escape'); await capture('pause');
   await keyboardMenuTo(page, 'settings'); await panels('settings'); await page.keyboard.press('Escape');
-  await page.locator('[data-action="resume"]').click(); await page.clock.runFor(90001);
-  await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'score'); await capture('result-score');
+  await page.locator('[data-action="resume"]').click();
+  await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'score', { timeout: 100000 }); await capture('result-score');
   await expect(page.locator('[data-result-command="advance"]')).toBeEnabled(); await page.keyboard.press('Enter'); await page.keyboard.press('Escape'); await capture('result-award');
   await page.keyboard.press('s'); await capture('result-summary');
   await keyboardMenuTo(page, 'handbook'); await panels('handbook');

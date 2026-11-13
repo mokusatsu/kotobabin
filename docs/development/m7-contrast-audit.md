@@ -58,3 +58,9 @@ cityの6標本はこの追試でも4.017で、transition由来ではない。親
 | `#save-status`／結果3phase | 12 |
 
 `.delivery-route-state/.delivery-confirmation` はcomputed14pxだが、現在CSSではclipで可視inkを0にした読み上げ用live regionである。これを可視補助文と混同しない。初回collectorのrange採取にはこの未測定行も入ったため、後続collectorではzero-clipを表示対象から除外する（contrastのlow値を除外する変更ではない）。この表は訪問した状態だけであり、全画面/全状態の文字サイズ網羅監査とはしない。
+
+## 修正後候補の再計測計画
+
+親のcandidate `99b0eec060ea99aede8824b8fde66e30d6fb94fb` を監査branchへ取り込んだ。製品変更は親によるcity数値の局所色 `#a04431`、配達ボタンのtransition除去、採取済み可視小文字の1em復帰などである。監査担当は製品を変更しない。
+
+初回・追試はpage.clock.installが冒頭にある時計管理下のbrowser観測だった。computed色/disabled状態は実ブラウザーで取得したが、過去標本を「unmocked native RAFの時間測定」と呼ばない。次の修正後検査はfake clockをすべて外し、自然90秒と通常のrequestAnimationFrameで同じ33状態巡回/450ms録画を行う。自然待機のためcase timeoutだけ240秒へ延長し、4.5基準、合成/未測定判定、lowの集計は変えない。zero-clip除外は既報どおり可視inkのないlive regionだけであり、元low8/7件はいずれも除外しない。結果はCI後に追記する。
