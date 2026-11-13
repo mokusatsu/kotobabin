@@ -15,6 +15,7 @@ export interface DevConditions {
 }
 export interface Comparison {
   session: GameSession;
+  conditions: Readonly<DevConditions>;
   rules: Readonly<SessionRules>;
   nowMs: number;
   planId: string;
@@ -77,7 +78,7 @@ export function createComparison(words: Word[], conditions: DevConditions): Comp
   session.pause(nowMs);
   if (conditions.event === 'skip' && session.snapshot(nowMs).phase !== 'RESULT') { session.skip(nowMs); operations.push('救済スキップ'); }
   if (conditions.imePaused) operations.push('IME入力確認が必要な停止条件（OSイベント試験ではありません）');
-  return { session, rules, nowMs, planId: generator?.plan.id ?? (conditions.customWord ? '固定カスタム語（seed不使用）' : `固定語 ${selected!.id}（seed不使用）`),
+  return { session, conditions: Object.freeze({ ...conditions, rules, ...(conditions.customWord ? { customWord: Object.freeze({ ...conditions.customWord }) } : {}) }), rules, nowMs, planId: generator?.plan.id ?? (conditions.customWord ? '固定カスタム語（seed不使用）' : `固定語 ${selected!.id}（seed不使用）`),
     facts: session.drainEvents(), operations, imePaused: conditions.imePaused };
 }
 export function factSummary(fact: SessionFact): string {
@@ -87,6 +88,6 @@ export function factSummary(fact: SessionFact): string {
   return `${fact.type} / ${fact.sessionId}:${fact.factSequence}`;
 }
 export function comparisonExport(comparison: Comparison, snapshot: SessionSnapshot) {
-  return { kind: 'kotobabin-development-comparison', normalRecord: false, rules: comparison.rules, planId: comparison.planId,
+  return { kind: 'kotobabin-development-comparison', normalRecord: false, conditions: comparison.conditions, rules: comparison.rules, planId: comparison.planId,
     operations: [...comparison.operations], facts: [...comparison.facts], snapshot };
 }
