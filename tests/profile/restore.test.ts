@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { GameSession } from '../../src/typing';
 import { CityEconomy, encodeCityState } from '../../src/economy';
-import { ProfileRepository, createProfileDocument, parseProfileBackup, validateProfileDocument } from '../../src/profile';
+import { ProfileRepository, createProfileDocument, parseProfileBackup, validateProfileDocument, createAchievementState, beginAchievementSession, applyAchievementFacts, filterCatalogue, createProfileProgress, type RecordContext } from '../../src/profile';
 
 const populated = () => {
   const p = createProfileDocument(); p.settings.fontScale = 150; p.tutorialSeen = true;
@@ -55,4 +56,32 @@ describe('supported current backup formats and restore boundary', () => {
     expect(repo.snapshot.extensions.backupNotes).toEqual(populated().extensions.backupNotes);
     repo.close();
   });
+});
+
+
+it('validates achievement imports and clears both record histories and frozen baselines without removing acquisitions', async () => {
+  const context: RecordContext = {courseId:'relaxed',planId:'restore',contentVersion:'2.0.0',generatorVersion:'1',inputRuleVersion:'romaji-1.0.0',scoringVersion:'1',guideUsed:true,assisted:false};
+  const game = new GameSession({words:[filterCatalogue(createProfileProgress())[0]],mode:'PRACTICE',sessionId:'achievement-save'});
+  let achievement = createAchievementState();
+  achievement.measuredProgress.bestByComparison.baseline = {bestScore:1000,bestCanonicalLength:100,growthBestScore:1000,growthBestCanonicalLength:100};
+  achievement = beginAchievementSession(achievement,{sessionId:'achievement-save',mode:'PRACTICE',context,atMs:0});
+  for (const key of game.snapshot(0).remainingGuide) game.input(key,1);
+  achievement = applyAchievementFacts(achievement,game.drainEvents(),context);
+  const profile = createProfileDocument(); profile.extensions.achievements = achievement;
+  expect(validateProfileDocument(profile)).toBe(true);
+  const bad = structuredClone(profile);
+  (bad.extensions.achievements as typeof achievement).unreadAchievements = ['unknown-achievement'];
+  expect(() => parseProfileBackup(bad)).toThrow('形式・版・整合性');
+  const repo = await ProfileRepository.open({indexedDB:null});
+  await repo.restoreData(profile,{confirmed:true});
+  await repo.resetRecords();
+  const after = repo.snapshot.extensions.achievements as typeof achievement;
+  expect(after.unlocks).toEqual(achievement.unlocks); expect(after.rewards).toEqual(achievement.rewards);
+  expect(after.measuredProgress.totalCompleted).toBe(1);
+  expect(after.measuredProgress.bestByComparison).toEqual({}); expect(after.measuredProgress.recentRounds).toEqual([]);
+  expect(Object.values(after.sessions).every(session => Object.keys(session.baselines).length===0)).toBe(true);
+  expect(repo.snapshot.metadata.generation).toBe(2);
+  expect(validateProfileDocument(repo.snapshot)).toBe(true);
+  await repo.resetCollectionAndEconomy(); expect(repo.snapshot.extensions.achievements).toBeUndefined();
+  repo.close();
 });

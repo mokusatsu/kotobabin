@@ -1,7 +1,7 @@
 import content from '../../spec/initial/data/words.json';
 import {
-  applySessionFact, createProfileProgress,
-  type ProfileProgress, type RecordContext,
+  applySessionFact, createProfileProgress, validateAchievementState, resetAchievementRecords,
+  type ProfileProgress, type RecordContext, type AchievementState,
 } from './index';
 import type { SessionFact } from '../typing';
 import { decodeCityState } from '../economy';
@@ -71,6 +71,7 @@ export function validateProfileDocument(value: unknown): value is ProfileDocumen
   if (!object(value) || !settings(value.settings) || typeof value.tutorialSeen !== 'boolean'
     || !object(value.extensions) || !object(value.metadata) || !object(value.progress)) return false;
   try { if (value.extensions.city !== undefined) decodeCityState(value.extensions.city); } catch { return false; }
+  if (value.extensions.achievements !== undefined && !validateAchievementState(value.extensions.achievements)) return false;
   if (!metadata(value.metadata)) return false;
   const p = value.progress;
   if (!object(p.words) || !object(p.factCursors) || !integer(p.totalCompleted)
@@ -347,7 +348,9 @@ export class ProfileRepository {
     const generation = this.document.metadata.generation;
     return this.write(document => {
       if (document.metadata.generation !== generation) throw new GenerationMismatchError();
-      return { ...document, progress: { ...document.progress, recentRounds: [], bestByComparison: {} },
+      const extensions = { ...document.extensions };
+      if (extensions.achievements !== undefined) extensions.achievements = resetAchievementRecords(extensions.achievements as AchievementState);
+      return { ...document, extensions, progress: { ...document.progress, recentRounds: [], bestByComparison: {} },
         metadata: { ...document.metadata, generation: generation + 1 } };
     });
   }
