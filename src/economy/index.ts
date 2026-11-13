@@ -199,3 +199,6 @@ export class WorldClock {
     return { ...result, wallElapsedMs: elapsed, cappedMs: elapsed - credited };
   }
 }
+
+export { CityEconomy, initialCityState } from './city';
+export type { CityState, EconomySession, SessionEconomySummary, CompletedWordFact, ShippedCargoFact, MaterialReceipt, EconomyMode, ShipmentReason } from './city';
