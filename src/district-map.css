@@ -38,3 +38,5 @@
 .dm-capacity-rack path { stroke: #aeb598; stroke-width: 3; }
 .dm-capacity-rack path.reached { stroke: #355e45; }
 .dm-shop-annex { fill: #cdb18b; stroke: #6b806d; stroke-width: 2; }
+/* Short map callouts stay distinct; exact amounts remain in their accessible names and dock. */
+.dm-feature { padding-inline: 6px; }

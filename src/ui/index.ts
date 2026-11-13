@@ -115,7 +115,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function header(game = false) {
     const mode = session?.mode;
     const location = mode === 'PRACTICE' ? 'ことばの練習' : mode === 'TUTORIAL' ? 'はじめの配達' : `${course().name} ／ ${districtName(sessionDestination)}へ`;
-    return `<header class="site-header">${brand()}<button class="button button-small nav-menu-button" data-action="navigation-menu">画面移動 <kbd>F2</kbd></button>${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}${ownershipStatus()}</header>`;
+    return `<header class="site-header">${brand()}<button class="button button-small nav-menu-button" data-action="navigation-menu">画面移動 <kbd>F2</kbd></button>${game ? `<span class="route-label" data-route-original="${esc(location)}">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<span class="equipped-title" data-equipped-title hidden></span><nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'city' ? 'nav-current' : ''}" data-action="city">街の開発</button><button class="nav-button ${screen === 'equipment' ? 'nav-current' : ''}" data-action="equipment">街の設備</button><button class="nav-button ${screen === 'handbook' ? 'nav-current' : ''}" data-action="handbook">配達手帳 <span data-unread-count>${runtime.achievements.unreadAchievements.length || ''}</span></button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}${ownershipStatus()}</header>`;
   }
   function ownershipStatus() { return `<aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中 · このタブは閲覧のみです。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function footer() { return `<footer class="site-footer"><span>F2 画面移動 · Esc 戻る</span><span>試作版 · タイピング配達</span></footer>`; }
@@ -184,8 +184,15 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     pause();
     const dialog = document.createElement('dialog'); dialog.className = 'help-dialog paper-card';
     dialog.innerHTML = '<form method="dialog"><h2>今の配達を終えて移動しますか？</h2><p>完成したことばと確定済みの成果は残ります。未配達の追加点と通常の便の仮達成は確定しません。</p><button class="button button-primary" value="continue" autofocus>今の配達に戻る</button><button class="button" value="end">終了して移動する</button></form>';
+    const paused = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
+    if (paused) { paused.inert = true; paused.setAttribute('aria-hidden', 'true'); }
     root.append(dialog); dialog.showModal();
-    dialog.addEventListener('close', () => { const confirmed = dialog.returnValue === 'end'; dialog.remove(); if (confirmed) { closeCurrent('replaced'); next(); } }, { once: true });
+    dialog.addEventListener('close', () => {
+      const confirmed = dialog.returnValue === 'end'; dialog.remove();
+      if (paused?.isConnected) { paused.inert = false; paused.removeAttribute('aria-hidden'); }
+      if (confirmed) { closeCurrent('replaced'); next(); }
+      else paused?.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus({ preventScroll: true });
+    }, { once: true });
   }
   function launch() {
     if (!runtime.status.writable || runtime.cityBusy) { updateStorageStatus(); return; }
@@ -344,8 +351,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (runtime.achievements.notificationMode !== 'live' || snapshot.phase === 'PAUSED' || snapshot.wordStarted || !livePending.size || performance.now() - lastLiveNoticeAt < 10000) return;
     const count = livePending.size; livePending.clear(); lastLiveNoticeAt = performance.now();
     root.querySelector('.achievement-live')?.remove();
-    const notice = document.createElement('aside'); notice.className = 'achievement-live'; notice.setAttribute('role', 'status'); notice.textContent = `切手を${count}枚獲得しました。`;
-    root.append(notice); clearTimeout(liveNoticeTimer); liveNoticeTimer = setTimeout(() => notice.remove(), 1200);
+    const notice = document.createElement('aside'); notice.className = 'achievement-live'; notice.setAttribute('role', 'status'); notice.setAttribute('aria-label', `切手を${count}枚獲得しました`); notice.textContent = `切手 +${count}枚`;
+    const route = root.querySelector<HTMLElement>('.site-header .route-label');
+    if (route) { route.textContent = ''; route.append(notice); } else root.append(notice);
+    clearTimeout(liveNoticeTimer); liveNoticeTimer = setTimeout(() => {
+      if (route?.isConnected && route.contains(notice)) route.textContent = route.dataset.routeOriginal ?? '';
+      else notice.remove();
+    }, 1200);
   }
   function openSettings() {
     if (screen === 'game') pause();

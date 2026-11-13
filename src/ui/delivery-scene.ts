@@ -107,6 +107,12 @@ export function deliveryPosition(state: DeliverySceneState): number {
 function batchMarkup(batch: DeliveryBatch, destination: DistrictId): string {
   return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><span class="delivery-vehicle-parcel">✉</span></div>`;
 }
+/** One continuous road across the playfield; exact throughput chooses the point. */
+export function deliveryPathPoint(progress: number): { x: number; y: number } {
+  const t = Math.min(1, Math.max(0, progress)); const u = 1 - t;
+  return { x: u ** 3 * .12 + 3 * u ** 2 * t * .52 + 3 * u * t ** 2 * .40 + t ** 3 * .88,
+    y: u ** 3 * .64 + 3 * u ** 2 * t * .72 + 3 * u * t ** 2 * -.22 + t ** 3 * .37 };
+}
 function sceneStatus(state: DeliverySceneState): string {
   return `${districtName(state.destination)}へ 輸送待ち ${formatMicro(state.queuedMicro)}資材・到着 ${formatMicro(state.arrivedSinceMountMicro)}資材${state.paused ? '。入力は一時停止中。街の輸送は継続' : ''}`;
 }
@@ -115,12 +121,12 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
 
   return `<div id="delivery-scene" class="delivery-scene" data-transport="${state.queuedMicro > 0n ? 'waiting' : 'idle'}" aria-label="倉庫から${escapeCityText(districtName(destination))}への配送風景">
     <div class="delivery-scene-landscape" style="background-image:linear-gradient(180deg,#d8eee66b,#e6edc987),url('${asset('terrain/terrain_riverside.webp')}')" aria-hidden="true"></div>
-    <svg class="delivery-scene-art" viewBox="0 0 1200 280" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <svg class="delivery-scene-art" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs><pattern id="delivery-road-lines" width="72" height="12" patternUnits="userSpaceOnUse"><path d="M0 6h36" stroke="#fff1c7" stroke-width="4"/></pattern></defs>
-      <ellipse cx="600" cy="235" rx="580" ry="50" fill="#779e76" opacity=".6"/>
-      <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="#658276" stroke-width="46"/>
-      <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="#d9cda6" stroke-width="36"/>
-      <path d="M170 190 C380 120 730 240 1040 165" fill="none" stroke="url(#delivery-road-lines)" stroke-width="8"/>
+      <ellipse cx="144" cy="528" rx="174" ry="28" fill="#779e76" opacity=".25"/><ellipse cx="1056" cy="316" rx="150" ry="26" fill="#779e76" opacity=".25"/>
+      <path d="M144 512 C624 576 480 -176 1056 296" fill="none" stroke="#658276" stroke-width="46"/>
+      <path d="M144 512 C624 576 480 -176 1056 296" fill="none" stroke="#d9cda6" stroke-width="36"/>
+      <path d="M144 512 C624 576 480 -176 1056 296" fill="none" stroke="url(#delivery-road-lines)" stroke-width="8"/>
     </svg>
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
     <svg class="delivery-district-art" data-delivery-district data-stage="${city.districts[destination].stage}" viewBox="330 70 540 405" aria-hidden="true">${renderDistrictCore(city, destination)}</svg>
@@ -176,7 +182,9 @@ export class DeliverySceneController {
         }
         Object.assign(node.dataset, { state: batch.remainingMicro > 0n ? 'in-transit' : 'arrived',
           amountMicro: String(batch.amountMicro), remainingMicro: String(batch.remainingMicro), combined: String(batch.combined) });
-        node.style.left = `${deliveryBatchPosition(batch) * 100}%`; node.style.top = `${(index % 3) * 8}px`;
+        const progress = s.reducedMotion && batch.remainingMicro > 0n ? .5 : deliveryBatchPosition(batch);
+        const point = deliveryPathPoint(progress);
+        node.style.left = `${point.x * 100}%`; node.style.top = `calc(${point.y * 100}% + ${(index % 3) * 7}px)`;
       });
     }
     const wordEffect = el.querySelector<HTMLElement>('[data-delivery-effect=word]');
