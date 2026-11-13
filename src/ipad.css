@@ -77,3 +77,7 @@
 [data-ipad-layout] .purchase-card > p:has(> #purchase-cost),
 [data-ipad-layout] .purchase-card > [data-action="city-purchase"] { grid-column: 2; margin-block: 0; }
 [data-ipad-layout] .purchase-card > .purchase-comparison { margin-block: 0; }
+
+/* WebKit can restore native radio focus after measurement without restoring
+   :focus-visible. The focused settings choice keeps the same visible cue. */
+.settings-dialog input[type="radio"]:focus { outline: 2px solid var(--primary); outline-offset: 4px; }

@@ -1,3 +1,4 @@
+import { GAME_PRESENTATION_DEFAULTS } from '../config/game-parameters';
 import catalog from '../../spec/initial/data/achievement_catalog.json';
 import type { AchievementView } from '../profile/achievements';
 import { stampArtwork } from './handbook';
@@ -118,7 +119,7 @@ export function renderResultStage(state: ResultStageState, options: ResultStageO
     actions = `<button type="button" class="result-stage-primary" data-result-command="advance">${state.index + 1 < state.queue.length ? '次の切手へ' : '結果をまとめる'} <span aria-hidden="true">→</span></button>`;
   } else {
     announcement = `今回の配達は${number(result.score)}点。新しく獲得した切手は${state.queue.length}枚です。`;
-    const preview = state.queue.slice(0, 3).map(id => `<div class="result-stage-mini-stamp" aria-hidden="true">${awardArtwork(id, options.renderStamp)}</div>`).join('');
+    const preview = state.queue.slice(0, GAME_PRESENTATION_DEFAULTS.resultStampLimit).map(id => `<div class="result-stage-mini-stamp" aria-hidden="true">${awardArtwork(id, options.renderStamp)}</div>`).join('');
     body = `<div class="result-stage-summary-scene"><div><p class="result-stage-kicker">今回の配達</p><h1 id="result-stage-title">また、ひとつ先へ。</h1>${scoreValue(result)}${metrics(result)}</div><div class="result-stage-collection"><p>新しく集まった切手</p><strong class="result-stage-collection-count">${state.queue.length}<small>枚</small></strong>${preview ? `<div class="result-stage-stamp-preview">${preview}</div>` : '<p>次の一語から、また届けよう。</p>'}<p>${state.queue.length ? '切手と称号は、配達手帳で確かめられます。' : '獲得条件と進捗は、配達手帳で確かめられます。'}</p></div></div>`;
     actions = '<button type="button" class="result-stage-primary" data-result-action="retry">同じ問題でもう一度</button><button type="button" data-result-action="new-round">別の問題で配達</button><button type="button" data-result-action="handbook">配達手帳を見る</button><button type="button" data-result-action="details">詳しい配達記録</button>' + (options.hasReview ? '<button type="button" data-result-action="review">まちがえたことばを復習</button>' : '');
   }

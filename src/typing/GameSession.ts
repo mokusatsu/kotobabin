@@ -1,3 +1,4 @@
+import { sessionRules, type SessionRules } from '../config/game-parameters';
 import { CourseGenerator } from './CourseGenerator';
 import { RomajiEngine } from './RomajiEngine';
 import type { SessionMode, Word } from './types';
@@ -84,6 +85,7 @@ export interface SessionSnapshot {
 export class GameSession {
   readonly mode: SessionMode;
   readonly sessionId: string;
+  private readonly rules: Readonly<SessionRules>;
   private phase: SessionPhase = 'READY';
   private returnPhase: 'READY' | 'PLAYING' = 'READY';
   private readonly nextWord: () => Word;
@@ -114,7 +116,8 @@ export class GameSession {
   private tutorialDelivered = false;
   private tutorialFailureStreak = 0;
 
-  constructor(options: { words?: Word[]; generator?: CourseGenerator; mode?: SessionMode; sessionId?: string; guideEnabled?: boolean }) {
+  constructor(options: { words?: Word[]; generator?: CourseGenerator; mode?: SessionMode; sessionId?: string; guideEnabled?: boolean; rules?: Partial<SessionRules> }) {
+    this.rules = sessionRules(options.rules);
     this.mode = options.mode ?? 'MAIN';
     this.guideEnabled = options.guideEnabled ?? true;
     this.guideUsed = this.guideEnabled;
@@ -133,17 +136,18 @@ export class GameSession {
 
   private elapsed(nowMs: number): number {
     const raw = this.accumulatedMs + (this.phase === 'PLAYING' ? Math.max(0, nowMs - this.startedAtMs) : 0);
-    return this.mode === 'MAIN' ? Math.min(raw, 90_000) : raw;
+    return this.mode === 'MAIN' ? Math.min(raw, this.rules.roundDurationMs) : raw;
   }
   private cargoValue(): number { return this.cargo.reduce((sum, item) => sum + item.value, 0); }
-  private pendingBonus(): number { return Math.floor(this.cargoValue() * this.cargo.length / 5); }
+  private bonusFor(value: number, count: number): number { return count ? Math.floor(value * this.rules.cargoRateNumerators[count - 1] / this.rules.cargoRateDenominator) : 0; }
+  private pendingBonus(): number { return this.bonusFor(this.cargoValue(), this.cargo.length); }
   private emit(fact: FactPayload, nowMs: number): void {
     const factSequence = ++this.factSequence;
     this.facts.push({ ...fact, sessionId: this.sessionId, factSequence, eventId: `${this.sessionId}:${factSequence}`,
       mode: this.mode, inputRuleVersion: 'romaji-1.0.0', confirmedAtMs: nowMs, guideUsed: this.guideUsed } as SessionFact);
   }
   private deadline(nowMs: number): boolean {
-    if (this.phase === 'PLAYING' && this.mode === 'MAIN' && this.elapsed(nowMs) >= 90_000) {
+    if (this.phase === 'PLAYING' && this.mode === 'MAIN' && this.elapsed(nowMs) >= this.rules.roundDurationMs) {
       this.finish(nowMs, true);
       return true;
     }
@@ -191,7 +195,7 @@ export class GameSession {
         const completion: CompletedWord = { wordId: this.word.id, topicId: this.word.topicId, tags: [...this.word.tags], canonicalLength,
           mistakes: this.wordMistakes, acceptedKeys: this.engine.acceptedInput.length, clean: this.wordMistakes === 0,
           position: this.history.length + this.skips + 1, completedAtMs: this.elapsed(nowMs) };
-        this.baseScore += canonicalLength * 10;
+        this.baseScore += canonicalLength * this.rules.pointPerCanonicalKey;
         this.canonicalLengthSum += canonicalLength;
         this.history.push(completion);
         if (this.mode === 'TUTORIAL') this.tutorialFailureStreak = completion.clean ? 0 : this.tutorialFailureStreak + 1;
@@ -199,8 +203,8 @@ export class GameSession {
         if (completion.clean) {
           this.cleanStreak++;
           this.maxCleanStreak = Math.max(this.maxCleanStreak, this.cleanStreak);
-          this.cargo.push({ wordId: this.word.id, value: canonicalLength * 10 });
-          if (this.cargo.length === 5) this.commitDelivery('full', nowMs);
+          this.cargo.push({ wordId: this.word.id, value: canonicalLength * this.rules.pointPerCanonicalKey });
+          if (this.cargo.length === this.rules.maxCargo) this.commitDelivery('full', nowMs);
         }
         if (this.mode === 'PRACTICE') {
           this.awaitingWordChoice = true;
@@ -323,7 +327,7 @@ export class GameSession {
         position: Math.min(prior?.position ?? attempt.position, attempt.position) });
     }
     return [...totals.entries()].sort((a, b) => b[1].mistakes - a[1].mistakes || a[1].position - b[1].position)
-      .slice(0, 10).map(([wordId]) => wordId);
+      .slice(0, this.rules.reviewWordLimit).map(([wordId]) => wordId);
   }
 
   snapshot(nowMs: number): SessionSnapshot {
@@ -335,10 +339,10 @@ export class GameSession {
       remainingGuide: this.engine.remainingGuide, guide: this.engine.guide,
       score: this.baseScore + this.bonusScore, baseScore: this.baseScore, bonusScore: this.bonusScore,
       cargoCount: this.cargo.length, cargoValue, pendingBonus: this.pendingBonus(),
-      nextBonus: Math.floor((cargoValue + this.engine.canonicalLength * 10) * (this.cargo.length + 1) / 5),
+      nextBonus: this.bonusFor(cargoValue + this.engine.canonicalLength * this.rules.pointPerCanonicalKey, this.cargo.length + 1),
       correctKeys: this.correctKeys, mistakes: this.mistakes, completedWords: this.history.length,
       completedHistory: this.history.map((item) => ({ ...item, tags: [...item.tags] })), wordIds: [...this.wordIds],
-      remainingMs: this.mode === 'MAIN' ? Math.max(0, 90_000 - elapsedMs) : null, elapsedMs,
+      remainingMs: this.mode === 'MAIN' ? Math.max(0, this.rules.roundDurationMs - elapsedMs) : null, elapsedMs,
       accuracy: denominator ? this.correctKeys / denominator * 100 : null,
       canonicalKpm: elapsedMs > 0 ? this.canonicalLengthSum / (elapsedMs / 1000) * 60 : null,
       canonicalLengthSum: this.canonicalLengthSum, wordStarted: this.wordStarted, wordHasMistake: this.wordMistakes > 0,

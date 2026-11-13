@@ -2,7 +2,7 @@ name: M6 production performance measurement
 on:
   workflow_dispatch:
   push:
-    branches: [feat/measure-performance, fix/m6-integrated-input, feat/m5-remaining-art, feat/m6-final-validation]
+    branches: [feat/measure-performance, fix/m6-integrated-input, feat/m5-remaining-art, feat/m6-final-validation, feat/m7-integration]
 permissions:
   contents: read
 concurrency:
