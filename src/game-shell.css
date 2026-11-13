@@ -77,3 +77,7 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 .world-stage > .return-card h2 { font: inherit; font-weight: 700; margin: 0; }
 .world-stage > .return-card p { margin: 4px 0; }
 .world-stage > .return-card .button { padding: 4px 10px; min-height: 44px; margin-top: 4px; }
+/* Read-only ownership is a full HUD row; it must not expand a no-wrap header. */
+#app .site-header:has(> .ownership-warning:not([hidden])) { flex-wrap: wrap; }
+#app .site-header > .ownership-warning { flex-basis: 100%; min-width: 0; max-width: 100%; }
+#app .site-header > .ownership-warning p { min-width: 0; overflow-wrap: anywhere; }
