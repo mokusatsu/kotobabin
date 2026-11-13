@@ -108,3 +108,19 @@
 ## 未完了の表示契約
 
 補助文字16px、地図幅800未満の6地区一覧、文字125/150%・1366×768・中間幅はIssue #4へ登録。全仕様の完成扱いにしない。
+
+## 第2サイクルで検証した具体項目
+
+| 正本の項目 | 状態 | 実装・根拠 |
+|---|---|---|
+| 導入の実発送成功/3語失敗救済 | 検証済み | GameSession、src/ui、typing/modes.test.ts、modes.spec.ts |
+| 図鑑960語・固定集合と練習3回資格 | 検証済み | src/profile、src/ui/catalogue.ts、modes.spec.ts・profile-ui.spec.ts |
+| 救済スキップとガイド表示履歴 | 検証済み | GameSession・UI、modes.spec.ts・layout-settings.spec.ts |
+| 設定/語別進捗/記録の原子保存 | 検証済み | ProfileRepository、repository.test.ts・persistence.spec.ts |
+| 複数タブのreadonly/epochと控え | 検証済み | ProfileRepository・AppRuntime、runtime.test.ts・profile-ui.spec.ts |
+| 旧版移行 | 未着手 | 旧データを保持し今回のみで続ける。実移行は未実装 |
+| 補助文字16px・狭い地図の一覧・150% | 検証済み | style.css・UI、layout-settings.spec.ts。125%実画面は未検証 |
+| 経済全投資の数値 | 検証済み | CityEconomy、Python4シナリオ39操作。画面/台帳は別 |
+| 全72実績/報酬、街を含む保存 | 未着手 | 次のM3/M4接続 |
+
+第2サイクルの検証CIは43448078577（コード479cbb8）。節全体や製品全体の完了率は算出していない。

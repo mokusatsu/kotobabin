@@ -15,3 +15,9 @@
 | 保存（未実装） | transaction内で最新状態を読み、事実/進捗/報酬/カーソル/epochを原子更新 |
 
 M1のInputAdapterは後続のIME実機受入を含む完成品ではない。未確定compositionやpasteが誤採点されないことを優先し、未検証環境を対応済みとしない。
+
+## M2接続と保存
+
+`mountApp(root, runtime)` は `src/app/runtime.ts` のAppRuntimeを使用。設定/プロフィールは即時メモリー投影、耐久保存の状態は別に表示する。`applyFacts(facts, context)` は全事実の順序を渡す。`takeOver({discardUnsaved:true})` は明示確認後のみ使い、古い未保存投影を控えに残す。保存前の拒否でrepoがsavedでも、未保存投影を自動でスナップショット置換しない。
+
+GameSessionのPRACTICEは完成後にrepeatWord/nextPracticeWord/endPracticeを選び、PracticeSessionEndedを一度発行する。TUTORIALは実発送の成功と連続失敗救済を保持し、RoundFinishedを偽造しない。ガイド表示履歴は便内で維持。CityEconomyの投資メソッドはまだ単独プリミティブであり、UI接続前に(cityId,economyEventId)の台帳と原子保存を追加する。

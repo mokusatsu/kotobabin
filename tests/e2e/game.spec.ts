@@ -1,14 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-
-async function prepare(page: Page) {
-  await page.goto('/');
-  await page.locator('[data-action="start"]').click();
-  await page.locator('#game-input').pressSequentially('a');
-  await expect(page.locator('[data-action="confirm"]')).toBeEnabled();
-  await page.locator('[data-action="confirm"]').click();
-  await expect(page.locator('#game-input')).toBeFocused();
-  await expect(page.locator('#time-left')).toHaveText('90');
-}
+import { beginMain } from './helpers';
 
 async function completeWord(page: Page) {
   const guide = (await page.locator('#romaji-guide').textContent())!;
@@ -23,8 +14,10 @@ test('native input, delivery, 90-second finish, and same-plan retry', async ({ p
   await page.clock.install();
   await page.goto('/');
   await page.screenshot({ path: testInfo.outputPath('desktop-home.png'), fullPage: true });
-  await prepare(page);
-  await page.screenshot({ path: testInfo.outputPath('desktop-game.png'), fullPage: true });
+  await beginMain(page, { fromHome: true });
+  await expect(page.locator('#paused-layer')).toBeHidden();
+  await page.screenshot({ path: testInfo.outputPath('desktop-game.png'), fullPage: false });
+  await expect(page.locator('#paused-layer')).toBeHidden();
   const firstWord = await page.locator('#prompt-word').textContent();
   await page.locator('#game-input').press('Space');
   await page.clock.runFor(5000);
@@ -48,7 +41,7 @@ test('native input, delivery, 90-second finish, and same-plan retry', async ({ p
 
 test('mistakes preserve completion points and paused time does not consume the round', async ({ page }) => {
   await page.clock.install();
-  await prepare(page);
+  await beginMain(page);
   const base = await completeWord(page);
   await page.locator('#game-input').press("'");
   await expect(page.locator('#cargo-count')).toHaveText('0');
