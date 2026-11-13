@@ -219,3 +219,53 @@
   .game-side-panel .save-status { margin: 0; padding: 0; max-width: none; line-height: 1.25; }
   .game-page > .narrow-note { display: none; }
 }
+
+/* Pause is a complete choice sheet, not a scrolling list of buttons. Keeping
+   related actions in two columns also leaves room for the ownership handoff. */
+@media (min-width: 960px) {
+  #app:has(.game-page) .paused-layer { padding: 12px; }
+  #app:has(.game-page) .pause-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-content: start;
+    gap: 8px;
+    width: 100%;
+    max-width: 900px;
+    max-height: none;
+    padding: 12px;
+    overflow: visible;
+    line-height: 1.25;
+  }
+  #app:has(.game-page) .pause-card > h1,
+  #app:has(.game-page) .pause-card > h2,
+  #app:has(.game-page) .pause-card > p,
+  #app:has(.game-page) .pause-card > #paused-ownership,
+  #app:has(.game-page) .pause-card > [data-action="quit"] {
+    grid-column: 1 / -1;
+  }
+  #app:has(.game-page) .pause-card h1,
+  #app:has(.game-page) .pause-card h2 {
+    margin: 0;
+    font-size: calc(25px * var(--font-scale));
+    line-height: 1.2;
+  }
+  #app:has(.game-page) .pause-card p {
+    margin: 0;
+    font-size: calc(16px * var(--font-scale));
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  #app:has(.game-page) .pause-card .button,
+  #app:has(.game-page) .pause-card .text-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 0;
+    padding: 6px 8px;
+    font-size: calc(16px * var(--font-scale));
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: normal;
+  }
+  #app:has(.game-page) #paused-ownership:empty { display: none; }
+}
