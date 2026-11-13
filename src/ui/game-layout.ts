@@ -123,7 +123,7 @@ export function installGameLayout(root: HTMLElement): () => void {
     layout.show(layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
-  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
   layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'));
   return layout.destroy;
 }
@@ -133,8 +133,8 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   const layout = layouts.get(root);
   if (!layout || !layout.workspace.isConnected) return;
   layout.shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
-  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
-  layout.goalNote.hidden = pinnedGoal;
+  const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
+  layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
   if (snapshot.mode === 'MAIN' && pinnedGoal && layout.phase === 'PAUSED' && (snapshot.phase === 'READY' || snapshot.phase === 'PLAYING')) {
     const goalPanel = layout.panels.findIndex(panel => panel.id === 'goal');
     if (goalPanel >= 0) layout.show(goalPanel);
