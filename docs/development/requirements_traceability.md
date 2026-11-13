@@ -1,6 +1,6 @@
 # 仕様対応表
 
-2026-11-14 JST再棚卸し。文書main `d645d9e` と、配信済Sites保存版8の製品source `3c636ff92ec2c83c71653459ab857e2d2d874976` を基準にする。両者の差分はprogress/test_reportの文書のみ。**実装済**、**単体**、**実E2E受入済**、**検証不足**、**既知品質課題**、**未検収**を区別する。物理OS/IME試験は技術§14/15.3/17の明記範囲へ限定し、指定iPadのviewport試験から独自の物理iPad性能gateを作らない。製品・テストソースが同じでも、CI・配信先・合成表示fixtureの証拠範囲を混同しない。
+2026-11-14 JST再棚卸し。M7追記は下記E19以降とm7-acceptance.mdに分ける。以下M6証拠の基準は文書main `d645d9e` と、配信済Sites保存版8の製品source `3c636ff92ec2c83c71653459ab857e2d2d874976` を基準にする。両者の差分はprogress/test_reportの文書のみ。**実装済**、**単体**、**実E2E受入済**、**検証不足**、**既知品質課題**、**未検収**を区別する。物理OS/IME試験は技術§14/15.3/17の明記範囲へ限定し、指定iPadのviewport試験から独自の物理iPad性能gateを作らない。製品・テストソースが同じでも、CI・配信先・合成表示fixtureの証拠範囲を混同しない。
 
 ## 過去の証拠索引（初回改訂時点の履歴）
 
@@ -30,24 +30,38 @@
 | E15 | 保存版8（製品 `3c636ff`）：[配信報告](test_report.md#m6-保存版8の配信先e2e2026-11-14-jst)、実ログ `/workspace/work/m6-live-e2e-artifacts/sanitized.log` | 同じowner限定Siteで実Chromium **15/15(4.9分)**。独立自然90秒2・配送3（OS軽減変更を含む）・曲線経路1・コスメ9。ログを読み、viewport記録 **86/86** が文書寸法一致・scroll=(0,0)と独立再集計した。閲覧用の全所有fixtureは全72の通常獲得証拠ではない。 |
 | E16 | `3c636ff`：[曲線43519098393](https://github.com/mokusatsu/kotobabin/actions/runs/43519098393) 両success、[配送幾何報告](m6-delivery-geometry.md) | 路外145.77pxの旧失敗を、描画進捗RAFと原画anchor160/192へ修正。必須in-transit/arrivedを実入力と同時観測。最終候補の独立実測最大約7pxはレーンoffsetを含む。動的OS軽減もE11/E15でevent内→次RAF/静止/解除を実検査。 |
 | E17 | [資材台帳の最新追記](asset_progress.md)、[川の独立検査](m6-riverside-independent-art-review.md)、[海/高原の独立検査](m6-coast-independent-art-review.md) | 248候補の存在/構造/安全域0問題、全原画保持。3景観の港離隔は近似色診断 **18.0map_px**、dry矩形/経路の水色0。旧16.5/17.5・川の大幅ずれを現状へ流用しない。岸線の色診断残差は川0.833/海1.5/高原2.167map_px。数学的な全画素同一性という追加gateを設定せず、接続/合成/最小識別の残る美術判定を別に記録する。 |
-| E18 | [独立レビュー](reviews/sakurai-m6.md)・[同一シナリオ追試](reviews/sakurai-m6-retest.md)、`329f489`の43515540825 | 履歴非継承担当が自身の実E2E8経路で自然90秒・各27個別開封・まとめ・獲得前後鑑賞を完遂し、名前/所有状態の分離指摘の修正を確認。ただし初回WebKit手帳の一時overflowは未解消（下表Q1）。正本の人6名理解観察を代替しない。 |
+| E18 | [独立レビュー](reviews/sakurai-m6.md)・[同一シナリオ追試](reviews/sakurai-m6-retest.md)、`329f489`の43515540825 | 履歴非継承担当が自身の実E2E8経路で自然90秒・各27個別開封・まとめ・獲得前後鑑賞を完遂し、名前/所有状態の分離指摘の修正を確認。当時初回WebKit手帳の一時overflowが残ったが、後続E19で修正・再検証。正本の人6名理解観察を代替しない。 |
+
+
+## M7の追加受入
+
+| 記号 | 実行・source | 範囲と限界 |
+|---|---|---|
+| E19 | [初回手帳/地図43525392820](https://github.com/mokusatsu/kotobabin/actions/runs/43525392820)、a58bc12 | 両engine各12成功。最初のDOM commitから画像保留中の早期60標本、ページ再入場、世界/地区と100/125/150%を検証。WebKit radioの実枠2px・contrast7.734を検査し、pseudo flagだけで可視と判定しない。 |
+| E20 | [通常43525392565](https://github.com/mokusatsu/kotobabin/actions/runs/43525392565)、[全画面43525392574](https://github.com/mokusatsu/kotobabin/actions/runs/43525392574)、a58bc12 | 全5成功（312単体・113機能E2E、本番自然90秒両各2、音声各3）、画面条件両各36成功。min800不足は6地区HUD+選択地区図へ切替。4装着/readonly/再読込/引継ぎを含む。閲覧fixtureを全72通常獲得へ流用しない。 |
+| E21 | [開発比較43525392766](https://github.com/mokusatsu/kotobabin/actions/runs/43525392766)、a58bc12 | 両各5成功。通常DB open0・元profile不変、公開engineの比較rules/実入力・seed/カスタム語/期限/IME確認・2高さのUI。OS IME実機の代替ではない。 |
+| E22 | [性能43525392569](https://github.com/mokusatsu/kotobabin/actions/runs/43525392569)、a58bc12 | 245 native入力、handlerP95 4.7ms/表示15.7ms/longTasks0、72ID/960filter。20 uncached試行開始P95 583.42ms/735126bytes。閾値は不変、実機iPad測定とはしない。 |
+| E23 | [実表示contrast](m7-contrast-audit.md)、99b0eec同一sourceの43524643662 | 自然90秒/通常RAF。単色確定775 low0、city4.852・有効配達ボタン8.025、採取した可視補助文<16が0。画像/gradient等185は未測定のまま保持。全画面一括合格ではない。 |
+| E24 | [248ID棚卸し](m8-asset-acceptance-inventory.md)、[独立11点](m8-independent-l-art.md)、[依存/静的監査](m6-dependency-security-report.md) | 未制作0、149master/全runtime保持、寸法/viewBox/safe問題0。具体残件は3IDと局所合成の記録不足。npm audit0・既存62保存関連試験等を確認。静止検査を実E2Eの代替へ数えない。 |
+
+最新14b4501はcompact地区名/図の説明を選択文字倍率へ一貫して追従させるCSS2行の追加で、該当の統合CIと独立短期追試は実行中。配信先E2Eとnative200%の最終結果は配布後に追記する。
 
 ## 残る項目の分類（goal.mdとの照合）
 
 | ID/分類 | 正本・観察 | 受入済との差分／次の判定 |
 |---|---|---|
-| I1 **未実装：開発補助** | 技術§13、595行。任意語/荷物/残時間/IME停止/得点イベント/seedの開発用画面、停止中変更→比較セッション再開始→通常記録隔離。調整値の日本語名/識別子対応設定も要求 | 公開GameSession/fixturesには再現能力があるが、`src`には該当画面/route/controlsがない。roundDurationMs/pointPerCanonicalKey等の識別子もなく、GameSessionの90_000/×10とUIの10000/1200等へ分散。経済configと正常な公開ルールは実装済だが、この開発用契約は未実装。製品の採点を壊して補うのではなく別の隔離開発画面として扱う必要がある。 |
-| Q1 **既知の表示品質不具合** | E18の初回WebKit手帳で318ms標本のdocumentHeight2736、無操作1856ms標本では720、4943msも維持 | 定常E14/配信E15の成功を無効化して全画面未実装としない。一方「初回を含む全瞬間にはみ出さない」とは受入不可。発生/収束の正確な時刻は標本間で不明。次サイクルの修正/実RAF観測対象。 |
+| I1 **修正・受入済：開発補助** | 技術§13、595行。任意語/荷物/残時間/IME停止/得点イベント/seed、停止中変更→新比較→通常記録隔離 | src/config/game-parameters.tsの日本語名/識別子と既定値、dev.html/専用src/dev入口を実装。通常DBをimportせず比較JSONはnormalRecord:false。E21でDB open0/元profile不変・公開engine再現を実操作確認。正式デフォルトの採点は維持。 |
+| Q1 **修正・受入済：初回手帳** | 旧E18のWebKit318ms標本で文書2736、1856msで収束した一時はみ出し | PR25で画面切替のfocus境界にpagination.flushを設けた。E19は画像保留のDOM commit/早期RAFを両6条件で検査し文書=viewport・画面外操作0・H1焦点を確認。旧一時はみ出しを現時点の未解消へ持ち越さない。 |
 | V1 **正本が求める検証不足** | 技術§14/15.3/17：Windows11 Chrome/Edge/Firefox、macOS Safari/Chrome、安定版と前世代、Microsoft/Google/macOS IMEとJIS/US | Linuxの3engine native入力/イベント境界は受入済。これをOS IME実機合格とはしない。明記された組合せの記録が不足し、機能未実装の証拠ではない。 |
 | V2 **正本が求める検証不足** | game_experience§11の初心者3/中級者3、5/6の初回配達/損失理解/目標操作/資材と到着の理解 | 独立AIレビュー8経路と自動E2Eを、人6名の理解度観察へ読み替えない。一般プレイの経済バランス/反復偏重も人の観察結果がない。 |
-| V3 **表示/アクセシビリティの検証不足** | 技術§14の実browser200%拡大・本文4.5:1・読み上げ | 100/125/150の文字設定と指定viewportの実操作、labels/focus、練習の手動SpeechSynthesis実装は確認。実browser200%と全画面contrast数値監査、対象支援技術での発話結果は別途不足。fontScale/deviceScaleFactorで200%を偽装しない。 |
-| V4 **美術の残る個別検収** | goal§5、resource_implementation§2/3/8の図柄・縮小識別・接続/重ね順 | 全候補/機械検査・独立静止・実UI合成はE11/E14/E17/E18で前進。各asset_idに残る図柄/最小表示/接続判定は台帳で限定する。全248が未検収であるかのように実検査を消さず、存在だけで最終全件受入にもせず、pixel閾値を新契約にしない。 |
+| V3 **表示/アクセシビリティの検証残** | 技術§14の実browser200%・本文4.5:1・読み上げ | E23の単色確定775で具体低値を解消。画像等185の最悪値と支援技術の発話結果は未測定。native Chrome tabs.setZoom(2)のv8実操作でCSS960/1180の本編と640の猫練習を確認、min800不足を修正。最新配信での200%追試は予定。fontScale/deviceScaleFactorの代用ではない。 |
+| V4 **美術の残る個別検収** | goal§5、resource_implementation§2/3/8 | E24で具体不足をstation_s4左翼、residential_s1/s5予約枠の微小alphaの3IDへ限定。L6切手/H-L絵葉書5の独立静止検収も追加済。設備帯等の未追跡実合成は局所matrixへ限定し、全248を未制作に戻さない。 |
 | N1 **追加必須にしない** | AGENTS/D013はMM9C3J/Aを表示テストtargetとし1180×720/820で実E2E。性能基準は技術§14の検証用PC | 指定viewportの受入を物理iPad所持まで無効化しない。追加の「物理iPadでP95≤5ms」「全OS×全画面×全資材を実機で全巡回」は正本以上の独自gate。環境の限定は書くが必須作業として増やさない。 |
 | N2 **追加必須にしない** | goal§8の全72条件/モード/進捗/永続化/重複検査と、§17のfixture分離 | 条件の単体全件/負例、事実→原子保存、実native代表/終盤UIは別々に受け入れる。表示fixtureを通常全獲得へ流用しない一方、「人が全960/72を最初から手打ち完遂」までは新たに義務化しない。 |
 | N3 **追加必須にしない** | 地図座標/基準点/透過と水彩raster検収 | 名目anchor点にopaque画素が必要、近似色閾値の全岸線差が数学的0、可逆PNG/WebPのRGB完全一致が全資材必須、という判定は正本にない。指定alpha/安全域/接続/図柄は守り、この独自判定だけで未実装や不合格としない。 |
 | N4 **対象外/後続指示優先** | D003・D012・D014〜D015 | goal.mdの旧GitHub Pages案は同一owner限定Sitesへ変更済みでE15受入。旧版移行/過去互換性は対象外。代表画像の旧縦カード配置の完全複製を、新しい全画面ゲームHUD要求より優先しない。 |
 
-上のI1はコード上の具体的な差分、Q1は観察された不具合、V1〜V4は証拠/検収の不足であり、同じ「未実装」へまとめない。E11等の成功も正本全必須条件の無条件完了を意味しない。goal.md自体・仕様原本はこの監査で変更しない。
+初回のI1/Q1は上記の実装と再検証で閉じた。V1〜V4は証拠/検収の不足であり、同じ「未実装」へまとめない。E11等の成功も正本全必須条件の無条件完了を意味しない。goal.md自体・仕様原本はこの監査で変更しない。
 
 ## 現在の全節対応
 
@@ -80,7 +94,7 @@
 | technical_specification:392 | [10 実行中データと永続化](../../spec/initial/docs/technical_specification.md) | 実装済・単体・実IDB E2E | ProfileRepositoryの原子更新/ownership/epoch/generation、現行backup/reset。persistence/restore/reset/runtime-restore E1。旧版互換性・移行はD012で対象外。 |
 | technical_specification:446 | [11 実績イベントと解除の確定](../../spec/initial/docs/technical_specification.md) | 実装済・単体・一部実E2E | 全72条件・確定fact・報酬/未読/目標。achievement-events/acceptance/achievementsとE1。E9のfixtureを通常全解除の証拠にしない。 |
 | technical_specification:533 | [12 表示と音声の実装条件](../../spec/initial/docs/technical_specification.md) | 実装済・単体・実E2E／限定品質課題 | 32/22/24×倍率・固定入力・全画面HUD・PageUp/Down・任意WebAudio。E11/E14/E15で装飾/動的OS軽減も受入。初回WebKit手帳Q1、contrast/支援発話V3は残る。 |
-| technical_specification:574 | [13 調整可能な値](../../spec/initial/docs/technical_specification.md) | 経済設定実装・単体／開発補助未実装 | 経済価格/倍率/stage/研究configは参照一致。typing/UI値の中央設定化と、停止中変更・通常記録隔離を持つ開発用再現画面はI1の具体的不足。fixturesがこの画面の存在証拠にはならない。 |
+| technical_specification:574 | [13 調整可能な値](../../spec/initial/docs/technical_specification.md) | 実装済・単体・実E2E | E21、src/config/game-parameters.ts、dev.html。正式既定値と日本語名/識別子を対応。停止中に条件変更→新比較を再開、通常記録/DBと隔離。GameSession/InputAdapterを再利用し採点をUIで再実装しない。 |
 | technical_specification:598 | [14 対応環境と品質目標](../../spec/initial/docs/technical_specification.md) | CI品質実測受入／対象環境等の検証残 | E12の独立閾値維持でhandler5.0ms/表示15.8ms/long task0、20cold開始570.81ms/732970bytes。E13でLinux3engine/縮退、E14/E15で指定表示。未統合という旧記載を廃止。物理OS/IME・200%/contrastはV1/V3、iPad専用性能を追加gateにしない。 |
 | technical_specification:622 | [15 受入試験](../../spec/initial/docs/technical_specification.md) | 単体・DOM・実E2E／実機未完 | 基礎入力・期限・保存・練習・報酬・経済をE1/E2で実行。正本で明記された物理OS/IME試験(V1)や人の観察(V2)完了とはしない。 |
 | technical_specification:738 | [16 街の経済・物流・再出発](../../spec/initial/docs/technical_specification.md) | 実装済・単体・実E2E受入済 | micro整数/原子台帳/2時計/offline上限、全投資と再出発。E13両engineで全6終盤→restore→readonly reload→明示handoffまで成功。旧版移行は対象外。 |
