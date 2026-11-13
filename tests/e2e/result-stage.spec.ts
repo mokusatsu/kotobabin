@@ -9,7 +9,7 @@ async function awards(page: Page): Promise<SavedAwards> {
     try {
       return await new Promise<SavedAwards>((resolve, reject) => {
         const tx = db.transaction('profile', 'readonly'); const r = tx.objectStore('profile').get('current');
-        tx.oncomplete = () => resolve(r.result.extensions.achievements); tx.onabort = () => reject(tx.error);
+        tx.oncomplete = () => { const a = r.result.extensions.achievements; resolve({ unlocks: a.unlocks, rewards: a.rewards }); }; tx.onabort = () => reject(tx.error);
       });
     } finally { db.close(); }
   });
@@ -56,12 +56,12 @@ for (const height of [720, 820]) for (const scale of [100, 125, 150]) {
     }
     await expect(stage).toHaveAttribute('data-result-phase', 'summary'); expect(seen.sort()).toEqual(ids.sort());
     await expect(stage.locator('.result-stage-collection-count')).toHaveText(`${ids.length}枚`);
-    expect(await awards(page)).toMatchObject({ unlocks: saved.unlocks, rewards: saved.rewards });
+    expect(await awards(page)).toEqual(saved);
     await assertViewportFits(page);
     await tabTo(page, stage.locator('[data-result-action="handbook"]')); await page.keyboard.press('Enter');
     await tabTo(page, page.locator('[data-action="handbook-back"]')); await page.keyboard.press('Enter');
     await expect(page.locator('.result-stage')).toHaveAttribute('data-result-phase', 'summary');
-    expect(await awards(page)).toMatchObject({ unlocks: saved.unlocks, rewards: saved.rewards });
+    expect(await awards(page)).toEqual(saved);
   });
 }
 
@@ -74,7 +74,7 @@ for (const height of [720, 820]) {
     await assertViewportFits(page); await page.keyboard.press('s');
     await expect(stage).toHaveAttribute('data-result-phase', 'summary');
     await expect(stage.locator('.result-stage-collection-count')).toHaveText(`${ids.length}枚`);
-    expect(await awards(page)).toMatchObject({ unlocks: saved.unlocks, rewards: saved.rewards });
+    expect(await awards(page)).toEqual(saved);
     await assertViewportFits(page);
   });
 }
