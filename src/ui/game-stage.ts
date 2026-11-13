@@ -18,7 +18,7 @@ export function gameStageShell(options: GameStageOptions): string {
     <div class="time-track" aria-hidden="true"><div id="time-bar"></div></div>
     <div class="cargo-area warehouse-cargo"><span class="cargo-caption">まとめ便 <strong id="cargo-count">0</strong> / 5</span><div class="cargo-slots" id="cargo-slots" aria-hidden="true"></div></div>
     <div class="game-workspace">
-      <div class="game-main-column typing-console">
+      <div class="game-main-column typing-console floating-typing-hud">
         <section class="typing-card" aria-labelledby="prompt-word">
           <h1 id="prompt-word" class="prompt-word"></h1><p id="prompt-reading" class="prompt-reading"></p><div id="romaji-guide" class="romaji-guide" aria-hidden="true"></div>
           <div class="typing-entry-row"><label class="typing-input-label" for="game-input">キーボード入力<span id="input-indicator">入力できます</span></label><input id="game-input" class="typing-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="input-instructions" aria-label="ローマ字を入力"><p id="input-instructions" class="sr-only">表示されたことばを半角ローマ字で入力してください。語の境目にSpaceで配達できます。Escapeで一時停止します。</p><button id="deliver-button" class="button button-primary deliver-button" data-action="deliver"><kbd>Space</kbd><span id="deliver-label">次のことばを完成させよう</span></button></div>

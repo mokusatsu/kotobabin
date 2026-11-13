@@ -75,6 +75,9 @@ export function installGameLayout(root: HTMLElement): () => void {
   const panelBody = document.createElement('div');
   panelBody.className = 'game-panel-body';
   for (const panel of panels) panelBody.append(panel.element);
+  if (consoleStage && mode === 'PRACTICE') {
+    const progress = document.createElement('div'); progress.className = 'game-practice-progress-hud'; sidebar.append(progress);
+  }
   sidebar.append(toolbar, panelBody);
   const goalNote = document.createElement('p');
   goalNote.className = 'game-goal-empty';
@@ -106,7 +109,8 @@ export function installGameLayout(root: HTMLElement): () => void {
       previous.setAttribute('aria-controls', panel.element.id);
       next.setAttribute('aria-controls', panel.element.id);
       if (panels[layout.selected - 1]) previous.setAttribute('aria-label', `前の表示：${panels[layout.selected - 1].label}`);
-      if (panels[layout.selected + 1]) next.setAttribute('aria-label', `次の表示：${panels[layout.selected + 1].label}`);
+      if (consoleStage && mode === 'PRACTICE' && !expanded) next.setAttribute('aria-label', '練習の操作を開く');
+      else if (panels[layout.selected + 1]) next.setAttribute('aria-label', `次の表示：${panels[layout.selected + 1].label}`);
     },
     destroy() {
       abort.abort();
@@ -120,7 +124,10 @@ export function installGameLayout(root: HTMLElement): () => void {
   }, { signal: abort.signal });
   toolbar.addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-game-panel-step]');
-    if (button && !button.disabled) layout.show(layout.selected + Number(button.dataset.gamePanelStep));
+    if (button && !button.disabled) {
+      const step = Number(button.dataset.gamePanelStep);
+      layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
+    }
   }, { signal: abort.signal });
   input?.addEventListener('keydown', event => {
     if (!event.isTrusted || event.defaultPrevented || event.isComposing || event.keyCode === 229 || event.repeat
@@ -129,11 +136,11 @@ export function installGameLayout(root: HTMLElement): () => void {
     if (!step) return;
     // Information paging never leaves confirmed typing focus or mutates the session.
     event.preventDefault();
-    layout.show(layout.selected + step);
+    layout.show(consoleStage && mode === 'PRACTICE' && !layout.expanded && step === 1 ? layout.selected : layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
   const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
-  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'), !(consoleStage && mode === 'MAIN' && !pinnedGoal));
+  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'), !(consoleStage && ((mode === 'MAIN' && !pinnedGoal) || mode === 'PRACTICE')));
   return layout.destroy;
 }
 
@@ -147,6 +154,8 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
     const paragraphs = [...root.querySelectorAll<HTMLElement>(snapshot.mode === 'PRACTICE' ? '#practice-actions > p:not(:first-child)' : '#tutorial-status p')];
     if (paragraphs.length) notes.replaceChildren(...paragraphs);
   }
+  const practiceProgress = root.querySelector<HTMLElement>('#practice-actions > #practice-progress');
+  if (practiceProgress) root.querySelector('.game-practice-progress-hud')?.replaceChildren(practiceProgress);
   const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
   layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
   if (snapshot.mode === 'MAIN' && pinnedGoal && layout.phase === 'PAUSED' && (snapshot.phase === 'READY' || snapshot.phase === 'PLAYING')) {
@@ -159,6 +168,10 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   if (token && token !== layout.choiceToken && snapshot.phase !== 'PAUSED') {
     const modePanel = layout.panels.findIndex(panel => panel.id === 'mode');
     if (modePanel >= 0) layout.show(modePanel);
+  }
+  if (!token && layout.choiceToken && snapshot.mode === 'PRACTICE' && root.querySelector('.typing-game-stage')) {
+    const modePanel = layout.panels.findIndex(panel => panel.id === 'mode');
+    if (modePanel >= 0) layout.show(modePanel, false);
   }
   layout.choiceToken = token;
 }
