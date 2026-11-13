@@ -1,0 +1,12 @@
+{
+  "method": "Actual imagegen; transparent background; new original generations. Existing F01 inspected for watercolor style, not supplied as editing reference.",
+  "attempts": [
+    {
+      "id": "stamp_i01",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor/gouache illustration, translucent handmade pigment, soft paper grain INSIDE painted shapes, honey ochre wood, cream plaster, forest sage greenery, restrained terracotta roofs, dark warm outlines only where useful. Strong large legible silhouettes at 72px. Genuine transparent RGBA background with generous transparent margins on all sides. Standalone frameless SQUARE painted composition; no rectangular paper background, border, perforations, typography, letters, numbers, name, title, UI, seals, achievement marks, badges or existing brands. Keep ALL painted content safely inside centered 85% of square canvas. The subject must be specific, not a generic icon. A SINGLE SMALL GABLED HOUSE drawn large in a direct FRONT VIEW. A newly built pale-gray STONE FOUNDATION clearly supports the cream-plaster house. Warm terracotta triangular gable roof, one welcoming doorway and simple windows. Beside the doorway a conspicuous YOUNG GREEN PLANT SPROUT grows, two tender leaves. House alone on a small stone footing with a tiny patch of earth, no surrounding town. The stone foundation and sprout express the very first completed building.",
+      "native_generation": "exec-0f9342f4-0448-4cd9-ab50-94760089212f.png",
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}
