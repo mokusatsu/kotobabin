@@ -235,3 +235,14 @@ PR #19で得点画面はEnterまたはTabによる明示選択で進むように
 通常43515540759は307単体・101機能E2E・独立両2・音声各3を含む全5成功。view-onlyの4枠装着fixtureでreadonly reloadを追加し、全文/文字/原画最小サイズを保ったままHUDを分離した。全25画面条件の43516884760（workflowのみ異なるbc6752d、src/tests tree同一）はChromium/WebKit各25成功。12の所有状態caption検査とhelp/地名/footerの非重複を含む。
 
 独立担当は同一無改変シナリオで再び8経路を自然90秒・27個別開封・まとめ・鑑賞まで完遂し、所有状態の指摘解消を確認した。出典・因果・元の留保は reviews/sakurai-m6-retest.md へ保存。初回WebKit手帳の一時的な縦はみ出しは318msに存在し、キー操作なしで1856msまでに収束したと観測し、無条件の瞬間的な画面一致には合格を広げない。
+
+
+## M6 保存版8の配信先E2E（2026-11-14 JST）
+
+PR #23→#21を通常マージしたmain `3c636ff92ec2c83c71653459ab857e2d2d874976` から本番ビルドを作成し、同じオーナー限定Sitesの保存版8へ配信した。Sites保存版のsource provenanceが同SHAであることを照合した。公開範囲はowner1名、group0、external0を維持。
+
+配信先 https://kotobabin.mokusatsu.chatgpt.site を実Chromium/Playwrightで操作し、15/15成功（4.9分）。通常/動き軽減の自然90秒、出荷・道路上の移動・実到着、入力継続、OS軽減設定の動的変更、独立結果・22個別実績・まとめ・再挑戦、住宅建設と設備購入、150%/両高さの鑑賞・readonly/ネイティブ所有権引継ぎを確認した。86地点の文書寸法がviewportと一致し、scroll=(0,0)。スクリーンショットは実E2Eの補助に限定した。全所有品の表示fixtureは閲覧専用であり、通常進行で全実績を獲得した証拠には数えない。
+
+配信先ログは実行環境の `/workspace/work/m6-live-e2e-artifacts/sanitized.log` に保存（認証値は除去、trace/video無効）。追加のmain [CI43519098385](https://github.com/mokusatsu/kotobabin/actions/runs/43519098385) は全5ジョブ成功（verify、独立Chromium/WebKit、音声Chromium/WebKit）。[輸送経路43519098393](https://github.com/mokusatsu/kotobabin/actions/runs/43519098393)も成功。
+
+この受入は物理iPad・OS IMEの検証を代替しない。独立WebKitで初回手帳の318ms標本に一時的はみ出しがあり1856msまでに無操作で収束した件は未解消として残す。Goal全体は継続中。
