@@ -1,9 +1,24 @@
 import { keyboardMenuTo, keyboardRevealControl } from './keyboard';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
 test.use({ viewport: { width: 1366, height: 768 } });
+
+async function readOwnership(page: Page) {
+  return page.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('kotobabin', 4); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+    });
+    try {
+      return await new Promise<{ ownerTabId: string | null; writeEpoch: number }>((resolve, reject) => {
+        const tx = db.transaction('profile', 'readonly'); const request = tx.objectStore('profile').get('current');
+        tx.oncomplete = () => resolve(request.result.metadata); tx.onabort = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+}
+
 
 test('practice progress reopens from IndexedDB without replaying the last completion', async ({ page }) => {
   await page.goto('/');
@@ -36,16 +51,41 @@ test('practice progress reopens from IndexedDB without replaying the last comple
   await expect(page.locator('#practice-progress')).toContainText('2/3');
 });
 
-test('a second tab is read-only and a paused owner can reclaim control using the keyboard', async ({ page, context }, testInfo) => {
+for (const delayedNotice of [false, true]) {
+  const title = delayedNotice ? 'delayed ownership notice preserves the rejected projection through native backup takeover' : 'a second tab is read-only and a paused owner can reclaim control using the keyboard';
+  test(title, async ({ page, context }, testInfo) => {
+  if (delayedNotice) await page.addInitScript(() => {
+    const NativeBroadcastChannel = window.BroadcastChannel;
+    const fault = { blocked: 0 }; Object.assign(window, { ownershipNoticeFault: fault });
+    window.BroadcastChannel = class extends NativeBroadcastChannel {
+      constructor(name: string) {
+        super(name);
+        if (name.endsWith(':ownership')) this.addEventListener('message', event => {
+          fault.blocked++; event.stopImmediatePropagation();
+        }, { capture: true });
+      }
+    };
+  });
   await beginMain(page);
   const firstGuide = await typeCurrentGuide(page);
   await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
+  const originalOwnership = delayedNotice ? await readOwnership(page) : null;
   const second = await context.newPage();
   await second.goto('/');
   await expect(second.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
   await second.locator('[data-action="takeover"]').click();
   await expect(second.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
+  if (originalOwnership) {
+    const nextOwnership = await readOwnership(second);
+    expect(nextOwnership.ownerTabId).not.toBe(originalOwnership.ownerTabId);
+    expect(nextOwnership.writeEpoch).toBeGreaterThan(originalOwnership.writeEpoch);
+    await page.bringToFront();
+  }
   await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
+  if (delayedNotice) {
+    expect(await page.evaluate(() => (window as unknown as { ownershipNoticeFault: { blocked: number } }).ownershipNoticeFault.blocked)).toBeGreaterThan(0);
+    await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'error');
+  }
   await expect(page.locator('#paused-layer')).toBeVisible();
   const takeover = page.locator('#paused-layer [data-action="takeover"]');
   await expect(takeover).toBeVisible();
@@ -87,6 +127,7 @@ test('a second tab is read-only and a paused owner can reclaim control using the
   // A world-tick write may legitimately race the other tab's ownership claim.
   // Complete its explicit backup/discard safeguard instead of assuming no unsaved projection.
   await expect.poll(async () => await page.locator('#ownership-status').getAttribute('data-ownership') === 'owner' || await protectedProgress.isVisible()).toBe(true);
+  if (delayedNotice) await expect(protectedProgress).toBeVisible();
   if (await protectedProgress.isVisible()) {
     const cancel = protectedProgress.getByRole('button', { name: '今の画面に戻る', exact: true });
     const exportAndContinue = protectedProgress.getByRole('button', { name: '控えを書き出して、最新の状態で続ける', exact: true });
@@ -103,11 +144,15 @@ test('a second tab is read-only and a paused owner can reclaim control using the
     expect(await download.failure()).toBeNull();
     const backup = JSON.parse(await readFile(backupPath, 'utf8')) as {
       currentView: { progress: { totalCompleted: number }; achievements: { measuredProgress: { totalCompleted: number } } };
-      repository: { current: { progress: { totalCompleted: number } } };
+      repository: { current: { progress: { totalCompleted: number }; metadata: { ownerTabId: string | null; writeEpoch: number } } };
     };
     expect(backup.currentView.progress.totalCompleted).toBe(1);
     expect(backup.currentView.achievements.measuredProgress.totalCompleted).toBe(1);
     expect(backup.repository.current.progress.totalCompleted).toBe(1);
+    if (originalOwnership) {
+      expect(backup.repository.current.metadata.ownerTabId).toBe(originalOwnership.ownerTabId);
+      expect(backup.repository.current.metadata.writeEpoch).toBe(originalOwnership.writeEpoch);
+    }
     await testInfo.attach('readonly-takeover-unsaved-backup', { path: backupPath, contentType: 'application/json' });
     console.info('OWNERSHIP_RECOVERY_BRANCH', JSON.stringify({ backupCompleted: backup.currentView.progress.totalCompleted, backupAchievementCompleted: backup.currentView.achievements.measuredProgress.totalCompleted }));
   }
@@ -145,3 +190,4 @@ test('a second tab is read-only and a paused owner can reclaim control using the
     .toBe(BigInt(newGuide.length) * 1000000n);
   await second.close();
 });
+}
