@@ -78,7 +78,15 @@ test('production keyboard journey finishes all six cities, all railways and rese
   }
   await feature(page,'harbor','research');
   for(const [index,kind] of ['materials','logistics','commerce'].entries()){
-    const select=page.locator('#special-equipment-item');await tabTo(page,select);await page.keyboard.press('Home');for(let i=0;i<index;i++)await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
+    const select=page.locator('#special-equipment-item');await tabTo(page,select);
+    await page.keyboard.press('Home');await expect(select).toHaveValue('materials');await expect(select).toBeFocused();
+    for(let i=0;i<index;i++){
+      await page.keyboard.press('ArrowDown');await expect(select).toHaveValue(['materials','logistics','commerce'][i+1]);
+      // The next native key must reach the same logical select after its panel updates.
+      // Re-tabbing here would hide the observed product focus-loss defect.
+      await expect(select).toBeFocused();
+    }
+    await page.keyboard.press('Enter');await expect(select).toHaveValue(kind);
     const button=page.locator(`[data-action="city-buy-research"][data-research-kind="${kind}"]`);
     for(let rank=1;rank<=5;rank++){
       const before=await saved(page);await activate(page,button);await expect(page.locator('.district-map [data-visual-feature="research"]')).toHaveAttribute(`data-${kind}`,String(rank));await replay(page,before,1);

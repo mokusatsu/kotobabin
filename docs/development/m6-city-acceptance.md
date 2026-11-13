@@ -52,3 +52,14 @@ Both logs identify the mature-city journey at `city.audit.ts:66:1`; both artifac
 Canonical research affordability was checked directly from `economy_config.json`: ranks1–5 cost1+2+3+4+5=15 blueprints per branch, three branches cost45, and the public-command fixture earns48, leaving3 after the fifteen purchases.
 
 Browser acceptance remains unverified. The intended evidence is production-build Chromium/WebKit UI operation after an explicit synthetic confirmed-fact fixture, not native earning from a fresh player profile, live private Site execution, hardware iPad testing, or independent final art acceptance.
+
+
+## Executed CI follow-up: research selection loses keyboard focus
+
+[Run43499932487](https://github.com/mokusatsu/kotobabin/actions/runs/43499932487), root head `968e456`, actually executed the case after the endpoint correction. Native [Chromium job132142727126](https://github.com/mokusatsu/kotobabin/actions/runs/43499932487/job/132142727126) and [WebKit job132142727478](https://github.com/mokusatsu/kotobabin/actions/runs/43499932487/job/132142727478) both failed at the research purchase phase, trying to reveal a missing target and then timing out on the nonexistent `.ipad-page-host:visible`.
+
+The downloaded Chromium artifact14073008132 contains all six stage5 screenshots and a native trace/error context. The sequential test had completed all six stage5 plans, all six railway purchases and replay assertions, and materials/logistics ranks1–5. Its error context shows research `5 / 5 / 0`,18 blueprints, and the materials option selected with its purchase button disabled. The trace records `mfwp@3403` pressing Home from logistics, followed by two ArrowDown presses and Enter; the panel remained on materials, so the expected commerce purchase button did not exist.
+
+This is a product focus defect, not a lack of earned funds. The select change triggers `updateCityViews`, which replaces its special-equipment panel. `renderMarkup` preserves focus only for elements carrying `data-action` or `data-equip-slot`; `#special-equipment-item` carries neither, so changing the native select removes the focused node and subsequent native keys miss the select. The technical case now asserts focus and value after each existing selection key, producing a direct diagnostic instead of the later pagination-helper timeout. It does not re-tab between keys, assign the value, bypass the selector, or weaken purchase/model assertions. Product repair belongs to integration.
+
+Commerce ranks, valid restart and backup restoration were not reached in this run. No completion claim is made for those steps. Chromium trace inspection establishes the detailed cause; WebKit's native log establishes the same failure location, without claiming an independently inspected WebKit trace.
