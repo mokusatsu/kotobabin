@@ -96,13 +96,13 @@ for(const height of [720,820]) test.describe('independent game review '+height,(
       await activate(page,label);
       const plan=await record(page,'03-plot-plan',info);
       const build=plan.controls.find(c=>!c.disabled&&/建てる|建築する|建設する|開発する/.test(c.label||''));
-      if(build) {await activate(page,build.label);await record(page,'04-built-map',info);}
+      if(build) {await activate(page,/建てる|建築する|建設する|開発する/);await record(page,'04-built-map',info);}
       else console.log('REVIEW_BLOCKER no visible affordable construction action after plot selection');
     } else console.log('REVIEW_BLOCKER no residential empty plot control visible');
     await menu(page,'街の設備');
     const equipment=await record(page,'05-equipment',info);
     const equip=equipment.controls.find(c=>!c.disabled&&/設置|増強|導入|購入|強化/.test(c.label||''));
-    if(equip) {await activate(page,equip.label);await record(page,'06-equipped-map',info);}
+    if(equip) {await activate(page,/設置|増強|導入|購入|強化/);await record(page,'06-equipped-map',info);}
     else console.log('REVIEW_BLOCKER no visible affordable equipment action');
     await menu(page,'ホーム');
     await activate(page,'配達をはじめる');
