@@ -122,7 +122,7 @@ export function renderResultStage(state: ResultStageState, options: ResultStageO
     body = `<div class="result-stage-summary-scene"><div><p class="result-stage-kicker">今回の配達</p><h1 id="result-stage-title">また、ひとつ先へ。</h1>${scoreValue(result)}${metrics(result)}</div><div class="result-stage-collection"><p>新しく集まった切手</p><strong class="result-stage-collection-count">${state.queue.length}<small>枚</small></strong>${preview ? `<div class="result-stage-stamp-preview">${preview}</div>` : '<p>次の一語から、また届けよう。</p>'}<p>${state.queue.length ? '切手と称号は、配達手帳で確かめられます。' : '獲得条件と進捗は、配達手帳で確かめられます。'}</p></div></div>`;
     actions = '<button type="button" class="result-stage-primary" data-result-action="retry">同じ問題でもう一度</button><button type="button" data-result-action="new-round">別の問題で配達</button><button type="button" data-result-action="handbook">配達手帳を見る</button><button type="button" data-result-action="details">詳しい配達記録</button>' + (options.hasReview ? '<button type="button" data-result-action="review">まちがえたことばを復習</button>' : '');
   }
-  return `<section class="result-stage" data-result-phase="${state.phase}" data-animating="${state.animating}" data-reduced-motion="${state.reducedMotion}" aria-labelledby="result-stage-title"><header class="result-stage-topbar"><p><span class="result-stage-save" data-save-status></span>ことば便 <span>${esc(result.courseName)} · ${result.assisted ? '救済あり' : '通常'} · ${result.guideUsed ? 'ガイド表示あり' : 'ガイド表示なし'}</span></p><button type="button" data-result-action="navigation">画面移動 <kbd>F2</kbd></button><button type="button" data-result-action="home">ホームへ</button></header><div class="result-stage-scene">${body}</div><footer class="result-stage-bottom"><div class="result-stage-actions">${actions}${state.phase !== 'summary' ? '<button type="button" class="result-stage-skip" data-result-command="skip-all">すべての演出を省略 <kbd>S</kbd></button>' : ''}</div><p class="result-stage-key-help">${state.phase === 'summary' ? 'Space / Enter：選んだ操作を決定' : 'Space / Enter：次へ　 Esc：今の動きを省略　 S：すべて省略'}</p></footer><p class="sr-only" role="status" aria-live="polite" aria-atomic="true">${esc(announcement)}</p></section>`;
+  return `<section class="result-stage" data-result-phase="${state.phase}" data-animating="${state.animating}" data-reduced-motion="${state.reducedMotion}" aria-labelledby="result-stage-title"><header class="result-stage-topbar"><p><span class="result-stage-save" data-save-status></span>ことば便 <span>${esc(result.courseName)} · ${result.assisted ? '救済あり' : '通常'} · ${result.guideUsed ? 'ガイド表示あり' : 'ガイド表示なし'}</span></p><button type="button" data-result-action="navigation">画面移動 <kbd>F2</kbd></button><button type="button" data-result-action="home">ホームへ</button></header><div class="result-stage-scene">${body}</div><footer class="result-stage-bottom"><div class="result-stage-actions">${actions}${state.phase !== 'summary' ? `<button type="button" class="result-stage-skip" data-result-command="skip-all">すべての演出を省略${state.phase === 'score' ? '' : ' <kbd>S</kbd>'}</button>` : ''}</div><p class="result-stage-key-help">${state.phase === 'summary' ? 'Space / Enter：選んだ操作を決定' : state.phase === 'score' ? 'Enter：次へ　 Tab：操作を選ぶ　 Esc：今の動きを省略' : 'Space / Enter：次へ　 Esc：今の動きを省略　 S：すべて省略'}</p></footer><p class="sr-only" role="status" aria-live="polite" aria-atomic="true">${esc(announcement)}</p></section>`;
 }
 
 /** Mount in a dedicated empty main/host, outside ordinary article pagination. */
@@ -133,6 +133,8 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
   let guardTimer: ReturnType<typeof setTimeout> | undefined;
   let guardActive = (options.inputGuardMs ?? 0) > 0 && state.phase === 'score';
   let destroyed = false;
+  // Game typing uses letters/Space. Only Enter or an explicit Tab selection starts results.
+  let scoreKeyboardSelection = false;
   const abort = new AbortController();
   container.classList.add('result-stage-host');
   container.setAttribute('data-ipad-exclude', '');
@@ -187,10 +189,14 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
       || event.ctrlKey || event.altKey || event.metaKey || document.querySelector('dialog[open]')
       || target?.closest('input,textarea,select,[contenteditable="true"]')
       || (active !== document.body && active !== document.documentElement && (!active || !container.contains(active)))) return;
+    if (state.phase === 'score' && event.key === 'Tab') scoreKeyboardSelection = true;
     if (guardActive && event.key === 'Tab') { clearTimeout(guardTimer); finishInputGuard(false); return; }
     if (guardActive && (event.key.length === 1 || ['Enter', 'Escape'].includes(event.key))) {
       // A continuing word/held key extends the quiet window; it cannot skip the new screen.
       clearTimeout(guardTimer); guardTimer = setTimeout(finishInputGuard, options.inputGuardMs);
+      event.preventDefault(); event.stopPropagation(); return;
+    }
+    if (state.phase === 'score' && !scoreKeyboardSelection && (event.key === ' ' || event.key.toLowerCase() === 's')) {
       event.preventDefault(); event.stopPropagation(); return;
     }
     if (event.repeat) {
@@ -202,6 +208,12 @@ export function mountResultStage(container: HTMLElement, options: ResultStageOpt
     else if (event.key === 'Enter' || event.key === ' ') {
       const button = (event.target as Element).closest<HTMLButtonElement>('button');
       if (!button || button.dataset.resultCommand === 'advance') {event.preventDefault();event.stopPropagation();change(advanceResultStage(state));}
+    }
+  }, {signal:abort.signal,capture:true});
+  document.addEventListener('keyup', event => {
+    // A Space begun on the old textbox must not activate the newly focused button.
+    if (state.phase === 'score' && !scoreKeyboardSelection && event.key === ' ' && !document.querySelector('dialog[open]')) {
+      event.preventDefault(); event.stopPropagation();
     }
   }, {signal:abort.signal,capture:true});
   draw();
