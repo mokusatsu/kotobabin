@@ -1,0 +1,218 @@
+/* A keyboard game has one stable input surface. Supplemental information uses
+   explicit semantic pages; neither text truncation nor nested scrolling is used. */
+.game-panel-controls {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.game-panel-step {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--primary);
+  background: var(--surface);
+  font: inherit;
+  line-height: 1.2;
+}
+.game-panel-label { text-align: center; line-height: 1.2; }
+.game-side-panel[hidden], .game-side-panel [hidden] { display: none !important; }
+.game-goal-empty { margin: 0; }
+.game-workspace, .game-main-column, .game-sidebar, .game-panel-body { min-width: 0; }
+
+@media (min-width: 960px) {
+  #app:has(.game-page) {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100dvh;
+    min-height: 100dvh;
+    padding: 0 16px;
+  }
+  #app:has(.game-page) .site-header {
+    height: auto;
+    min-height: 60px;
+    padding: 6px 0;
+    flex-wrap: nowrap;
+    gap: 12px;
+    line-height: 1.2;
+  }
+  #app:has(.game-page) .brand { gap: 10px; line-height: 1.1; letter-spacing: 0; }
+  #app:has(.game-page) .brand small {
+    display: inline;
+    margin: 0 0 0 10px;
+    letter-spacing: .08em;
+    vertical-align: middle;
+  }
+  #app:has(.game-page) .postmark { display: none; }
+  #app:has(.game-page) .site-header .route-label {
+    margin: 0 0 0 auto;
+    max-width: 260px;
+    min-width: 0;
+    line-height: 1.2;
+  }
+  #app:has(.game-page) .site-header .button {
+    min-height: 44px;
+    padding: 6px 10px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  #app:has(.game-page) .site-footer {
+    padding: 4px 0;
+    gap: 12px;
+    margin: 0;
+    flex-wrap: nowrap;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .game-page {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    align-content: start;
+    row-gap: 6px;
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+    padding: 8px 0;
+  }
+  .game-topline { padding: 0 4px; min-height: 44px; gap: 12px; }
+  .game-topline .clock, .game-topline .score { min-width: 0; gap: 8px; line-height: 1.2; }
+  .game-topline .clock strong, .game-topline .score strong { font-size: calc(24px * var(--font-scale)); line-height: 1.1; }
+  .game-route { line-height: 1.2; letter-spacing: 0; }
+  .game-route span { display: inline; margin: 0 0 0 10px; letter-spacing: 0; }
+  .time-track { margin: 0; }
+  .game-page:not([data-mode="MAIN"]) { grid-template-rows: auto minmax(0, 1fr); }
+  .game-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 12px;
+    min-height: 0;
+  }
+  .game-main-column { display: grid; gap: 6px; align-content: start; }
+  .game-page .typing-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 8px;
+    padding: 12px;
+  }
+  .game-page .typing-card > .eyebrow { margin: 0; font-family: inherit; letter-spacing: 0; line-height: 1.2; }
+  .game-page .prompt-word {
+    font-size: calc(32px * var(--font-scale));
+    line-height: 1.15;
+    letter-spacing: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .game-page .prompt-reading {
+    font-size: calc(22px * var(--font-scale));
+    line-height: 1.2;
+    letter-spacing: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .game-page .romaji-guide {
+    width: 100%;
+    min-height: calc(30px * var(--font-scale));
+    font-size: calc(24px * var(--font-scale));
+    line-height: 1.25;
+    letter-spacing: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .game-page .next-key { padding: 0 1px; margin: 0 1px; border-radius: 3px; }
+  .game-page .accepted { text-underline-offset: 4px; }
+  .typing-entry-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 4px;
+  }
+  .typing-entry-row .typing-input-label {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    line-height: 1.2;
+  }
+  .typing-entry-row .typing-input {
+    width: 200px;
+    height: 44px;
+    min-height: 44px;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .game-main-column > .game-message {
+    min-height: calc(20px * var(--font-scale));
+    margin: 0;
+    padding: 0 8px;
+    line-height: 1.2;
+  }
+  .game-main-column .play-bottom {
+    gap: 6px 12px;
+    padding: 0 4px 4px;
+    flex-wrap: wrap;
+    line-height: 1.2;
+  }
+  .game-main-column .play-bottom strong { margin-left: 6px; }
+  .game-main-column .play-bottom .text-button { min-height: 44px; padding: 4px 0; line-height: 1.2; }
+  .game-sidebar {
+    padding: 8px;
+    background: #eef2e8;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    line-height: 1.2;
+  }
+  .game-side-panel { min-width: 0; line-height: 1.2; }
+  .game-side-panel p { overflow-wrap: anywhere; }
+  .game-side-panel .cargo-area { gap: 8px; margin: 0 0 12px; justify-content: center; }
+  .game-side-panel .cargo-caption { line-height: 1.2; }
+  .game-side-panel .cargo-caption strong { margin-left: 2px; line-height: 1.1; }
+  .game-side-panel .cargo-slots { gap: 4px; }
+  .game-side-panel .cargo-slot { width: 32px; height: 32px; }
+  .game-side-panel .delivery-area { width: 100%; max-width: none; margin: 0; }
+  .game-side-panel .deliver-button {
+    min-height: 60px;
+    gap: 8px;
+    padding: 8px;
+    font-size: calc(16px * var(--font-scale));
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .game-side-panel .deliver-button span { min-width: 0; overflow-wrap: anywhere; }
+  .game-side-panel .deliver-button kbd { flex-shrink: 0; padding: 0 4px; }
+  .game-side-panel .continue-hint { margin: 10px 0 8px; line-height: 1.2; }
+  .game-side-panel .risk-hint { margin: 0; line-height: 1.2; }
+  .game-side-panel .tutorial-status {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .game-side-panel .tutorial-status > div { min-width: 0; }
+  .game-side-panel .tutorial-status p { margin: 4px 0 0; }
+  .game-side-panel #tutorial-fallback { display: grid; gap: 6px; padding-top: 6px; }
+  .game-side-panel #tutorial-fallback .button { margin: 0; }
+  .game-side-panel .practice-actions { margin: 0; padding: 0; border: 0; }
+  .game-side-panel .practice-actions p { margin: 0 0 8px; }
+  .game-side-panel .practice-actions > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin: 0; }
+  .game-side-panel .practice-actions [data-action="practice-main"] { grid-column: 1 / -1; }
+  .game-side-panel .button, .game-side-panel .text-button { min-height: 44px; padding: 6px; line-height: 1.2; letter-spacing: 0; }
+  .game-side-panel .goal-strip { display: grid; gap: 8px; padding: 8px; margin: 0; line-height: 1.2; }
+  .game-side-panel .goal-strip .target-mark { width: fit-content; }
+  .game-side-panel .play-city-strip { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; }
+  .game-side-panel .play-city-strip .district-figure { width: 132px; min-width: 0; }
+  .game-side-panel .play-city-values { display: grid; gap: 8px; }
+  .game-side-panel .play-city-values p { margin: 0; }
+  .game-side-panel .save-status { margin: 0; padding: 0; max-width: none; line-height: 1.25; }
+  .game-page > .narrow-note { display: none; }
+}
