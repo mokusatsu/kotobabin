@@ -98,3 +98,67 @@ for (const reduced of [false, true]) {
     await expect(page.locator('#completed-count')).toHaveText('完成 7語');
   });
 }
+
+test('a live OS motion preference reaches the next frame and freezes in-transit coordinates without waiting for a city tick', async ({ page }, info) => {
+  await page.setViewportSize({ width: 1180, height: 720 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await beginMain(page);
+  // Native completions build a real queue; the latest FIFO batch remains in transit throughout the short media probe.
+  for (let word = 0; word < 12; word++) await typeCurrentGuide(page);
+  await expect(page.locator('#completed-count')).toHaveText('完成 12語');
+  await expect(page.locator('#save-status')).toHaveAttribute('data-save-state', 'saved');
+  const scene = page.locator('#delivery-scene');
+  const batch = scene.locator('[data-delivery-transport][data-state="in-transit"]').last();
+  await expect(batch).toBeVisible();
+  const id = (await batch.getAttribute('data-effect-id'))!;
+  const score = await page.locator('#score').textContent();
+  interface Sample { at: number; body: string | undefined; reducedClass: boolean; state: string | undefined; x: number; y: number }
+  interface Probe { done: boolean; eventMatches: boolean | null; atEvent: Sample | null; frames: Sample[] }
+  const observeFlip = async (reducedMotion: 'reduce' | 'no-preference') => {
+    // Arm before changing the actual browser media. These are read-only observations, never application state injection.
+    await page.evaluate(batchId => {
+      const sample = () => {
+        const scene = document.querySelector<HTMLElement>('#delivery-scene')!;
+        const node = [...scene.querySelectorAll<HTMLElement>('[data-delivery-transport]')].find(item => item.dataset.effectId === batchId)!;
+        const rect = node.getBoundingClientRect();
+        return { at: performance.now(), body: document.body.dataset.reducedMotion, reducedClass: scene.classList.contains('delivery-reduced-motion'), state: node.dataset.state, x: rect.x, y: rect.y };
+      };
+      const probe: Probe = { done: false, eventMatches: null, atEvent: null, frames: [] };
+      Object.assign(window, { mediaMotionProbe: probe });
+      matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', event => {
+        probe.eventMatches = event.matches;
+        // Observe inside the media event as well as its immediately following RAF: a later timer/persistence notification cannot repair this sample.
+        probe.atEvent = sample();
+        const frame = () => {
+          probe.frames.push(sample());
+          if (probe.frames.length < 3) requestAnimationFrame(frame); else probe.done = true;
+        };
+        requestAnimationFrame(frame);
+      }, { once: true });
+    }, id);
+    await page.emulateMedia({ reducedMotion });
+    // Wait only for completion of the pre-armed event/three-frame recording, not for a product state to become correct eventually.
+    await page.waitForFunction(() => (window as unknown as { mediaMotionProbe: Probe }).mediaMotionProbe.done);
+    return page.evaluate(() => (window as unknown as { mediaMotionProbe: Probe }).mediaMotionProbe);
+  };
+  const reduced = await observeFlip('reduce');
+  expect(reduced.eventMatches).toBe(true);
+  expect(reduced.atEvent).toMatchObject({ body: 'true', reducedClass: true, state: 'in-transit' });
+  expect(reduced.frames).toHaveLength(3);
+  for (const frame of reduced.frames) {
+    expect(frame).toMatchObject({ body: 'true', reducedClass: true, state: 'in-transit' });
+    expect(frame.x).toBeCloseTo(reduced.frames[0].x, 5);
+    expect(frame.y).toBeCloseTo(reduced.frames[0].y, 5);
+  }
+  const normal = await observeFlip('no-preference');
+  expect(normal.eventMatches).toBe(false);
+  expect(normal.atEvent).toMatchObject({ body: 'false', reducedClass: false, state: 'in-transit' });
+  expect(normal.frames[0]).toMatchObject({ body: 'false', reducedClass: false, state: 'in-transit' });
+  await expect(page.locator('#game-input')).toBeFocused();
+  await expect(page.locator('#paused-layer')).toBeHidden();
+  await expect(page.locator('#score')).toHaveText(score!);
+  await expect(page.locator('#completed-count')).toHaveText('完成 12語');
+  await typeCurrentGuide(page); await expect(page.locator('#completed-count')).toHaveText('完成 13語');
+  console.log('MEDIA_NEXT_FRAME', JSON.stringify({ batchId: id, reduced, normal }));
+  await info.attach('native-media-next-frame', { body: JSON.stringify({ batchId: id, reduced, normal }), contentType: 'application/json' });
+});
