@@ -1,4 +1,4 @@
-export interface IPadPaginationController { refresh(): void; reveal(target: HTMLElement): Promise<void>; destroy(): void }
+export interface IPadPaginationController { refresh(): void; flush(): void; reveal(target: HTMLElement): Promise<void>; destroy(): void }
 interface PageItem { nodes: HTMLElement[] }
 interface Panel { target: HTMLElement; nav: HTMLElement; items: PageItem[]; parents: HTMLElement[]; pages: number[][]; page: number; key: string; sourceKey?: string }
 const focusable = 'button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary,[tabindex="0"]';
@@ -172,6 +172,9 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
     }
   }
   function refresh() { if (!destroyed && !frame) frame = requestAnimationFrame(refreshNow); }
+  // A newly committed screen must be bounded before focus/paint, even when the
+  // browser defers its first animation frame. Subsequent patches stay batched.
+  function flush() { if (!destroyed) { cancelAnimationFrame(frame); refreshNow(); } }
   const mutations = new MutationObserver(records => { if (records.some(record => !(record.target instanceof Element && record.target.closest('[data-ipad-controls]')))) refresh(); }); mutations.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-ipad-exclude'] });
   const resize = new ResizeObserver(refresh); resize.observe(root);
   let fontScale = root.style.getPropertyValue('--font-scale');
@@ -188,7 +191,7 @@ export function installIPadPagination(root: HTMLElement): IPadPaginationControll
   root.addEventListener('keydown', keys); root.addEventListener('toggle', refresh, true);
   window.addEventListener('resize', refresh); window.visualViewport?.addEventListener('resize', refresh); window.visualViewport?.addEventListener('scroll', refresh);
   void document.fonts?.ready.then(refresh); refresh();
-  return { refresh, reveal(target) {
+  return { refresh, flush, reveal(target) {
     return new Promise<void>(resolve => {
       if (destroyed || !root.contains(target)) { resolve(); return; }
       pendingReveals.push({ target, resolve }); refresh();
