@@ -100,3 +100,11 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
   #app:has(.world-stage):has(.ownership-warning:not([hidden])) .world-command-dock { gap: 4px; }
   #app:has(.world-stage) > .site-footer { width: calc(100% - 365px); }
 }
+/* The route hint belongs in the clear band between the two district rows,
+   rather than covering their lower labels at the selected readable type size. */
+@media (min-width: 960px) {
+  .world-stage > .world-map-help { top: 64%; bottom: auto; max-width: calc(100% - 389px); }
+}
+@media (min-width: 960px) and (max-height: 760px) {
+  #app:has(.cosmetic-home-gallery) .world-stage .canonical-map [data-district-id="station"] { top: auto !important; bottom: 8px; }
+}
