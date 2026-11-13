@@ -10,7 +10,8 @@ interface Layout {
   phase: LayoutSnapshot['phase'] | null;
   goalNote: HTMLElement;
   shortcut: HTMLElement;
-  show(index: number): void;
+  expanded: boolean;
+  show(index: number, expanded?: boolean): void;
   destroy(): void;
 }
 const layouts = new WeakMap<HTMLElement, Layout>();
@@ -25,6 +26,7 @@ export function installGameLayout(root: HTMLElement): () => void {
   const sidebar = root.querySelector<HTMLElement>('.game-sidebar');
   const mainColumn = root.querySelector<HTMLElement>('.game-main-column');
   if (!workspace || !sidebar || !mainColumn) return () => {};
+  const consoleStage = Boolean(root.querySelector('.typing-game-stage'));
   const abort = new AbortController();
   const panels: Panel[] = [];
   const addPanel = (id: string, label: string, selectors: string[]) => {
@@ -48,13 +50,18 @@ export function installGameLayout(root: HTMLElement): () => void {
     const node = root.querySelector(selector);
     if (node) panels[0]?.element.append(node);
   }
+  if (consoleStage && mode !== 'MAIN') {
+    const notes = document.createElement('div'); notes.className = 'game-mode-notes';
+    const element = document.createElement('section'); element.className = 'game-side-panel'; element.id = 'game-panel-mode-notes'; element.dataset.gamePanel = 'mode-notes'; element.setAttribute('aria-label', '遊び方の案内'); element.append(notes);
+    panels.push({ id: 'mode-notes', label: '遊び方の案内', element });
+  }
   addPanel('goal', '今回の目標', ['#game-goal-slot']);
   addPanel('city', '街へのお届け', ['.play-city-strip']);
   addPanel('save', '保存の状態', ['[data-save-status]']);
   const message = root.querySelector<HTMLElement>('#game-message');
-  if (message) mainColumn.insertBefore(message, mainColumn.querySelector('.play-bottom'));
+  if (message && !consoleStage) mainColumn.insertBefore(message, mainColumn.querySelector('.play-bottom'));
   const cargo = root.querySelector<HTMLElement>('.cargo-area');
-  if (cargo) sidebar.append(cargo);
+  if (cargo && !consoleStage) sidebar.append(cargo);
   const shortcut = document.createElement('span');
   shortcut.className = 'game-delivery-shortcut';
   shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
@@ -85,8 +92,10 @@ export function installGameLayout(root: HTMLElement): () => void {
   const describedBy = input?.getAttribute('aria-describedby');
   if (input) input.setAttribute('aria-describedby', [describedBy, cue.id].filter(Boolean).join(' '));
   const layout: Layout = {
-    workspace, panels, selected: 0, choiceToken: '', phase: null, goalNote, shortcut,
-    show(index) {
+    workspace, panels, selected: 0, choiceToken: '', phase: null, goalNote, shortcut, expanded: true,
+    show(index, expanded = true) {
+      layout.expanded = expanded;
+      panelBody.hidden = consoleStage && !expanded;
       layout.selected = Math.max(0, Math.min(panels.length - 1, index));
       panels.forEach((panel, i) => { panel.element.hidden = i !== layout.selected; });
       const panel = panels[layout.selected];
@@ -124,7 +133,7 @@ export function installGameLayout(root: HTMLElement): () => void {
   }, { signal: abort.signal });
   layouts.set(root, layout);
   const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
-  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'));
+  layout.show(mode === 'MAIN' ? (pinnedGoal ? panels.findIndex(panel => panel.id === 'goal') : 0) : panels.findIndex(panel => panel.id === 'mode'), !(consoleStage && mode === 'MAIN' && !pinnedGoal));
   return layout.destroy;
 }
 
@@ -133,6 +142,11 @@ export function refreshGameLayout(root: HTMLElement, snapshot: LayoutSnapshot): 
   const layout = layouts.get(root);
   if (!layout || !layout.workspace.isConnected) return;
   layout.shortcut.textContent = `配達 ${root.querySelector('.deliver-button kbd')?.textContent ?? 'Space'}`;
+  const notes = root.querySelector<HTMLElement>('.game-mode-notes');
+  if (notes) {
+    const paragraphs = [...root.querySelectorAll<HTMLElement>(snapshot.mode === 'PRACTICE' ? '#practice-actions > p:not(:first-child)' : '#tutorial-status p')];
+    if (paragraphs.length) notes.replaceChildren(...paragraphs);
+  }
   const pinnedGoal = Boolean(root.querySelector('#game-goal-slot [data-goal-kind="pinned"]'));
   layout.goalNote.hidden = Boolean(root.querySelector('#game-goal-slot')?.textContent?.trim());
   if (snapshot.mode === 'MAIN' && pinnedGoal && layout.phase === 'PAUSED' && (snapshot.phase === 'READY' || snapshot.phase === 'PLAYING')) {
