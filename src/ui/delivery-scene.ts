@@ -3,8 +3,20 @@ import type { SessionFact, SessionSnapshot } from '../typing';
 import { districtArtwork, districtName, escapeCityText, formatMicro } from './city';
 import '../delivery-scene.css';
 
+export interface DeliveryBatch {
+  id: string;
+  amountMicro: bigint;
+  remainingMicro: bigint;
+  sessionId: string;
+  combined: boolean;
+}
 export interface DeliverySceneState {
   cityId: string;
+  sessionId: string;
+  batches: readonly DeliveryBatch[];
+  nextBatchId: number;
+  lastWordEventId: string;
+  lastDispatchEventId: string;
   destination: DistrictId;
   /** Exact destination queue/arrival counters. Keyboard dispatch is never arrival. */
   queuedMicro: bigint;
@@ -24,7 +36,7 @@ export interface DeliverySceneState {
 export type DeliverySceneSnapshot = Pick<SessionSnapshot, 'cargoCount' | 'phase'>;
 export function createDeliverySceneState(city: CityState, destination: DistrictId): DeliverySceneState {
   const district = city.districts[destination];
-  return { cityId: city.cityId, destination, queuedMicro: district.queueMicro,
+  return { cityId: city.cityId, sessionId: '', batches: district.queueMicro > 0n ? [{ id: `${city.cityId}:initial`, amountMicro: district.queueMicro, remainingMicro: district.queueMicro, sessionId: '', combined: false }] : [], nextBatchId: 1, lastWordEventId: '', lastDispatchEventId: '', destination, queuedMicro: district.queueMicro,
     arrivedCounterMicro: district.arrivedMicro, arrivedSinceMountMicro: 0n, lastArrivalMicro: 0n,
     cargoCount: 0, words: 0, dispatches: 0, arrivalRevision: 0, wordKind: 'none', lastReason: '',
     paused: false, reducedMotion: false, factSequences: {} };
@@ -37,21 +49,45 @@ export function projectDeliveryScene(previous: DeliverySceneState, city: CitySta
   };
   const district = city.districts[state.destination];
   const delta = district.arrivedMicro > state.arrivedCounterMicro ? district.arrivedMicro - state.arrivedCounterMicro : 0n;
+  // Conservation exposes exact newly queued material without repeating economy formulas.
+  // Arrival consumes FIFO; new words therefore cannot rewind an existing parcel.
+  const generated = district.queueMicro + delta - state.queuedMicro;
+  let batches = state.batches.map(batch => ({ ...batch }));
+  if (generated > 0n) batches.push({ id: `${state.cityId}:batch:${state.nextBatchId++}`,
+    amountMicro: generated, remainingMicro: generated, sessionId: sessionId ?? state.sessionId, combined: false });
+  let arriving = delta;
+  let landed = 0n;
+  for (const batch of batches) {
+    if (arriving === 0n) break;
+    if (batch.remainingMicro === 0n) continue;
+    const consumed = arriving < batch.remainingMicro ? arriving : batch.remainingMicro;
+    batch.remainingMicro -= consumed; arriving -= consumed;
+    if (batch.remainingMicro === 0n) { landed += batch.amountMicro; state.arrivalRevision++; }
+  }
+  // Bound visual/retained groups. Finished groups leave first; if all are in transit,
+  // combine the two oldest into an explicitly identified aggregate, never split amounts.
+  while (batches.length > 6) {
+    const finished = batches.findIndex(batch => batch.remainingMicro === 0n);
+    if (finished >= 0) batches.splice(finished, 1);
+    else {
+      const [first, second, ...rest] = batches;
+      batches = [{ id: `${state.cityId}:group:${state.nextBatchId++}`, amountMicro: first.amountMicro + second.amountMicro,
+        remainingMicro: first.remainingMicro + second.remainingMicro, sessionId: '', combined: true }, ...rest];
+    }
+  }
+  state.batches = batches;
   state.queuedMicro = district.queueMicro;
   state.arrivedCounterMicro = district.arrivedMicro;
-  // Keep the last confirmed arrival amount for its visual pulse; redraws must not clear it.
-  if (delta > 0n) {
-    state.arrivedSinceMountMicro += delta;
-    state.lastArrivalMicro = delta;
-    state.arrivalRevision++;
-  }
+  if (delta > 0n) state.arrivedSinceMountMicro += delta;
+  if (landed > 0n) state.lastArrivalMicro = landed;
   if (sessionId) {
+    state.sessionId = sessionId;
     const sequences = { ...state.factSequences };
     for (const fact of facts) {
       if (fact.sessionId !== sessionId || fact.factSequence <= (sequences[sessionId] ?? -1)) continue;
       sequences[sessionId] = fact.factSequence;
-      if (fact.type === 'WordCompleted') { state.words++; state.wordKind = fact.clean ? 'clean' : 'dirty'; }
-      if (fact.type === 'DeliveryCommitted') { state.dispatches++; state.lastReason = fact.reason; }
+      if (fact.type === 'WordCompleted') { state.words++; state.lastWordEventId = fact.eventId; state.wordKind = fact.clean ? 'clean' : 'dirty'; }
+      if (fact.type === 'DeliveryCommitted') { state.dispatches++; state.lastDispatchEventId = fact.eventId; state.lastReason = fact.reason; }
     }
     state.factSequences = sequences;
     if (snapshot) { state.cargoCount = snapshot.cargoCount; state.paused = snapshot.phase === 'PAUSED'; }
@@ -60,9 +96,15 @@ export function projectDeliveryScene(previous: DeliverySceneState, city: CitySta
 }
 const asset = (path: string) => `${import.meta.env.BASE_URL}assets/${path}`;
 /** Transport position follows confirmed throughput, never a cosmetic elapsed-time timer. */
+export function deliveryBatchPosition(batch: DeliveryBatch): number {
+  return batch.amountMicro > 0n ? Number((batch.amountMicro - batch.remainingMicro) * 10000n / batch.amountMicro) / 10000 : 0;
+}
 export function deliveryPosition(state: DeliverySceneState): number {
-  const total = state.arrivedSinceMountMicro + state.queuedMicro;
-  return total > 0n ? Number(state.arrivedSinceMountMicro * 1000n / total) / 1000 : 0;
+  const batch = state.batches.find(item => item.remainingMicro > 0n) ?? state.batches.at(-1);
+  return batch ? deliveryBatchPosition(batch) : 0;
+}
+function batchMarkup(batch: DeliveryBatch, destination: DistrictId): string {
+  return `<div class="delivery-vehicle" data-delivery-transport data-effect-id="${escapeCityText(batch.id)}" data-from="warehouse" data-to="${escapeCityText(destination)}" data-session-id="${escapeCityText(batch.sessionId)}" data-state="${batch.remainingMicro > 0n ? 'in-transit' : 'arrived'}"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><span class="delivery-vehicle-parcel">✉</span></div>`;
 }
 function sceneStatus(state: DeliverySceneState): string {
   return `${districtName(state.destination)}へ 輸送待ち ${formatMicro(state.queuedMicro)}資材・到着 ${formatMicro(state.arrivedSinceMountMicro)}資材${state.paused ? '。入力は一時停止中。街の輸送は継続' : ''}`;
@@ -82,7 +124,7 @@ export function renderDeliveryScene(city: CityState, destination: DistrictId): s
     </svg>
     <img class="delivery-warehouse-art" src="${asset('city_shared/city_hub.webp')}" alt="" aria-hidden="true">
     <img class="delivery-district-art" data-delivery-district src="${asset(art.path)}" alt="" aria-hidden="true">
-    <div class="delivery-action-lane" aria-hidden="true"><div class="delivery-vehicle"><img src="${asset('vehicle/vehicle_cart_front.webp')}" alt=""><span class="delivery-vehicle-parcel">✉</span></div><div class="delivery-word-letter">✉</div><div class="delivery-dispatch-cart"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
+    <div class="delivery-action-lane" aria-hidden="true"><div data-delivery-batches>${state.batches.map(batch => batchMarkup(batch, destination)).join('')}</div><div class="delivery-word-letter" data-delivery-effect="word" data-state="issued">✉</div><div class="delivery-dispatch-cart" data-delivery-effect="dispatch" data-state="issued"><img src="${asset('vehicle/vehicle_cart_rear.webp')}" alt=""><span>✉✉</span></div></div>
     <div class="delivery-place delivery-origin"><strong>ことば倉庫</strong><span data-scene-cargo>まとめ便 0 / 5</span><span class="delivery-envelope-rack" aria-hidden="true">${'<i>✉</i>'.repeat(5)}</span></div>
     <div class="delivery-place delivery-destination"><strong>${escapeCityText(districtName(destination))}</strong><span data-scene-arrived title="画面を開いてからの到着。開始前の輸送待ちを含みます。">到着 0資材</span></div>
     <p class="delivery-route-state" data-scene-status>${sceneStatus(state)}</p>
@@ -100,7 +142,7 @@ export class DeliverySceneController {
   private paintedDispatches = 0;
   private paintedArrivals = 0;
   constructor(city: CityState, destination: DistrictId) { this.city = city; this.state = createDeliverySceneState(city, destination); }
-  view(): DeliverySceneState { return { ...this.state, factSequences: { ...this.state.factSequences } }; }
+  view(): DeliverySceneState { return { ...this.state, batches: this.state.batches.map(batch => ({ ...batch })), factSequences: { ...this.state.factSequences } }; }
   render(): string { return renderDeliveryScene(this.city, this.state.destination); }
   attach(root: HTMLElement): void {
     this.element = root.id === 'delivery-scene' ? root : root.querySelector('#delivery-scene');
@@ -119,7 +161,27 @@ export class DeliverySceneController {
     el.dataset.transport = s.queuedMicro > 0n ? 'waiting' : s.arrivedSinceMountMicro > 0n ? 'arrived' : 'idle';
     el.classList.toggle('delivery-reduced-motion', s.reducedMotion);
     el.classList.toggle('delivery-input-paused', s.paused);
-    el.style.setProperty('--delivery-progress', `${deliveryPosition(s) * 100}%`);
+    Object.assign(el.dataset, { cityId: s.cityId, sessionId: s.sessionId, destination: s.destination,
+      queuedMicro: String(s.queuedMicro), arrivedMicro: String(s.arrivedSinceMountMicro),
+      arrivalRevision: String(s.arrivalRevision), words: String(s.words), dispatches: String(s.dispatches) });
+    const batchRoot = el.querySelector<HTMLElement>('[data-delivery-batches]');
+    if (batchRoot) {
+      for (const node of Array.from(batchRoot.children)) if (!s.batches.some(batch => batch.id === (node as HTMLElement).dataset.effectId)) node.remove();
+      s.batches.forEach((batch, index) => {
+        let node = Array.from(batchRoot.children).find(item => (item as HTMLElement).dataset.effectId === batch.id) as HTMLElement | undefined;
+        if (!node) {
+          const container = document.createElement('div'); container.innerHTML = batchMarkup(batch, s.destination);
+          node = container.firstElementChild as HTMLElement; batchRoot.append(node);
+        }
+        Object.assign(node.dataset, { state: batch.remainingMicro > 0n ? 'in-transit' : 'arrived',
+          amountMicro: String(batch.amountMicro), remainingMicro: String(batch.remainingMicro), combined: String(batch.combined) });
+        node.style.left = `${deliveryBatchPosition(batch) * 100}%`; node.style.top = `${(index % 3) * 8}px`;
+      });
+    }
+    const wordEffect = el.querySelector<HTMLElement>('[data-delivery-effect=word]');
+    const dispatchEffect = el.querySelector<HTMLElement>('[data-delivery-effect=dispatch]');
+    if (wordEffect) Object.assign(wordEffect.dataset, { effectId: s.lastWordEventId, sessionId: s.sessionId, from: 'warehouse', to: s.destination });
+    if (dispatchEffect) Object.assign(dispatchEffect.dataset, { effectId: s.lastDispatchEventId, sessionId: s.sessionId, from: 'warehouse', to: s.destination });
     el.querySelectorAll<HTMLElement>('.delivery-envelope-rack i').forEach((item, i) => item.classList.toggle('loaded', i < s.cargoCount));
     const text = (selector: string, value: string) => { const node = el.querySelector(selector); if (node && node.textContent !== value) node.textContent = value; };
     text('[data-scene-cargo]', `まとめ便 ${s.cargoCount} / 5`);
@@ -141,6 +203,7 @@ export class DeliverySceneController {
       text('[data-scene-confirmation]', 'まとめ便を発送・追加資材も輸送待ちへ');
     }
     if (s.arrivalRevision > this.paintedArrivals) {
+      el.querySelector('.delivery-arrival-glow')?.setAttribute('data-arrival-revision', String(s.arrivalRevision));
       pulse('.delivery-arrival-glow', s.arrivalRevision); this.paintedArrivals = s.arrivalRevision;
       text('[data-scene-confirmation]', `${districtName(s.destination)}へ ${formatMicro(s.lastArrivalMicro)}資材が到着`);
     }

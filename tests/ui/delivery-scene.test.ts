@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import wordsData from '../../spec/initial/data/words.json';
 import { CityEconomy, initialCityState } from '../../src/economy';
 import { GameSession, type SessionFact, type Word } from '../../src/typing';
-import { DeliverySceneController, createDeliverySceneState, deliveryPosition, projectDeliveryScene, renderDeliveryScene } from '../../src/ui/delivery-scene';
+import { DeliverySceneController, createDeliverySceneState, deliveryBatchPosition, deliveryPosition, projectDeliveryScene, renderDeliveryScene } from '../../src/ui/delivery-scene';
 
 const word = (wordsData.words as Word[]).find(item => item.reading === 'ねこ')!;
 function fixture() {
@@ -13,7 +13,7 @@ function fixture() {
   const flush = () => {
     const facts = session.drainEvents();
     for (const fact of facts) {
-      const identity = { cityId: city.state.cityId, sessionId: session.sessionId, factSequence: fact.factSequence, atMs: 0 };
+      const identity = { cityId: city.state.cityId, sessionId: session.sessionId, factSequence: fact.factSequence, atMs: city.state.clockMs };
       if (fact.type === 'WordCompleted') city.completeWord({ ...identity, baseLength: fact.canonicalLength, mistakes: fact.mistakes });
       if (fact.type === 'DeliveryCommitted') city.shipCargo({ ...identity, scoreSum: fact.cargoCount * word.canonicalLength * 10, cargoCount: fact.cargoCount, reason: fact.reason });
     }
@@ -85,6 +85,35 @@ describe('delivery scene projects confirmed typing and independent city transpor
     expect(scene.view().queuedMicro).toBe(9000000n);
     expect(scene.render()).toContain('輸送待ち 9資材');
   });
+  it('new generation never rewinds the stable existing cart and partial throughput cannot land it', () => {
+    const { scene, city, complete } = fixture(); complete();
+    city.advance(1); scene.updateCity(city.snapshot());
+    const batch = scene.view().batches[0]; const progress = deliveryBatchPosition(batch);
+    expect(progress).toBeGreaterThan(0); expect(progress).toBeLessThan(1);
+    expect(scene.view().arrivalRevision).toBe(0);
+    complete();
+    const same = scene.view().batches.find(item => item.id === batch.id)!;
+    expect(deliveryBatchPosition(same)).toBe(progress);
+    expect(same.amountMicro).toBe(batch.amountMicro); expect(same.remainingMicro).toBe(batch.remainingMicro);
+    expect(scene.view().batches.length).toBe(2);
+    city.advance(180000); scene.updateCity(city.snapshot());
+    expect(scene.view().queuedMicro).toBe(0n);
+    expect(scene.view().batches.every(item => item.remainingMicro === 0n)).toBe(true);
+    expect(scene.view().arrivalRevision).toBe(2);
+    expect(scene.view().batches.every(item => deliveryBatchPosition(item) === 1)).toBe(true);
+  });
+  it('bounds transport groups to six while conserving exact FIFO amounts under many words', () => {
+    const { scene, city, complete } = fixture();
+    for (let i = 0; i < 30; i++) complete();
+    const state = scene.view();
+    expect(state.batches.length).toBeLessThanOrEqual(6);
+    expect(state.batches.some(batch => batch.combined)).toBe(true);
+    expect(state.batches.reduce((total, batch) => total + batch.remainingMicro, 0n)).toBe(state.queuedMicro);
+    city.advance(1); scene.updateCity(city.snapshot());
+    expect(scene.view().batches.reduce((total, batch) => total + batch.remainingMicro, 0n)).toBe(city.state.districts.residential.queueMicro);
+    const copy = scene.view(); copy.batches[0].remainingMicro = 0n;
+    expect(scene.view().batches[0].remainingMicro).toBeGreaterThan(0n);
+  });
   it('a city reset establishes new counters rather than showing an old-city arrival', () => {
     const old = initialCityState(); old.districts.residential.arrivedMicro = 500n;
     const state = createDeliverySceneState(old, 'residential');
@@ -99,7 +128,7 @@ describe('delivery scene projects confirmed typing and independent city transpor
     for (let i = 0; i < 100; i++) expect(projectDeliveryScene(state, city)).toEqual(state);
     expect(city).toEqual(before); expect(state).toEqual(saved);
     const html = renderDeliveryScene(city, 'residential');
-    expect(html).toContain('city_shared/city_hub.webp'); expect(html).toContain('vehicle/vehicle_cart_front.webp');
+    expect(html).toContain('city_shared/city_hub.webp'); expect(html).toContain('vehicle/vehicle_cart_rear.webp');
     expect(html).toContain('city_plot/city_plot_empty.webp'); expect(html).toContain('まとめ便 0 / 5');
     expect(html).toContain('到着 0資材'); expect(html).not.toContain('setTimeout');
   });
