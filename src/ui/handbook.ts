@@ -48,7 +48,7 @@ export function achievementDetail(view: AchievementView, state: AchievementState
 export function goalStrip(views: readonly AchievementView[], state: AchievementState): string {
   const view = views.find(item => item.id === state.targetId);
   if (!view) return '';
-  return `<div class="goal-strip" id="goal-strip"><span class="target-mark">今回の目標</span><strong>${escape(visibleName(view))}</strong><span>${view.earned ? '目標達成 · 獲得済み' : view.ineligible ? '今回は対象外' : view.provisional ? '達成記録あり · 完走で確定' : view.progress[0] ? escape(view.progress[0].displayText) : '進捗を記録しています'}</span></div>`;
+  return `<div class="goal-strip" id="goal-strip"><span class="target-mark">今回の目標</span><strong>${escape(visibleName(view))}</strong><span>${view.earned ? '目標達成 · 獲得済み' : view.ineligible ? '今回は対象外' : view.provisional ? '現在は条件内 · 完走時に判定' : view.progress[0] ? escape(view.progress[0].displayText) : '進捗を記録しています'}</span></div>`;
 }
 export function recommendations(views: readonly AchievementView[]): string {
   const choices = [ ['A', 'B', 'C', 'D'], ['E', 'G', 'L'], ['F'] ].flatMap(families => {

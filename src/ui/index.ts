@@ -93,7 +93,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     ipadLayout.refresh();
     if ((action || equipSlot) && ordinal >= 0) {
       const next = [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal];
-      if (next) { suppressBlur = true; next.focus(); suppressBlur = false; }
+      if (next) { suppressBlur = true; next.focus({ preventScroll: true }); suppressBlur = false; }
     }
   }
   function newSeed() { return crypto.getRandomValues(new Uint32Array(1))[0]!; }
@@ -475,7 +475,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       await runtime.cityCommand(command);
       if (message?.isConnected) message.textContent = '街に反映しました。';
       updateCityViews();
-      if (focusedAction && document.activeElement === document.body) root.querySelector<HTMLButtonElement>(`button[data-action="${focusedAction}"]:not(:disabled)`)?.focus();
+      if (focusedAction && document.activeElement === document.body) root.querySelector<HTMLButtonElement>(`button[data-action="${focusedAction}"]:not(:disabled)`)?.focus({ preventScroll: true });
       return true;
     } catch (error) {
       if (message?.isConnected) message.textContent = error instanceof Error && error.message.includes('Purchase quote changed') ? '残高が変わり、購入数量を更新しました。表示内容を確認して、もう一度購入してください。' : '操作を完了できませんでした。現在の条件と保存の状態を確認して、もう一度お試しください。';
@@ -582,7 +582,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       overlay.hidden = false;
       isolatePausedContent(true);
       overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button>${snapshot.mode === 'TUTORIAL' ? '<button class="button" data-action="tutorial-skip">導入を飛ばして本編へ</button>' : ''}${snapshot.mode === 'PRACTICE' ? '<button class="button" data-action="equipment">練習を終了して設備を見る</button>' : ''}<button class="button" data-action="handbook">配達手帳</button><button class="button" data-action="catalogue">ことば図鑑</button><p>停止中も、街の輸送と営業は実時間で進みます。</p><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
-      root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
+      root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus({ preventScroll: true });
     } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
     syncOwnershipActions();
     const resume = root.querySelector<HTMLButtonElement>('[data-action="resume"]'); if (resume) resume.disabled = !runtime.status.writable || (snapshot.mode === 'MAIN' && window.innerWidth < 768);
@@ -592,7 +592,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     gameInput?.destroy(); gameInput = undefined;
     screen = 'result'; lastResult = snapshot;
     root.innerHTML = `${header()}<main id="main" class="result-page" data-paginate="配達の結果"><div class="result-heading" data-ipad-fixed><p class="eyebrow">DELIVERY COMPLETE</p><h1>ことばが、届きました。</h1><p>${course().name}コース · ${districtName(sessionDestination)}へ · 90秒の配達 ${snapshot.skips ? '· 救済あり' : '· 通常'} ${snapshot.guideUsed ? '· ガイド表示あり' : '· ガイド表示なし'}</p></div><div class="result-grid" data-page-children><section class="paper-card score-card" data-page-children><h2>今回の得点</h2><p class="result-score">${number(snapshot.score)}<span>点</span></p><p class="score-breakdown">完成点 ${number(snapshot.baseScore)} ＋ 配達ボーナス ${number(snapshot.bonusScore)}</p><div class="result-metrics"><div><span>完成したことば</span><strong>${snapshot.completedWords}<small>語</small></strong></div><div><span>正確率</span><strong>${snapshot.accuracy === null ? '計測なし' : `${snapshot.accuracy.toFixed(1)}<small>%</small>`}</strong></div><div><span>基準打鍵 / 分</span><strong>${snapshot.canonicalKpm === null ? '計測なし' : snapshot.canonicalKpm.toFixed(1)}</strong></div><div><span>正解打鍵 / 誤打</span><strong>${snapshot.correctKeys}<small> / ${snapshot.mistakes}</small></strong></div></div></section><section class="paper-card result-letter" data-page-children><span class="letter-postmark" aria-hidden="true">KOTOBABIN<br>DELIVERED</span><p class="eyebrow">あなたの配達記録</p><h2>${snapshot.completedWords > 0 ? 'ひとつひとつの、積み重ね。' : '今回は完成0語。'}</h2><p>${snapshot.completedWords > 0 ? `${snapshot.completedWords}個のことばを、最後まで打ち終えました。<br>完成したことばの得点は、すべて確定しています。` : 'あせらず、読みを見ながら打ってみましょう。<br>「ゆったり」コースから、自分のペースで。'}</p><div class="delivery-summary"><span>確定した配達ボーナス</span><strong>+${number(snapshot.bonusScore)}<small>点</small></strong></div><p class="result-note">90秒の配達を終えました。<br>途中のことばには完成点を加えていません。</p></section></div><div id="city-balance-strip">${balanceStrip(runtime.city)}</div><div id="result-economy" data-page-children>${resultEconomy(runtime.city, session!.sessionId)}</div><div id="result-achievements-slot" data-page-children>${resultAchievements()}</div><div id="result-goal-slot">${goalStrip(achievementViews(), runtime.achievements)}</div><div class="result-actions" data-ipad-fixed><button class="button button-primary" data-action="retry">同じ問題でもう一度 ${envelope}</button><button class="button" data-action="new-round">別の問題で配達する</button>${reviewIds(snapshot).length ? '<button class="button" data-action="review">まちがえたことばを復習</button>' : ''}<button class="text-button" data-action="home">コースを選ぶ →</button></div><p class="save-status result-save" data-save-status></p></main>${footer()}`;
-    root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus(); updateStorageStatus(); updateAchievementDisplays();
+    root.querySelector<HTMLButtonElement>('[data-action="retry"]')?.focus({ preventScroll: true }); updateStorageStatus(); updateAchievementDisplays();
   }
   function reviewIds(snapshot: Snapshot) { return snapshot.reviewWordIds; }
   function updateModeControls(snapshot: Snapshot) {
@@ -628,7 +628,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const key = selector ? `${selector}:${snapshot.completedWords}` : '';
     if (selector && (force || key !== lastChoiceFocus)) {
       suppressBlur = true;
-      root.querySelector<HTMLButtonElement>(selector)?.focus();
+      root.querySelector<HTMLButtonElement>(selector)?.focus({ preventScroll: true });
       suppressBlur = false;
     }
     lastChoiceFocus = key;
@@ -640,13 +640,13 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   function showQuit() {
     const overlay = root.querySelector<HTMLElement>('#paused-layer')!;
     overlay.innerHTML = '<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="quit-title"><h2 id="quit-title">配達を途中で終了しますか？</h2><p>完成したことばと確定済みの成果は残ります。未配達の追加点と通常の便の仮達成は確定しません。</p><button class="button button-primary" data-action="cancel-quit">配達を続ける</button><button class="button" data-action="confirm-quit">終了してホームへ</button></section>';
-    root.querySelector<HTMLButtonElement>('[data-action="cancel-quit"]')?.focus();
+    root.querySelector<HTMLButtonElement>('[data-action="cancel-quit"]')?.focus({ preventScroll: true });
   }
   function showSkip() {
     const snapshot = state();
     const overlay = root.querySelector<HTMLElement>('#paused-layer')!;
     overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="skip-title"><h2 id="skip-title">このことばを飛ばしますか？</h2><p>${snapshot.mode === 'MAIN' ? 'この便は救済ありの記録になります。完成したことばと確定済みの成果は残ります。通常の自己記録とは別に記録します。' : '途中のことばは完成に数えず、現在の連続成功は途切れます。完成済みの成果は残ります。'}</p><p>持っている荷物の追加点を届けて、次のことばへ進みます。</p><button class="button button-primary" data-action="cancel-quit">今のことばに戻る</button><button class="button" data-action="confirm-skip">説明を確認して飛ばす</button></section>`;
-    root.querySelector<HTMLButtonElement>('[data-action="cancel-quit"]')?.focus();
+    root.querySelector<HTMLButtonElement>('[data-action="cancel-quit"]')?.focus({ preventScroll: true });
   }
   function chooseNextPracticeWord() {
     const current = state();
@@ -679,7 +679,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const elements = [...root.querySelectorAll<HTMLElement>('.site-header, .site-footer, .game-page > :not(#paused-layer):not(#ownership-status)')];
     for (const element of elements) { element.inert = paused; if (paused) element.setAttribute('aria-hidden', 'true'); else element.removeAttribute('aria-hidden'); }
   }
-  function focusInput() { suppressBlur = true; root.querySelector<HTMLInputElement>('#game-input')?.focus(); suppressBlur = false; }
+  function focusInput() { suppressBlur = true; root.querySelector<HTMLInputElement>('#game-input')?.focus({ preventScroll: true }); suppressBlur = false; }
   function pause() { if (screen === 'game' && session) mutate(session.pause(performance.now())); }
   function help() {
     const dialog = document.createElement('dialog');
@@ -807,18 +807,18 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       if (event.key === 'F2') { event.preventDefault(); openNavigationMenu(); return; }
       const menu = root.querySelector<HTMLDialogElement>('.navigation-dialog[open]');
       if (menu && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-        event.preventDefault(); const items = [...menu.querySelectorAll<HTMLButtonElement>('button')]; const index = items.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length; items[next]?.focus(); return;
+        event.preventDefault(); const items = [...menu.querySelectorAll<HTMLButtonElement>('button')]; const index = items.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length; items[next]?.focus({ preventScroll: true }); return;
       }
       if (!root.querySelector('dialog[open]') && event.key === 'Escape') { event.preventDefault(); navigateBack(); return; }
       const editing = (event.target as HTMLElement).closest('select, textarea, input[type=text], input[type=search], input[type=file]');
-      if (screen === 'home' && !editing && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); selectedCourse = courses[Number(event.key) - 1].id; const radio = root.querySelector<HTMLInputElement>(`input[name="course"][value="${selectedCourse}"]`); if (radio) { radio.checked = true; radio.focus(); } return; }
+      if (screen === 'home' && !editing && ['1', '2', '3'].includes(event.key)) { event.preventDefault(); selectedCourse = courses[Number(event.key) - 1].id; const radio = root.querySelector<HTMLInputElement>(`input[name="course"][value="${selectedCourse}"]`); if (radio) { radio.checked = true; radio.focus({ preventScroll: true }); } return; }
     }
     const modal = root.querySelector<HTMLElement>('#paused-layer:not([hidden])');
     if (modal && !root.querySelector('dialog[open]') && event.key === 'Tab') {
       const buttons = [...modal.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')];
       const first = buttons[0], last = buttons[buttons.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus({ preventScroll: true }); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus({ preventScroll: true }); }
       return;
     }
     if (!event.isTrusted || screen !== 'check') return;
