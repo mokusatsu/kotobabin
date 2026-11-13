@@ -59,6 +59,7 @@ async function setVolume(page: Page, slider: Locator, percent: number) {
 test('sound opt-in persists independent volumes and confirms native key/word/delivery/mistake feedback without replay', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await observeNativeAudio(page);
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   const requests: string[] = [];
   page.on('request', request => { if (request.url().includes('/sound_effect/')) requests.push(request.url()); });
   await page.goto('/');
@@ -105,6 +106,11 @@ test('sound opt-in persists independent volumes and confirms native key/word/del
   await page.waitForTimeout(350); expect((await probe(page)).starts.length).toBe(beforeResume);
   await page.locator('[data-action="resume"]').click();
   await expect.poll(async () => (await probe(page)).starts.filter(start => start.active && start.loop).length).toBe(1);
+  await typeCurrentGuide(page); // this word had a mistake; its completion keeps the same tone
+  await expect.poll(() => count(page, 150)).toBe(2);
+  for (let word = 0; word < 5; word++) await typeCurrentGuide(page);
+  await expect.poll(() => count(page, 150)).toBe(7);
+  await expect.poll(() => count(page, 450)).toBe(1); // fifth clean completion has BOTH distinct cues
   await page.reload();
   expect((await probe(page)).created).toBe(0);
   const reopened = await openAudioSettings(page);
@@ -112,11 +118,13 @@ test('sound opt-in persists independent volumes and confirms native key/word/del
   await expect(reopened.locator('#audio-master')).toHaveValue('30');
   await expect(reopened.locator('#audio-effects')).toHaveValue('60');
   await expect(reopened.locator('#audio-music')).toHaveValue('15');
+  expect(errors).toEqual([]);
 });
 
 test('an audio startup failure stays silent without blocking real typing, and explicit retry uses native MP3 fallback', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await observeNativeAudio(page, true);
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.route('**/audio_theme.ogg', route => route.abort());
   const requested: string[] = []; page.on('request', request => requested.push(request.url()));
   await page.goto('/');
@@ -135,6 +143,7 @@ test('an audio startup failure stays silent without blocking real typing, and ex
   expect(requested.some(url => url.endsWith('audio_theme.ogg'))).toBe(true);
   expect(requested.some(url => url.endsWith('audio_theme.mp3'))).toBe(true);
   await expect(page.locator('#score')).toHaveText('40');
+  expect(errors).toEqual([]);
 });
 
 test('sound controls remain reachable by keyboard at150percent in the target landscape viewport', async ({ page }) => {
