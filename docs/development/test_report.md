@@ -169,7 +169,7 @@ CI用の実ブラウザー試験として、既存17件に加え、記録・収�
 
 ## 第4サイクル：実績・保存・iPad操作の独立受入
 
-2026年11月14日（Asia/Tokyo）。修正コードを含む `4db20d2e922f537f699d194d3fb3f361dff35145` の [CI 43469072912](https://github.com/mokusatsu/kotobabin/actions/runs/43469072912) は、正本検査・Lint・型検査・単体245件（20ファイル）・ビルド・実Chromium E2E47件すべて成功した。E2Eは2.4分。履歴を引き継がない独立担当者自身の操作シナリオも、専用ChromiumとWebKitの両ジョブで成功した。キャプチャは補助であり、実ブラウザー操作・ログ・DOMの検査を受入根拠とした。独立したsakurai-skillレビューは [sakurai-m4.md](reviews/sakurai-m4.md) を参照する。
+2026年11月14日（Asia/Tokyo）。最終対象 `8fcf322f5fdb04a052a9557d213fad9867bcbfb3` の [CI 43469417000](https://github.com/mokusatsu/kotobabin/actions/runs/43469417000) は、正本検査・Lint・型検査・単体245件（20ファイル）・ビルド・実Chromium E2E47件すべて成功した。E2Eは2.4分。履歴を引き継がない独立担当者自身の操作シナリオも、専用ChromiumとWebKitの両ジョブで成功した。キャプチャは補助であり、実ブラウザー操作・ログ・DOMの検査を受入根拠とした。独立したsakurai-skillレビューは [sakurai-m4.md](reviews/sakurai-m4.md) を参照する。
 
 72実績の条件・モード・負例を [m4-acceptance.md](m4-acceptance.md) に整理した。独立単体試験では都市の集合境界、K02、練習中の語の進捗、分母なし、48件と第1集の区別、同時解除の追加報酬、全所有184件、未解除称号を偽造した控えの拒否を確認した。245件の全体には実入力から全72件へ到達するモデル検査も含むが、72件すべてを画面で解除した主張とは区別する。
 
