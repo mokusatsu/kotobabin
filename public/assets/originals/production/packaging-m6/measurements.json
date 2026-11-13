@@ -50,5 +50,161 @@
       "equipment_scene/equipment_packaging_1.webp": "4cdae1102f7086fd81ffa8f7319156e59c8fd8fd08373857d32ad5ce83133368"
     },
     "lossless_alpha_and_paper_equal": true
+  },
+  {
+    "id": "equipment_packaging_2",
+    "native_size": [
+      1536,
+      1024
+    ],
+    "canvas": [
+      1200,
+      800
+    ],
+    "mode": "RGBA",
+    "anchor": [
+      600,
+      680
+    ],
+    "safe_rect": [
+      60,
+      40,
+      1140,
+      760
+    ],
+    "resize": [
+      998,
+      666
+    ],
+    "offset": [
+      101,
+      50
+    ],
+    "alpha_bbox": [
+      124,
+      56,
+      1086,
+      716
+    ],
+    "opaque_bbox": [
+      138,
+      61,
+      1062,
+      680
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": {
+      "originals/production/packaging-m6/native/equipment_packaging_2.png": "9f0ef40193d79cad14d5216a8bbf6c7225d242be539c1d4d175ff3766ae7020f",
+      "originals/equipment_packaging_2.png": "e32701315b3825b19ce2168ed50fd4690157621de44d1eb006242b57d1067746",
+      "equipment_scene/equipment_packaging_2.webp": "a765096685ded97113026ec640b5a0ca3bdb81dcedd12b3bd51dba2954c4e4b3"
+    },
+    "lossless_alpha_and_paper_equal": true
+  },
+  {
+    "id": "equipment_packaging_3",
+    "native_size": [
+      1536,
+      1024
+    ],
+    "canvas": [
+      1200,
+      800
+    ],
+    "mode": "RGBA",
+    "anchor": [
+      600,
+      680
+    ],
+    "safe_rect": [
+      60,
+      40,
+      1140,
+      760
+    ],
+    "resize": [
+      1044,
+      696
+    ],
+    "offset": [
+      78,
+      49
+    ],
+    "alpha_bbox": [
+      94,
+      60,
+      1121,
+      745
+    ],
+    "opaque_bbox": [
+      109,
+      135,
+      1093,
+      680
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": {
+      "originals/production/packaging-m6/native/equipment_packaging_3.png": "1974e807136caa8dfbde534ced616fa653bfd45a9c48b389b88992543edb9308",
+      "originals/equipment_packaging_3.png": "53c3a1fa2c85a303d83b19c07ae3721253be73a915c5d8c7466941771dbd0f28",
+      "equipment_scene/equipment_packaging_3.webp": "acb183ed374297b882d8aed4ce6cc226694c001575686ba21927b005eaed00a9"
+    },
+    "lossless_alpha_and_paper_equal": true
+  },
+  {
+    "id": "equipment_packaging_4",
+    "native_size": [
+      1536,
+      1024
+    ],
+    "canvas": [
+      1200,
+      800
+    ],
+    "mode": "RGBA",
+    "anchor": [
+      600,
+      680
+    ],
+    "safe_rect": [
+      60,
+      40,
+      1140,
+      760
+    ],
+    "resize": [
+      1060,
+      707
+    ],
+    "offset": [
+      70,
+      41
+    ],
+    "alpha_bbox": [
+      70,
+      54,
+      1130,
+      733
+    ],
+    "opaque_bbox": [
+      78,
+      85,
+      1122,
+      680
+    ],
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "sha256": {
+      "originals/production/packaging-m6/native/equipment_packaging_4.png": "da080cb73599a0fadd316517b4f4f8601753785e243b16ad88ede95432a9d468",
+      "originals/equipment_packaging_4.png": "1cccf79a12c4c75414352bcc3485cf35d64c8de449f561b756fee542b6e32893",
+      "equipment_scene/equipment_packaging_4.webp": "bfb8f8a9466fecd657e18a9238fa1f8f168e5e5f945d180d8b5b6c45eeeaba1c"
+    },
+    "lossless_alpha_and_paper_equal": true
   }
 ]
