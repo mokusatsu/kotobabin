@@ -1,5 +1,6 @@
 import { keyboardMenuTo, keyboardRevealControl } from './keyboard';
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 import { beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
 test.use({ viewport: { width: 1366, height: 768 } });
@@ -82,6 +83,34 @@ test('a second tab is read-only and a paused owner can reclaim control using the
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await expect(confirmation.locator('[data-action="confirm-ownership"]')).toBeFocused();
   await page.keyboard.press('Enter');
+  const protectedProgress = page.getByRole('dialog').filter({ has: page.getByRole('heading', { name: '未保存の進捗があります。', exact: true }) });
+  // A world-tick write may legitimately race the other tab's ownership claim.
+  // Complete its explicit backup/discard safeguard instead of assuming no unsaved projection.
+  await expect.poll(async () => await page.locator('#ownership-status').getAttribute('data-ownership') === 'owner' || await protectedProgress.isVisible()).toBe(true);
+  if (await protectedProgress.isVisible()) {
+    const cancel = protectedProgress.getByRole('button', { name: '今の画面に戻る', exact: true });
+    const exportAndContinue = protectedProgress.getByRole('button', { name: '控えを書き出して、最新の状態で続ける', exact: true });
+    await expect(cancel).toBeFocused();
+    await keyboardRevealControl(page, exportAndContinue);
+    await expect(cancel).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(exportAndContinue).toBeFocused();
+    const downloadPromise = page.waitForEvent('download');
+    await page.keyboard.press('Enter');
+    const download = await downloadPromise;
+    const backupPath = testInfo.outputPath('readonly-takeover-unsaved-backup.json');
+    await download.saveAs(backupPath);
+    expect(await download.failure()).toBeNull();
+    const backup = JSON.parse(await readFile(backupPath, 'utf8')) as {
+      currentView: { progress: { totalCompleted: number }; achievements: { measuredProgress: { totalCompleted: number } } };
+      repository: { current: { progress: { totalCompleted: number } } };
+    };
+    expect(backup.currentView.progress.totalCompleted).toBe(1);
+    expect(backup.currentView.achievements.measuredProgress.totalCompleted).toBe(1);
+    expect(backup.repository.current.progress.totalCompleted).toBe(1);
+    await testInfo.attach('readonly-takeover-unsaved-backup', { path: backupPath, contentType: 'application/json' });
+    console.info('OWNERSHIP_RECOVERY_BRANCH', JSON.stringify({ backupCompleted: backup.currentView.progress.totalCompleted, backupAchievementCompleted: backup.currentView.achievements.measuredProgress.totalCompleted }));
+  }
   await expect(page.locator('#ownership-status')).toHaveAttribute('data-ownership', 'owner');
   await expect(second.locator('#ownership-status')).toHaveAttribute('data-ownership', 'readonly');
   await expect(page.locator('.home-intro')).toBeVisible();
