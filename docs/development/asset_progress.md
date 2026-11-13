@@ -1,8 +1,8 @@
 # 資材制作の進捗
 
-2026-11-13（指定クライアント日付、Asia/Tokyo） / M0–M1 / 第2サイクル。正本 `spec/initial/data/visual_resource_manifest.json` は変更しない。
+2026-11-13（指定クライアント日付、Asia/Tokyo） / M0–M1 / 第3サイクル。正本 `spec/initial/data/visual_resource_manifest.json` は変更しない。
 
-全248 ID中 47 IDの候補ファイルを制作（SVG39 / ラスター8）。製品全体の資材完成ではない。音源7 IDは未制作。
+全248 ID中 54 IDの候補ファイルを制作（SVG39 / ラスター15）。製品全体の資材完成ではない。音源7 IDは未制作。
 
 ## アートディレクション
 
@@ -45,6 +45,28 @@
 独立QA（Agent F）は3点の寸法・アルファ・最小表示の前後形状と敷き布を確認。rearの透過範囲が安全域y16より1px上へ出る指摘を受け、配置をy2→y3へ修正。再検査のアルファ範囲は(47,16)〜(206,160)で安全域内。3点は単体静止検収を通過し、ゲーム内の実行画面合成は引き続き未検証。地形は改善度だけで合格扱いせず、既存ランタイムを維持する判断を独立QAと一致させた。
 
 不合格原画：`originals/rejected/equipment_packaging_1.halo.png`、`originals/rejected/terrain_riverside.coastline-attempt.png`。これらは制作済みの正規出力として集計しない。
+
+## 第3サイクル：住宅地の成長と商店街の入口
+
+2026-11-13（指定クライアント日付、Asia/Tokyo）。7 IDを追加。既存の住宅地段階1と代表画面を目視した後、imagegenの参照画像として使い、段階2→3→4→5の家並み・公民館・丸窓・回廊・木陰を連続して制作した。画像生成後の配置修正もimagegenを使用。既存の地形と不合格荷づくり台は変更しない。
+
+| ID | 指定PNG / WebP | 単独の図柄確認 | 数値確認・残る不足 |
+|---|---|---|---|
+| city_residential_s2 | 1024×768 RGBA | 低い家並み、L字の共同縁側、長椅子。左下の別店舗領域を確保 | 不透明範囲(373,376)〜(899,577)。予約領域の全画素alpha0。足元640との厳密な一致は未達 |
+| city_residential_s3 | 1024×768 RGBA | 大きな切妻・丸窓・手すり付きの玄関段の公民館 | 不透明範囲(379,231)〜(927,594)。予約領域alpha0。屋根頂点y約231は正本の約170とずれ、入口座標・足元は追加調整が必要 |
+| city_residential_s4 | 1024×768 RGBA | 同じ公民館と丸窓、左右の低い集会棟・回廊、灯具 | 不透明範囲(370,230)〜(957,597)。予約領域alpha0。段階3と主屋位置を維持。全alpha範囲は右端961までの微小成分があり安全域960との厳密照合は未完了 |
+| city_residential_s5 | 1024×768 RGBA | 公民館を引き継ぎ、前景に一本の木・幹を囲むベンチ・小灯具 | 不透明範囲(415,230)〜(955,638)。予約領域の最大alpha1/255が残り、完全alpha0の厳密条件は未達。樹冠の指定範囲も追加調整が必要 |
+| city_market_s1 | 1024×768 RGBA | 開放的な寄棟屋根と柱、共同ベンチ、小さな無地掲示板。売り場を描かない | 不透明範囲(418,315)〜(919,610)。予約領域alpha0。足元610。屋根の範囲・追加植栽の正本照合は未完了 |
+| shop_residential | 512×512 RGBA | 低い切妻、木の窓枠、窓内の丸いパン。看板・庇・のぼり・文字なし | 不透明範囲(71,133)〜(455,448)。足元448。壁面・正面間口の指定矩形と重ね部品の接続座標は追加調整が必要 |
+| scaffold_small | 1024×768 RGBA | 片側の低い木枠と積んだ板。建物・地面・数値なし | 不透明範囲(410,479)〜(923,640)。予約領域alpha0。足元640。実際の地区画に重ねる確認は未実施 |
+
+原生出力は地区・足場が1448×1086、店が1254×1254。`originals/{id}.generated.png` を変更せず保存し、指定PNGと可逆WebPを別出力する。PNGは8bit RGBA。全7点でPNG/WebPの全アルファ値と紙色への合成後の全画素一致を確認した。全alphaと50%不透明範囲を区別し、微小な半透明成分を隠して合格扱いしない。
+
+出力時の配置を記録する。段階2は941×706へ縮小して1024×768の(0,62)へ配置。段階3/4/5は同じ869×652へ縮小して(118,100)へ配置し、主屋の位置・高さを段階間で維持。これらは原生キャンバス全体を保持し、図柄を切り抜かない。商店街は1024×768の後にy+23、店は512×512の後にy+21、足場は1024×768の後にy+48を指定キャンバス上へ移動し、接地位置を合わせた。移動で外に出るのは余白の微小成分で、可視構造物は切らない。すべて原生PNGを別保存する。
+
+標準132×99と最小96×72の地区・足場、64×64と24×24の店を紙色へ合成し、彩色とグレースケールで主題の違いを目視した。単独縮小の確認は実行中の地図・地区詳細・保存復帰後の状態一致を代替しない。7点は厳密な配置や実画面合成を残す候補として扱い、ゲームの全資材完成とはしない。
+
+独立QA（Agent F）は7点の縮小接触シートを確認し、地区・店・足場の図柄の読み取りと目立つ紙色ハローがないことを確認した。候補の統合は可能としつつ、厳密な基準点・成長の見た目の検収は保留。特に段階2が段階1より低く平たく見える点、段階3/4の主屋・基礎位置の追加調整を指摘した。これらは最終品質の未完了項目として保持する。実行画面の合成は独立QAでも未実施。
 
 ## 全ID台帳
 
@@ -162,16 +184,16 @@
 | reward_complete_72_emblem | 未着手 | — | 未検証 | — |
 | reward_collection_stamp_art | 未着手 | — | 未検証 | — |
 | district_residential | 未着手 | — | 未検証 | — |
-| shop_residential | 未着手 | — | 未検証 | — |
+| shop_residential | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/shop_scene/shop_residential.webp` |
 | city_plot_empty | 実装済み・未検証 | 寸法・形式確認、目視済み | 未検証 | `assets/city_plot/city_plot_empty.webp` |
 | city_residential_s1 | 実装済み・未検証 | 寸法・形式確認、目視済み | 未検証 | `assets/city_stage/city_residential_s1.webp` |
-| city_residential_s2 | 未着手 | — | 未検証 | — |
-| city_residential_s3 | 未着手 | — | 未検証 | — |
-| city_residential_s4 | 未着手 | — | 未検証 | — |
-| city_residential_s5 | 未着手 | — | 未検証 | — |
+| city_residential_s2 | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/city_stage/city_residential_s2.webp` |
+| city_residential_s3 | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/city_stage/city_residential_s3.webp` |
+| city_residential_s4 | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/city_stage/city_residential_s4.webp` |
+| city_residential_s5 | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/city_stage/city_residential_s5.webp` |
 | district_market | 未着手 | — | 未検証 | — |
 | shop_market | 未着手 | — | 未検証 | — |
-| city_market_s1 | 未着手 | — | 未検証 | — |
+| city_market_s1 | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/city_stage/city_market_s1.webp` |
 | city_market_s2 | 未着手 | — | 未検証 | — |
 | city_market_s3 | 未着手 | — | 未検証 | — |
 | city_market_s4 | 未着手 | — | 未検証 | — |
@@ -243,7 +265,7 @@
 | album_base | 未着手 | — | 未検証 | — |
 | brand_mark | 実装済み・未検証 | XML・viewBox確認 | 未検証 | `assets/brand/brand_mark.svg` |
 | city_hub | 実装済み・未検証 | 寸法・形式確認、目視済み | UI統合済み・CI画像確認、厳密座標は未検証 | `assets/city_shared/city_hub.webp` |
-| scaffold_small | 未着手 | — | 未検証 | — |
+| scaffold_small | 実装済み・未検証 | 寸法・アルファ・単独縮小確認、厳密配置は未完了 | 未検証 | `assets/construction/scaffold_small.webp` |
 | scaffold_medium | 未着手 | — | 未検証 | — |
 | scaffold_large | 未着手 | — | 未検証 | — |
 | cargo_parcel | 実装済み・未検証 | 寸法・形式確認、目視済み | UI接続済み・荷物表示検収待ち | `assets/cargo/cargo_parcel.webp` |
