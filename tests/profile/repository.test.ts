@@ -1,3 +1,4 @@
+import content from '../../spec/initial/data/words.json';
 import { describe, expect, it } from 'vitest';
 import { GameSession } from '../../src/typing';
 import {
@@ -26,6 +27,19 @@ describe('storage boundary validation', () => {
     expect(createProfileDocument().settings.deliveryKeys).toEqual(['Space']);
   });
 
+  it('rejects unknown word IDs at the persistence boundary while accepting legacy collection IDs', async () => {
+    const repository = await ProfileRepository.open({indexedDB:null});
+    await repository.commitFacts(facts(),context);
+    const valid = repository.snapshot;
+    const legacyId = content.collectionSets['kotobabin-ja-240-v1'].at(-1)!;
+    const counts = {completed:1,cleanCompleted:1,practiceCompleted:0,practiceCleanCompleted:0};
+    valid.progress.words = {[legacyId]: counts};
+    expect(validateProfileDocument(valid)).toBe(true);
+    expect(validateProfileDocument({...valid, progress:{...valid.progress, words:{unknown_word:counts}}})).toBe(false);
+    valid.progress.recentRounds[0].wordIds = ['unknown_word'];
+    expect(validateProfileDocument(valid)).toBe(false);
+  });
+
   it('rejects wrong versions, corrupt balances/counters, malformed nested records and polluted keys', () => {
     const value = createProfileDocument();
     for (const corrupt of [
@@ -42,6 +56,22 @@ describe('storage boundary validation', () => {
 });
 
 describe('functional per-page memory fallback', () => {
+  it('falls back when the browser blocks access to the IndexedDB getter itself', async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'indexedDB');
+    Object.defineProperty(globalThis, 'indexedDB', {configurable:true, get() {throw new DOMException('Storage is blocked', 'SecurityError');}});
+    try {
+      const repository = await ProfileRepository.open({tabId:'restricted'});
+      expect(repository.status).toMatchObject({storage:'memory',ownership:'owner',saveState:'unsaved'});
+      expect(repository.status.notice).toContain('ページを閉じると残りません');
+      expect(repository.status.notice).toContain('Storage is blocked');
+      await repository.commitFacts(facts(),context);
+      expect(repository.snapshot.progress.totalCompleted).toBe(1);
+    } finally {
+      if (descriptor) Object.defineProperty(globalThis, 'indexedDB', descriptor);
+      else Reflect.deleteProperty(globalThis, 'indexedDB');
+    }
+  });
+
   it('continues game records/settings with an explicit unsaved notice and safe replay', async () => {
     const repository = await ProfileRepository.open({indexedDB:null,tabId:'memory'});
     expect(repository.status).toMatchObject({storage:'memory',ownership:'owner',saveState:'unsaved'});
