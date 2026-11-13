@@ -1,0 +1,42 @@
+name: M6 actual Firefox production journeys
+on:
+  workflow_dispatch:
+  push:
+    branches: [test/m6-firefox-audit]
+permissions:
+  contents: read
+concurrency:
+  group: m6-firefox-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  firefox-production:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: independent-journey
+            config: playwright.production.config.ts
+          - suite: native-audio
+            config: playwright.audio.config.ts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps firefox
+      - name: Record actual Linux Firefox engine version
+        run: >-
+          node --input-type=module -e 'import os from "node:os"; import {firefox} from "playwright";
+          const browser=await firefox.launch();
+          console.log(JSON.stringify({os:os.platform(),release:os.release(),browser:"Firefox",version:browser.version(),physicalTarget:false}));
+          await browser.close();'
+      - run: npx playwright test --config=${{ matrix.config }} --browser=firefox
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m6-firefox-${{ matrix.suite }}
+          path: test-results/
