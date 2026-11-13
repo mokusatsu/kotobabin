@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { createAppRuntime } from '../../src/app/runtime';
-import { ProfileRepository, type RecordContext } from '../../src/profile';
+import { OwnershipError, ProfileRepository, type RecordContext } from '../../src/profile';
 import { GameSession, type Word } from '../../src/typing';
 import content from '../../spec/initial/data/words.json';
 
@@ -46,5 +46,35 @@ test('queued settings cannot replace newer local projections with an older write
     expect(runtime.settings.fontScale).toBe(150);
     expect(repository.snapshot.settings.deliveryKeys).toEqual(['Space', 'Enter']);
     expect(repository.snapshot.tutorialSeen).toBe(true);
+  } finally { runtime.close(); }
+});
+
+
+test('a pre-stage ownership rejection preserves confirmed projection through refresh and requires explicit discard', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  let notify = () => {};
+  repository.subscribe = listener => { notify = listener; return () => {}; };
+  const status = { storage: 'indexeddb' as const, ownership: 'owner' as 'owner' | 'readonly', saveState: 'saved' as const, recoveryRequired: false, notice: '' };
+  Object.defineProperty(repository, 'status', { get: () => ({ ...status }) });
+  repository.commitFacts = async () => { status.ownership = 'readonly'; notify(); throw new OwnershipError(); };
+  repository.takeover = async () => { status.ownership = 'owner'; notify(); };
+  const runtime = await createAppRuntime(repository);
+  try {
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    expect(runtime.profile.totalCompleted).toBe(1);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    notify();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    expect(runtime.status).toMatchObject({ writable: false, storage: 'error' });
+    expect(JSON.parse(runtime.exportData()).currentView.progress.totalCompleted).toBe(1);
+    await runtime.retrySave();
+    notify();
+    expect(runtime.profile.totalCompleted).toBe(1);
+    await expect(runtime.takeOver()).rejects.toThrow('未保存');
+    await runtime.takeOver({ discardUnsaved: true });
+    expect(runtime.profile.totalCompleted).toBe(0);
+    expect(JSON.parse(runtime.exportData()).abandonedProjection.progress.totalCompleted).toBe(1);
   } finally { runtime.close(); }
 });
