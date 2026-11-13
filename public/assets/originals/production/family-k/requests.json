@@ -1,0 +1,19 @@
+{
+  "method": "Actual imagegen; transparent_background:true. F/I originals and all five representative screens inspected for visual style, no image references supplied. Native PNGs unchanged; no rejected attempts so far.",
+  "attempts": [
+    {
+      "id": "stamp_k01",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. A low simple WOODEN WORKBENCH with a very large rectangular tabletop, one NEW HAND TOOL: a chunky wooden-handled hammer lying diagonally across the tabletop. Beside the hammer a folded BLANK cream purchase tag stands upright. The hammer handle and low square tabletop are the heroes. Sparse composition: exactly one hand tool, one folded blank tag, no elaborate machinery. Three-quarter front view.",
+      "native_generation": "exec-6a4611b1-4846-4802-b7b5-3016b5d9a8af.png",
+      "selected": true,
+      "rejected": false
+    },
+    {
+      "id": "stamp_k02",
+      "prompt": "Create one original kotobabin achievement stamp artwork. Warm Japanese storybook watercolor and gouache matching cream plaster, honey ochre wood, forest sage green and restrained rust red. Soft handmade pigment texture inside painted objects, gentle upper-left light and short lower-right contact shade. Strong broad readable silhouettes at 72px. Standalone frameless square painted composition on genuine transparent RGBA background with generous clear margins all around. All content inside centered 80% square. No paper rectangle, background, border, perforations, typography, letters, digits, names, titles, UI, seals, badges, or brands. An ingenious wooden PACKING WORKBENCH, left-to-right workflow. A LARGE SMOOTH WRAPPING PAPER REEL at left feeds a broad cream strip across the table. A SECOND LARGE SMOOTH GUIDE WHEEL at right guides a thick string. Center stage a small brown parcel held securely by a broad wing-shaped wooden CLAMP JIG. Distinct oversized left and right circular reels and central wing fixture make a tall mechanical silhouette. No gear teeth. Three-quarter front view.",
+      "native_generation": "exec-f20d598e-d9b7-4490-b338-0f1ba4da18b6.png",
+      "selected": true,
+      "rejected": false
+    }
+  ]
+}

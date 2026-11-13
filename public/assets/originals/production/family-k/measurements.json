@@ -1,0 +1,66 @@
+[
+  {
+    "id": "stamp_k01",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      33,
+      1234,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      44,
+      75,
+      468,
+      447
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 147044,
+    "native_sha256": "0f67eef610b192cfde397cd58656424171485a1edd982b9e3e64e697bf9c600d",
+    "runtime_sha256": "dbf6ba3ec70b9bafc2d8fa6ad1104e7ef8763246b1910fd0ea456fa422591720",
+    "png_webp_alpha_and_paper_composite_equal": true
+  },
+  {
+    "id": "stamp_k02",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_alpha_bbox": [
+      0,
+      0,
+      1253,
+      1254
+    ],
+    "output_size": [
+      512,
+      512
+    ],
+    "alpha_bbox": [
+      36,
+      79,
+      475,
+      457
+    ],
+    "outside_safe_alpha_max": 0,
+    "anchor": [
+      256,
+      256
+    ],
+    "bytes": 187442,
+    "native_sha256": "4a6d4ecc6fb7d7f4e4df9dc21035832ccd1ea7e92b047f38b7f82e37fb3f676e",
+    "runtime_sha256": "1d12b2d87d42c6063c5ce5caef822b1bb5c3b6f2af718005e408bd096c01efb0",
+    "png_webp_alpha_and_paper_composite_equal": true
+  }
+]
