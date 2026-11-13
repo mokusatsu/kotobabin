@@ -32,7 +32,7 @@ test('independent real-key E2E with natural 90-second game', async ({page}, info
     });
     fs.writeFileSync(`${dir}/${label}.json`,JSON.stringify(observation,null,2));
     console.log('UI_OBSERVATION '+info.project.name+' '+label+' '+JSON.stringify({text:observation.text,viewport:observation.viewport,scroll:observation.scroll,active:observation.active,controls:observation.controls.map(({tag,text,aria,value,checked,disabled})=>({tag,text,aria,value,checked,disabled}))}));
-    await page.screenshot({path:`${dir}/${label}.png`});
+    if(!label.startsWith('result-step')||Number(label.split('-').at(-1))%5===0) await page.screenshot({path:`${dir}/${label}.png`});
     return observation;
   }
   async function navigate(label:string) {await key('F2');await activate(label);}
@@ -80,7 +80,7 @@ test('independent real-key E2E with natural 90-second game', async ({page}, info
     log('natural game duration',{duration:Date.now()-gameStart,typedKeys:count,completedTransitions:completed});
     await page.waitForTimeout(800);await shot('result-first150');
     let retry=false;
-    for(let n=0;n<30;n++){
+    for(let n=0;n<80;n++){
       const current=await shot('result-step150-'+n);
       const retryControl=current.controls.find(c=>c.tag==='BUTTON'&&!c.disabled&&/もう一度|再挑戦|もう一便|もう一回/.test(c.text||''));
       if(retryControl){await activate(retryControl.aria||retryControl.text.trim());retry=true;await page.waitForTimeout(700);await shot('retry150');break;}
