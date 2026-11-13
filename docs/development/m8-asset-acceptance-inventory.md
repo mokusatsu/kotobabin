@@ -53,3 +53,8 @@ canonical manifestのstatusは `specification_complete_assets_planned` / 各行p
 3. **必要な実UI条件だけを局所確認する。** 店舗10/25/50と `shop_canopy/banner/signboard` の接続、包装Lv25/50の `equipment_packaging_3/4`、中大足場、van/box_van/truck/train各前後は、静止制作・全levelのasset選択単体検査がある。既存資料で実合成の当該状態が追えない場合はその小さい状態マトリクスだけを確認し、画像を未制作に戻さない。自然稼得の証明とview-onlyの表示確認は区別する。
 
 この棚卸しは「248 ID全部を新たに最終承認した」という宣言ではない。根拠のある資材検査を維持し、確認できた具体不足と、局所的な表示条件／担当分離の記録不足だけを残す。既存・新規sakurai実E2E、font-focus調査、min800親修正の受入を静止画像だけで代替していない。アプリ・画像・共有台帳は変更せず、本報告だけを追加した。
+
+
+## 追加の独立確認
+
+棚卸し後に、制作担当と異なる統括担当がL切手6点とH〜L絵葉書5点を個別に実見した。[11点の観察とhash](m8-independent-l-art.md)を参照。このpacketの静止検収の担当分離は閉じたが、上段3IDの具体残件とゲーム内合成の証拠範囲は維持する。
