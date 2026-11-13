@@ -1,0 +1,187 @@
+{
+  "status": "Six generated candidates; 6/6 strict static alpha exports pass; independent visual and actual-game acceptance pending",
+  "canonicalSources": {
+    "cityCatalogSHA256": "f037bbeea78f693bb2b3df271690374b57c5a44583e9e3ece246f0498631b0b0",
+    "visualManifestSHA256": "505cb9977485b73bc85314dbb15380aba2d5965c6925e0fcd6d6350625ba1d08"
+  },
+  "districtProfile": {
+    "source_size": [
+      1024,
+      768
+    ],
+    "display_css": [
+      132,
+      99
+    ],
+    "minimum_css": [
+      96,
+      72
+    ],
+    "transparent": true,
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "layer": "district_art",
+    "notes": "地図上264×198map_px、店予約枠を透過。段階ごとに原画全体を置換。"
+  },
+  "shopProfile": {
+    "source_size": [
+      512,
+      512
+    ],
+    "display_css": [
+      64,
+      64
+    ],
+    "minimum_css": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "anchor": [
+      256,
+      448
+    ],
+    "safe_rect": [
+      32,
+      32,
+      480,
+      480
+    ],
+    "layer": "shop",
+    "notes": "地図上64×64map_px。詳細では拡大。共通の庇・のぼり・看板の基点をそろえる。"
+  },
+  "attempts": [
+    {
+      "key": "city_station_s1-village-reject",
+      "assetId": "city_station_s1",
+      "prompt": "Production illustration for the Japanese watercolor typing/city game Kotobabin. Landscape 4:3 transparent RGBA composition, logical canvas 1024x768. Delicate hand-painted watercolor and warm paper-grain painted into the objects ONLY, never into transparent surroundings; honey timber, cream walls, muted slate-blue/sage tiled roofs, forest-green accents and restrained terracotta. Soft upper-left light, no broad halo, no ground-plane shadow. Elevated common view showing FRONT and RIGHT side, like a small handcrafted Japanese storybook town building. All stages share this camera, the SAME architectural scale, and the SAME fixed ground foot anchor (512,640). All visible pixels must stay inside x64..960,y48..736; preserve clear transparent outer margins. Entire LEFT-BOTTOM rectangular shop reservation x64..352,y440..736 must remain EXACT ALPHA ZERO, including faint watercolor flecks, shadows, wood, foliage and pixels. Keep all structures right of x380 below y440. No ground, grass, floor plane, plaza paving, road, railway tracks, sleepers, platform, train, vehicle, cargo, separate shop, UI, selection glow, text, letters, numbers or logos. Transparent holes between structural posts and inside entrances. Render the complete district replacement artwork, not a collage or isolated upgrade parts. Keep the main station small in stage1 so stages2..5 genuinely add space and height rather than shrinking existing architecture.\n\nEXACT CANONICAL BRIEF for city_station_s1:\n小さな木造の旅客駅を、切妻の待合室と右へ短く伸びる待合庇で描く。駅舎は街の旅客用の景色であり、資材輸送の鉄道設備を示すものにはしない。 待合庇の下の長椅子／大きな入口と縦長の窓／待合室の入口付近に旅人の小さな影。貨物や車両は置かない 駅舎はx440〜830・y270〜640。画面に向く駅前側だけを描き、奥側は屋根で閉じる。旅客・貨物とも線路と車両はこの原画に含めない。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／段階1完成時に無料店1軒を一度だけ得る。店舗代表外観をこの時点から表示し、所有数1/5軒をDOMで示す。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。",
+      "nativeGeneration": "exec-2b83800b-9f68-4a19-aa1e-93618c2aea6e.png",
+      "selectedId": null,
+      "visualReview": "Rejected: unrequested background houses, store and trees; oversized station, violates empty lower-left shop reservation."
+    },
+    {
+      "key": "city_station_s1-cleanup",
+      "assetId": "city_station_s1",
+      "prompt": "SELECTIVE REMOVAL AND COMPOSITION CORRECTION for city_station_s1. Keep ONLY the FOREGROUND small cream/timber passenger WAITING ROOM with its gabled roof, tall narrow windows, big entrance/traveler silhouettes, and the low RIGHT-HAND bench shelter. REMOVE ALL background houses, the ENTIRE LEFT-HAND SHOP building, ALL TREES/shrubs, and every other village/scenery object. The result is ONE SMALL PASSENGER STATION, not a village. The single small gabled waiting room with one SHORT LOW ROOFED BENCH SHELTER attached on its RIGHT is the entire sprite. Keep the watercolor paint style and front/right elevated camera. Recompose this complete small station group MUCH SMALLER on the SAME FULL landscape4:3 transparent canvas: in logical1024x768 coordinates its complete silhouette must lie x440..830,y270..640. Its architecture ground foot remains at y640, main entrance toward x580. The leftmost foreground station wall should start around x440, not x380. The station's roof peak should be around y280. ALL OTHER CANVAS SPACE fully TRANSPARENT alpha0. Especially left-bottom shop-reserved rectangle x64..352,y440..736 has NO pixels of wood, leaves, paint, person or shadow. No flat ground/platform slab, no floor plane, paved plaza, rails, vehicles, cargo, banners, signs, letters, numbers or UI. A narrow wood base only directly under posts is fine. Preserve the full4:3frame; do not crop around the station. Mainstation+shortrightbenchcanopy only, small silhouette on right half with large empty left/top margins.",
+      "nativeGeneration": "exec-3c255653-fa46-42bb-b71e-dcac14e146c8.png",
+      "selectedId": "city_station_s1",
+      "visualReview": "Candidate: one gabled waiting room + right bench shelter, background village and vegetation removed. Native proportions/foot must be measured during shared-canvas export; not accepted."
+    },
+    {
+      "key": "city_station_s2",
+      "assetId": "city_station_s2",
+      "prompt": "Grow attached SINGLE SMALL PASSENGERSTATION STAGE1 into STAGE2. Preserve the EXISTING GABLED WAITINGROOM EXACTLY SAME POSITION, SAME SIZE, same roof/wall detail and camera. Keep its current BASELINE/feet exactly at the same sourceimage row; do NOT move/rescale the mainstation or crop the canvas. ADD a LOW COVERED WAITING CORRIDOR from the station FRONT toward RIGHT REAR, making a clearly L-SHAPED covered pedestrian connection. Existing station should stay toward left/back of the new group, long LOW canopy in two directions with OPEN TRANSPARENT VOID inside theL. Simple shared bench betweenposts; a tiny plain unlettered guidanceboard shape atfarcanopyend. Only ONE modest L-shaped extension, keep whole group compact inside image, no far edge cropping. Relative to full1024x768 logicalframe ALL art in righttwo-thirds x360..940; belowy440 allposts/walls/woodmustberightofx380. Preserve absolutelyemptyalpha0 rectx64..352,y440..736 (nofaintnoise/shadow). Warmtimber,creamwalls,slateblue/sagelowroofs,samewatercolorstyle,softtop-leftlight. TRUEALPHAgapsunderroofs; NOplazafloor/ground,paving,grass,trees,backgroundhouses,shops,rails,sleepers,train,vehicles,cargo,text,numbers/UI. Passenger shelter only, notfreightrailway. Complete replacementscene, samefull4:3transparentcanvas. Do not enlarge the original waitingroom: growth is connected roofed pedestrian space. The foreground narrowbasebeamandfeet remain at EXACT previoussourceposition.",
+      "nativeGeneration": "exec-087005cc-c0b1-4602-a809-399dee8e9812.png",
+      "selectedId": "city_station_s2",
+      "visualReview": "Candidate: preserves main room, adds L-shaped right/rear corridor and plain guideboard. Far-right extent requires strict safe-rectangle measurement."
+    },
+    {
+      "key": "shop_station",
+      "assetId": "shop_station",
+      "prompt": "Create one small STATION TRAVEL-ACCESSORIES KIOSK for Kotobabin, separate from the passenger station district. Square transparent RGBA canvas, logical512x512. Same hand-painted watercolor, warm timber/cream and muted slate-blue/sage palette, soft upper-left light, front and RIGHT side visible in slightly elevated isometric-like view. One LOW TRAPEZOID roof, slim vertical window frames, and a single grouped silhouette of plain unlettered booklets INSIDE the front window. The body is simple enough to identify at24CSSpx. No newspaper/magazine brand, no timetable, no railway/freight equipment. Front facade x128..384, walls y208..448, fixed ground foot (256,448). All visible pixels including antialiasing within x32..480,y32..480; outer margins must be pure alpha0. Keep signattachment (256,184), canopyattachment (256,256), bannerattachment (416,352) free of separate overlays: NO signboard, NO awning/canopy, NO banner, lettering, numbers, logo or UI. No broadgroundshadow, floor, grass, trees, people or scenery. Roof silhouette low and trapezoidal, not a gabled cottage or pavilion. True transparent background and empty space, not painted checkerboard.\n\nExact canonical brief:\n駅前の代表店は、旅の小物を扱う売店。低い台形の屋根、縦長の窓枠、窓内の無地の冊子の影を一塊で描く。実在の新聞名、雑誌名、運行表示、貨物設備は入れない。原画は512×512のRGBA、正面と右側面が見える共通の俯瞰。正面間口x128〜384、壁面y208〜448、足元(256,448)。看板(256,184)、庇(256,256)、のぼり(416,352)の接続位置を空け、これらの重ね部品と文字は描かない。代表外観は地区につき一つだけ置き、所有数・上限・収益はDOMで示す。",
+      "nativeGeneration": "exec-38c404e2-e330-4f87-9658-9d04e11190fd.png",
+      "selectedId": "shop_station",
+      "visualReview": "Candidate: low trapezoid roof, plain booklets within window; no overlay signs/awning/banner. Export/foot/safe measurements pending."
+    },
+    {
+      "key": "city_station_s3-white-patch-reject",
+      "assetId": "city_station_s3",
+      "prompt": "Grow attached PASSENGER STATION STAGE2 into STAGE3 asone COMPLETE replacementdistrict. Same watercolor/timber/cream/slateblue and front/right elevatedcamera, SAME FULL4:3canvas and SAMEbase/feet row. Grow the CENTRAL WAITINGROOM intoa LARGER COMMUNAL WAITINGHALL witha BIGGABLEDROOF (not a hipped market roof). Aboveit add ONE NARROW SQUARE CLOCKTOWER, the unmistakable new vertical landmark. ClockfacehasONLY TWO THICK HANDS, NO numerals/ticks/letters. KeepLOWwaitingcorridors onbothsides, retainingtheLconnectiononRIGHT, withopenalphagapsundercolumns, a broadentrance andsmallentrystep directlyattachedtohall. NO freightloadingopening,rail,train,vehicle,platform,groundplane or shop. Mainstation grows taller/larger; oldcorridorsremainlow. Keep the existing narrowwoodbase/footrow EXACTLYsame asreference (do not movebuildingdown). KeepallrightcorridorsCOMPACTandendbefore94%imagewidth, notcanvasedge. Don'taddremotehouses/trees.\nLayoutforCOMMONFULLCANVASEXPORT: keep full1024x768logicalframe. Clocktowercenterx650,width80; its TOP near y24 andclocktowerbody extendsdown toy244 BEHINDthegable. Mainhall gablepeakneary210, mainbodyfootneary574 likeexistingreference. (These sourcepositions will be uniformly exported to the fixed districtcanvas; do notdraw guides.) ALLstructurebelowlogicaly376mustberightofx380: leftbottomshopreservation hasPUREALPHA0, no faintpaint/shadow/wood/noise. Moregenerallytransparentbackgroundwithno floor, grass,plazapaving,roads,rails,cargo,UI,text,numbers,flags,signsorstorefronts. Tinytraveler silhouettesandbenchonly. No globalrescale/reframe/crop; preserveexistingstation'sposition andbase scale, editarchitecturalgrowthonly.\n\nCANONICAL OUTPUT-BRIEF (source layout precompensates uniform export):\n中央の駅舎を、細い角形の時計塔と大きな切妻屋根を持つ共同待合施設へ育てる。時計盤は数字や文字を入れない絵の目印とし、タイマーや運行時刻の情報として扱わない。 低い待合回廊を左右に残す／駅舎の広い入口と玄関段／時計塔の盤面は太い短針と長針のみ。貨物の積込口やレールは描かない 時計塔はx610〜690・y90〜310、駅舎本体はその下に置く。段階3でも鉄道化購入前の貨物レール・貨車・貨物ホームは出さない。／完成した地区の景観を一枚で描き、前段階の画像への追加パーツにはしない。背景・地形・配送路・線路・文字・数値・操作状態は含めない。／左下の店舗予約枠x64〜352・y440〜736は透過のまま残す。店舗の代表外観を別レイヤーで一点置き、町並みの棟数や戸口数を店舗数と対応させない。／店舗の所有上限は20軒。段階完成で店は追加付与しない。所有数と営業収益は実際の状態をDOMで示し、代表店を20枚並べない。／中心施設、広場、灯具、植栽には独立した収益・輸送・資材効果を追加しない。開発段階に伴う既存の効果だけを適用する。",
+      "nativeGeneration": "exec-b1cd748c-4d7d-48ee-9457-91925a54c973.png",
+      "selectedId": null,
+      "visualReview": "Rejected: opaque white patch behind right corridor; lower-left annex intrudes reserved shop region. Clocktower requires position review."
+    },
+    {
+      "key": "city_station_s3-cleanup",
+      "assetId": "city_station_s3",
+      "prompt": "SELECTIVE STAGE3 CORRECTION, leave LARGE CENTRAL GABLED STATION andRIGHTL-SHAPED CORRIDOR exactlysame position,size,wooddetail,camera,baselineandcanvas. Three corrections ONLY. (1) REMOVE THE LARGE WHITE PAINTED PATCH behind the RIGHT CORRIDOR inside theL, between mainroofandfar-rightend. That entire nonstructural white backing/groundpatch must be TRUEALPHA0; do NOT replace withwall, floor, sky, pavement or gray texture. Keep allactualwoodcolumns,roofsandrightbench. (2) REMOVE ENTIRE LEFTMOST SMALL ANNEX: itslowroof,bench,lantern,posts,woodbase andallstructure protrudingleftofMAINHALLLEFTWALL. Preserve onlyaTINYLOWROOFHINT BEHINDthemainhall'sLEFTUPPEREAVE, entirelyABOVElogicaly376, no leftforegroundpost. Allpixelsleftoflogicalx380andbelowy376 must be alpha0. (3) MOVE ONLY theCLOCKTOWER about52logicalpixels toRIGHT and22pixelsDOWN onlogical1024x768 fullframe, so itscenterlinesupnearx650anditsroofornamenthascleartransparentTOPMARGIN. Clocktower remainsnarrow, facehasONLYtwohandsNOticks/numerals/letters. Do not changeBIGGABLEROOF, entrance,travelerpositions orstationfeet. No newobjects. No globalresize,zoom,crop,reframe orstylechange. Full4:3transparentcanvasunchanged, allbackground/gapsalpha0. Keep broadfrontentranceandsteps, no rails/ground/vehicles/cargo/text/UI.",
+      "nativeGeneration": "exec-97b9e6f6-407a-4916-b235-2a946a41833c.png",
+      "selectedId": "city_station_s3",
+      "visualReview": "Candidate: white backing and lower-left annex removed; main hall enlarged and clocktower added. Exact landmark positions/safe alpha remain measured acceptance items."
+    },
+    {
+      "key": "city_station_s4-left-wing-reject",
+      "assetId": "city_station_s4",
+      "prompt": "Grow attachedCLOCKTOWERPASSENGERSTATION STAGE3 intoSTAGE4, samecomplete4:3frame, watercolorstyle, architecturalscale andUNCHANGEDmainstation/clocktowerpositions. KEEPclocktower,largegable,frontdoor,steps andtravelerpositions exactlyasitwas. AddLOWWAITINGWINGS onLEFTandRIGHT, withWIDEFRONTCOVEREDPASSENGERCORRIDOR. NewROOFEDWINGonRIGHTisDEEPbutCOMPACT, withstrongVERTICALwoodPOSTS andclearlyVISIBLEHANGINGLANTERNS underlongloweaves. Lanternssoftwarmdaylightwindowlight, noextraopaque glow/background. GrowtheWIDTH/depthofcoveredwalkingspace noticeably; centralclocktowerstillhighest. PreserveoldL-shapedrightconnection butshortenfar-righttailonebayso allstructuresendbefore94%framewidth (completeendpost,nocropping). LEFTWING mustbeonlybehindmainhall'sUPPERLEFTROOF: allitslowerposts andwoodbelowlogicaly376mustberightofx380; no lowerleftannex. LeftbottomSHOPSPACE x64..352,y376..768 strictlyalpha0. Relativefull1024x768sourcekeepforemostfeet atSAMEpreviousbaseline(~y574), don'tmovestationoraddfrontfloor. Bigcentralhallshouldnotshrinkorbecomeacollage. TRUEalpha0gapsbetweenpostsandinsidecourtyard. No ground,platformslab,paving,grass,trees,shops,products,freightrail,train,vehicles,cargo,letter,numeral,signtext,UI. Complete replacementdistrict, notaddedparts.",
+      "nativeGeneration": "exec-bc179b42-04cd-4ac1-8b57-af3629a67a97.png",
+      "selectedId": null,
+      "visualReview": "Rejected: long far-left wing and lower-left pavilion create opaque intrusion into reserved shop zone; clocktower and right growth otherwise readable."
+    },
+    {
+      "key": "city_station_s4-cleanup",
+      "assetId": "city_station_s4",
+      "prompt": "LOCALLEFTWINGCORRECTIONONLY. KEEPmainclocktowerstationandALLRIGHTWING/lanterns/roofandpeopleEXACTLYINPLACEANDSAMESIZE. REMOVEtheENTIRE LONG FARLEFT COVEREDWING extendingleftfrommainroof, includingits3posts,lanterns,roofandbeams. REMOVEtheSMALL LOWERLEFTBENCHPAVILIONunderit, itsfrontleftpostandbase. RestorePUREALPHA0there. TheleftmostGROUND-CONTACTINGCOLUMN mustnowalinewithmainstationLEFTWALL. A shorttinyLOWROOFHINT maypeekBEHINDmainhallLEFTUPPERSLOPINGROOF, but ONLY ABOVElogicaly376; no longarm orforegroundleftpost. We needonecompactleftwingwithoutoccupyingreservedshopspace: onlynarrowroofhint/onepostIMMEDIATELYBESIDE mainleftwall, never fartherleft. Keepmainstation'soldleftrooftipassourceunchanged. DoNOTmoveorrescaleanythingelse. FULL4:3canvas/cameraunchanged, sourcepositionsandfeetunchanged. Allbackground/gapsalpha0; no whitefill, ground, floor, roads, rail, vehicles, cargo, text or newobjects. PreserveRIGHTDEEPWAITINGWINGwithhanginglanterns asstage4newgrowth.",
+      "nativeGeneration": "exec-5ad2714f-a2dc-4b5e-9464-a16632b06b92.png",
+      "selectedId": "city_station_s4",
+      "visualReview": "Candidate: lower-left intrusion removed; deeper/larger right waiting wing with three hanging lanterns distinguishes s4. Left low wing reduced to roof hint behind main gable; exact brief coverage requires independent visual review."
+    },
+    {
+      "key": "city_station_s5",
+      "assetId": "city_station_s5",
+      "prompt": "Grow attached STAGE4 CLOCKTOWERPASSENGERSTATION intoSTAGE5, SAME4:3canvas, watercolortimber/cream/slatebluepalette,elevatedFRONT+RIGHTcamera,andSAMEmainhall/clocktowerpositionandsize. KEEPOLDclocktower, biggable,lowleftroofhintandRIGHTWAITINGWINGbehind. AddONE DISTINCTIVE FAN-SHAPED ROOF over the FRONT MEETINGPLAZA: woodbeamsradiateoutward likeopenfan, withcurving/segmentedarcoutlinewideratfront, shallowlowroof, largeopenvoidbeneath. Thisfrontfan-canopy is the NEW unmistakable stage5feature; notanotherrectangularwingandnot a repeatofgabledroof. Placefan roofinFRONT/RIGHT ofmainentrance whileleavingclocktoweranduppergable fullyvisible and a clear viewofentrance through openbays; donothidewholeportal. Underit simplelongbenchandtinytravelers, no countableticketgates. Forecourt is TRANSPARENT ALPHA0, NOTpaintedfloor, road, pavement, dirt, lawn or opaqueplazaplane. Canopycolumns/baseedgescloseonlyundernarrowstructure; noflatgroundslab. Keeplowerleft reservedshopregionx64..352,y376..768 alpha0: no newfrontleftpost,pavement,leaf,bench orshadow inthatrectangle. Newfan canopyshouldstayrightoflogicalx400 andendbeforex940. Allgrowthcontainedwithclearoutertransparentmargins, noedgecrop. Frontfan rooflogicalapprox x400..940,y410..610, foregroundpostscompleteinsideimageandbelowroofbutnoexpansivetexturedfloor. Samefixedanchor/globalarchitecturalscale aspriorstage; no globalshrinking,flattening orrestyling. No trains,buses,cargo,carts,rails,signs,letters,numbers,UI,stationnameorplatform. CompletefinishedSTATIONDISTRICT, no shops added. Twohands-onlyclockfaceunchanged.",
+      "nativeGeneration": "exec-f663cf69-3dfa-4719-bdb0-fa57e9a9d1e7.png",
+      "selectedId": "city_station_s5",
+      "visualReview": "Candidate: fan-shaped roof with radial beams, shared benches and travelers creates a visibly new foreground; central station and tower retained. Canonical placement and attachment/ground registration require independent acceptance review."
+    }
+  ],
+  "transformPolicy": "Preserve native outputs unchanged. Uniform full-canvas resampling/transparent placement only, common district transform; no alpha masking, clipping visible geometry, cropping around content or per-stage box normalization.",
+  "exportRecipe": {
+    "district": {
+      "wholeNativeCanvas": [
+        1448,
+        1086
+      ],
+      "uniformResize": [
+        896,
+        672
+      ],
+      "placement": [
+        64,
+        64
+      ],
+      "output": [
+        1024,
+        768
+      ]
+    },
+    "shop": {
+      "wholeNativeCanvas": [
+        1254,
+        1254
+      ],
+      "uniformResize": [
+        432,
+        432
+      ],
+      "placement": [
+        48,
+        63
+      ],
+      "output": [
+        512,
+        512
+      ]
+    },
+    "alphaCleanup": "None. No threshold, mask, crop or geometry clip. Ordinary uniform resampling only."
+  },
+  "reviewSheets": [
+    "review-132px.png",
+    "review-132px-grayscale.png",
+    "review-96px.png",
+    "review-96px-grayscale.png"
+  ],
+  "pendingAcceptance": [
+    "Independent small-size/color/grayscale visual review, particularly stage3-to-stage4 distinction and reduced stage4 left wing.",
+    "Actual scene anchor/foot and overlay attachment review; nominal anchors are not proof of visible foot alignment.",
+    "Canonical landmark placement, all-stage growth, clock details and overlay registration.",
+    "Actual-browser iPad game E2E per AGENTS; static images are supporting evidence only."
+  ]
+}
