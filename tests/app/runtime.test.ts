@@ -30,6 +30,21 @@ test('memory fallback projects confirmed practice immediately, persists ordered 
   } finally { runtime.close(); }
 });
 
+test('achievement views are immutable snapshots and cannot change canonical ownership', async () => {
+  const repository = await ProfileRepository.open({ indexedDB: null });
+  const runtime = await createAppRuntime(repository);
+  try {
+    const before = runtime.achievements;
+    expect(() => { before.unlocks.A01 = { acquiredAtMs: 1, evidenceEventId: 'forged', conditionRevision: '1', mode: 'PRACTICE' }; }).toThrow();
+    expect(runtime.achievements.unlocks.A01).toBeUndefined();
+    const session = new GameSession({ words: [word], mode: 'PRACTICE' });
+    for (const key of 'neko') session.input(key, 1);
+    runtime.applyFacts(session.drainEvents(), context);
+    expect(runtime.achievements.unlocks.A01).toBeDefined();
+    expect(before.unlocks.A01).toBeUndefined();
+  } finally { runtime.close(); }
+});
+
 test('queued settings cannot replace newer local projections with an older write completion', async () => {
   const repository = await ProfileRepository.open({ indexedDB: null });
   const runtime = await createAppRuntime(repository);

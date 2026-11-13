@@ -37,6 +37,13 @@ export interface AppRuntime {
 interface RuntimeClock { now(): number; wallNow(): number }
 const modes: Record<SessionMode, EconomyMode> = { MAIN: 'normal', PRACTICE: 'practice', TUTORIAL: 'intro' };
 const wordValues = new Map(content.words.map(word => [word.id, word.canonicalLength * 10]));
+function freezeSnapshot<T>(value: T): T {
+  if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) freezeSnapshot(child);
+    Object.freeze(value);
+  }
+  return value;
+}
 
 /** Memory reflects confirmed typing immediately; the repository alone confirms durable changes. */
 export async function createAppRuntime(repository?: ProfileRepository, clock: RuntimeClock = { now: () => performance.now(), wallNow: () => Date.now() }): Promise<AppRuntime> {
@@ -79,6 +86,7 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   const readAchievements = (document: ProfileDocument): AchievementState => document.extensions.achievements === undefined
     ? createAchievementState() : structuredClone(document.extensions.achievements as AchievementState);
   let achievements = readAchievements(repo.snapshot);
+  let publicAchievements: { source: AchievementState; value: AchievementState } | undefined;
   const observeCity = (value: AchievementState, state: CityState, atMs: number) => applyAchievementCity(value, {
     eventId: `world:${state.cityId}:${state.clockMs}`, atMs, city: state,
   });
@@ -162,7 +170,14 @@ export async function createAppRuntime(repository?: ProfileRepository, clock: Ru
   }, 1500);
   const runtime: AppRuntime = {
     get profile() { return progress; },
-    get achievements() { return structuredClone(achievements); },
+    get achievements() {
+      // A read may occur several times for every key and timer tick. Clone and
+      // freeze only when a confirmed projection changes, keeping old views safe.
+      if (publicAchievements?.source !== achievements) publicAchievements = {
+        source: achievements, value: freezeSnapshot(structuredClone(achievements)),
+      };
+      return publicAchievements.value;
+    },
     get settings() { return { ...settings, deliveryKeys: [...settings.deliveryKeys] }; },
     get city() { return structuredClone(city); },
     get destination() { return destination; },
