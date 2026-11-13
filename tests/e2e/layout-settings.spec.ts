@@ -23,7 +23,9 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
         const size = await page.locator(selector).evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
         expect(size, selector).toBeGreaterThanOrEqual(16);
       }
-      await page.screenshot({ path: testInfo.outputPath(`main-${viewport.width}.png`), fullPage: true });
+      await expect(page.locator('#paused-layer')).toBeHidden();
+      await page.screenshot({ path: testInfo.outputPath(`main-${viewport.width}.png`), fullPage: false });
+      await expect(page.locator('#paused-layer')).toBeHidden();
     } else {
       await expect(page.locator('[data-action="start"]')).toBeDisabled();
       await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();

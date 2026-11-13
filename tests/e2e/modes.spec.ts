@@ -80,3 +80,28 @@ test('rescue skip explains the record change, ships held cargo and stays paused'
   await expect(page.locator('#game-input')).toBeFocused();
   await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
 });
+
+test('practice completion choices work with the keyboard and preserve focus for the next attempt', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+  await page.locator('#catalogue-query').fill('猫');
+  await page.locator('[data-action="practice-word"][data-word-id="living_r01"]').click();
+  await confirmHalfWidthInput(page);
+  for (let completed = 1; completed <= 3; completed++) {
+    await typeCurrentGuide(page);
+    await expect(page.locator('#practice-progress')).toContainText(`${completed}/3`);
+    await expect(page.locator('[data-action="repeat-word"]')).toBeFocused();
+    await expect(page.locator('#paused-layer')).toBeHidden();
+    if (completed < 3) {
+      await page.keyboard.press('Enter');
+      await expect(page.locator('#game-input')).toBeFocused();
+    }
+  }
+  await page.keyboard.press('Tab');
+  await expect(page.locator('[data-action="next-practice-word"]')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('[data-action="practice-main"]')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.game-page')).toHaveAttribute('data-mode', 'MAIN');
+  await expect(page.locator('#game-input')).toBeFocused();
+});
