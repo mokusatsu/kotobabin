@@ -52,7 +52,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const location = mode === 'PRACTICE' ? 'ことばの練習' : mode === 'TUTORIAL' ? 'はじめの配達' : `${course().name} ／ 住宅地へ`;
     return `<header class="site-header">${brand()}${game ? `<span class="route-label">${location}</span><button class="button button-small pause-button" data-action="pause">一時停止 <kbd>Esc</kbd></button>` : `<nav aria-label="メイン"><button class="nav-button ${screen === 'home' ? 'nav-current' : ''}" data-action="home">ホーム</button><button class="nav-button ${screen === 'catalogue' ? 'nav-current' : ''}" data-action="catalogue">ことば図鑑</button><button class="nav-button" data-action="settings">設定</button><button class="nav-button" data-action="help">遊び方</button></nav>`}</header>`;
   }
-  function footer() { return `<footer class="site-footer"><span>ひとつずつ、ことばを届けよう。</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><button class="button" data-action="takeover">ここで続ける</button></aside>`; }
+  function footer() { return `<footer class="site-footer"><span>ひとつずつ、ことばを届けよう。</span><span>試作版 · タイピング配達</span></footer><aside id="ownership-status" class="ownership-warning" data-ownership="${runtime.status.writable ? 'owner' : 'readonly'}" ${runtime.status.writable ? 'hidden' : ''}><p>別のタブで操作中です。このタブは閲覧できます。</p><div data-ownership-action><button class="button" data-action="takeover">ここで続ける</button></div></aside>`; }
   function renderHome() {
     gameInput?.destroy(); gameInput = undefined; mapObserver?.disconnect();
     screen = 'home'; session = undefined; pending = undefined;
@@ -80,7 +80,18 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const save = root.querySelector<HTMLElement>('[data-save-status]'); if (save) save.id = 'save-status';
     const warning = root.querySelector<HTMLElement>('#ownership-status');
     if (warning) { warning.hidden = runtime.status.writable; warning.dataset.ownership = runtime.status.writable ? 'owner' : 'readonly'; }
-    if (!runtime.status.writable && screen === 'game') pause();
+    if (!runtime.status.writable && screen === 'game' && state().phase !== 'PAUSED') pause();
+    syncOwnershipActions();
+  }
+  function syncOwnershipActions() {
+    const paused = screen === 'game' && session && state().phase === 'PAUSED';
+    const aside = root.querySelector<HTMLElement>('[data-ownership-action]');
+    const inside = root.querySelector<HTMLElement>('#paused-ownership');
+    const markup = '<button class="button" data-action="takeover">ここで続ける</button>';
+    if (aside && aside.innerHTML !== (paused ? '' : markup)) aside.innerHTML = paused ? '' : markup;
+    const insideMarkup = paused && !runtime.status.writable ? `<p>別のタブで操作中です。ここで続ける場合は、操作するタブを切り替えてください。</p>${markup}` : '';
+    if (inside && inside.innerHTML !== insideMarkup) inside.innerHTML = insideMarkup;
+    const warning = root.querySelector<HTMLElement>('#ownership-status'); if (warning) warning.inert = Boolean(paused);
   }
   function commitFacts(snapshot: Snapshot) {
     if (!session || !sessionContext) return;
@@ -234,9 +245,10 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (snapshot.phase === 'PAUSED' && overlay.hidden) {
       overlay.hidden = false;
       isolatePausedContent(true);
-      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button><button class="button" data-action="catalogue">ことば図鑑</button><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
+      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button><button class="button" data-action="catalogue">ことば図鑑</button><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
       root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
     } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
+    syncOwnershipActions();
   }
   function renderResult(snapshot: Snapshot) {
     gameInput?.destroy(); gameInput = undefined;
