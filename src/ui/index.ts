@@ -565,7 +565,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const summary = runtime.returnSummary;
     if (returnNoticeDismissed || !summary || (summary.arrivedMicro === 0n && summary.shopCoinsMicro === 0n && !summary.completed.length)) return;
     const notice = document.createElement('aside'); notice.className = 'paper-card return-card'; notice.id = 'return-card'; notice.setAttribute('role', 'status');
-    notice.innerHTML = `<h2>おかえりなさい。</h2><p>留守の間の進行を、最大8時間まで自動で反映しました。</p><p>適用時間 ${Math.floor(summary.creditedMs / 1000)}秒 · 到着資材 ${formatMicro(summary.arrivedMicro)} · 営業収益 ${formatMicro(summary.shopCoinsMicro)}コイン</p>${summary.completed.length ? `<p>完成した計画 ${summary.completed.map(item => `${districtName(item.districtId)} 段階${item.stage}`).join('、')}</p>` : ''}<p>表示を閉じる前から、街に反映済みです。</p><button class="button" data-action="dismiss-return">街へ戻る</button>`;
+    notice.innerHTML = `<h2>おかえりなさい。</h2><p>留守の間に ${formatMicro(summary.arrivedMicro)}資材が到着 · ${formatMicro(summary.shopCoinsMicro)}コイン</p>${summary.completed.length ? `<p>${summary.completed.map(item => `${districtName(item.districtId)} 段階${item.stage}が完成`).join('、')}</p>` : ''}<p>適用 ${Math.floor(summary.creditedMs / 1000)}秒（最大8時間）· 街に反映済み</p><button class="button" data-action="dismiss-return">街へ戻る</button>`;
     root.querySelector('main')?.prepend(notice);
   }
   function renderCheck() {

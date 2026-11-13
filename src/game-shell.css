@@ -72,3 +72,8 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 .game-page .game-topline { border-radius: 12px; background: #e9efdf; }
 .game-page .typing-input { border-radius: 10px; background: #fffef8; }
 .game-page .cargo-slots { padding-inline: 6px; }
+/* Offline progress is an in-world HUD notice, never another flow-layout article. */
+.world-stage > .return-card { position: absolute; z-index: 8; left: 12px; right: 377px; bottom: 48px; margin: 0; padding: 12px; max-width: none; min-width: 0; border: 2px solid #587551; background: #fffbebf5; border-radius: 14px; overflow-wrap: anywhere; }
+.world-stage > .return-card h2 { font: inherit; font-weight: 700; margin: 0; }
+.world-stage > .return-card p { margin: 4px 0; }
+.world-stage > .return-card .button { padding: 4px 10px; min-height: 44px; margin-top: 4px; }
