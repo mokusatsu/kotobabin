@@ -1997,3 +1997,33 @@ body[data-reduced-motion="true"] *::after {
 .navigation-dialog nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .navigation-dialog .text-button { margin-top: 12px; }
 @media (max-width: 1200px) { .site-header > nav { display: none; } .site-header .nav-menu-button { display: inline-block; margin-left: auto; } .site-header { min-height: 78px; } }
+@media (max-width: 1400px) and (max-height: 1050px) {
+  .centered-page { min-height: 0; padding: 12px 0; display: block; }
+  .input-check { margin: 0 auto; padding: 20px; }
+  .input-check h1 { margin-bottom: 12px; }
+  .input-check > p { margin: 10px 0; }
+  .check-label { margin-top: 12px; }
+  .input-check .button { margin-top: 12px; }
+  .home-layout { padding-top: 16px; gap: 16px 24px; }
+  .home-intro { padding-top: 0; }
+  .home-intro h1 { font-size: calc(32px * var(--font-scale)); line-height: 1.3; margin-bottom: 12px; }
+  .home-intro .eyebrow, .intro-copy { margin-bottom: 12px; }
+  .course-picker { margin-bottom: 12px; padding-top: 8px; }
+  .destination { margin-bottom: 12px; padding-bottom: 8px; }
+  .keyboard-note { margin-bottom: 8px; }
+  .welcome-note { padding: 12px 0; }
+  .result-page { padding-top: 12px; }
+  .result-heading { margin-bottom: 12px; }
+  .result-heading h1 { font-size: calc(26px * var(--font-scale)); }
+  .result-heading .eyebrow { margin-bottom: 4px; }
+  .result-actions { margin-top: 12px; gap: 8px; }
+  .result-actions .button { min-height: 44px; padding: 8px 12px; }
+  .handbook-page { padding-top: 12px; }
+  .handbook-tabs { margin: 12px 0; }
+  .handbook-summary { padding: 12px 0; }
+  .achievement-card .achievement-condition { display: none; }
+  .achievement-card .achievement-progress > div:not(:first-child) { display: none; }
+  .achievement-card { padding: 12px; }
+  .achievement-card.selected { padding: 11px; }
+  .achievement-card .stamp-art, .achievement-card .stamp-placeholder { width: 96px; height: 96px; }
+}
