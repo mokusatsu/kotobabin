@@ -29,6 +29,10 @@ jobs:
           path: test-results/
   independent-review:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,10 +40,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test tests/e2e/sakurai-review.spec.ts
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test tests/e2e/sakurai-review.spec.ts --browser=${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: independent-review-results
+          name: independent-review-${{ matrix.browser }}
           path: test-results/
