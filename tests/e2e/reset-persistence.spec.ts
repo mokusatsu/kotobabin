@@ -5,8 +5,10 @@ test('actual IndexedDB resets keep separate scopes and reject facts from a delet
   const result = await page.evaluate(async () => {
     const profileSource = '/src/profile/index.ts';
     const typingSource = '/src/typing/index.ts';
+    const economySource = '/src/economy/index.ts';
     const { ProfileRepository } = await import(profileSource);
     const { GameSession } = await import(typingSource);
+    const { encodeCityState, initialCityState } = await import(economySource);
     const content = await (await fetch('/spec/initial/data/words.json')).json();
     const word = content.words.find((word: { id: string }) => word.id === 'living_r01');
     const context = { courseId: 'relaxed', planId: 'reset-test', contentVersion: '2.0.0', generatorVersion: 'test',
@@ -24,7 +26,7 @@ test('actual IndexedDB resets keep separate scopes and reject facts from a delet
     await repository.commitFacts(facts('initial-practice', 'PRACTICE'), context, { generation: originalGeneration });
     await repository.updateSettings({ guide: false, fontScale: 150 });
     await repository.markTutorialSeen();
-    await repository.commitExtension('city', { resetTarget: 'preserve-until-collection-reset' });
+    await repository.commitExtension('city', encodeCityState(initialCityState()));
     await repository.resetRecords();
     const recordsReset = repository.snapshot;
     repository.close();
@@ -49,7 +51,7 @@ test('actual IndexedDB resets keep separate scopes and reject facts from a delet
   });
   expect(result.recordsReset.progress.totalCompleted).toBe(2);
   expect(result.recordsReset.progress.recentRounds).toHaveLength(0);
-  expect(result.recordsReset.extensions.city.resetTarget).toBe('preserve-until-collection-reset');
+  expect(result.recordsReset.extensions.city.cityId).toBe('city-1');
   expect(result.recordsReset.metadata.generation).toBe(result.originalGeneration + 1);
   expect(result.recordsReopened).toEqual(result.recordsReset);
   expect(result.oldFactError).toBe('GenerationMismatchError');
