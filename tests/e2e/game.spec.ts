@@ -19,9 +19,12 @@ async function completeWord(page: Page) {
 
 test.use({ viewport: { width: 1440, height: 900 } });
 
-test('native input, delivery, 90-second finish, and same-plan retry', async ({ page }) => {
+test('native input, delivery, 90-second finish, and same-plan retry', async ({ page }, testInfo) => {
   await page.clock.install();
+  await page.goto('/');
+  await page.screenshot({ path: testInfo.outputPath('desktop-home.png'), fullPage: true });
   await prepare(page);
+  await page.screenshot({ path: testInfo.outputPath('desktop-game.png'), fullPage: true });
   const firstWord = await page.locator('#prompt-word').textContent();
   await page.locator('#game-input').press('Space');
   await page.clock.runFor(5000);
@@ -35,6 +38,7 @@ test('native input, delivery, 90-second finish, and same-plan retry', async ({ p
   await page.clock.runFor(90001);
   await expect(page.locator('.result-score')).toContainText(String(total));
   await expect(page.locator('.result-metrics')).toContainText('100.0');
+  await page.screenshot({ path: testInfo.outputPath('desktop-result.png'), fullPage: true });
   await page.locator('[data-action="retry"]').click();
   await expect(page.locator('#prompt-word')).toHaveText(firstWord!);
   await expect(page.locator('#score')).toHaveText('0');
@@ -62,9 +66,10 @@ test('mistakes preserve completion points and paused time does not consume the r
   await expect(page.locator('#time-left')).toHaveText(remaining!);
 });
 
-test('narrow screens receive the required-width guidance before starting', async ({ page }) => {
+test('narrow screens receive the required-width guidance before starting', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 767, height: 900 });
   await page.goto('/');
   await expect(page.locator('[data-action="start"]')).toBeDisabled();
   await expect(page.getByText(/幅768px以上/).first()).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('narrow-home.png'), fullPage: true });
 });
