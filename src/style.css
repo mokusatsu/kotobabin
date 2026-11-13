@@ -2022,7 +2022,6 @@ body[data-reduced-motion="true"] *::after {
   .handbook-tabs { margin: 12px 0; }
   .handbook-summary { padding: 12px 0; }
   .achievement-card .achievement-condition { display: none; }
-  .achievement-card .achievement-progress > div:not(:first-child) { display: none; }
   .achievement-card { padding: 12px; }
   .achievement-card.selected { padding: 11px; }
   .achievement-card .stamp-art, .achievement-card .stamp-placeholder { width: 96px; height: 96px; }
