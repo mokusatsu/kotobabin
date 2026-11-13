@@ -2078,3 +2078,9 @@ body[data-reduced-motion="true"] *::after {
 [data-ipad-layout] .new-achievements { padding-block: 8px; }
 [data-ipad-layout] .new-achievements h2 { margin-block: 0 8px; }
 [data-ipad-layout] .new-achievements > div { gap: 12px; }
+
+/* Keyboard paging shares the existing sidebar toolbar, without a separate row. */
+.game-panel-controls .game-panel-label { grid-column: 2; grid-row: 1; align-self: start; }
+.game-panel-controls .game-panel-shortcuts { grid-column: 2; grid-row: 1; align-self: end; text-align: center; line-height: 1.2; padding-top: calc(1.2em + 4px); color: var(--secondary); }
+.game-panel-controls > [data-game-panel-step="-1"] { grid-column: 1; grid-row: 1; }
+.game-panel-controls > [data-game-panel-step="1"] { grid-column: 3; grid-row: 1; }

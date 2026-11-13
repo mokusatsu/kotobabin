@@ -75,6 +75,14 @@ export function installGameLayout(root: HTMLElement): () => void {
   const previous = toolbar.querySelector<HTMLButtonElement>('[data-game-panel-step="-1"]')!;
   const next = toolbar.querySelector<HTMLButtonElement>('[data-game-panel-step="1"]')!;
   const label = toolbar.querySelector<HTMLElement>('.game-panel-label')!;
+  const input = root.querySelector<HTMLInputElement>('#game-input');
+  const cue = document.createElement('span');
+  cue.id = 'game-panel-shortcuts';
+  cue.className = 'game-panel-shortcuts';
+  cue.textContent = 'PageUp / PageDown';
+  toolbar.insertBefore(cue, toolbar.lastElementChild);
+  const describedBy = input?.getAttribute('aria-describedby');
+  if (input) input.setAttribute('aria-describedby', [describedBy, cue.id].filter(Boolean).join(' '));
   const layout: Layout = {
     workspace, panels, selected: 0, choiceToken: '', goalNote, shortcut,
     show(index) {
@@ -90,7 +98,11 @@ export function installGameLayout(root: HTMLElement): () => void {
       if (panels[layout.selected - 1]) previous.setAttribute('aria-label', `前の表示：${panels[layout.selected - 1].label}`);
       if (panels[layout.selected + 1]) next.setAttribute('aria-label', `次の表示：${panels[layout.selected + 1].label}`);
     },
-    destroy() { abort.abort(); if (layouts.get(root) === layout) layouts.delete(root); },
+    destroy() {
+      abort.abort();
+      if (input) { if (describedBy === null) input.removeAttribute('aria-describedby'); else input.setAttribute('aria-describedby', describedBy ?? ''); }
+      if (layouts.get(root) === layout) layouts.delete(root);
+    },
   };
   toolbar.addEventListener('pointerdown', event => {
     // Pointer paging must not steal the physical keyboard's confirmed input focus.
@@ -99,6 +111,15 @@ export function installGameLayout(root: HTMLElement): () => void {
   toolbar.addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-game-panel-step]');
     if (button && !button.disabled) layout.show(layout.selected + Number(button.dataset.gamePanelStep));
+  }, { signal: abort.signal });
+  input?.addEventListener('keydown', event => {
+    if (!event.isTrusted || event.defaultPrevented || event.isComposing || event.keyCode === 229 || event.repeat
+      || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || document.activeElement !== input) return;
+    const step = event.key === 'PageDown' ? 1 : event.key === 'PageUp' ? -1 : 0;
+    if (!step) return;
+    // Information paging never leaves confirmed typing focus or mutates the session.
+    event.preventDefault();
+    layout.show(layout.selected + step);
   }, { signal: abort.signal });
   layouts.set(root, layout);
   layout.show(mode === 'MAIN' ? 0 : panels.findIndex(panel => panel.id === 'mode'));
