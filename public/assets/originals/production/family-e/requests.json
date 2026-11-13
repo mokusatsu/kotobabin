@@ -1,0 +1,44 @@
+{
+  "client_date": "2026-11-13 Asia/Tokyo",
+  "generation_method": "Actual imagegen with viewed stamp_b01 style reference, transparent background. One generation each, no rejected generation.",
+  "reference": "public/assets/originals/stamp_b01.png",
+  "attempts": [
+    {
+      "id": "stamp_e01",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. A small folded paper map is HALF OPEN, its large near corners and accordion fold very clear. In the central valley of its folds a small roadside plant with TWO CLOSED flower buds emerges. A gently painted winding path runs across the unlettered map. One large smooth foreground pebble beside the near corner. Intimate viewpoint: foreground map corners and pebble large, tender bud rising above. It is an earned first-encounters celebration, visually joyful and welcoming, no numerical markings, no open book binding. Strong map silhouette and bud contrast.",
+      "native_generation": "exec-84c2fa9f-af21-465f-8f5b-9b346e6d94f6.png",
+      "selected": true
+    },
+    {
+      "id": "stamp_e02",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. A small warm wooden keepsake box with its tiny metal clasp OPEN. The lid stands upright behind it. The broad front face of the box is prominent. Inside are THREE large, distinct shaped bookmarks: a green LEAF, a blue BIRD, and an ochre HOUSE, each visibly tucked into the box. Simple clear shapes, no printed markings. Front-three-quarter slightly elevated view.",
+      "native_generation": "exec-919028a3-a813-43fb-b044-093426e43998.png",
+      "selected": true
+    },
+    {
+      "id": "stamp_e03",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. Several broad cream paper pages fan outward like a large hand-held paper fan. ONE thin winding ochre footpath crosses over the fanned pages and leads away into the distance. At the distant page tip stands ONE little green tree. Large clear page silhouette, open airy sky-free transparent outer space. No book spine and no writing. Path and little tree form the focal journey.",
+      "native_generation": "exec-36d12542-13cd-4c1f-b943-58edca96a0df.png",
+      "selected": true
+    },
+    {
+      "id": "stamp_e04",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. One thick illustrated encyclopedia stands upright at a slight angle, with a warm sage clothbound cover completely unlettered. A long ochre cloth bookmark hangs down along its SPINE. A LARGE magnifying glass overlaps diagonally in the foreground, its handle toward bottom right, lens transparent with subtle pale blue highlight. Page block broad simple cream bands, not tiny thin stripes. Strong vertical book and diagonal circular lens silhouette.",
+      "native_generation": "exec-2bbca8b4-b285-4f34-9edb-80efbcad1a59.png",
+      "selected": true
+    },
+    {
+      "id": "stamp_e05",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. A CENTRAL ROUND folded-map disc painted with a simple path and green land areas, no marks or labels. Around it exactly SIX large separate objects arranged radially like six flower petals, evenly spaced and clearly distinguishable: a handleless Japanese teacup top, one orange fruit upper right, a small blue bird lower right, one small wooden-handled hammer bottom, one green leaf lower left, one cream sealed envelope upper left. These are the only six petal objects, no extras. No flower petals behind them. Compact circular composition.",
+      "native_generation": "exec-e8f7e724-582d-43ee-9a5d-1d827909705d.png",
+      "selected": true
+    },
+    {
+      "id": "stamp_e06",
+      "prompt": "Create a NEW original kotobabin achievement stamp illustration, using the attached artwork ONLY as the watercolor style reference, not its subjects. Warm hand-painted watercolor and gouache, soft paper grain within painted shapes, honey ochre/cream/sage/powder blue, clear large shapes at 72px, refined storybook world. Square canvas with genuine transparent background outside the freestanding colored scene. Frame-free artwork only; no stamp border, no perforations, no text, no letters, numbers, symbols, captions or UI states. Keep entire painting within a generous transparent outer margin. Do not copy the reference hand/door/parcel. No drop shadow on an opaque white or beige background. One foreground ochre footpath rises over a rounded green grassy hill then splits into exactly THREE clearly separated branches. Each branch leads to a different small gate on the far hill: a simple wooden rectangular gate left, a small stone arched gate center, and a curved wooden roofed garden gate right. Broad green grass areas visibly separate all three paths. Gates are destination silhouettes, no houses or text. Elevated three-quarter view makes the single trunk splitting into three readable.",
+      "native_generation": "exec-1ed7b428-c618-436f-8ae3-9ca204a623b5.png",
+      "selected": true
+    }
+  ],
+  "export": "Full native square canvas reduced to448square and placed32,32 on512RGBA. No crop, alpha mask or repaint. Lossless WebP. Original preserved unchanged."
+}
