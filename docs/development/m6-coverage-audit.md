@@ -43,3 +43,9 @@ run43500330798／source645b025。独立journey job132144109750のnative logを�
 診断run43501262495／job132147338876で、`/dev/snd` がなくPulseAudio/PipeWireプロセスもないことを観測した。製品コードを読み込まない実Firefox159.0のnativeボタン操作でも、AudioContextは生成できるがinitial=`suspended`、resumeが5秒経過後も未完了（`resumed:null,error:null,complete:false`）だった。同じrunの製品音声例は再び1/3。これは少なくともテストhost自体に音声開始を妨げる条件があり、製品のOGG/MP3失敗とはまだ判定できないことを示す。
 
 この観測に対してrunnerの音声jobだけへPulseAudioとnull OS sinkを追加する。ブラウザーのAudioContext・実ファイル取得・decode・source再生は既存のままで、Firefoxのautoplay設定やテストassertionを変更しない。healthがnative resume=`running`まで成功しなければjobを失敗とし、音声利用可能な試験環境とは扱わない。null sinkはCI音声経路のためであり、スピーカーから聞こえる音質・音量や実機での聴取合格を主張しない。runner修正後の実3例の結果は未取得。
+
+### runner修正後の実音声結果
+
+run43501588274／source410a0bb、音声job132148620493のnative logを独立取得し、**3/3成功（19.0秒）**を確認した。OSはnull sink `ci_output`（s16le／2ch／44100Hz）を提供し、同じnative healthは `initial:suspended → resumed:running,error:null,complete:true` へ変わった。製品と3例のassertionは変更していない。opt-inと各効果音・重複防止10.3秒、開始障害→明示retry→native MP3 fallback4.2秒、150%keyboard到達2.4秒が成功した。
+
+無音hostでのhealth未完了・1/3から、OS音声経路追加だけでhealth正常・3/3へ変わったため、今回の音声失敗はrunner環境の不足として扱う。製品のcodec不具合として報告しない。ただしnull sink上の実decode/source再生の検証であり、人による聴取・スピーカー音質や音量の評価は含まれない。LinuxFirefoxの5例（独立journey2＋音声3）の証拠が揃ったが、Windows／macOS／iPad物理対象と前世代browserの未確認は残る。
