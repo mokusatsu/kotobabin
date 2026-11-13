@@ -1,0 +1,39 @@
+{
+  "policy": "Actual imagegen edits with coordinate templates; alloldnative/export/provenance preserved history; fullcanvasportrait normalization only, no crop/mask/threshold/paintfitting.",
+  "attempts": [
+    {
+      "id": "s1-fullguide",
+      "prompt": "GEOMETRY-CORRECTED HARBOR STAGE 1. FIRST image is a structural placement guide on1024x768 transparent canvas. SECOND image is the existing watercolor harbor style reference. Paint a beautiful cozy Japanese wooden waiting hut and ONE narrow wooden pier in the EXACT FIRST GUIDE POSITIONS, preserving full4:3canvas. Do NOT center, enlarge, zoom or crop the structure. Guide is only a template, not final rendering. Hut occupies x440..720,y340..640: low gray-green tiled gable roof, warm plank walls, front long bench and one tiny waiting person at doorway. Front supporting step must touch(512,640). Main building floors and columns stay LEFT of x720 and ABOVE y640. A single thin plank pier runs diagonally DOWN-RIGHT from centerline contact(730,650) to final-plank center(904,716), with roughly24px deck width; its final plank must visibly cover pixel(904,716), not end before it. The pier deck must also visibly cover(730,650). Copy guide pier's direction,length and endpoints EXACTLY. Pier may extend to x922,y730; that is still inside safe area. Add one low mooring bollard and a small coiled rope on pier, but keep tip point on wood. Entire art within x64..959,y48..735. Reserved shop rectangle x64..351,y440..735 must remain alpha0, as must every empty background pixel. NO terrain, water, shoreline, grass plane, ground shadow, opaque backdrop, boats, fish, birds, text, numbers, signs, labels or UI. Warm fine watercolor grain inside physical objects with crisp readable outlines. Same original muted slate roof and honey plank palette. Transparent RGBA background and clean gaps under benches and structural supports. Geometry guide takes priority over old incorrectly positioned pier.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s1-structural-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/city_harbor_s1.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-72bc93af-99a0-423b-ba7c-10403db032a3.png",
+      "disposition": "Rejected: physical art17px high; requiredpoints empty; alpha1 outside safe/reserved.",
+      "transparent_background": true,
+      "style_reference_preserved_snapshot": "history/city_harbor_s1.png"
+    },
+    {
+      "id": "s1-down17-edit",
+      "prompt": "Precise correction of attached harbor stage1 sprite. KEEP the SAME 4:3 full transparent canvas and exactly the same building/pier sizes and x positions. Move ALL PHYSICAL ART DOWN exactly17 pixels in logical1024x768 coordinates (24 pixels on native1448x1086). Do not move canvas. Current front step ends near y623; its supporting bottom must reach y640 and cover point(512,640). Current pier deck lies above required coordinates: after moving down, its actual wooden deck must cover both(730,650) and(904,716). The outer final plank center is(904,716), its bottom may reach y732 but NEVER beyond736. Keep one diagonal narrow pier, same length and direction. Main building supports stay x<=720 and y<=640; only pier extends beyond. Clean up ALL faint stray background pixels: outside real physical illustration every pixel must be fully alpha0, including all outer margins and reserved shop rectangle x64..351,y440..735. No background haze or colored noise, no semitransparent speckles. Whole illustration must fit safe x64..959,y48..735. Preserve watercolor illustration, hut, bench, person, rope and bollard with no redesign or new objects. Transparent background; no terrain, water, floor, text, numbers or UI. This is a position and transparent-noise correction only.",
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-72bc93af-99a0-423b-ba7c-10403db032a3.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-1425cb1b-36ea-4e74-ad70-bcf9ba6b8a0e.png",
+      "disposition": "Rejected: pierA filled but mainfoot/tip empty; reservedalpha1 remains.",
+      "transparent_background": true
+    },
+    {
+      "id": "s1-portrait",
+      "prompt": "Paint the FIRST structural template into the beautiful watercolor architectural STYLE of SECOND image. FIRST IMAGE is a PORTRAIT608x688 canvas and its geometry takes absolute priority; output SAME PORTRAIT ASPECT, not4:3. Do NOT center or zoom the buildings. Preserve all FIRST IMAGE physical positions and transparent margins. This portrait will later be placed unchanged at(352,48) on1024x768 canvas. Therefore local coordinates matter: hut front step at(160,592); pier centerline contact(378,602); final-plank center(552,668). Actual opaque wooden deck must visibly cover BOTH pier points and extend through the final point, not end before it. Keep guide's diagonal long narrow pier and low wooden hut, not old reference's short pier. Hut has low gray-green tiled gable roof, warm plank walls, front long bench, one tiny waiting person, muted sage curtain. Add low bollard and coiled rope at outer pier end. Preserve guide's hut footprint with front supporting bottomstep covering local(160,592). Main building supports stay left of localx368 and above localy592; only pier extends right/down. No building, floor, posts or terrain over water except pier. Delicate warm Japanese watercolor grain only inside opaque physical objects. Genuine transparent background and clear gaps. No scenery, water, ground, grass, floor plane, shadows outside structures, letters, words, numbers, labels, UI or border. Preserve portrait608:688 framing and first guide shapes exactly, even if much of upper canvas is empty. No black background painted.",
+      "referenced_image_paths": [
+        "/workspace/work/packaging-m6/public/assets/originals/production/harbor-fix/s1-portrait-guide.png",
+        "/workspace/work/packaging-m6/public/assets/originals/city_harbor_s1.png"
+      ],
+      "native_generated_path": "/workspace/generated_images/exec-95b79631-f3be-44de-82e7-ae0a9fff1918.png",
+      "disposition": "Selected; measuredafterfullcanvas608x688 placement352,44. Allcontactsopaque, safe/reservedalpha0.",
+      "transparent_background": true,
+      "style_reference_preserved_snapshot": "history/city_harbor_s1.png"
+    }
+  ]
+}

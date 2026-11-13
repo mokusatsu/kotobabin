@@ -1,0 +1,81 @@
+[
+  {
+    "id": "city_harbor_s1",
+    "native_size": [
+      1179,
+      1334
+    ],
+    "output_size": [
+      1024,
+      768
+    ],
+    "output_mode": "RGBA",
+    "whole_canvas_resize": [
+      608,
+      688
+    ],
+    "offset": [
+      352,
+      44
+    ],
+    "scale": [
+      0.5156912637828668,
+      0.5157421289355323
+    ],
+    "anchor": [
+      512,
+      640
+    ],
+    "safe_rect": [
+      64,
+      48,
+      960,
+      736
+    ],
+    "reserved_shop_rect": [
+      64,
+      440,
+      352,
+      736
+    ],
+    "all_alpha_bbox": [
+      381,
+      65,
+      941,
+      732
+    ],
+    "opaque_bbox": [
+      436,
+      332,
+      918,
+      731
+    ],
+    "outside_safe_max_alpha": 0,
+    "reserved_shop_max_alpha": 0,
+    "contact_alphas": {
+      "512,640": 223,
+      "730,650": 253,
+      "904,716": 251
+    },
+    "front_step_region": [
+      480,
+      600,
+      540,
+      670
+    ],
+    "front_step_opaque_bbox_local": [
+      0,
+      0,
+      60,
+      41
+    ],
+    "tip25x25_max_alpha": 255,
+    "sha256": {
+      "originals/production/harbor-fix/native/city_harbor_s1.png": "e92e7771b67558cb5901fcc10c100891a736a8633134b958d8a8b880a12f7169",
+      "originals/city_harbor_s1.png": "2aee53c0f8f6b6d80200d8c47cd496df065559a945691ddd7fcc2d1f4b4e3b84",
+      "originals/city_harbor_s1.generated.png": "e92e7771b67558cb5901fcc10c100891a736a8633134b958d8a8b880a12f7169",
+      "city_stage/city_harbor_s1.webp": "96b78c3c4a717494bf5e97a0133573f2b8684ecd7e97461358abbc71f25cdd83"
+    },
+    "png_webp_alpha_and_paper_equal": true
+  }
+]
