@@ -80,7 +80,7 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await page.getByRole('button', { name: '導入を飛ばして本編へ', exact: true }).click();
   await expect(page.locator('#romaji-guide')).toBeHidden();
   const promptSize = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
-  expect(promptSize).toBeGreaterThanOrEqual(72);
+  expect(promptSize).toBeGreaterThanOrEqual(48);
   const guide = await typeCurrentGuide(page);
   await expect(page.locator('#cargo-count')).toHaveText('1');
   const baseScore = guide.length * 10;
@@ -97,6 +97,14 @@ test('150% text, Enter delivery, reduced motion and sticky guide history keep th
   await expect(page.locator('#paused-layer')).toBeHidden();
   await page.locator('#game-input').press('Escape');
   await page.locator('#paused-layer [data-action="settings"]').click();
+  const sizeAt150 = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="fontScale"][value="100"]'));
+  await page.locator('.settings-dialog input[name="fontScale"][value="100"]').check();
+  const sizeAt100 = await page.locator('#prompt-word').evaluate(element => Number.parseFloat(getComputedStyle(element).fontSize));
+  expect(sizeAt100).toBeGreaterThanOrEqual(32);
+  expect(sizeAt150 / sizeAt100).toBeCloseTo(1.5, 4);
+  await keyboardRevealControl(page, page.locator('.settings-dialog input[name="fontScale"][value="150"]'));
+  await page.locator('.settings-dialog input[name="fontScale"][value="150"]').check();
   await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
   await page.locator('.settings-dialog input[name="guide"]').check();
   await keyboardRevealControl(page, page.locator('.settings-dialog input[name="guide"]'));
