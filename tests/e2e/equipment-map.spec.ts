@@ -64,9 +64,11 @@ for (const item of [{ kind: 'packaging', from: 7, to: 8 }, { kind: 'crews', from
     await fixture(page); await selectFeature(page, item.kind);
     await expect(page.locator('#purchase-current')).toHaveText(String(item.from));
     const rect = page.locator(`.district-map[data-district-id="residential"] [data-capacity-feature="${item.kind}"] .dm-rack-filled`);
-    const width = Number(await rect.getAttribute('width')); const before = await saved(page);
+    await expect(rect).toBeVisible();
+    const width = Number(await rect.getAttribute('width')); const renderedWidth = (await rect.boundingBox())!.width; const before = await saved(page);
     await activate(page, '[data-action="city-purchase"]'); await expect(page.locator('#purchase-current')).toHaveText(String(item.to));
     await expect.poll(async () => Number(await rect.getAttribute('width'))).toBeGreaterThan(width);
+    await expect.poll(async () => (await rect.boundingBox())!.width).toBeGreaterThan(renderedWidth);
     await conserved(page, before, 1);
   });
 }
