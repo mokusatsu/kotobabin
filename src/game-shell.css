@@ -67,3 +67,8 @@ body[data-reduced-motion=true] .game-stage *, body[data-reduced-motion=true] .ci
 .world-command-dock .eyebrow { display: none; }
 .world-command-dock h1 { font-size: 1.15em; }
 .world-command-dock .keyboard-note { font-size: 1em; }
+/* The typing surface is a game instrument panel, with stable reserved prompt rows. */
+.game-page .typing-card { background: #fffbed; border: 2px solid #7b9176; border-radius: 18px; box-shadow: 0 4px 0 #4055431f; }
+.game-page .game-topline { border-radius: 12px; background: #e9efdf; }
+.game-page .typing-input { border-radius: 10px; background: #fffef8; }
+.game-page .cargo-slots { padding-inline: 6px; }
