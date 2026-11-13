@@ -37,9 +37,9 @@ test('development comparisons use native input and engine facts without opening 
   await expect(dev.locator('#dev-rates')).toHaveValue('1,2,3'); await expect(dev.locator('#dev-denominator')).toHaveValue('3');
   await activate(dev, '[data-left-tab="conditions"]'); await edit(dev, 'dev-cargo', '2'); await edit(dev, 'dev-remaining', '5000'); await activate(dev, '#dev-apply');
   await expect(dev.locator('#dev-base')).toHaveText('120'); await expect(dev.locator('#dev-cargo-state')).toHaveText('2 / 3'); await expect(dev.locator('#dev-time')).toHaveText('5000');
-  await activate(dev, '#dev-resume'); await expect(dev.locator('#dev-input')).toBeFocused(); await expect(dev.locator('#dev-editing')).toBeDisabled();
+  await activate(dev, '#dev-resume'); await expect(dev.locator('#dev-input')).toBeFocused(); await expect(dev.locator('#dev-editing')).toHaveAttribute('disabled', ''); await expect(dev.locator('#dev-cargo')).toBeDisabled();
   await dev.keyboard.type('inu'); await expect(dev.locator('#dev-score')).toHaveText('360'); await expect(dev.locator('#dev-cargo-state')).toHaveText('0 / 3');
-  await dev.keyboard.press('Escape'); await expect(dev.locator('#dev-stage')).toHaveAttribute('data-phase', 'PAUSED'); await expect(dev.locator('#dev-editing')).toBeEnabled();
+  await dev.keyboard.press('Escape'); await expect(dev.locator('#dev-stage')).toHaveAttribute('data-phase', 'PAUSED'); await expect(dev.locator('#dev-editing')).not.toHaveAttribute('disabled', ''); await expect(dev.locator('#dev-cargo')).toBeEnabled();
   await activate(dev, '[data-right-tab="facts"]'); await activate(dev, '#dev-facts-next'); await expect(dev.locator('#dev-facts')).toContainText('DeliveryCommitted full / 荷物3 / ボーナス180');
   const downloadPromise = dev.waitForEvent('download'); await activate(dev, '#dev-export'); const download = await downloadPromise;
   const output = info.outputPath('development-comparison.json'); await download.saveAs(output); const exported = JSON.parse(await readFile(output, 'utf8'));

@@ -73,6 +73,7 @@ function paintFacts(state: SessionSnapshot) {
   text('dev-facts-page', `${factPage + 1} / ${count}`);
   element<HTMLButtonElement>('dev-facts-prev').disabled = factPage === 0;
   element<HTMLButtonElement>('dev-facts-next').disabled = factPage === count - 1;
+  handOffDisabledPager('dev-facts-prev', 'dev-facts-next');
   text('dev-plan', comparison.planId); text('dev-sequence', `出題列（末尾3語）: ${state.wordIds.slice(-3).join(' → ')}`);
   text('dev-preparation', `準備操作${comparison.operations.length}件。すべての操作・事実は開発比較JSONに含まれます。`);
 }
@@ -141,10 +142,17 @@ element('dev-export').addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(comparisonExport(comparison, snapshot()), null, 2)], { type: 'application/json' }));
   const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'kotobabin-development-comparison.json'; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
 });
+// WebKit can strand Tab navigation on a focused button when that button disables itself.
+function handOffDisabledPager(previousId: string, nextId: string) {
+  const previous = element<HTMLButtonElement>(previousId), next = element<HTMLButtonElement>(nextId);
+  if (document.activeElement === previous && previous.disabled && !next.disabled) next.focus({ preventScroll: true });
+  if (document.activeElement === next && next.disabled && !previous.disabled) previous.focus({ preventScroll: true });
+}
 function paintParameters() {
   document.querySelectorAll<HTMLElement>('#dev-parameters > article').forEach((card, index) => { card.hidden = Math.floor(index / 7) !== parameterPage; });
   element<HTMLButtonElement>('dev-parameters-prev').disabled = parameterPage === 0;
   element<HTMLButtonElement>('dev-parameters-next').disabled = parameterPage === 1;
+  handOffDisabledPager('dev-parameters-prev', 'dev-parameters-next');
   text('dev-parameters-page', `${parameterPage + 1} / 2`);
 }
 element('dev-parameters-prev').addEventListener('click', () => { parameterPage = 0; paintParameters(); });
