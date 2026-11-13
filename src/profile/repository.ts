@@ -287,6 +287,18 @@ export class ProfileRepository {
     this.emit();
   }
 
+  /** A pure synchronous reducer may run twice: once for this page and once on the
+   * latest persisted document inside the readwrite transaction. Never capture a
+   * stale document or perform I/O here; city/event reducers must be idempotent.
+   * Ownership, revision and deletion-generation metadata remain repository-owned.
+   */
+  mutateDocument(reducer: (current: ProfileDocument) => ProfileDocument): Promise<void> {
+    return this.write(current => {
+      const metadata = { ...current.metadata };
+      return { ...reducer(current), metadata };
+    });
+  }
+
   commitFacts(facts: readonly SessionFact[], recordContext: RecordContext): Promise<void> {
     const batch = structuredClone(facts);
     const context = structuredClone(recordContext);
