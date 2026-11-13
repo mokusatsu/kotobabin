@@ -175,7 +175,7 @@ export class AudioPlayer {
     this.setStatus(status);
   }
   /** Discard all pending feedback; a later explicit gesture can re-enable playback. */
-  pause(): void { this.silence('paused'); }
+  pause(): void { this.silence(this.currentStatus === 'unavailable' ? 'unavailable' : 'paused'); }
   /** Let final delivery feedback finish while stopping the background loop. */
   stopTheme(): void {
     this.themeWanted = false;

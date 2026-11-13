@@ -197,6 +197,7 @@ describe('audio lifecycle and retry status', () => {
     context.decodeAudioData.mockRejectedValueOnce(new Error('Temporary decode failure'));
     await player.startFromGesture(); await flush();
     expect(player.status).toBe('unavailable');
+    player.pause(); expect(player.status).toBe('unavailable'); // pausing cannot hide the explicit retry requirement
     expect(await player.startFromGesture()).toBe(true); await flush();
     expect(player.status).toBe('ready'); player.play('key'); expect(context.active).toHaveLength(1); player.dispose();
   });
