@@ -100,6 +100,8 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     const contained = Boolean(active && element.contains(active));
     const action = contained ? active?.dataset.action : undefined;
     const equipSlot = contained ? active?.dataset.equipSlot : undefined;
+    const stableId = contained ? active?.id : undefined;
+    const controlValue = contained && (active instanceof HTMLSelectElement || active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) ? active.value : undefined;
     const wordId = active?.dataset.wordId;
     const matches = (candidate: HTMLElement) => candidate.dataset.action === action && candidate.dataset.equipSlot === equipSlot && candidate.dataset.wordId === wordId;
     const selector = equipSlot ? '[data-equip-slot]' : '[data-action]';
@@ -107,9 +109,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     element.innerHTML = markup;
     viewMarkup.set(element, markup);
     ipadLayout.refresh();
-    if ((action || equipSlot) && ordinal >= 0) {
-      const next = [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal];
-      if (next) { suppressBlur = true; next.focus({ preventScroll: true }); suppressBlur = false; }
+    const byId = stableId ? [...element.querySelectorAll<HTMLElement>('[id]')].find(candidate => candidate.id === stableId) : undefined;
+    const next = byId ?? ((action || equipSlot) && ordinal >= 0 ? [...element.querySelectorAll<HTMLElement>(selector)].filter(matches)[ordinal] : undefined);
+    if (next) {
+      // Preserve a native selection across its own change-triggered redraw. Never choose a missing option.
+      if (controlValue !== undefined && next instanceof HTMLSelectElement && [...next.options].some(option => option.value === controlValue)) next.value = controlValue;
+      suppressBlur = true; next.focus({ preventScroll: true }); suppressBlur = false;
     }
   }
   function newSeed() { return crypto.getRandomValues(new Uint32Array(1))[0]!; }
