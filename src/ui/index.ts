@@ -343,7 +343,12 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (target.id.startsWith('catalogue-')) { cataloguePage = 0; updateCatalogue(); }
   });
   on(root, 'input', event => { if ((event.target as HTMLElement).id === 'catalogue-query') { cataloguePage = 0; updateCatalogue(); } });
-  on(root, 'pointerdown', event => { if ((event.target as HTMLElement).closest('[data-action="deliver"], [data-action="guide"], [data-action="repeat-word"], [data-action="next-practice-word"], [data-action="practice-main"], [data-action="practice-end"], [data-action="tutorial-main"], [data-action="tutorial-skip"], [data-action="tutorial-practice"]')) event.preventDefault(); });
+  // Keep native input focus until an intended pointer action is handled. Otherwise
+  // the adapter's blur pause can make the target inert before its click arrives.
+  on(root, 'pointerdown', event => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
+    if (screen === 'game' && target && document.activeElement === root.querySelector('#game-input')) event.preventDefault();
+  });
   on(root, 'click', event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target || (target as HTMLButtonElement).disabled) return;
