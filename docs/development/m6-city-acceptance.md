@@ -38,4 +38,17 @@ No local development or preview server was started. Actual browser execution is 
 M6_CITY_BASE_URL=http://127.0.0.1:4173 npx playwright test --config playwright.m6-city.config.ts
 ```
 
-Browser acceptance has not yet passed at this commit. CI will provide the actual run result and retained trace on failure. This is production-build Chromium coverage, not live private Site execution, hardware iPad testing, or independent final art acceptance.
+## Observed CI result: both journeys skipped
+
+Fetched and read both native GitHub job logs for [run43498938436](https://github.com/mokusatsu/kotobabin/actions/runs/43498938436), checked out at `8fa0db935694d3292db647a96a31c7361a98f1e7`.
+
+| Engine | Native job | Observed test result |
+|---|---|---|
+| Chromium | [132139312370](https://github.com/mokusatsu/kotobabin/actions/runs/43498938436/job/132139312370) | `2026-11-13T20:10:40.1763732Z   1 skipped` |
+| WebKit | [132139312433](https://github.com/mokusatsu/kotobabin/actions/runs/43498938436/job/132139312433) | `2026-11-13T20:11:20.0361553Z   1 skipped` |
+
+Both logs identify the mature-city journey at `city.audit.ts:66:1`; both artifact steps report that no files were found under `test-results/m6-city/`. Job success therefore does not establish browser acceptance. Neither log provides an executed result for the six stage5 plans, six railways, fifteen research purchases, restart or restoration. Build completion is present, but the journey was skipped by its explicit missing-`M6_CITY_BASE_URL` guard. The next bounded correction is to supply `M6_CITY_BASE_URL=http://127.0.0.1:4173` to the CI test process, then execute this same existing case against the CI-only production preview. No additional scenario or product change is justified by these logs.
+
+Canonical research affordability was checked directly from `economy_config.json`: ranks1–5 cost1+2+3+4+5=15 blueprints per branch, three branches cost45, and the public-command fixture earns48, leaving3 after the fifteen purchases.
+
+Browser acceptance remains unverified. The intended evidence is production-build Chromium/WebKit UI operation after an explicit synthetic confirmed-fact fixture, not native earning from a fresh player profile, live private Site execution, hardware iPad testing, or independent final art acceptance.
