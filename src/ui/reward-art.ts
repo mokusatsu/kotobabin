@@ -1,5 +1,5 @@
 import catalog from '../../spec/initial/data/achievement_catalog.json';
-import type { AchievementState, AchievementView, EquipmentSlot } from '../profile/achievements';
+import type { AchievementState, EquipmentSlot } from '../profile/achievements';
 
 // Explicit export paths derived from manifest asset_refs; the production manifest is not bundled.
 export const rewardAssetPaths: Readonly<Record<string, string>> = {
