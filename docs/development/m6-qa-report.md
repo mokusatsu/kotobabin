@@ -33,3 +33,13 @@
 - 同じ960語状態で、実UIの12系統を順に開き72個の実績IDを確認する。図鑑はページ分割を保持したまま全960語の「練習で無誤打3回」filterを実行する。960行の同時DOM表示は要求しない。UI応答とRAF間隔は記録し、仕様にない新しい合否閾値は作らない。
 
 実行時のOS、CPU型番・論理CPU数、メモリ、Node、実ブラウザversion、viewport、倍率、全標本をJSON artifactに残す。GitHubホストの結果をMM9C3J/A実機の合格へ読み替えない。ローカルではESLint、Playwrightの収集（2例）、fixture生成・validator検証（1例）だけを実施し、ブラウザや代替サーバーは起動していない。実性能値と合否はCI実行後に追記する。
+
+## 第1回の実性能CI：未達（2026-11-14）
+
+実行43498989069／job132139489051、測定branch567247d（製品ff984）をGitHub native job-log APIで独立取得した。2例中、cold20回は合格（35.3秒）、大容量進捗での入力は性能閾値で失敗（17.9秒）した。collection・fixture・ページ操作の失敗ではない。
+
+実ホストはLinux7.0.0-1019-azure、AMD EPYC7763、論理4CPU、メモリ16,759,439,360bytes、Node24.22.2、Chromium158.0.8127.18、1180×720／100%。入力243打すべての次フレームでDOM変化を確認し、72実績ID・960語の無誤打3回filterも確認した。handler代理値P95 **65ms**（目標5ms）、表示代理値P95 **67.7ms**（目標50ms）、RAF間隔P95 **50ms**、long task **51件（50〜95ms）**。図鑑filter42.46ms、系統切替の観測範囲10.14〜158.01ms。これらを実機iPadの値として扱わない。
+
+大きいhandler標本は語完成に対応する周期で現れる。コードではnativeInput→onCharacter→mutate→commitFacts→runtime.applyFactsの同期経路で、960語を含む実績状態のstructuredClone／reducerと描画が行われる。これは調査すべき具体的な経路であり、各関数の寄与率はCPU profile採取前には断定しない。閾値の緩和、語数・実績条件の削減はしていない。
+
+計測側の不備も1点見つかった。list reporterの`info.attach({body})`だけでは、JSON標本がupload-artifact対象ディレクトリに実ファイルとして残らず、当該artifactはerror-contextのみだった。したがってcoldが3秒／3MB以下で合格した事実は確認できるが、coldの正確なP95・転送値は当該実行から回収できない。次回用にJSONをoutputPathへ明示保存し、要約値もnative logに出すようテストだけ修正した。合否基準と計測対象は変更しない。再実行の理由は製品性能改善またはこの標本保存の修正であり、旧4例の障害復旧を繰り返す理由にはしない。
