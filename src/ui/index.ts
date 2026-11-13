@@ -33,6 +33,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
   let practiceWordIds: string[] = [];
   let mapObserver: ResizeObserver | undefined;
   let lastResult: Snapshot | undefined;
+  let lastChoiceFocus = '';
   let inputConfirmed = false;
   let checkPassed = false;
   let rechecking = false;
@@ -130,7 +131,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
       practiceWordIds = [...chosenIds];
       sessionContext = { courseId: words[0].courseId, planId: `${mode}:${chosenIds.join(',')}`, contentVersion: wordsData.contentVersion, generatorVersion: 'fixed-word-list-1.0.0', inputRuleVersion: 'romaji-1.0.0', scoringVersion: 'score-1.0.0', guideUsed: runtime.settings.guide, assisted: false };
     }
-    lastMistakes = 0; renderGame(); focusInput();
+    lastMistakes = 0; lastChoiceFocus = ''; renderGame(); focusInput();
   }
   function startMain(preferredWordId: string | null = null) {
     closeCurrent('main');
@@ -245,7 +246,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     if (snapshot.phase === 'PAUSED' && overlay.hidden) {
       overlay.hidden = false;
       isolatePausedContent(true);
-      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button><button class="button" data-action="catalogue">ことば図鑑</button><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
+      overlay.innerHTML = `<section class="paper-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title"><p class="eyebrow">TAKE YOUR TIME</p><h1 id="pause-title">ひと休みしましょう。</h1><div id="paused-ownership"></div><p>時計と入力は止まっています。<br>準備ができたら、続きをどうぞ。</p><button class="button button-primary" data-action="resume">配達を再開する</button><button class="button" data-action="settings">設定</button><button class="button" data-action="recheck">半角入力を確認する</button><button class="button" data-action="skip">このことばを飛ばす</button>${snapshot.mode === 'TUTORIAL' ? '<button class="button" data-action="tutorial-skip">導入を飛ばして本編へ</button>' : ''}<button class="button" data-action="catalogue">ことば図鑑</button><button class="text-button" data-action="quit">${snapshot.mode === 'PRACTICE' ? '練習を終える' : 'ホームへ戻る'}</button></section>`;
       root.querySelector<HTMLButtonElement>('[data-action="resume"]')?.focus();
     } else if (snapshot.phase !== 'PAUSED') { overlay.hidden = true; isolatePausedContent(false); }
     syncOwnershipActions();
@@ -276,6 +277,24 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
     }
     root.querySelectorAll<HTMLElement>('.deliver-button kbd').forEach(element => { element.textContent = runtime.settings.deliveryKeys.join(' / '); });
     root.querySelector<HTMLElement>('#input-instructions')!.textContent = `表示されたことばを半角ローマ字で入力してください。語の境目に${runtime.settings.deliveryKeys.join('または')}で配達できます。Escapeで一時停止します。`;
+    focusNewChoice(snapshot);
+  }
+  function choiceTarget(snapshot: Snapshot): string | undefined {
+    if (snapshot.mode === 'PRACTICE' && snapshot.awaitingWordChoice) return '[data-action="repeat-word"]';
+    if (snapshot.mode === 'TUTORIAL' && snapshot.tutorialDelivered) return '[data-action="tutorial-main"]';
+    if (snapshot.mode === 'TUTORIAL' && snapshot.tutorialFallbackAvailable) return '#tutorial-fallback [data-action="tutorial-skip"]';
+    return undefined;
+  }
+  function focusNewChoice(snapshot: Snapshot, force = false) {
+    if (snapshot.phase === 'PAUSED') { lastChoiceFocus = ''; return; }
+    const selector = choiceTarget(snapshot);
+    const key = selector ? `${selector}:${snapshot.completedWords}` : '';
+    if (selector && (force || key !== lastChoiceFocus)) {
+      suppressBlur = true;
+      root.querySelector<HTMLButtonElement>(selector)?.focus();
+      suppressBlur = false;
+    }
+    lastChoiceFocus = key;
   }
   function redrawPause() {
     root.querySelector<HTMLElement>('#paused-layer')!.hidden = true;
@@ -371,7 +390,7 @@ export function mountApp(root: HTMLElement, runtime: AppRuntime): () => void {
         if (document.activeElement === root.querySelector('#game-input')) mutate(session!.resume(performance.now())); break;
       }
       case 'recheck': rechecking = true; renderCheck(); break;
-      case 'deliver': mutate(session!.deliver(performance.now())); focusInput(); break;
+      case 'deliver': { const snapshot = session!.deliver(performance.now()); mutate(snapshot); if (choiceTarget(snapshot)) focusNewChoice(snapshot, true); else focusInput(); break; }
       case 'guide': { const enabled = !state().guideEnabled; runtime.updateSettings({ guide: enabled }); mutate(session!.setGuideEnabled(enabled, performance.now())); break; }
       case 'retry': launchTarget = { mode: 'MAIN', preferredWordId: mainPreferredWordId }; launch(); break;
       case 'new-round': seed = newSeed(); launchTarget = { mode: 'MAIN' }; launch(); break;
