@@ -1,4 +1,4 @@
-import { assertViewportFits } from './keyboard';
+import { assertViewportFits, keyboardMenuTo } from './keyboard';
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalOverflow, beginMain, confirmHalfWidthInput, typeCurrentGuide } from './helpers';
 
@@ -48,7 +48,7 @@ for (const viewport of [{ width: 1366, height: 768 }, { width: 959, height: 900 
       }
     } else {
       await expect(page.locator('[data-action="start"]')).toBeDisabled();
-      await page.getByRole('button', { name: 'ことば図鑑', exact: true }).click();
+      await keyboardMenuTo(page, 'catalogue');
       await expect(page.locator('#catalogue-count')).toContainText('960');
       await assertNoHorizontalOverflow(page);
       await page.screenshot({ path: testInfo.outputPath('catalogue-767.png'), fullPage: true });
