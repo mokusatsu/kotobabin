@@ -1,0 +1,236 @@
+import { describe, expect, it } from 'vitest';
+import { IDBFactory } from 'fake-indexeddb';
+import type { WordCompletedFact } from '@/contracts/types';
+import {
+  IndexedDbProfileRepository,
+  MemoryProfileRepository,
+  PROFILE_DB_VERSION,
+  ResetGenerationError,
+  STORE_NAMES,
+  TabLockError,
+  createProfileRepository,
+} from '@/progression/profileRepository';
+
+function makeFact(seq: number, sessionId = 'session-1'): WordCompletedFact {
+  return {
+    type: 'WordCompleted',
+    sessionId,
+    factSequence: seq,
+    mode: 'MAIN',
+    ruleVersion: '1.0.0',
+    timestamp: 1000 + seq,
+    wordId: `daily_r0${seq}`,
+    topicId: 'daily',
+    tags: [],
+    canonicalLength: 6,
+    mistakes: 0,
+    wordPosition: seq,
+  };
+}
+
+describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
+  it('creates IndexedDB v4 with all 11 stores and persists round-trip data', async () => {
+    const idb = new IDBFactory();
+    const dbName = 'kotobabin-test-roundtrip';
+
+    const repo1 = new IndexedDbProfileRepository({ dbName, indexedDB: idb });
+    const meta1 = await repo1.init('tab-1');
+    expect(meta1.schemaVersion).toBe(PROFILE_DB_VERSION);
+    expect(meta1.ownerTabId).toBe('tab-1');
+    expect(meta1.writeEpoch).toBe(1);
+
+    // Verify all 11 stores exist
+    const checkDb = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = idb.open(dbName, PROFILE_DB_VERSION);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    for (const storeName of STORE_NAMES) {
+      expect(checkDb.objectStoreNames.contains(storeName)).toBe(true);
+    }
+    expect(checkDb.objectStoreNames.length).toBe(11);
+    checkDb.close();
+
+    // Commit fact and profile update
+    const lock = {
+      tabId: meta1.ownerTabId,
+      writeEpoch: meta1.writeEpoch,
+      resetGeneration: meta1.resetGeneration,
+    };
+
+    const commitRes = await repo1.commitTypingFacts({
+      lock,
+      facts: [makeFact(1)],
+    });
+    expect(commitRes.appliedFactCount).toBe(1);
+    expect(commitRes.evaluation.newlyUnlockedAchievementIds).toContain('A01');
+
+    await repo1.saveProfile({ volume: 0.4, fontSize: 'large' }, lock);
+    await repo1.markAsRead({ achievementIds: ['A01'] }, lock, 5000);
+    repo1.close();
+
+    // Reopen with a new repository instance and verify round-trip
+    const repo2 = new IndexedDbProfileRepository({ dbName, indexedDB: idb });
+    await repo2.init();
+    const snapshot = await repo2.loadAll();
+
+    expect(snapshot.profile.volume).toBe(0.4);
+    expect(snapshot.profile.fontSize).toBe('large');
+    expect(snapshot.achievementProgress.lifetimeCompletedWords).toBe(1);
+    expect(snapshot.unlocks.A01).toBeDefined();
+    expect(snapshot.readState['achievement:A01']?.read).toBe(true);
+    expect(snapshot.factCursors['session-1']).toBe(1);
+    repo2.close();
+  });
+
+  it('enforces atomic factCursors & economyCursors idempotency', async () => {
+    const idb = new IDBFactory();
+    const repo = new IndexedDbProfileRepository({
+      dbName: 'kotobabin-test-idempotency',
+      indexedDB: idb,
+    });
+    const meta = await repo.init('tab-a');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch };
+
+    const first = await repo.commitTypingFacts({
+      lock,
+      facts: [makeFact(1), makeFact(2)],
+    });
+    expect(first.appliedFactCount).toBe(2);
+    expect(first.skippedFactCount).toBe(0);
+
+    // Replay fact 1 & 2 along with new fact 3
+    const replay = await repo.commitTypingFacts({
+      lock,
+      facts: [makeFact(1), makeFact(2), makeFact(3)],
+    });
+    expect(replay.appliedFactCount).toBe(1);
+    expect(replay.skippedFactCount).toBe(2);
+
+    const snapshot = await repo.loadAll();
+    expect(snapshot.achievementProgress.lifetimeCompletedWords).toBe(3);
+    expect(snapshot.factCursors['session-1']).toBe(3);
+
+    // Economy cursor idempotency
+    const econ1 = await repo.commitCityEconomy({
+      lock,
+      cityId: 'city-1',
+      economyEventId: 'ev-1',
+      cityRecord: {
+        id: 'current',
+        cityId: 'city-1',
+        state: { coins: 100 },
+        revision: 1,
+        updatedAt: 1000,
+      },
+    });
+    expect(econ1.applied).toBe(true);
+
+    const econDup = await repo.commitCityEconomy({
+      lock,
+      cityId: 'city-1',
+      economyEventId: 'ev-1',
+      cityRecord: {
+        id: 'current',
+        cityId: 'city-1',
+        state: { coins: 999 },
+        revision: 2,
+        updatedAt: 2000,
+      },
+    });
+    expect(econDup.applied).toBe(false);
+
+    const afterEcon = await repo.loadAll();
+    expect(afterEcon.city?.state.coins).toBe(100);
+    repo.close();
+  });
+
+  it('rejects stale tab writes when another tab acquires the single-tab lock', async () => {
+    const idb = new IDBFactory();
+    const dbName = 'kotobabin-test-tab-lock';
+
+    const tab1 = new IndexedDbProfileRepository({ dbName, indexedDB: idb });
+    const meta1 = await tab1.init('tab-1');
+    const lock1 = { tabId: 'tab-1', writeEpoch: meta1.writeEpoch };
+
+    // Tab 2 takes over ownership -> writeEpoch increments to 2
+    const tab2 = new IndexedDbProfileRepository({ dbName, indexedDB: idb });
+    const meta2 = await tab2.init('tab-2');
+    expect(meta2.ownerTabId).toBe('tab-2');
+    expect(meta2.writeEpoch).toBe(2);
+
+    // Tab 1's stale write must be rejected
+    await expect(
+      tab1.commitTypingFacts({ lock: lock1, facts: [makeFact(1)] }),
+    ).rejects.toThrow(TabLockError);
+
+    await expect(tab1.saveProfile({ volume: 0.1 }, lock1)).rejects.toThrow(TabLockError);
+
+    // Tab 2's write succeeds
+    const res2 = await tab2.commitTypingFacts({
+      lock: { tabId: 'tab-2', writeEpoch: meta2.writeEpoch },
+      facts: [makeFact(1)],
+    });
+    expect(res2.appliedFactCount).toBe(1);
+
+    tab1.close();
+    tab2.close();
+  });
+
+  it('rejects stale resetGeneration after city_and_achievements reset', async () => {
+    const idb = new IDBFactory();
+    const repo = new IndexedDbProfileRepository({
+      dbName: 'kotobabin-test-reset-gen',
+      indexedDB: idb,
+    });
+    const meta1 = await repo.init('tab-1');
+    const staleLock = {
+      tabId: 'tab-1',
+      writeEpoch: meta1.writeEpoch,
+      resetGeneration: meta1.resetGeneration,
+    };
+
+    await repo.commitTypingFacts({ lock: staleLock, facts: [makeFact(1)] });
+    const meta2 = await repo.resetData('city_and_achievements', staleLock);
+    expect(meta2.resetGeneration).toBe(meta1.resetGeneration + 1);
+
+    await expect(
+      repo.commitTypingFacts({ lock: staleLock, facts: [makeFact(2)] }),
+    ).rejects.toThrow(ResetGenerationError);
+
+    const snapshot = await repo.loadAll();
+    expect(snapshot.achievementProgress.lifetimeCompletedWords).toBe(0);
+    expect(snapshot.unlocks).toEqual({});
+    repo.close();
+  });
+
+  it('falls back gracefully to MemoryProfileRepository when IndexedDB is unavailable or fails', async () => {
+    const { repository: memRepo, metadata } = await createProfileRepository({
+      indexedDB: undefined,
+      tabId: 'mem-tab',
+    });
+    expect(memRepo.backend).toBe('memory');
+    expect(memRepo).toBeInstanceOf(MemoryProfileRepository);
+    expect(metadata.ownerTabId).toBe('mem-tab');
+
+    const res = await memRepo.commitTypingFacts({
+      lock: { tabId: 'mem-tab', writeEpoch: metadata.writeEpoch },
+      facts: [makeFact(1)],
+    });
+    expect(res.appliedFactCount).toBe(1);
+    expect(res.evaluation.newlyUnlockedAchievementIds).toContain('A01');
+
+    // Also test failing IDBFactory.open
+    const brokenIdb = {
+      open: () => {
+        throw new Error('IDB blocked');
+      },
+    } as unknown as IDBFactory;
+
+    const fallback = await createProfileRepository({
+      indexedDB: brokenIdb,
+      tabId: 'fallback-tab',
+    });
+    expect(fallback.repository.backend).toBe('memory');
+  });
+});

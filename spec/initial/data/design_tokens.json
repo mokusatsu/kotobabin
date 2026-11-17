@@ -1,0 +1,137 @@
+{
+  "version": "2.0.0",
+  "referenceViewportCssPx": {
+    "width": 1440,
+    "height": 900
+  },
+  "minimumDesktopReferenceCssPx": {
+    "width": 1366,
+    "height": 768
+  },
+  "colors": {
+    "page": "#F5F1E7",
+    "surface": "#FFFDF7",
+    "text": "#203D36",
+    "textSecondary": "#53625B",
+    "primary": "#24594F",
+    "onPrimary": "#FFFFFF",
+    "accent": "#B34E39",
+    "reward": "#B58A3C",
+    "border": "#C9D0C3"
+  },
+  "typography": {
+    "japaneseFontStack": [
+      "Noto Sans JP",
+      "Hiragino Kaku Gothic ProN",
+      "Yu Gothic",
+      "sans-serif"
+    ],
+    "romanFontStack": [
+      "ui-monospace",
+      "SFMono-Regular",
+      "Consolas",
+      "monospace"
+    ],
+    "bodyPx": 16,
+    "headingPx": [
+      24,
+      32
+    ],
+    "promptJapanesePx": 48,
+    "promptReadingPx": 28,
+    "promptRomanPx": 36,
+    "lineHeightBody": 1.6
+  },
+  "spacingPx": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48
+  ],
+  "controls": {
+    "primaryMinHeightPx": 56,
+    "minimumTargetPx": 44,
+    "focusOutlinePx": 2,
+    "focusOutlineOffsetPx": 3,
+    "gapMinPx": 8
+  },
+  "breakpointsCssPx": {
+    "mainGameMinimumWidth": 768,
+    "threeColumnPreferredWidth": 1280,
+    "desktopWidth": 960
+  },
+  "motion": {
+    "liveAchievementMaxMs": 1200,
+    "minimumBetweenLiveStartsMs": 10000,
+    "reducedMotion": "Replace travel, scale and shimmer with static border and label; keep timing and input unchanged."
+  },
+  "imageReferences": {
+    "home": "../visuals/home.png",
+    "play": "../visuals/play.png",
+    "result": "../visuals/result.png",
+    "handbook": "../visuals/handbook.png",
+    "upgrades": "../visuals/upgrades.png"
+  },
+  "textContrastRatios": [
+    {
+      "foreground": "text",
+      "background": "surface",
+      "ratio": 11.58
+    },
+    {
+      "foreground": "textSecondary",
+      "background": "surface",
+      "ratio": 6.32
+    },
+    {
+      "foreground": "onPrimary",
+      "background": "primary",
+      "ratio": 8.02
+    },
+    {
+      "foreground": "accent",
+      "background": "surface",
+      "ratio": 5.08
+    },
+    {
+      "foreground": "text",
+      "background": "page",
+      "ratio": 10.45
+    }
+  ],
+  "notes": [
+    "画像は構成と美術の参照。文字、数値、ボタン、進捗はDOMで表示する。",
+    "フォント名は候補。外部配信を必須とせず、ローカルの日本語書体へフォールバックする。",
+    "色の比は上記の単色値から計算した値であり、画像全体や実装の適合を保証しない。",
+    "報酬色と境界色は本文色に使わない。本文の後ろに紙の模様や街を重ねない。",
+    "通貨・倍率・輸送待ち・店舗収益を別ラベルで表示する。本編には購入操作とコインの常時更新を置かない。"
+  ],
+  "progressBar": {
+    "minimumRatio": 0,
+    "maximumRatio": 1,
+    "targetMustBePositive": true,
+    "displayRecordValue": "unclamped",
+    "formula": "min(1, max(0, current / target))"
+  },
+  "layout": {
+    "homeColumns": [
+      32,
+      68
+    ],
+    "upgradesColumns": [
+      15,
+      53,
+      32
+    ],
+    "handbookColumns": [
+      16,
+      48,
+      36
+    ],
+    "typingCityStripMaxHeightPx": 48,
+    "mapSecondaryToStartAction": true
+  }
+}

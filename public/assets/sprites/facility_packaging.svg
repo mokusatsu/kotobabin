@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 130" width="160" height="130">
+  <!-- Soft ground contact shadow -->
+  <ellipse cx="80" cy="112" rx="58" ry="12" fill="rgba(54, 48, 36, 0.22)"/>
+
+  <!-- Wooden deck / stone base -->
+  <polygon points="24,92 80,114 136,92 80,72" fill="#D9C39E" stroke="#5A4A3A" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="24,92 80,114 80,120 24,98" fill="#B59B74" stroke="#5A4A3A" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="80,114 136,92 136,98 80,120" fill="#9A805B" stroke="#5A4A3A" stroke-width="1.8" stroke-linejoin="round"/>
+
+  <!-- Back & side timber walls -->
+  <polygon points="34,54 80,36 80,76 34,94" fill="#EFE2C6" stroke="#5A4A3A" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="80,36 124,54 124,94 80,76" fill="#DEC8A4" stroke="#5A4A3A" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- Open-air awning posts -->
+  <line x1="42" y1="62" x2="42" y2="96" stroke="#6E4E32" stroke-width="4" stroke-linecap="round"/>
+  <line x1="78" y1="74" x2="78" y2="108" stroke="#6E4E32" stroke-width="4" stroke-linecap="round"/>
+  <line x1="116" y1="62" x2="116" y2="96" stroke="#6E4E32" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Wooden packing table under awning -->
+  <polygon points="48,84 80,96 108,84 76,72" fill="#C98A4B" stroke="#5A4A3A" stroke-width="1.8" stroke-linejoin="round"/>
+  <line x1="52" y1="86" x2="52" y2="99" stroke="#6E4E32" stroke-width="3"/>
+  <line x1="80" y1="96" x2="80" y2="109" stroke="#6E4E32" stroke-width="3"/>
+  <line x1="104" y1="86" x2="104" y2="99" stroke="#6E4E32" stroke-width="3"/>
+
+  <!-- Wrapped parcels on table & deck -->
+  <polygon points="62,78 74,83 84,78 72,73" fill="#E6B980" stroke="#5A4A3A" stroke-width="1.4"/>
+  <polygon points="62,78 74,83 74,90 62,85" fill="#D19D60" stroke="#5A4A3A" stroke-width="1.4"/>
+  <polygon points="74,83 84,78 84,85 74,90" fill="#B8844A" stroke="#5A4A3A" stroke-width="1.4"/>
+  <!-- Red twine cross -->
+  <line x1="68" y1="76" x2="79" y2="81" stroke="#C84B31" stroke-width="1.4"/>
+  <line x1="68" y1="81" x2="78" y2="75" stroke="#C84B31" stroke-width="1.4"/>
+
+  <!-- Stacked crates on right -->
+  <polygon points="94,91 108,97 120,91 106,85" fill="#DFB67E" stroke="#5A4A3A" stroke-width="1.4"/>
+  <polygon points="94,91 108,97 108,106 94,100" fill="#C4965C" stroke="#5A4A3A" stroke-width="1.4"/>
+  <polygon points="108,97 120,91 120,100 108,106" fill="#A97D47" stroke="#5A4A3A" stroke-width="1.4"/>
+
+  <!-- Pitched terracotta-ochre tiled roof -->
+  <polygon points="22,58 80,18 138,58 80,76" fill="#D4744A" stroke="#5A4A3A" stroke-width="2.2" stroke-linejoin="round"/>
+  <polygon points="22,58 80,18 80,44" fill="#E0865C" stroke="#5A4A3A" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Roof ridge & tile lines -->
+  <line x1="80" y1="18" x2="80" y2="44" stroke="#5A4A3A" stroke-width="2.2"/>
+  <line x1="51" y1="38" x2="40" y2="63" stroke="#9C4D2D" stroke-width="1.3" opacity="0.65"/>
+  <line x1="65" y1="28" x2="58" y2="68" stroke="#9C4D2D" stroke-width="1.3" opacity="0.65"/>
+  <line x1="95" y1="28" x2="102" y2="68" stroke="#9C4D2D" stroke-width="1.3" opacity="0.65"/>
+  <line x1="109" y1="38" x2="120" y2="63" stroke="#9C4D2D" stroke-width="1.3" opacity="0.65"/>
+
+  <!-- Small hanging sign -->
+  <rect x="70" y="54" width="20" height="10" rx="2" fill="#FFF7E2" stroke="#5A4A3A" stroke-width="1.4"/>
+  <circle cx="80" cy="59" r="2.2" fill="#C84B31"/>
+</svg>

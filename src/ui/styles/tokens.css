@@ -1,0 +1,49 @@
+:root {
+  --kb-color-page: #F5F1E7;
+  --kb-color-surface: #FFFDF7;
+  --kb-color-text: #203D36;
+  --kb-color-text-secondary: #53625B;
+  --kb-color-primary: #24594F;
+  --kb-color-primary-hover: #1C473F;
+  --kb-color-on-primary: #FFFFFF;
+  --kb-color-accent: #B34E39;
+  --kb-color-reward: #B58A3C;
+  --kb-color-border: #C9D0C3;
+
+  --kb-font-ja: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  --kb-font-roman: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --kb-font-scale: 1;
+  --kb-text-body: calc(16px * var(--kb-font-scale));
+  --kb-text-h1: calc(32px * var(--kb-font-scale));
+  --kb-text-h2: calc(24px * var(--kb-font-scale));
+  --kb-text-prompt-ja: calc(48px * var(--kb-font-scale));
+  --kb-text-prompt-reading: calc(28px * var(--kb-font-scale));
+  --kb-text-prompt-roman: calc(36px * var(--kb-font-scale));
+
+  --kb-space-1: 4px;
+  --kb-space-2: 8px;
+  --kb-space-3: 12px;
+  --kb-space-4: 16px;
+  --kb-space-6: 24px;
+  --kb-space-8: 32px;
+  --kb-space-12: 48px;
+
+  --kb-primary-min-h: 56px;
+  --kb-target-min: 44px;
+  --kb-focus-w: 2px;
+  --kb-focus-offset: 3px;
+  --kb-radius-sm: 6px;
+  --kb-radius-md: 10px;
+  --kb-radius-lg: 14px;
+}
+
+[data-high-contrast='true'] {
+  --kb-color-page: #FFFFFF;
+  --kb-color-surface: #FFFFFF;
+  --kb-color-text: #0D1F1B;
+  --kb-color-text-secondary: #2A3833;
+  --kb-color-primary: #144037;
+  --kb-color-accent: #962E19;
+  --kb-color-border: #4A5A53;
+}

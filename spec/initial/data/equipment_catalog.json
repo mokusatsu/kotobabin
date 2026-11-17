@@ -1,0 +1,5924 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "4.1.0",
+  "economy_version": "4.0.0",
+  "packaging_levels": [
+    {
+      "level": 0,
+      "multiplier": "1",
+      "next_price": 50,
+      "visual_tier": 0,
+      "visual_name": "手包みの敷き布",
+      "asset_refs": [
+        "equipment_packaging_0",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 1
+    },
+    {
+      "level": 1,
+      "multiplier": "1.25",
+      "next_price": 59,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 2,
+      "multiplier": "1.5",
+      "next_price": 70,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 3,
+      "multiplier": "1.75",
+      "next_price": 83,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 4,
+      "multiplier": "2",
+      "next_price": 97,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 5,
+      "multiplier": "2.25",
+      "next_price": 115,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 6,
+      "multiplier": "2.5",
+      "next_price": 135,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 7,
+      "multiplier": "2.75",
+      "next_price": 160,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 8,
+      "multiplier": "3",
+      "next_price": 188,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 9,
+      "multiplier": "3.25",
+      "next_price": 222,
+      "visual_tier": 1,
+      "visual_name": "木の荷づくり台",
+      "asset_refs": [
+        "equipment_packaging_1",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 10
+    },
+    {
+      "level": 10,
+      "multiplier": "7",
+      "next_price": 262,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 11,
+      "multiplier": "7.5",
+      "next_price": 309,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 12,
+      "multiplier": "8",
+      "next_price": 365,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 13,
+      "multiplier": "8.5",
+      "next_price": 430,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 14,
+      "multiplier": "9",
+      "next_price": 508,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 15,
+      "multiplier": "9.5",
+      "next_price": 599,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 16,
+      "multiplier": "10",
+      "next_price": 707,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 17,
+      "multiplier": "10.5",
+      "next_price": 834,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 18,
+      "multiplier": "11",
+      "next_price": 984,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 19,
+      "multiplier": "11.5",
+      "next_price": 1161,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 20,
+      "multiplier": "12",
+      "next_price": 1370,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 21,
+      "multiplier": "12.5",
+      "next_price": 1617,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 22,
+      "multiplier": "13",
+      "next_price": 1908,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 23,
+      "multiplier": "13.5",
+      "next_price": 2251,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 24,
+      "multiplier": "14",
+      "next_price": 2656,
+      "visual_tier": 2,
+      "visual_name": "荷札機つきの台",
+      "asset_refs": [
+        "equipment_packaging_2",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 25
+    },
+    {
+      "level": 25,
+      "multiplier": "29",
+      "next_price": 3134,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 26,
+      "multiplier": "30",
+      "next_price": 3698,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 27,
+      "multiplier": "31",
+      "next_price": 4363,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 28,
+      "multiplier": "32",
+      "next_price": 5149,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 29,
+      "multiplier": "33",
+      "next_price": 6076,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 30,
+      "multiplier": "34",
+      "next_price": 7169,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 31,
+      "multiplier": "35",
+      "next_price": 8459,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 32,
+      "multiplier": "36",
+      "next_price": 9982,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 33,
+      "multiplier": "37",
+      "next_price": 11779,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 34,
+      "multiplier": "38",
+      "next_price": 13899,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 35,
+      "multiplier": "39",
+      "next_price": 16400,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 36,
+      "multiplier": "40",
+      "next_price": 19352,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 37,
+      "multiplier": "41",
+      "next_price": 22836,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 38,
+      "multiplier": "42",
+      "next_price": 26946,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 39,
+      "multiplier": "43",
+      "next_price": 31796,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 40,
+      "multiplier": "44",
+      "next_price": 37519,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 41,
+      "multiplier": "45",
+      "next_price": 44273,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 42,
+      "multiplier": "46",
+      "next_price": 52242,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 43,
+      "multiplier": "47",
+      "next_price": 61645,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 44,
+      "multiplier": "48",
+      "next_price": 72741,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 45,
+      "multiplier": "49",
+      "next_price": 85835,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 46,
+      "multiplier": "50",
+      "next_price": 101285,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 47,
+      "multiplier": "51",
+      "next_price": 119516,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 48,
+      "multiplier": "52",
+      "next_price": 141029,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 49,
+      "multiplier": "53",
+      "next_price": 166414,
+      "visual_tier": 3,
+      "visual_name": "二列の仕分け台",
+      "asset_refs": [
+        "equipment_packaging_3",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": 50
+    },
+    {
+      "level": 50,
+      "multiplier": "108",
+      "next_price": null,
+      "visual_tier": 4,
+      "visual_name": "一体型の荷づくり工房",
+      "asset_refs": [
+        "equipment_packaging_4",
+        "equipment_packaging_icon"
+      ],
+      "next_milestone": null
+    }
+  ],
+  "crew_levels": [
+    {
+      "count": 1,
+      "base_capacity_per_second": "4",
+      "next_price_by_district": {
+        "residential": 40,
+        "market": 80,
+        "workshop": 160,
+        "park": 320,
+        "station": 640,
+        "harbor": 1280
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 2,
+      "base_capacity_per_second": "8",
+      "next_price_by_district": {
+        "residential": 46,
+        "market": 92,
+        "workshop": 184,
+        "park": 368,
+        "station": 736,
+        "harbor": 1472
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 3,
+      "base_capacity_per_second": "12",
+      "next_price_by_district": {
+        "residential": 53,
+        "market": 106,
+        "workshop": 212,
+        "park": 424,
+        "station": 847,
+        "harbor": 1693
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 4,
+      "base_capacity_per_second": "16",
+      "next_price_by_district": {
+        "residential": 61,
+        "market": 122,
+        "workshop": 244,
+        "park": 487,
+        "station": 974,
+        "harbor": 1947
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 5,
+      "base_capacity_per_second": "20",
+      "next_price_by_district": {
+        "residential": 70,
+        "market": 140,
+        "workshop": 280,
+        "park": 560,
+        "station": 1120,
+        "harbor": 2239
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 6,
+      "base_capacity_per_second": "24",
+      "next_price_by_district": {
+        "residential": 81,
+        "market": 161,
+        "workshop": 322,
+        "park": 644,
+        "station": 1288,
+        "harbor": 2575
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 7,
+      "base_capacity_per_second": "28",
+      "next_price_by_district": {
+        "residential": 93,
+        "market": 186,
+        "workshop": 371,
+        "park": 741,
+        "station": 1481,
+        "harbor": 2961
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 8,
+      "base_capacity_per_second": "32",
+      "next_price_by_district": {
+        "residential": 107,
+        "market": 213,
+        "workshop": 426,
+        "park": 852,
+        "station": 1703,
+        "harbor": 3405
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 9,
+      "base_capacity_per_second": "36",
+      "next_price_by_district": {
+        "residential": 123,
+        "market": 245,
+        "workshop": 490,
+        "park": 979,
+        "station": 1958,
+        "harbor": 3916
+      },
+      "visual_tier": 1,
+      "road_vehicle": "cart",
+      "asset_refs": [
+        "vehicle_cart_front",
+        "vehicle_cart_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 10,
+      "base_capacity_per_second": "80",
+      "next_price_by_district": {
+        "residential": 141,
+        "market": 282,
+        "workshop": 563,
+        "park": 1126,
+        "station": 2252,
+        "harbor": 4503
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 11,
+      "base_capacity_per_second": "88",
+      "next_price_by_district": {
+        "residential": 162,
+        "market": 324,
+        "workshop": 648,
+        "park": 1295,
+        "station": 2590,
+        "harbor": 5179
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 12,
+      "base_capacity_per_second": "96",
+      "next_price_by_district": {
+        "residential": 187,
+        "market": 373,
+        "workshop": 745,
+        "park": 1489,
+        "station": 2978,
+        "harbor": 5956
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 13,
+      "base_capacity_per_second": "104",
+      "next_price_by_district": {
+        "residential": 215,
+        "market": 429,
+        "workshop": 857,
+        "park": 1713,
+        "station": 3425,
+        "harbor": 6849
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 14,
+      "base_capacity_per_second": "112",
+      "next_price_by_district": {
+        "residential": 247,
+        "market": 493,
+        "workshop": 985,
+        "park": 1969,
+        "station": 3938,
+        "harbor": 7876
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 15,
+      "base_capacity_per_second": "120",
+      "next_price_by_district": {
+        "residential": 284,
+        "market": 567,
+        "workshop": 1133,
+        "park": 2265,
+        "station": 4529,
+        "harbor": 9057
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 16,
+      "base_capacity_per_second": "128",
+      "next_price_by_district": {
+        "residential": 326,
+        "market": 651,
+        "workshop": 1302,
+        "park": 2604,
+        "station": 5208,
+        "harbor": 10416
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 17,
+      "base_capacity_per_second": "136",
+      "next_price_by_district": {
+        "residential": 375,
+        "market": 749,
+        "workshop": 1498,
+        "park": 2995,
+        "station": 5989,
+        "harbor": 11978
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 18,
+      "base_capacity_per_second": "144",
+      "next_price_by_district": {
+        "residential": 431,
+        "market": 861,
+        "workshop": 1722,
+        "park": 3444,
+        "station": 6888,
+        "harbor": 13775
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 19,
+      "base_capacity_per_second": "152",
+      "next_price_by_district": {
+        "residential": 496,
+        "market": 991,
+        "workshop": 1981,
+        "park": 3961,
+        "station": 7921,
+        "harbor": 15841
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 20,
+      "base_capacity_per_second": "160",
+      "next_price_by_district": {
+        "residential": 570,
+        "market": 1139,
+        "workshop": 2278,
+        "park": 4555,
+        "station": 9109,
+        "harbor": 18217
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 21,
+      "base_capacity_per_second": "168",
+      "next_price_by_district": {
+        "residential": 655,
+        "market": 1310,
+        "workshop": 2619,
+        "park": 5238,
+        "station": 10475,
+        "harbor": 20950
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 22,
+      "base_capacity_per_second": "176",
+      "next_price_by_district": {
+        "residential": 753,
+        "market": 1506,
+        "workshop": 3012,
+        "park": 6023,
+        "station": 12046,
+        "harbor": 24092
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 23,
+      "base_capacity_per_second": "184",
+      "next_price_by_district": {
+        "residential": 866,
+        "market": 1732,
+        "workshop": 3464,
+        "park": 6927,
+        "station": 13853,
+        "harbor": 27706
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 24,
+      "base_capacity_per_second": "192",
+      "next_price_by_district": {
+        "residential": 996,
+        "market": 1992,
+        "workshop": 3983,
+        "park": 7966,
+        "station": 15931,
+        "harbor": 31862
+      },
+      "visual_tier": 2,
+      "road_vehicle": "van",
+      "asset_refs": [
+        "vehicle_van_front",
+        "vehicle_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 25,
+      "base_capacity_per_second": "400",
+      "next_price_by_district": {
+        "residential": 1146,
+        "market": 2291,
+        "workshop": 4581,
+        "park": 9161,
+        "station": 18321,
+        "harbor": 36641
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 26,
+      "base_capacity_per_second": "416",
+      "next_price_by_district": {
+        "residential": 1317,
+        "market": 2634,
+        "workshop": 5268,
+        "park": 10535,
+        "station": 21069,
+        "harbor": 42137
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 27,
+      "base_capacity_per_second": "432",
+      "next_price_by_district": {
+        "residential": 1515,
+        "market": 3029,
+        "workshop": 6058,
+        "park": 12115,
+        "station": 24229,
+        "harbor": 48457
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 28,
+      "base_capacity_per_second": "448",
+      "next_price_by_district": {
+        "residential": 1742,
+        "market": 3483,
+        "workshop": 6966,
+        "park": 13932,
+        "station": 27863,
+        "harbor": 55726
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 29,
+      "base_capacity_per_second": "464",
+      "next_price_by_district": {
+        "residential": 2003,
+        "market": 4006,
+        "workshop": 8011,
+        "park": 16021,
+        "station": 32042,
+        "harbor": 64084
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 30,
+      "base_capacity_per_second": "480",
+      "next_price_by_district": {
+        "residential": 2304,
+        "market": 4607,
+        "workshop": 9213,
+        "park": 18425,
+        "station": 36849,
+        "harbor": 73697
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 31,
+      "base_capacity_per_second": "496",
+      "next_price_by_district": {
+        "residential": 2649,
+        "market": 5297,
+        "workshop": 10594,
+        "park": 21188,
+        "station": 42376,
+        "harbor": 84752
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 32,
+      "base_capacity_per_second": "512",
+      "next_price_by_district": {
+        "residential": 3046,
+        "market": 6092,
+        "workshop": 12183,
+        "park": 24366,
+        "station": 48732,
+        "harbor": 97464
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 33,
+      "base_capacity_per_second": "528",
+      "next_price_by_district": {
+        "residential": 3503,
+        "market": 7006,
+        "workshop": 14011,
+        "park": 28021,
+        "station": 56042,
+        "harbor": 112084
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 34,
+      "base_capacity_per_second": "544",
+      "next_price_by_district": {
+        "residential": 4028,
+        "market": 8056,
+        "workshop": 16112,
+        "park": 32224,
+        "station": 64448,
+        "harbor": 128896
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 35,
+      "base_capacity_per_second": "560",
+      "next_price_by_district": {
+        "residential": 4633,
+        "market": 9265,
+        "workshop": 18529,
+        "park": 37058,
+        "station": 74116,
+        "harbor": 148231
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 36,
+      "base_capacity_per_second": "576",
+      "next_price_by_district": {
+        "residential": 5328,
+        "market": 10655,
+        "workshop": 21309,
+        "park": 42617,
+        "station": 85233,
+        "harbor": 170465
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 37,
+      "base_capacity_per_second": "592",
+      "next_price_by_district": {
+        "residential": 6127,
+        "market": 12253,
+        "workshop": 24505,
+        "park": 49009,
+        "station": 98018,
+        "harbor": 196035
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 38,
+      "base_capacity_per_second": "608",
+      "next_price_by_district": {
+        "residential": 7045,
+        "market": 14090,
+        "workshop": 28180,
+        "park": 56360,
+        "station": 112720,
+        "harbor": 225440
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 39,
+      "base_capacity_per_second": "624",
+      "next_price_by_district": {
+        "residential": 8102,
+        "market": 16204,
+        "workshop": 32407,
+        "park": 64814,
+        "station": 129628,
+        "harbor": 259256
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 40,
+      "base_capacity_per_second": "640",
+      "next_price_by_district": {
+        "residential": 9317,
+        "market": 18634,
+        "workshop": 37268,
+        "park": 74536,
+        "station": 149072,
+        "harbor": 298144
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 41,
+      "base_capacity_per_second": "656",
+      "next_price_by_district": {
+        "residential": 10715,
+        "market": 21430,
+        "workshop": 42859,
+        "park": 85717,
+        "station": 171433,
+        "harbor": 342866
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 42,
+      "base_capacity_per_second": "672",
+      "next_price_by_district": {
+        "residential": 12322,
+        "market": 24644,
+        "workshop": 49287,
+        "park": 98574,
+        "station": 197148,
+        "harbor": 394296
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 43,
+      "base_capacity_per_second": "688",
+      "next_price_by_district": {
+        "residential": 14170,
+        "market": 28340,
+        "workshop": 56680,
+        "park": 113360,
+        "station": 226720,
+        "harbor": 453440
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 44,
+      "base_capacity_per_second": "704",
+      "next_price_by_district": {
+        "residential": 16296,
+        "market": 32591,
+        "workshop": 65182,
+        "park": 130364,
+        "station": 260728,
+        "harbor": 521456
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 45,
+      "base_capacity_per_second": "720",
+      "next_price_by_district": {
+        "residential": 18740,
+        "market": 37480,
+        "workshop": 74960,
+        "park": 149919,
+        "station": 299837,
+        "harbor": 599674
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 46,
+      "base_capacity_per_second": "736",
+      "next_price_by_district": {
+        "residential": 21551,
+        "market": 43102,
+        "workshop": 86204,
+        "park": 172407,
+        "station": 344813,
+        "harbor": 689625
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 47,
+      "base_capacity_per_second": "752",
+      "next_price_by_district": {
+        "residential": 24784,
+        "market": 49567,
+        "workshop": 99134,
+        "park": 198268,
+        "station": 396535,
+        "harbor": 793069
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 48,
+      "base_capacity_per_second": "768",
+      "next_price_by_district": {
+        "residential": 28501,
+        "market": 57002,
+        "workshop": 114004,
+        "park": 228008,
+        "station": 456015,
+        "harbor": 912029
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 49,
+      "base_capacity_per_second": "784",
+      "next_price_by_district": {
+        "residential": 32777,
+        "market": 65553,
+        "workshop": 131105,
+        "park": 262209,
+        "station": 524417,
+        "harbor": 1048833
+      },
+      "visual_tier": 3,
+      "road_vehicle": "box_van",
+      "asset_refs": [
+        "vehicle_box_van_front",
+        "vehicle_box_van_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    },
+    {
+      "count": 50,
+      "base_capacity_per_second": "1600",
+      "next_price_by_district": {
+        "residential": null,
+        "market": null,
+        "workshop": null,
+        "park": null,
+        "station": null,
+        "harbor": null
+      },
+      "visual_tier": 4,
+      "road_vehicle": "truck",
+      "asset_refs": [
+        "vehicle_truck_front",
+        "vehicle_truck_rear",
+        "equipment_crews_icon"
+      ],
+      "railway_override_assets": [
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ]
+    }
+  ],
+  "shop_levels": [
+    {
+      "count": 0,
+      "minimum_stage": 0,
+      "income_count_factor": "0",
+      "next_price_by_district": {
+        "residential": 25,
+        "market": 50,
+        "workshop": 100,
+        "park": 200,
+        "station": 400,
+        "harbor": 800
+      },
+      "paid_purchase_reachable": false,
+      "zero_price_cell_role": "参照式の検算専用。段階0では購入不可、段階1完成で1軒を無料配置。",
+      "visual_tier": 0,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 1,
+      "minimum_stage": 1,
+      "income_count_factor": "1",
+      "next_price_by_district": {
+        "residential": 29,
+        "market": 58,
+        "workshop": 116,
+        "park": 232,
+        "station": 464,
+        "harbor": 928
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 2,
+      "minimum_stage": 1,
+      "income_count_factor": "2",
+      "next_price_by_district": {
+        "residential": 34,
+        "market": 68,
+        "workshop": 135,
+        "park": 270,
+        "station": 539,
+        "harbor": 1077
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 3,
+      "minimum_stage": 1,
+      "income_count_factor": "3",
+      "next_price_by_district": {
+        "residential": 40,
+        "market": 79,
+        "workshop": 157,
+        "park": 313,
+        "station": 625,
+        "harbor": 1249
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 4,
+      "minimum_stage": 1,
+      "income_count_factor": "4",
+      "next_price_by_district": {
+        "residential": 46,
+        "market": 91,
+        "workshop": 182,
+        "park": 363,
+        "station": 725,
+        "harbor": 1449
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 5,
+      "minimum_stage": 1,
+      "income_count_factor": "5",
+      "next_price_by_district": {
+        "residential": 53,
+        "market": 106,
+        "workshop": 211,
+        "park": 421,
+        "station": 841,
+        "harbor": 1681
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 6,
+      "minimum_stage": 2,
+      "income_count_factor": "6",
+      "next_price_by_district": {
+        "residential": 61,
+        "market": 122,
+        "workshop": 244,
+        "park": 488,
+        "station": 975,
+        "harbor": 1950
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 7,
+      "minimum_stage": 2,
+      "income_count_factor": "7",
+      "next_price_by_district": {
+        "residential": 71,
+        "market": 142,
+        "workshop": 283,
+        "park": 566,
+        "station": 1131,
+        "harbor": 2261
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 8,
+      "minimum_stage": 2,
+      "income_count_factor": "8",
+      "next_price_by_district": {
+        "residential": 82,
+        "market": 164,
+        "workshop": 328,
+        "park": 656,
+        "station": 1312,
+        "harbor": 2623
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 9,
+      "minimum_stage": 2,
+      "income_count_factor": "9",
+      "next_price_by_district": {
+        "residential": 96,
+        "market": 191,
+        "workshop": 381,
+        "park": 761,
+        "station": 1522,
+        "harbor": 3043
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 1,
+      "overlay_asset_refs": [],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon"
+      ]
+    },
+    {
+      "count": 10,
+      "minimum_stage": 2,
+      "income_count_factor": "20",
+      "next_price_by_district": {
+        "residential": 111,
+        "market": 221,
+        "workshop": 442,
+        "park": 883,
+        "station": 1765,
+        "harbor": 3530
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 11,
+      "minimum_stage": 3,
+      "income_count_factor": "22",
+      "next_price_by_district": {
+        "residential": 128,
+        "market": 256,
+        "workshop": 512,
+        "park": 1024,
+        "station": 2047,
+        "harbor": 4094
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 12,
+      "minimum_stage": 3,
+      "income_count_factor": "24",
+      "next_price_by_district": {
+        "residential": 149,
+        "market": 297,
+        "workshop": 594,
+        "park": 1188,
+        "station": 2375,
+        "harbor": 4749
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 13,
+      "minimum_stage": 3,
+      "income_count_factor": "26",
+      "next_price_by_district": {
+        "residential": 173,
+        "market": 345,
+        "workshop": 689,
+        "park": 1378,
+        "station": 2755,
+        "harbor": 5509
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 14,
+      "minimum_stage": 3,
+      "income_count_factor": "28",
+      "next_price_by_district": {
+        "residential": 200,
+        "market": 400,
+        "workshop": 799,
+        "park": 1598,
+        "station": 3196,
+        "harbor": 6391
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 15,
+      "minimum_stage": 3,
+      "income_count_factor": "30",
+      "next_price_by_district": {
+        "residential": 232,
+        "market": 464,
+        "workshop": 927,
+        "park": 1854,
+        "station": 3707,
+        "harbor": 7413
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 16,
+      "minimum_stage": 3,
+      "income_count_factor": "32",
+      "next_price_by_district": {
+        "residential": 269,
+        "market": 538,
+        "workshop": 1075,
+        "park": 2150,
+        "station": 4300,
+        "harbor": 8599
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 17,
+      "minimum_stage": 3,
+      "income_count_factor": "34",
+      "next_price_by_district": {
+        "residential": 312,
+        "market": 624,
+        "workshop": 1247,
+        "park": 2494,
+        "station": 4988,
+        "harbor": 9975
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 18,
+      "minimum_stage": 3,
+      "income_count_factor": "36",
+      "next_price_by_district": {
+        "residential": 362,
+        "market": 724,
+        "workshop": 1447,
+        "park": 2893,
+        "station": 5786,
+        "harbor": 11571
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 19,
+      "minimum_stage": 3,
+      "income_count_factor": "38",
+      "next_price_by_district": {
+        "residential": 420,
+        "market": 839,
+        "workshop": 1678,
+        "park": 3356,
+        "station": 6711,
+        "harbor": 13422
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 20,
+      "minimum_stage": 3,
+      "income_count_factor": "40",
+      "next_price_by_district": {
+        "residential": 487,
+        "market": 974,
+        "workshop": 1947,
+        "park": 3893,
+        "station": 7785,
+        "harbor": 15569
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 21,
+      "minimum_stage": 4,
+      "income_count_factor": "42",
+      "next_price_by_district": {
+        "residential": 565,
+        "market": 1129,
+        "workshop": 2258,
+        "park": 4515,
+        "station": 9030,
+        "harbor": 18060
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 22,
+      "minimum_stage": 4,
+      "income_count_factor": "44",
+      "next_price_by_district": {
+        "residential": 655,
+        "market": 1310,
+        "workshop": 2619,
+        "park": 5238,
+        "station": 10475,
+        "harbor": 20950
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 23,
+      "minimum_stage": 4,
+      "income_count_factor": "46",
+      "next_price_by_district": {
+        "residential": 760,
+        "market": 1519,
+        "workshop": 3038,
+        "park": 6076,
+        "station": 12151,
+        "harbor": 24301
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 24,
+      "minimum_stage": 4,
+      "income_count_factor": "48",
+      "next_price_by_district": {
+        "residential": 881,
+        "market": 1762,
+        "workshop": 3524,
+        "park": 7048,
+        "station": 14095,
+        "harbor": 28190
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 2,
+      "overlay_asset_refs": [
+        "shop_canopy"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy"
+      ]
+    },
+    {
+      "count": 25,
+      "minimum_stage": 4,
+      "income_count_factor": "100",
+      "next_price_by_district": {
+        "residential": 1022,
+        "market": 2044,
+        "workshop": 4088,
+        "park": 8175,
+        "station": 16350,
+        "harbor": 32700
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 26,
+      "minimum_stage": 4,
+      "income_count_factor": "104",
+      "next_price_by_district": {
+        "residential": 1186,
+        "market": 2371,
+        "workshop": 4742,
+        "park": 9483,
+        "station": 18966,
+        "harbor": 37932
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 27,
+      "minimum_stage": 4,
+      "income_count_factor": "108",
+      "next_price_by_district": {
+        "residential": 1376,
+        "market": 2751,
+        "workshop": 5501,
+        "park": 11001,
+        "station": 22001,
+        "harbor": 44001
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 28,
+      "minimum_stage": 4,
+      "income_count_factor": "112",
+      "next_price_by_district": {
+        "residential": 1596,
+        "market": 3191,
+        "workshop": 6381,
+        "park": 12761,
+        "station": 25521,
+        "harbor": 51041
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 29,
+      "minimum_stage": 4,
+      "income_count_factor": "116",
+      "next_price_by_district": {
+        "residential": 1851,
+        "market": 3701,
+        "workshop": 7401,
+        "park": 14802,
+        "station": 29604,
+        "harbor": 59207
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 30,
+      "minimum_stage": 4,
+      "income_count_factor": "120",
+      "next_price_by_district": {
+        "residential": 2147,
+        "market": 4293,
+        "workshop": 8585,
+        "park": 17170,
+        "station": 34340,
+        "harbor": 68680
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 31,
+      "minimum_stage": 4,
+      "income_count_factor": "124",
+      "next_price_by_district": {
+        "residential": 2490,
+        "market": 4980,
+        "workshop": 9959,
+        "park": 19918,
+        "station": 39835,
+        "harbor": 79669
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 32,
+      "minimum_stage": 4,
+      "income_count_factor": "128",
+      "next_price_by_district": {
+        "residential": 2888,
+        "market": 5776,
+        "workshop": 11552,
+        "park": 23104,
+        "station": 46208,
+        "harbor": 92416
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 33,
+      "minimum_stage": 4,
+      "income_count_factor": "132",
+      "next_price_by_district": {
+        "residential": 3351,
+        "market": 6701,
+        "workshop": 13401,
+        "park": 26801,
+        "station": 53602,
+        "harbor": 107203
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 34,
+      "minimum_stage": 4,
+      "income_count_factor": "136",
+      "next_price_by_district": {
+        "residential": 3887,
+        "market": 7773,
+        "workshop": 15545,
+        "park": 31089,
+        "station": 62178,
+        "harbor": 124355
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 35,
+      "minimum_stage": 4,
+      "income_count_factor": "140",
+      "next_price_by_district": {
+        "residential": 4508,
+        "market": 9016,
+        "workshop": 18032,
+        "park": 36063,
+        "station": 72126,
+        "harbor": 144252
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 36,
+      "minimum_stage": 5,
+      "income_count_factor": "144",
+      "next_price_by_district": {
+        "residential": 5230,
+        "market": 10459,
+        "workshop": 20917,
+        "park": 41833,
+        "station": 83666,
+        "harbor": 167332
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 37,
+      "minimum_stage": 5,
+      "income_count_factor": "148",
+      "next_price_by_district": {
+        "residential": 6066,
+        "market": 12132,
+        "workshop": 24264,
+        "park": 48527,
+        "station": 97053,
+        "harbor": 194105
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 38,
+      "minimum_stage": 5,
+      "income_count_factor": "152",
+      "next_price_by_district": {
+        "residential": 7037,
+        "market": 14073,
+        "workshop": 28146,
+        "park": 56291,
+        "station": 112581,
+        "harbor": 225162
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 39,
+      "minimum_stage": 5,
+      "income_count_factor": "156",
+      "next_price_by_district": {
+        "residential": 8163,
+        "market": 16325,
+        "workshop": 32649,
+        "park": 65297,
+        "station": 130594,
+        "harbor": 261188
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 40,
+      "minimum_stage": 5,
+      "income_count_factor": "160",
+      "next_price_by_district": {
+        "residential": 9469,
+        "market": 18937,
+        "workshop": 37873,
+        "park": 75745,
+        "station": 151489,
+        "harbor": 302977
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 41,
+      "minimum_stage": 5,
+      "income_count_factor": "164",
+      "next_price_by_district": {
+        "residential": 10983,
+        "market": 21966,
+        "workshop": 43932,
+        "park": 87864,
+        "station": 175727,
+        "harbor": 351454
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 42,
+      "minimum_stage": 5,
+      "income_count_factor": "168",
+      "next_price_by_district": {
+        "residential": 12741,
+        "market": 25481,
+        "workshop": 50961,
+        "park": 101922,
+        "station": 203843,
+        "harbor": 407686
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 43,
+      "minimum_stage": 5,
+      "income_count_factor": "172",
+      "next_price_by_district": {
+        "residential": 14779,
+        "market": 29558,
+        "workshop": 59115,
+        "park": 118229,
+        "station": 236458,
+        "harbor": 472916
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 44,
+      "minimum_stage": 5,
+      "income_count_factor": "176",
+      "next_price_by_district": {
+        "residential": 17144,
+        "market": 34287,
+        "workshop": 68573,
+        "park": 137146,
+        "station": 274291,
+        "harbor": 548582
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 45,
+      "minimum_stage": 5,
+      "income_count_factor": "180",
+      "next_price_by_district": {
+        "residential": 19887,
+        "market": 39773,
+        "workshop": 79545,
+        "park": 159089,
+        "station": 318178,
+        "harbor": 636356
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 46,
+      "minimum_stage": 5,
+      "income_count_factor": "184",
+      "next_price_by_district": {
+        "residential": 23068,
+        "market": 46136,
+        "workshop": 92272,
+        "park": 184543,
+        "station": 369086,
+        "harbor": 738172
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 47,
+      "minimum_stage": 5,
+      "income_count_factor": "188",
+      "next_price_by_district": {
+        "residential": 26759,
+        "market": 53518,
+        "workshop": 107035,
+        "park": 214070,
+        "station": 428140,
+        "harbor": 856280
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 48,
+      "minimum_stage": 5,
+      "income_count_factor": "192",
+      "next_price_by_district": {
+        "residential": 31041,
+        "market": 62081,
+        "workshop": 124161,
+        "park": 248322,
+        "station": 496643,
+        "harbor": 993285
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 49,
+      "minimum_stage": 5,
+      "income_count_factor": "196",
+      "next_price_by_district": {
+        "residential": 36007,
+        "market": 72014,
+        "workshop": 144027,
+        "park": 288053,
+        "station": 576105,
+        "harbor": 1152210
+      },
+      "paid_purchase_reachable": true,
+      "zero_price_cell_role": null,
+      "visual_tier": 3,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner"
+      ]
+    },
+    {
+      "count": 50,
+      "minimum_stage": 5,
+      "income_count_factor": "400",
+      "next_price_by_district": {
+        "residential": null,
+        "market": null,
+        "workshop": null,
+        "park": null,
+        "station": null,
+        "harbor": null
+      },
+      "paid_purchase_reachable": false,
+      "zero_price_cell_role": null,
+      "visual_tier": 4,
+      "overlay_asset_refs": [
+        "shop_canopy",
+        "shop_banner",
+        "shop_signboard"
+      ],
+      "base_asset_by_district": {
+        "residential": "shop_residential",
+        "market": "shop_market",
+        "workshop": "shop_workshop",
+        "park": "shop_park",
+        "station": "shop_station",
+        "harbor": "shop_harbor"
+      },
+      "asset_refs": [
+        "equipment_shops_icon",
+        "shop_canopy",
+        "shop_banner",
+        "shop_signboard"
+      ]
+    }
+  ],
+  "railways": [
+    {
+      "id": "railway_residential",
+      "district_id": "residential",
+      "name": "住宅地の貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 3000,
+      "free_stock_materials": 500,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_residential",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    },
+    {
+      "id": "railway_market",
+      "district_id": "market",
+      "name": "商店街の貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 6000,
+      "free_stock_materials": 1000,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_market",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    },
+    {
+      "id": "railway_workshop",
+      "district_id": "workshop",
+      "name": "工房街の貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 12000,
+      "free_stock_materials": 2000,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_workshop",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    },
+    {
+      "id": "railway_park",
+      "district_id": "park",
+      "name": "公園通りの貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 24000,
+      "free_stock_materials": 4000,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_park",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    },
+    {
+      "id": "railway_station",
+      "district_id": "station",
+      "name": "駅前の貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 48000,
+      "free_stock_materials": 8000,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_station",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    },
+    {
+      "id": "railway_harbor",
+      "district_id": "harbor",
+      "name": "港町の貨物鉄道",
+      "required_stage": 3,
+      "required_crews": 10,
+      "coins": 96000,
+      "free_stock_materials": 16000,
+      "transport_multiplier": 4,
+      "states": [
+        "unbuilt",
+        "built"
+      ],
+      "asset_refs": [
+        "equipment_railway_icon",
+        "vehicle_train_front",
+        "vehicle_train_rear",
+        "city_freight_terminal"
+      ],
+      "route_geometry_id": "route_harbor",
+      "unbuilt_behavior": "未購入では道路車両。条件を満たしても自動購入しない。"
+    }
+  ],
+  "synergies": [
+    {
+      "id": "joint_delivery",
+      "name": "共同配送",
+      "cost_coins": 1000,
+      "requires": {
+        "residential": 2,
+        "market": 2
+      },
+      "effect": {
+        "delivery_coins_per_material": 3
+      },
+      "states": [
+        "unowned",
+        "owned"
+      ],
+      "asset_refs": [
+        "synergy_joint_delivery"
+      ],
+      "reset": "新しい街で未購入へ戻る",
+      "effect_description": "到着資材1あたりの報酬が2→3コイン"
+    },
+    {
+      "id": "sorting_network",
+      "name": "仕分け連携",
+      "cost_coins": 12000,
+      "requires": {
+        "workshop": 2,
+        "station": 2
+      },
+      "effect": {
+        "transport_factor": 2
+      },
+      "states": [
+        "unowned",
+        "owned"
+      ],
+      "asset_refs": [
+        "synergy_sorting_network"
+      ],
+      "reset": "新しい街で未購入へ戻る",
+      "effect_description": "全路線の輸送力×2"
+    },
+    {
+      "id": "tourism_service",
+      "name": "観光便",
+      "cost_coins": 100000,
+      "requires": {
+        "park": 3,
+        "harbor": 3
+      },
+      "effect": {
+        "shop_income_factor": 2
+      },
+      "states": [
+        "unowned",
+        "owned"
+      ],
+      "asset_refs": [
+        "synergy_tourism_service"
+      ],
+      "reset": "新しい街で未購入へ戻る",
+      "effect_description": "全店舗の営業収益×2"
+    }
+  ],
+  "research_ranks": [
+    {
+      "id": "research_materials_r0",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 0,
+      "multiplier": "1",
+      "next_blueprints": 1,
+      "total_blueprints": 0,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_materials_r1",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 1,
+      "multiplier": "1.25",
+      "next_blueprints": 2,
+      "total_blueprints": 1,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_materials_r2",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 2,
+      "multiplier": "1.5",
+      "next_blueprints": 3,
+      "total_blueprints": 3,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_materials_r3",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 3,
+      "multiplier": "1.75",
+      "next_blueprints": 4,
+      "total_blueprints": 6,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_materials_r4",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 4,
+      "multiplier": "2",
+      "next_blueprints": 5,
+      "total_blueprints": 10,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_materials_r5",
+      "type_id": "materials",
+      "name": "荷札設計",
+      "rank": 5,
+      "multiplier": "2.25",
+      "next_blueprints": null,
+      "total_blueprints": 15,
+      "asset_refs": [
+        "research_materials"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r0",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 0,
+      "multiplier": "1",
+      "next_blueprints": 1,
+      "total_blueprints": 0,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r1",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 1,
+      "multiplier": "1.25",
+      "next_blueprints": 2,
+      "total_blueprints": 1,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r2",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 2,
+      "multiplier": "1.5",
+      "next_blueprints": 3,
+      "total_blueprints": 3,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r3",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 3,
+      "multiplier": "1.75",
+      "next_blueprints": 4,
+      "total_blueprints": 6,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r4",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 4,
+      "multiplier": "2",
+      "next_blueprints": 5,
+      "total_blueprints": 10,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_logistics_r5",
+      "type_id": "logistics",
+      "name": "物流設計",
+      "rank": 5,
+      "multiplier": "2.25",
+      "next_blueprints": null,
+      "total_blueprints": 15,
+      "asset_refs": [
+        "research_logistics"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r0",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 0,
+      "multiplier": "1",
+      "next_blueprints": 1,
+      "total_blueprints": 0,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r1",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 1,
+      "multiplier": "1.25",
+      "next_blueprints": 2,
+      "total_blueprints": 1,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r2",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 2,
+      "multiplier": "1.5",
+      "next_blueprints": 3,
+      "total_blueprints": 3,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r3",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 3,
+      "multiplier": "1.75",
+      "next_blueprints": 4,
+      "total_blueprints": 6,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r4",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 4,
+      "multiplier": "2",
+      "next_blueprints": 5,
+      "total_blueprints": 10,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    },
+    {
+      "id": "research_commerce_r5",
+      "type_id": "commerce",
+      "name": "商い設計",
+      "rank": 5,
+      "multiplier": "2.25",
+      "next_blueprints": null,
+      "total_blueprints": 15,
+      "asset_refs": [
+        "research_commerce"
+      ],
+      "rank_visual": "5つのDOM目盛りとランク数。未取得は白抜き、取得分は斜線と塗りで区別。",
+      "reset": "再出発でも保持"
+    }
+  ],
+  "assets": [
+    {
+      "id": "equipment_packaging_0",
+      "name": "手包みの敷き布",
+      "category": "equipment_scene",
+      "kind": "raster",
+      "visual_brief": "包み紙を広げた低い布、ひも巻きと一個の荷物。机脚を描かず、道具未購入が伝わる。",
+      "source_size": [
+        1200,
+        800
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "render_layer": "equipment_preview",
+      "profile_id": "packaging",
+      "status": "planned",
+      "used_by": [
+        "packaging:0"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_0.webp"
+      ],
+      "production_phase": "P0",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_packaging_1",
+      "name": "木の荷づくり台",
+      "category": "equipment_scene",
+      "kind": "raster",
+      "visual_brief": "丈夫な木の机、ひも掛け、手押し印。水平な一枚天板が主役。",
+      "source_size": [
+        1200,
+        800
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "render_layer": "equipment_preview",
+      "profile_id": "packaging",
+      "status": "planned",
+      "used_by": [
+        "packaging:1",
+        "packaging:2",
+        "packaging:3",
+        "packaging:4",
+        "packaging:5",
+        "packaging:6",
+        "packaging:7",
+        "packaging:8",
+        "packaging:9"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_1.webp"
+      ],
+      "production_phase": "P0",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_packaging_2",
+      "name": "荷札機つきの台",
+      "category": "equipment_scene",
+      "kind": "raster",
+      "visual_brief": "右奥に縦長の荷札機、左に一列の包み台。背の高い機械でレベル10の変化を見せる。",
+      "source_size": [
+        1200,
+        800
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "render_layer": "equipment_preview",
+      "profile_id": "packaging",
+      "status": "planned",
+      "used_by": [
+        "packaging:10",
+        "packaging:11",
+        "packaging:12",
+        "packaging:13",
+        "packaging:14",
+        "packaging:15",
+        "packaging:16",
+        "packaging:17",
+        "packaging:18",
+        "packaging:19",
+        "packaging:20",
+        "packaging:21",
+        "packaging:22",
+        "packaging:23",
+        "packaging:24"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_2.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_packaging_3",
+      "name": "二列の仕分け台",
+      "category": "equipment_scene",
+      "kind": "raster",
+      "visual_brief": "直交する二枚の天板と棚、仕分けトレー。L字の輪郭でレベル25を区別する。",
+      "source_size": [
+        1200,
+        800
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "render_layer": "equipment_preview",
+      "profile_id": "packaging",
+      "status": "planned",
+      "used_by": [
+        "packaging:25",
+        "packaging:26",
+        "packaging:27",
+        "packaging:28",
+        "packaging:29",
+        "packaging:30",
+        "packaging:31",
+        "packaging:32",
+        "packaging:33",
+        "packaging:34",
+        "packaging:35",
+        "packaging:36",
+        "packaging:37",
+        "packaging:38",
+        "packaging:39",
+        "packaging:40",
+        "packaging:41",
+        "packaging:42",
+        "packaging:43",
+        "packaging:44",
+        "packaging:45",
+        "packaging:46",
+        "packaging:47",
+        "packaging:48",
+        "packaging:49"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_3.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_packaging_4",
+      "name": "一体型の荷づくり工房",
+      "category": "equipment_scene",
+      "kind": "raster",
+      "visual_brief": "低い連続作業台と大きなアーチ状のひも掛け、整列した道具。幅のある一体型の輪郭。自動で文字を生む表現は使わない。",
+      "source_size": [
+        1200,
+        800
+      ],
+      "placements": [
+        "UPGRADES"
+      ],
+      "render_layer": "equipment_preview",
+      "profile_id": "packaging",
+      "status": "planned",
+      "used_by": [
+        "packaging:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/equipment_scene/equipment_packaging_4.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_cart_front",
+      "name": "小さな荷馬車・正面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "幌のない荷台と丸い木の車輪、前に小さな馬。正面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:1:road",
+        "crews:2:road",
+        "crews:3:road",
+        "crews:4:road",
+        "crews:5:road",
+        "crews:6:road",
+        "crews:7:road",
+        "crews:8:road",
+        "crews:9:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_cart_front.webp"
+      ],
+      "production_phase": "P0",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_cart_rear",
+      "name": "小さな荷馬車・背面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "幌のない荷台と丸い木の車輪、前に小さな馬。背面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:1:road",
+        "crews:2:road",
+        "crews:3:road",
+        "crews:4:road",
+        "crews:5:road",
+        "crews:6:road",
+        "crews:7:road",
+        "crews:8:road",
+        "crews:9:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_cart_rear.webp"
+      ],
+      "production_phase": "P0",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_van_front",
+      "name": "小型配送車・正面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "短い箱形車体と高めの屋根。荷物を積んだ内部は小窓で示す。正面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:10:road",
+        "crews:11:road",
+        "crews:12:road",
+        "crews:13:road",
+        "crews:14:road",
+        "crews:15:road",
+        "crews:16:road",
+        "crews:17:road",
+        "crews:18:road",
+        "crews:19:road",
+        "crews:20:road",
+        "crews:21:road",
+        "crews:22:road",
+        "crews:23:road",
+        "crews:24:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_van_front.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_van_rear",
+      "name": "小型配送車・背面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "短い箱形車体と高めの屋根。荷物を積んだ内部は小窓で示す。背面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:10:road",
+        "crews:11:road",
+        "crews:12:road",
+        "crews:13:road",
+        "crews:14:road",
+        "crews:15:road",
+        "crews:16:road",
+        "crews:17:road",
+        "crews:18:road",
+        "crews:19:road",
+        "crews:20:road",
+        "crews:21:road",
+        "crews:22:road",
+        "crews:23:road",
+        "crews:24:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_van_rear.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_box_van_front",
+      "name": "箱形の配送車・正面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "前室と独立した背の高い荷室、四角い輪郭。正面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:25:road",
+        "crews:26:road",
+        "crews:27:road",
+        "crews:28:road",
+        "crews:29:road",
+        "crews:30:road",
+        "crews:31:road",
+        "crews:32:road",
+        "crews:33:road",
+        "crews:34:road",
+        "crews:35:road",
+        "crews:36:road",
+        "crews:37:road",
+        "crews:38:road",
+        "crews:39:road",
+        "crews:40:road",
+        "crews:41:road",
+        "crews:42:road",
+        "crews:43:road",
+        "crews:44:road",
+        "crews:45:road",
+        "crews:46:road",
+        "crews:47:road",
+        "crews:48:road",
+        "crews:49:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_box_van_front.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_box_van_rear",
+      "name": "箱形の配送車・背面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "前室と独立した背の高い荷室、四角い輪郭。背面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:25:road",
+        "crews:26:road",
+        "crews:27:road",
+        "crews:28:road",
+        "crews:29:road",
+        "crews:30:road",
+        "crews:31:road",
+        "crews:32:road",
+        "crews:33:road",
+        "crews:34:road",
+        "crews:35:road",
+        "crews:36:road",
+        "crews:37:road",
+        "crews:38:road",
+        "crews:39:road",
+        "crews:40:road",
+        "crews:41:road",
+        "crews:42:road",
+        "crews:43:road",
+        "crews:44:road",
+        "crews:45:road",
+        "crews:46:road",
+        "crews:47:road",
+        "crews:48:road",
+        "crews:49:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_box_van_rear.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_truck_front",
+      "name": "大型配送車・正面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "長い荷室と二軸の後輪、幅より長さの差を主役にする。正面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:50:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_truck_front.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_truck_rear",
+      "name": "大型配送車・背面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "長い荷室と二軸の後輪、幅より長さの差を主役にする。背面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:50:road"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_truck_rear.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_train_front",
+      "name": "貨物列車・正面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "短い機関車と1両の貨車を一体のシルエットにする。道路車両とは車輪と連結部が異なる。正面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:10:railway",
+        "crews:11:railway",
+        "crews:12:railway",
+        "crews:13:railway",
+        "crews:14:railway",
+        "crews:15:railway",
+        "crews:16:railway",
+        "crews:17:railway",
+        "crews:18:railway",
+        "crews:19:railway",
+        "crews:20:railway",
+        "crews:21:railway",
+        "crews:22:railway",
+        "crews:23:railway",
+        "crews:24:railway",
+        "crews:25:railway",
+        "crews:26:railway",
+        "crews:27:railway",
+        "crews:28:railway",
+        "crews:29:railway",
+        "crews:30:railway",
+        "crews:31:railway",
+        "crews:32:railway",
+        "crews:33:railway",
+        "crews:34:railway",
+        "crews:35:railway",
+        "crews:36:railway",
+        "crews:37:railway",
+        "crews:38:railway",
+        "crews:39:railway",
+        "crews:40:railway",
+        "crews:41:railway",
+        "crews:42:railway",
+        "crews:43:railway",
+        "crews:44:railway",
+        "crews:45:railway",
+        "crews:46:railway",
+        "crews:47:railway",
+        "crews:48:railway",
+        "crews:49:railway",
+        "crews:50:railway",
+        "railway_residential",
+        "railway_market",
+        "railway_workshop",
+        "railway_park",
+        "railway_station",
+        "railway_harbor",
+        "route:residential",
+        "route:market",
+        "route:workshop",
+        "route:park",
+        "route:station",
+        "route:harbor"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_train_front.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "vehicle_train_rear",
+      "name": "貨物列車・背面寄り",
+      "category": "vehicle",
+      "kind": "raster",
+      "visual_brief": "短い機関車と1両の貨車を一体のシルエットにする。道路車両とは車輪と連結部が異なる。背面寄りの斜め向き。文字・左右非対称のロゴは入れず、水平反転で反対方向へ利用する。方向の強い光と投影を描かず、反転に耐える柔らかい拡散光。接地影は実行時の共通楕円で別描画し、原画には含めない。地面と路線は透過。",
+      "source_size": [
+        256,
+        192
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "vehicle",
+      "native_direction_map": [
+        2,
+        -1
+      ],
+      "profile_id": "vehicle",
+      "status": "planned",
+      "used_by": [
+        "crews:10:railway",
+        "crews:11:railway",
+        "crews:12:railway",
+        "crews:13:railway",
+        "crews:14:railway",
+        "crews:15:railway",
+        "crews:16:railway",
+        "crews:17:railway",
+        "crews:18:railway",
+        "crews:19:railway",
+        "crews:20:railway",
+        "crews:21:railway",
+        "crews:22:railway",
+        "crews:23:railway",
+        "crews:24:railway",
+        "crews:25:railway",
+        "crews:26:railway",
+        "crews:27:railway",
+        "crews:28:railway",
+        "crews:29:railway",
+        "crews:30:railway",
+        "crews:31:railway",
+        "crews:32:railway",
+        "crews:33:railway",
+        "crews:34:railway",
+        "crews:35:railway",
+        "crews:36:railway",
+        "crews:37:railway",
+        "crews:38:railway",
+        "crews:39:railway",
+        "crews:40:railway",
+        "crews:41:railway",
+        "crews:42:railway",
+        "crews:43:railway",
+        "crews:44:railway",
+        "crews:45:railway",
+        "crews:46:railway",
+        "crews:47:railway",
+        "crews:48:railway",
+        "crews:49:railway",
+        "crews:50:railway",
+        "railway_residential",
+        "railway_market",
+        "railway_workshop",
+        "railway_park",
+        "railway_station",
+        "railway_harbor",
+        "route:residential",
+        "route:market",
+        "route:workshop",
+        "route:park",
+        "route:station",
+        "route:harbor"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/vehicle/vehicle_train_rear.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "shop_canopy",
+      "name": "店舗の共通ひさし",
+      "category": "shop_overlay",
+      "kind": "svg",
+      "visual_brief": "店舗の前面上部に深いひさし。10軒以上の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "shop_overlay",
+      "profile_id": "shop",
+      "status": "planned",
+      "used_by": [
+        "shops:residential:10",
+        "shops:market:10",
+        "shops:workshop:10",
+        "shops:park:10",
+        "shops:station:10",
+        "shops:harbor:10",
+        "shops:residential:11",
+        "shops:market:11",
+        "shops:workshop:11",
+        "shops:park:11",
+        "shops:station:11",
+        "shops:harbor:11",
+        "shops:residential:12",
+        "shops:market:12",
+        "shops:workshop:12",
+        "shops:park:12",
+        "shops:station:12",
+        "shops:harbor:12",
+        "shops:residential:13",
+        "shops:market:13",
+        "shops:workshop:13",
+        "shops:park:13",
+        "shops:station:13",
+        "shops:harbor:13",
+        "shops:residential:14",
+        "shops:market:14",
+        "shops:workshop:14",
+        "shops:park:14",
+        "shops:station:14",
+        "shops:harbor:14",
+        "shops:residential:15",
+        "shops:market:15",
+        "shops:workshop:15",
+        "shops:park:15",
+        "shops:station:15",
+        "shops:harbor:15",
+        "shops:residential:16",
+        "shops:market:16",
+        "shops:workshop:16",
+        "shops:park:16",
+        "shops:station:16",
+        "shops:harbor:16",
+        "shops:residential:17",
+        "shops:market:17",
+        "shops:workshop:17",
+        "shops:park:17",
+        "shops:station:17",
+        "shops:harbor:17",
+        "shops:residential:18",
+        "shops:market:18",
+        "shops:workshop:18",
+        "shops:park:18",
+        "shops:station:18",
+        "shops:harbor:18",
+        "shops:residential:19",
+        "shops:market:19",
+        "shops:workshop:19",
+        "shops:park:19",
+        "shops:station:19",
+        "shops:harbor:19",
+        "shops:residential:20",
+        "shops:market:20",
+        "shops:workshop:20",
+        "shops:park:20",
+        "shops:station:20",
+        "shops:harbor:20",
+        "shops:residential:21",
+        "shops:market:21",
+        "shops:workshop:21",
+        "shops:park:21",
+        "shops:station:21",
+        "shops:harbor:21",
+        "shops:residential:22",
+        "shops:market:22",
+        "shops:workshop:22",
+        "shops:park:22",
+        "shops:station:22",
+        "shops:harbor:22",
+        "shops:residential:23",
+        "shops:market:23",
+        "shops:workshop:23",
+        "shops:park:23",
+        "shops:station:23",
+        "shops:harbor:23",
+        "shops:residential:24",
+        "shops:market:24",
+        "shops:workshop:24",
+        "shops:park:24",
+        "shops:station:24",
+        "shops:harbor:24",
+        "shops:residential:25",
+        "shops:market:25",
+        "shops:workshop:25",
+        "shops:park:25",
+        "shops:station:25",
+        "shops:harbor:25",
+        "shops:residential:26",
+        "shops:market:26",
+        "shops:workshop:26",
+        "shops:park:26",
+        "shops:station:26",
+        "shops:harbor:26",
+        "shops:residential:27",
+        "shops:market:27",
+        "shops:workshop:27",
+        "shops:park:27",
+        "shops:station:27",
+        "shops:harbor:27",
+        "shops:residential:28",
+        "shops:market:28",
+        "shops:workshop:28",
+        "shops:park:28",
+        "shops:station:28",
+        "shops:harbor:28",
+        "shops:residential:29",
+        "shops:market:29",
+        "shops:workshop:29",
+        "shops:park:29",
+        "shops:station:29",
+        "shops:harbor:29",
+        "shops:residential:30",
+        "shops:market:30",
+        "shops:workshop:30",
+        "shops:park:30",
+        "shops:station:30",
+        "shops:harbor:30",
+        "shops:residential:31",
+        "shops:market:31",
+        "shops:workshop:31",
+        "shops:park:31",
+        "shops:station:31",
+        "shops:harbor:31",
+        "shops:residential:32",
+        "shops:market:32",
+        "shops:workshop:32",
+        "shops:park:32",
+        "shops:station:32",
+        "shops:harbor:32",
+        "shops:residential:33",
+        "shops:market:33",
+        "shops:workshop:33",
+        "shops:park:33",
+        "shops:station:33",
+        "shops:harbor:33",
+        "shops:residential:34",
+        "shops:market:34",
+        "shops:workshop:34",
+        "shops:park:34",
+        "shops:station:34",
+        "shops:harbor:34",
+        "shops:residential:35",
+        "shops:market:35",
+        "shops:workshop:35",
+        "shops:park:35",
+        "shops:station:35",
+        "shops:harbor:35",
+        "shops:residential:36",
+        "shops:market:36",
+        "shops:workshop:36",
+        "shops:park:36",
+        "shops:station:36",
+        "shops:harbor:36",
+        "shops:residential:37",
+        "shops:market:37",
+        "shops:workshop:37",
+        "shops:park:37",
+        "shops:station:37",
+        "shops:harbor:37",
+        "shops:residential:38",
+        "shops:market:38",
+        "shops:workshop:38",
+        "shops:park:38",
+        "shops:station:38",
+        "shops:harbor:38",
+        "shops:residential:39",
+        "shops:market:39",
+        "shops:workshop:39",
+        "shops:park:39",
+        "shops:station:39",
+        "shops:harbor:39",
+        "shops:residential:40",
+        "shops:market:40",
+        "shops:workshop:40",
+        "shops:park:40",
+        "shops:station:40",
+        "shops:harbor:40",
+        "shops:residential:41",
+        "shops:market:41",
+        "shops:workshop:41",
+        "shops:park:41",
+        "shops:station:41",
+        "shops:harbor:41",
+        "shops:residential:42",
+        "shops:market:42",
+        "shops:workshop:42",
+        "shops:park:42",
+        "shops:station:42",
+        "shops:harbor:42",
+        "shops:residential:43",
+        "shops:market:43",
+        "shops:workshop:43",
+        "shops:park:43",
+        "shops:station:43",
+        "shops:harbor:43",
+        "shops:residential:44",
+        "shops:market:44",
+        "shops:workshop:44",
+        "shops:park:44",
+        "shops:station:44",
+        "shops:harbor:44",
+        "shops:residential:45",
+        "shops:market:45",
+        "shops:workshop:45",
+        "shops:park:45",
+        "shops:station:45",
+        "shops:harbor:45",
+        "shops:residential:46",
+        "shops:market:46",
+        "shops:workshop:46",
+        "shops:park:46",
+        "shops:station:46",
+        "shops:harbor:46",
+        "shops:residential:47",
+        "shops:market:47",
+        "shops:workshop:47",
+        "shops:park:47",
+        "shops:station:47",
+        "shops:harbor:47",
+        "shops:residential:48",
+        "shops:market:48",
+        "shops:workshop:48",
+        "shops:park:48",
+        "shops:station:48",
+        "shops:harbor:48",
+        "shops:residential:49",
+        "shops:market:49",
+        "shops:workshop:49",
+        "shops:park:49",
+        "shops:station:49",
+        "shops:harbor:49",
+        "shops:residential:50",
+        "shops:market:50",
+        "shops:workshop:50",
+        "shops:park:50",
+        "shops:station:50",
+        "shops:harbor:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/shop_overlay/shop_canopy.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "shop_banner",
+      "name": "店舗の共通のぼり",
+      "category": "shop_overlay",
+      "kind": "svg",
+      "visual_brief": "文字のない縦長の布を店の右側へ1本。25軒以上の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "shop_overlay",
+      "profile_id": "shop",
+      "status": "planned",
+      "used_by": [
+        "shops:residential:25",
+        "shops:market:25",
+        "shops:workshop:25",
+        "shops:park:25",
+        "shops:station:25",
+        "shops:harbor:25",
+        "shops:residential:26",
+        "shops:market:26",
+        "shops:workshop:26",
+        "shops:park:26",
+        "shops:station:26",
+        "shops:harbor:26",
+        "shops:residential:27",
+        "shops:market:27",
+        "shops:workshop:27",
+        "shops:park:27",
+        "shops:station:27",
+        "shops:harbor:27",
+        "shops:residential:28",
+        "shops:market:28",
+        "shops:workshop:28",
+        "shops:park:28",
+        "shops:station:28",
+        "shops:harbor:28",
+        "shops:residential:29",
+        "shops:market:29",
+        "shops:workshop:29",
+        "shops:park:29",
+        "shops:station:29",
+        "shops:harbor:29",
+        "shops:residential:30",
+        "shops:market:30",
+        "shops:workshop:30",
+        "shops:park:30",
+        "shops:station:30",
+        "shops:harbor:30",
+        "shops:residential:31",
+        "shops:market:31",
+        "shops:workshop:31",
+        "shops:park:31",
+        "shops:station:31",
+        "shops:harbor:31",
+        "shops:residential:32",
+        "shops:market:32",
+        "shops:workshop:32",
+        "shops:park:32",
+        "shops:station:32",
+        "shops:harbor:32",
+        "shops:residential:33",
+        "shops:market:33",
+        "shops:workshop:33",
+        "shops:park:33",
+        "shops:station:33",
+        "shops:harbor:33",
+        "shops:residential:34",
+        "shops:market:34",
+        "shops:workshop:34",
+        "shops:park:34",
+        "shops:station:34",
+        "shops:harbor:34",
+        "shops:residential:35",
+        "shops:market:35",
+        "shops:workshop:35",
+        "shops:park:35",
+        "shops:station:35",
+        "shops:harbor:35",
+        "shops:residential:36",
+        "shops:market:36",
+        "shops:workshop:36",
+        "shops:park:36",
+        "shops:station:36",
+        "shops:harbor:36",
+        "shops:residential:37",
+        "shops:market:37",
+        "shops:workshop:37",
+        "shops:park:37",
+        "shops:station:37",
+        "shops:harbor:37",
+        "shops:residential:38",
+        "shops:market:38",
+        "shops:workshop:38",
+        "shops:park:38",
+        "shops:station:38",
+        "shops:harbor:38",
+        "shops:residential:39",
+        "shops:market:39",
+        "shops:workshop:39",
+        "shops:park:39",
+        "shops:station:39",
+        "shops:harbor:39",
+        "shops:residential:40",
+        "shops:market:40",
+        "shops:workshop:40",
+        "shops:park:40",
+        "shops:station:40",
+        "shops:harbor:40",
+        "shops:residential:41",
+        "shops:market:41",
+        "shops:workshop:41",
+        "shops:park:41",
+        "shops:station:41",
+        "shops:harbor:41",
+        "shops:residential:42",
+        "shops:market:42",
+        "shops:workshop:42",
+        "shops:park:42",
+        "shops:station:42",
+        "shops:harbor:42",
+        "shops:residential:43",
+        "shops:market:43",
+        "shops:workshop:43",
+        "shops:park:43",
+        "shops:station:43",
+        "shops:harbor:43",
+        "shops:residential:44",
+        "shops:market:44",
+        "shops:workshop:44",
+        "shops:park:44",
+        "shops:station:44",
+        "shops:harbor:44",
+        "shops:residential:45",
+        "shops:market:45",
+        "shops:workshop:45",
+        "shops:park:45",
+        "shops:station:45",
+        "shops:harbor:45",
+        "shops:residential:46",
+        "shops:market:46",
+        "shops:workshop:46",
+        "shops:park:46",
+        "shops:station:46",
+        "shops:harbor:46",
+        "shops:residential:47",
+        "shops:market:47",
+        "shops:workshop:47",
+        "shops:park:47",
+        "shops:station:47",
+        "shops:harbor:47",
+        "shops:residential:48",
+        "shops:market:48",
+        "shops:workshop:48",
+        "shops:park:48",
+        "shops:station:48",
+        "shops:harbor:48",
+        "shops:residential:49",
+        "shops:market:49",
+        "shops:workshop:49",
+        "shops:park:49",
+        "shops:station:49",
+        "shops:harbor:49",
+        "shops:residential:50",
+        "shops:market:50",
+        "shops:workshop:50",
+        "shops:park:50",
+        "shops:station:50",
+        "shops:harbor:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/shop_overlay/shop_banner.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "shop_signboard",
+      "name": "店舗の共通看板",
+      "category": "shop_overlay",
+      "kind": "svg",
+      "visual_brief": "文字のない丸い飾り看板を正面中央の高い位置に。50軒の目印。基準店舗枠512×512に位置を合わせ、地区ごとの店舗外観と干渉させない。",
+      "source_size": [
+        512,
+        512
+      ],
+      "placements": [
+        "HOME",
+        "UPGRADES",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "shop_overlay",
+      "profile_id": "shop",
+      "status": "planned",
+      "used_by": [
+        "shops:residential:50",
+        "shops:market:50",
+        "shops:workshop:50",
+        "shops:park:50",
+        "shops:station:50",
+        "shops:harbor:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/shop_overlay/shop_signboard.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "city_freight_terminal",
+      "name": "共通の貨物積み下ろし場",
+      "category": "city_shared",
+      "kind": "raster",
+      "visual_brief": "低い積み下ろし台と小さな荷物の屋根。駅前の旅客駅とは別形。鉄道化した地区の進入口にのみ重ねる。レールは描かない。",
+      "source_size": [
+        512,
+        384
+      ],
+      "placements": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "UPGRADES"
+      ],
+      "render_layer": "freight_terminal",
+      "profile_id": "freight",
+      "status": "planned",
+      "used_by": [
+        "crews:10:railway",
+        "crews:11:railway",
+        "crews:12:railway",
+        "crews:13:railway",
+        "crews:14:railway",
+        "crews:15:railway",
+        "crews:16:railway",
+        "crews:17:railway",
+        "crews:18:railway",
+        "crews:19:railway",
+        "crews:20:railway",
+        "crews:21:railway",
+        "crews:22:railway",
+        "crews:23:railway",
+        "crews:24:railway",
+        "crews:25:railway",
+        "crews:26:railway",
+        "crews:27:railway",
+        "crews:28:railway",
+        "crews:29:railway",
+        "crews:30:railway",
+        "crews:31:railway",
+        "crews:32:railway",
+        "crews:33:railway",
+        "crews:34:railway",
+        "crews:35:railway",
+        "crews:36:railway",
+        "crews:37:railway",
+        "crews:38:railway",
+        "crews:39:railway",
+        "crews:40:railway",
+        "crews:41:railway",
+        "crews:42:railway",
+        "crews:43:railway",
+        "crews:44:railway",
+        "crews:45:railway",
+        "crews:46:railway",
+        "crews:47:railway",
+        "crews:48:railway",
+        "crews:49:railway",
+        "crews:50:railway",
+        "railway_residential",
+        "railway_market",
+        "railway_workshop",
+        "railway_park",
+        "railway_station",
+        "railway_harbor",
+        "route:residential",
+        "route:market",
+        "route:workshop",
+        "route:park",
+        "route:station",
+        "route:harbor"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "PNG",
+      "runtime_exports": [
+        "assets/city_shared/city_freight_terminal.webp"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_packaging_icon",
+      "name": "荷づくり台のアイコン",
+      "category": "equipment_icon",
+      "kind": "svg",
+      "visual_brief": "ひもを巻いた包みと作業台。24pxで識別できる簡潔な輪郭。",
+      "source_size": [
+        32,
+        32
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "render_layer": "UI_icon",
+      "profile_id": "icon",
+      "status": "planned",
+      "used_by": [
+        "packaging:0",
+        "packaging:1",
+        "packaging:2",
+        "packaging:3",
+        "packaging:4",
+        "packaging:5",
+        "packaging:6",
+        "packaging:7",
+        "packaging:8",
+        "packaging:9",
+        "packaging:10",
+        "packaging:11",
+        "packaging:12",
+        "packaging:13",
+        "packaging:14",
+        "packaging:15",
+        "packaging:16",
+        "packaging:17",
+        "packaging:18",
+        "packaging:19",
+        "packaging:20",
+        "packaging:21",
+        "packaging:22",
+        "packaging:23",
+        "packaging:24",
+        "packaging:25",
+        "packaging:26",
+        "packaging:27",
+        "packaging:28",
+        "packaging:29",
+        "packaging:30",
+        "packaging:31",
+        "packaging:32",
+        "packaging:33",
+        "packaging:34",
+        "packaging:35",
+        "packaging:36",
+        "packaging:37",
+        "packaging:38",
+        "packaging:39",
+        "packaging:40",
+        "packaging:41",
+        "packaging:42",
+        "packaging:43",
+        "packaging:44",
+        "packaging:45",
+        "packaging:46",
+        "packaging:47",
+        "packaging:48",
+        "packaging:49",
+        "packaging:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_packaging_icon.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_crews_icon",
+      "name": "配送班のアイコン",
+      "category": "equipment_icon",
+      "kind": "svg",
+      "visual_brief": "大小二つの車輪と荷台。24pxで識別できる簡潔な輪郭。",
+      "source_size": [
+        32,
+        32
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "render_layer": "UI_icon",
+      "profile_id": "icon",
+      "status": "planned",
+      "used_by": [
+        "crews:1:road",
+        "crews:2:road",
+        "crews:3:road",
+        "crews:4:road",
+        "crews:5:road",
+        "crews:6:road",
+        "crews:7:road",
+        "crews:8:road",
+        "crews:9:road",
+        "crews:10:road",
+        "crews:10:railway",
+        "crews:11:road",
+        "crews:11:railway",
+        "crews:12:road",
+        "crews:12:railway",
+        "crews:13:road",
+        "crews:13:railway",
+        "crews:14:road",
+        "crews:14:railway",
+        "crews:15:road",
+        "crews:15:railway",
+        "crews:16:road",
+        "crews:16:railway",
+        "crews:17:road",
+        "crews:17:railway",
+        "crews:18:road",
+        "crews:18:railway",
+        "crews:19:road",
+        "crews:19:railway",
+        "crews:20:road",
+        "crews:20:railway",
+        "crews:21:road",
+        "crews:21:railway",
+        "crews:22:road",
+        "crews:22:railway",
+        "crews:23:road",
+        "crews:23:railway",
+        "crews:24:road",
+        "crews:24:railway",
+        "crews:25:road",
+        "crews:25:railway",
+        "crews:26:road",
+        "crews:26:railway",
+        "crews:27:road",
+        "crews:27:railway",
+        "crews:28:road",
+        "crews:28:railway",
+        "crews:29:road",
+        "crews:29:railway",
+        "crews:30:road",
+        "crews:30:railway",
+        "crews:31:road",
+        "crews:31:railway",
+        "crews:32:road",
+        "crews:32:railway",
+        "crews:33:road",
+        "crews:33:railway",
+        "crews:34:road",
+        "crews:34:railway",
+        "crews:35:road",
+        "crews:35:railway",
+        "crews:36:road",
+        "crews:36:railway",
+        "crews:37:road",
+        "crews:37:railway",
+        "crews:38:road",
+        "crews:38:railway",
+        "crews:39:road",
+        "crews:39:railway",
+        "crews:40:road",
+        "crews:40:railway",
+        "crews:41:road",
+        "crews:41:railway",
+        "crews:42:road",
+        "crews:42:railway",
+        "crews:43:road",
+        "crews:43:railway",
+        "crews:44:road",
+        "crews:44:railway",
+        "crews:45:road",
+        "crews:45:railway",
+        "crews:46:road",
+        "crews:46:railway",
+        "crews:47:road",
+        "crews:47:railway",
+        "crews:48:road",
+        "crews:48:railway",
+        "crews:49:road",
+        "crews:49:railway",
+        "crews:50:road",
+        "crews:50:railway"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_crews_icon.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_shops_icon",
+      "name": "店舗のアイコン",
+      "category": "equipment_icon",
+      "kind": "svg",
+      "visual_brief": "正面のひさしと出入口。24pxで識別できる簡潔な輪郭。",
+      "source_size": [
+        32,
+        32
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "render_layer": "UI_icon",
+      "profile_id": "icon",
+      "status": "planned",
+      "used_by": [
+        "shops:residential:0",
+        "shops:market:0",
+        "shops:workshop:0",
+        "shops:park:0",
+        "shops:station:0",
+        "shops:harbor:0",
+        "shops:residential:1",
+        "shops:market:1",
+        "shops:workshop:1",
+        "shops:park:1",
+        "shops:station:1",
+        "shops:harbor:1",
+        "shops:residential:2",
+        "shops:market:2",
+        "shops:workshop:2",
+        "shops:park:2",
+        "shops:station:2",
+        "shops:harbor:2",
+        "shops:residential:3",
+        "shops:market:3",
+        "shops:workshop:3",
+        "shops:park:3",
+        "shops:station:3",
+        "shops:harbor:3",
+        "shops:residential:4",
+        "shops:market:4",
+        "shops:workshop:4",
+        "shops:park:4",
+        "shops:station:4",
+        "shops:harbor:4",
+        "shops:residential:5",
+        "shops:market:5",
+        "shops:workshop:5",
+        "shops:park:5",
+        "shops:station:5",
+        "shops:harbor:5",
+        "shops:residential:6",
+        "shops:market:6",
+        "shops:workshop:6",
+        "shops:park:6",
+        "shops:station:6",
+        "shops:harbor:6",
+        "shops:residential:7",
+        "shops:market:7",
+        "shops:workshop:7",
+        "shops:park:7",
+        "shops:station:7",
+        "shops:harbor:7",
+        "shops:residential:8",
+        "shops:market:8",
+        "shops:workshop:8",
+        "shops:park:8",
+        "shops:station:8",
+        "shops:harbor:8",
+        "shops:residential:9",
+        "shops:market:9",
+        "shops:workshop:9",
+        "shops:park:9",
+        "shops:station:9",
+        "shops:harbor:9",
+        "shops:residential:10",
+        "shops:market:10",
+        "shops:workshop:10",
+        "shops:park:10",
+        "shops:station:10",
+        "shops:harbor:10",
+        "shops:residential:11",
+        "shops:market:11",
+        "shops:workshop:11",
+        "shops:park:11",
+        "shops:station:11",
+        "shops:harbor:11",
+        "shops:residential:12",
+        "shops:market:12",
+        "shops:workshop:12",
+        "shops:park:12",
+        "shops:station:12",
+        "shops:harbor:12",
+        "shops:residential:13",
+        "shops:market:13",
+        "shops:workshop:13",
+        "shops:park:13",
+        "shops:station:13",
+        "shops:harbor:13",
+        "shops:residential:14",
+        "shops:market:14",
+        "shops:workshop:14",
+        "shops:park:14",
+        "shops:station:14",
+        "shops:harbor:14",
+        "shops:residential:15",
+        "shops:market:15",
+        "shops:workshop:15",
+        "shops:park:15",
+        "shops:station:15",
+        "shops:harbor:15",
+        "shops:residential:16",
+        "shops:market:16",
+        "shops:workshop:16",
+        "shops:park:16",
+        "shops:station:16",
+        "shops:harbor:16",
+        "shops:residential:17",
+        "shops:market:17",
+        "shops:workshop:17",
+        "shops:park:17",
+        "shops:station:17",
+        "shops:harbor:17",
+        "shops:residential:18",
+        "shops:market:18",
+        "shops:workshop:18",
+        "shops:park:18",
+        "shops:station:18",
+        "shops:harbor:18",
+        "shops:residential:19",
+        "shops:market:19",
+        "shops:workshop:19",
+        "shops:park:19",
+        "shops:station:19",
+        "shops:harbor:19",
+        "shops:residential:20",
+        "shops:market:20",
+        "shops:workshop:20",
+        "shops:park:20",
+        "shops:station:20",
+        "shops:harbor:20",
+        "shops:residential:21",
+        "shops:market:21",
+        "shops:workshop:21",
+        "shops:park:21",
+        "shops:station:21",
+        "shops:harbor:21",
+        "shops:residential:22",
+        "shops:market:22",
+        "shops:workshop:22",
+        "shops:park:22",
+        "shops:station:22",
+        "shops:harbor:22",
+        "shops:residential:23",
+        "shops:market:23",
+        "shops:workshop:23",
+        "shops:park:23",
+        "shops:station:23",
+        "shops:harbor:23",
+        "shops:residential:24",
+        "shops:market:24",
+        "shops:workshop:24",
+        "shops:park:24",
+        "shops:station:24",
+        "shops:harbor:24",
+        "shops:residential:25",
+        "shops:market:25",
+        "shops:workshop:25",
+        "shops:park:25",
+        "shops:station:25",
+        "shops:harbor:25",
+        "shops:residential:26",
+        "shops:market:26",
+        "shops:workshop:26",
+        "shops:park:26",
+        "shops:station:26",
+        "shops:harbor:26",
+        "shops:residential:27",
+        "shops:market:27",
+        "shops:workshop:27",
+        "shops:park:27",
+        "shops:station:27",
+        "shops:harbor:27",
+        "shops:residential:28",
+        "shops:market:28",
+        "shops:workshop:28",
+        "shops:park:28",
+        "shops:station:28",
+        "shops:harbor:28",
+        "shops:residential:29",
+        "shops:market:29",
+        "shops:workshop:29",
+        "shops:park:29",
+        "shops:station:29",
+        "shops:harbor:29",
+        "shops:residential:30",
+        "shops:market:30",
+        "shops:workshop:30",
+        "shops:park:30",
+        "shops:station:30",
+        "shops:harbor:30",
+        "shops:residential:31",
+        "shops:market:31",
+        "shops:workshop:31",
+        "shops:park:31",
+        "shops:station:31",
+        "shops:harbor:31",
+        "shops:residential:32",
+        "shops:market:32",
+        "shops:workshop:32",
+        "shops:park:32",
+        "shops:station:32",
+        "shops:harbor:32",
+        "shops:residential:33",
+        "shops:market:33",
+        "shops:workshop:33",
+        "shops:park:33",
+        "shops:station:33",
+        "shops:harbor:33",
+        "shops:residential:34",
+        "shops:market:34",
+        "shops:workshop:34",
+        "shops:park:34",
+        "shops:station:34",
+        "shops:harbor:34",
+        "shops:residential:35",
+        "shops:market:35",
+        "shops:workshop:35",
+        "shops:park:35",
+        "shops:station:35",
+        "shops:harbor:35",
+        "shops:residential:36",
+        "shops:market:36",
+        "shops:workshop:36",
+        "shops:park:36",
+        "shops:station:36",
+        "shops:harbor:36",
+        "shops:residential:37",
+        "shops:market:37",
+        "shops:workshop:37",
+        "shops:park:37",
+        "shops:station:37",
+        "shops:harbor:37",
+        "shops:residential:38",
+        "shops:market:38",
+        "shops:workshop:38",
+        "shops:park:38",
+        "shops:station:38",
+        "shops:harbor:38",
+        "shops:residential:39",
+        "shops:market:39",
+        "shops:workshop:39",
+        "shops:park:39",
+        "shops:station:39",
+        "shops:harbor:39",
+        "shops:residential:40",
+        "shops:market:40",
+        "shops:workshop:40",
+        "shops:park:40",
+        "shops:station:40",
+        "shops:harbor:40",
+        "shops:residential:41",
+        "shops:market:41",
+        "shops:workshop:41",
+        "shops:park:41",
+        "shops:station:41",
+        "shops:harbor:41",
+        "shops:residential:42",
+        "shops:market:42",
+        "shops:workshop:42",
+        "shops:park:42",
+        "shops:station:42",
+        "shops:harbor:42",
+        "shops:residential:43",
+        "shops:market:43",
+        "shops:workshop:43",
+        "shops:park:43",
+        "shops:station:43",
+        "shops:harbor:43",
+        "shops:residential:44",
+        "shops:market:44",
+        "shops:workshop:44",
+        "shops:park:44",
+        "shops:station:44",
+        "shops:harbor:44",
+        "shops:residential:45",
+        "shops:market:45",
+        "shops:workshop:45",
+        "shops:park:45",
+        "shops:station:45",
+        "shops:harbor:45",
+        "shops:residential:46",
+        "shops:market:46",
+        "shops:workshop:46",
+        "shops:park:46",
+        "shops:station:46",
+        "shops:harbor:46",
+        "shops:residential:47",
+        "shops:market:47",
+        "shops:workshop:47",
+        "shops:park:47",
+        "shops:station:47",
+        "shops:harbor:47",
+        "shops:residential:48",
+        "shops:market:48",
+        "shops:workshop:48",
+        "shops:park:48",
+        "shops:station:48",
+        "shops:harbor:48",
+        "shops:residential:49",
+        "shops:market:49",
+        "shops:workshop:49",
+        "shops:park:49",
+        "shops:station:49",
+        "shops:harbor:49",
+        "shops:residential:50",
+        "shops:market:50",
+        "shops:workshop:50",
+        "shops:park:50",
+        "shops:station:50",
+        "shops:harbor:50"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_shops_icon.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "equipment_railway_icon",
+      "name": "鉄道化のアイコン",
+      "category": "equipment_icon",
+      "kind": "svg",
+      "visual_brief": "二本のレールと貨車の車輪。24pxで識別できる簡潔な輪郭。",
+      "source_size": [
+        32,
+        32
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME"
+      ],
+      "render_layer": "UI_icon",
+      "profile_id": "icon",
+      "status": "planned",
+      "used_by": [
+        "railway_residential",
+        "railway_market",
+        "railway_workshop",
+        "railway_park",
+        "railway_station",
+        "railway_harbor"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/equipment_icon/equipment_railway_icon.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "synergy_joint_delivery",
+      "name": "共同配送",
+      "category": "synergy_icon",
+      "kind": "svg",
+      "visual_brief": "二つの地区から伸びたひもが一つの包みに結ばれる。単なる握手の図形にしない。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "synergy:joint_delivery"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_joint_delivery.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "synergy_sorting_network",
+      "name": "仕分け連携",
+      "category": "synergy_icon",
+      "kind": "svg",
+      "visual_brief": "三つの仕分け箱を一本の経路がつなぐ。流れの分岐と合流が主役。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "synergy:sorting_network"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_sorting_network.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "synergy_tourism_service",
+      "name": "観光便",
+      "category": "synergy_icon",
+      "kind": "svg",
+      "visual_brief": "公園の木と船の間を巡る封筒。輪形の周遊で他の連携と区別。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "HOME",
+        "DISTRICT_DETAIL"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "synergy:tourism_service"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/synergy_icon/synergy_tourism_service.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "research_materials",
+      "name": "荷札設計",
+      "category": "research_icon",
+      "kind": "svg",
+      "visual_brief": "小さな穴のある荷札と鉛筆。ランクの数字や星を図に描かない。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "research_materials_r0",
+        "research_materials_r1",
+        "research_materials_r2",
+        "research_materials_r3",
+        "research_materials_r4",
+        "research_materials_r5"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/research_icon/research_materials.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "research_logistics",
+      "name": "物流設計",
+      "category": "research_icon",
+      "kind": "svg",
+      "visual_brief": "交差しない二本の経路と定規。ランクの数字や星を図に描かない。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "research_logistics_r0",
+        "research_logistics_r1",
+        "research_logistics_r2",
+        "research_logistics_r3",
+        "research_logistics_r4",
+        "research_logistics_r5"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/research_icon/research_logistics.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    },
+    {
+      "id": "research_commerce",
+      "name": "商い設計",
+      "category": "research_icon",
+      "kind": "svg",
+      "visual_brief": "ひさしの下の帳面と一枚の硬貨。ランクの数字や星を図に描かない。",
+      "source_size": [
+        64,
+        64
+      ],
+      "placements": [
+        "UPGRADES",
+        "NEW_CITY"
+      ],
+      "render_layer": "emblem",
+      "profile_id": "emblem",
+      "status": "planned",
+      "used_by": [
+        "research_commerce_r0",
+        "research_commerce_r1",
+        "research_commerce_r2",
+        "research_commerce_r3",
+        "research_commerce_r4",
+        "research_commerce_r5"
+      ],
+      "reuse_policy": "同じIDを全画面で再利用。数値・状態・反転・拡大縮小は別作画に数えない。",
+      "source_master_format": "SVG",
+      "runtime_exports": [
+        "assets/research_icon/research_commerce.svg"
+      ],
+      "production_phase": "P1",
+      "release_requirement": "全資材が製品公開前に必要。P0/P1/P2は制作順であり機能や報酬の後日解放ではない。"
+    }
+  ],
+  "rules": {
+    "shops_zero_is_not_paid_purchase": true,
+    "milestones": [
+      10,
+      25,
+      50
+    ],
+    "total_price_cells": 644,
+    "reachable_paid_price_cells": 638,
+    "visual_tiers_are_not_new_equipment_types": true,
+    "shops_minimum_stage_and_current_capacity_both_required": true,
+    "railway_overrides_road_vehicle": true
+  }
+}

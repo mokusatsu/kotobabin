@@ -1,0 +1,691 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "4.1.0",
+  "achievement_card": {
+    "base_states": [
+      {
+        "id": "unearned",
+        "label": "未解除",
+        "render": "固有絵を低彩度・薄い紙色へ寄せ、未解除ラベルを併記。透明度だけで文字を薄くしない。",
+        "assets": [
+          "stamp_frame"
+        ]
+      },
+      {
+        "id": "provisional",
+        "label": "完走で確定",
+        "render": "未解除の絵＋進捗枠。達成した切手としては数えない。条件維持型は終了時判定と表示。",
+        "assets": [
+          "stamp_frame"
+        ]
+      },
+      {
+        "id": "earned",
+        "label": "獲得",
+        "render": "固有絵を彩色で表示し、チェックと獲得日を別DOMで置く。",
+        "assets": [
+          "stamp_frame",
+          "ui_check"
+        ]
+      },
+      {
+        "id": "ineligible_round",
+        "label": "今回は対象外",
+        "render": "通常資格を失った現在の便の目標に短文を表示。過去の獲得状態を上書きしない。",
+        "assets": [
+          "ui_info"
+        ]
+      }
+    ],
+    "adornments": [
+      {
+        "id": "selected",
+        "label": "詳細を表示中",
+        "render": "外周2pxの選択枠。獲得済み/未解除と共存。",
+        "assets": []
+      },
+      {
+        "id": "pinned",
+        "label": "今回の目標",
+        "render": "左上のピン。選択枠の有無とは独立。達成後も本人が変更するまで保持。",
+        "assets": [
+          "ui_pin"
+        ]
+      },
+      {
+        "id": "unread",
+        "label": "まだ見ていない獲得",
+        "render": "右上に封筒印。獲得済みだけに付く。",
+        "assets": [
+          "ui_unread"
+        ]
+      }
+    ],
+    "hidden": {
+      "ids": [
+        "B05",
+        "F06"
+      ],
+      "unrevealed": "固有絵と名称の代わりに共通の封筒印とヒント。条件を見るで公開できる。",
+      "revealed": "固有絵と名称・通常の条件を表示。公開による不利益なし。",
+      "earned": "必ず公開済みの表示へ。",
+      "assets": [
+        "ui_question",
+        "stamp_frame"
+      ]
+    },
+    "constraints": [
+      "unreadはearnedのみ",
+      "provisionalは未解除の通常実績だけ",
+      "隠し未公開のearned表示を作らない",
+      "selectedとpinnedは同時成立可能",
+      "ineligible_roundは獲得状態ではなく現在の便の注記",
+      "印を絵に重ね過ぎず、ピン左上・未読右上・獲得は下部ラベルへ分離"
+    ]
+  },
+  "district": {
+    "states": [
+      {
+        "id": "closed",
+        "label": "未開通",
+        "allowed_stages": [
+          0
+        ],
+        "render": "共通更地＋地区アイコン＋鍵。路線は薄い破線。開通条件はDOM。住宅地にはこの状態を適用しない。",
+        "assets": [
+          "city_plot_empty",
+          "ui_lock"
+        ]
+      },
+      {
+        "id": "open_idle",
+        "label": "開通・計画なし",
+        "allowed_stages": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "render": "段階0は更地、1以上は現在段階画。路線は道路または購入済み貨物鉄道。",
+        "assets": []
+      },
+      {
+        "id": "plan_active",
+        "label": "建築中",
+        "allowed_stages": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "render": "現在段階画＋次の段階に対応する足場。進捗バーと積立値はDOM。",
+        "assets": [
+          "ui_plan"
+        ]
+      },
+      {
+        "id": "plan_paused",
+        "label": "計画停止中",
+        "allowed_stages": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "render": "同じ足場を静止し、停止ラベルと一時停止印を追加。予約資材は残り、新着は自由在庫へ。",
+        "assets": [
+          "ui_pause"
+        ]
+      },
+      {
+        "id": "max_stage",
+        "label": "段階5・開発完了",
+        "allowed_stages": [
+          5
+        ],
+        "render": "完成段階画。新計画は表示しない。店舗/配送班の増設は上限内で継続可能。",
+        "assets": [
+          "ui_check"
+        ]
+      }
+    ],
+    "scaffold_by_target_stage": {
+      "1": "scaffold_small",
+      "2": "scaffold_medium",
+      "3": "scaffold_medium",
+      "4": "scaffold_large",
+      "5": "scaffold_large"
+    },
+    "selected": "地区の外周とDOM見出しを強調。建物自体の別絵は作らない。",
+    "completion": "判定と保存の後に現在画を完成画へ置換。大きな変化は結果/ホームへ戻った時に示す。演出を飛ばしても完成を取り消さない。"
+  },
+  "equipment_purchase": {
+    "states": [
+      {
+        "id": "purchasable",
+        "label": "購入できる",
+        "render": "通常の絵＋費用・実購入数・前後の能力と主ボタン。",
+        "assets": []
+      },
+      {
+        "id": "insufficient",
+        "label": "コイン/資材が不足",
+        "render": "絵は読めるまま。足りない通貨と数量を示す。",
+        "assets": [
+          "ui_info"
+        ]
+      },
+      {
+        "id": "condition_locked",
+        "label": "段階・開通条件待ち",
+        "render": "未達条件を項目ごとに示す。薄色だけで意味を伝えない。",
+        "assets": [
+          "ui_lock"
+        ]
+      },
+      {
+        "id": "capped",
+        "label": "現在の上限",
+        "render": "段階別上限なら次段階の条件、最終上限なら上限到達と表示。",
+        "assets": [
+          "ui_check"
+        ]
+      },
+      {
+        "id": "session_locked",
+        "label": "配達/練習の終了後に変更",
+        "render": "停止中を含む実行セッションでは購入と計画操作不可。終了後に確認して購入する。",
+        "assets": [
+          "ui_pause"
+        ]
+      }
+    ],
+    "reason_priority": [
+      "session_locked",
+      "capped",
+      "condition_locked",
+      "insufficient",
+      "purchasable"
+    ],
+    "milestone_feedback": "レベル10/25/50の購入後、現在→購入後の性能と外観を並べる。演出を待たずに購入済み状態へ更新。",
+    "railway": "貨物鉄道の購入後は道路車両を列車へ差し替える。班数の節目は数値と小さな節目印で保持し、列車を50両描かない。"
+  },
+  "shop_composition": {
+    "source_size": [
+      512,
+      512
+    ],
+    "anchor": [
+      256,
+      448
+    ],
+    "wall_box": [
+      128,
+      208,
+      384,
+      448
+    ],
+    "overlay_anchors": {
+      "shop_canopy": [
+        256,
+        256
+      ],
+      "shop_banner": [
+        416,
+        352
+      ],
+      "shop_signboard": [
+        256,
+        184
+      ]
+    },
+    "count_zero": "地図へ店を描かない。設備詳細の次の姿にだけ代表店を表示できる。",
+    "ownership_not_sprite_count": "代表店は各地区1棟、実所有数と上限をDOMで明記。店舗が実際に1棟だけという意味ではない。"
+  },
+  "route": {
+    "states": [
+      "closed",
+      "road",
+      "railway"
+    ],
+    "procedural_styles": {
+      "closed": "破線と終点の鍵。配送車両なし。",
+      "road": "道路の二重ストローク。",
+      "railway": "二本のレールと一定間隔のまくら木。路線の経路を流用。"
+    },
+    "vehicle_count_limit": 6,
+    "maximum_visible_per_route": 1,
+    "queue_zero": "輸送待ちゼロなら車両を停車させ、到着の光や資材増加を描かない。",
+    "crew_scaling": "班数は数値。車両は運行状態の代表であり1両=1班/1資材ではない。",
+    "orientation": "無反転frontは右下(+2,+1)、無反転rearは右上(+2,−1)。水平反転して左下/左上を作る。進行方向は経路の線分の符号から選び、角で1描画フレーム内に切り替える。影は反転しない。",
+    "direction_vectors": {
+      "front": [
+        2,
+        1
+      ],
+      "front_mirrored": [
+        -2,
+        1
+      ],
+      "rear": [
+        2,
+        -1
+      ],
+      "rear_mirrored": [
+        -2,
+        -1
+      ]
+    }
+  },
+  "rendered_without_asset": [
+    {
+      "id": "word_texts",
+      "logical_variants": 960,
+      "method": "日本語・読み・ローマ字をDOMで描画。語ごとのイラストは0点。"
+    },
+    {
+      "id": "achievement_titles",
+      "logical_variants": 72,
+      "method": "同名の称号を文字で表示。選択は1件、文字画像0点。"
+    },
+    {
+      "id": "input_tags",
+      "logical_variants": 5,
+      "method": "ん/小さいっ/きゃ等/のばす音/外来音をDOMチップで表示。F03対象は最初の4種のみ。"
+    },
+    {
+      "id": "keycaps",
+      "logical_variants": "配達キー設定と現在の文字に従う",
+      "method": "キー文字・Space・Esc等をDOMとCSSの枠で表示。キーごとの画像0点。"
+    },
+    {
+      "id": "progress_bars",
+      "logical_variants": "current/target",
+      "method": "数値から幅を算出、整数/小数/割合もDOM。段階ごとの進捗画像0点。"
+    },
+    {
+      "id": "button_states",
+      "logical_variants": 6,
+      "method": "default/hover/focus/pressed/disabled/loadingをCSSで表現。読み込み中も固定幅を維持。"
+    },
+    {
+      "id": "paper_background",
+      "logical_variants": 1,
+      "method": "紙色と控えめなCSS粒子。文字面は無地。紙テクスチャ画像0点。"
+    },
+    {
+      "id": "day_night",
+      "logical_variants": 1,
+      "method": "自動の日夜切替なし。段階4/5の暖色の窓・灯りは原画の一部。夕景報酬は別の装飾パネル。"
+    },
+    {
+      "id": "animation",
+      "logical_variants": 9,
+      "method": "打鍵/誤打/語完成/小中満載配達/実績/建築/購入の9演出。既存原画の変形とSVG線で表現、専用コマ画像0点。"
+    },
+    {
+      "id": "fonts",
+      "logical_variants": 2,
+      "method": "日本語sans-serifとローマ字monospaceのシステムフォントスタック。外部フォントファイル0点。"
+    }
+  ],
+  "motion": [
+    {
+      "id": "key",
+      "normal": "次の描画で文字確定、次キー枠更新",
+      "reduced": "同じ静的表示",
+      "max_ms": 80
+    },
+    {
+      "id": "mistake",
+      "normal": "次文字枠のみ短く変化",
+      "reduced": "短い静止枠と誤打数更新",
+      "max_ms": 100
+    },
+    {
+      "id": "word",
+      "normal": "小さな灯り、無誤打なら荷物1個追加",
+      "reduced": "完成点と荷物数を即時更新",
+      "max_ms": 150
+    },
+    {
+      "id": "dispatch_small",
+      "normal": "荷物1〜2個の短い移動",
+      "reduced": "確定加点と配送済み表示",
+      "max_ms": 250
+    },
+    {
+      "id": "dispatch_medium",
+      "normal": "荷物3〜4個のやや広い軌跡",
+      "reduced": "確定加点と配送済み表示",
+      "max_ms": 350
+    },
+    {
+      "id": "dispatch_full",
+      "normal": "荷物の絵のみ50ms保持して5個を送る",
+      "reduced": "満載の確定加点を静止表示",
+      "max_ms": 450
+    },
+    {
+      "id": "achievement",
+      "normal": "語境界の固定位置で獲得表示。通知間隔10秒以上、1件まで",
+      "reduced": "固定枠と獲得文。拡縮なし",
+      "max_ms": 1200
+    },
+    {
+      "id": "building",
+      "normal": "ホーム/結果で旧段階→新段階を短く置換",
+      "reduced": "新段階画と名称を即時表示",
+      "max_ms": 450
+    },
+    {
+      "id": "purchase",
+      "normal": "節目外観と前後の能力を短く強調",
+      "reduced": "購入後の外観と数値を即時表示",
+      "max_ms": 350
+    }
+  ],
+  "data_precedes_animation": true,
+  "audio_new_unlock_live_default": false,
+  "asset_failure": "対象のDOM名称と枠を保持し、壊れた画像アイコンを消す。操作・入力・経済処理は継続。資材IDは開発ログにのみ記録。",
+  "production_status": "planned",
+  "reference_images_are_not_game_sprites": true,
+  "vehicle_shadow": {
+    "implementation": "CSS/SVG ellipse",
+    "asset_count": 0,
+    "width_map_px": 32,
+    "height_map_px": 8,
+    "anchor_offset_map_px": [
+      0,
+      1
+    ],
+    "opacity": 0.16,
+    "rule": "車両画像の水平反転では影を反転しない。全方向で接地基準点の下に同じ楕円を置く。"
+  },
+  "collection_grid": {
+    "board_minimum_css": [
+      600,
+      400
+    ],
+    "board_source_size": [
+      1200,
+      800
+    ],
+    "stamp_frame_size_source": 240,
+    "column_centers_source": [
+      200,
+      600,
+      1000
+    ],
+    "row_centers_source": [
+      220,
+      570
+    ],
+    "name_top_source": [
+      350,
+      700
+    ],
+    "name_font_min_css": 16,
+    "name_line_height_css": 20,
+    "name_max_lines": 2,
+    "thumbnail_rule": "600px未満の台紙サムネイルは紋章と完成状態だけを表示し、6切手は配置しない。詳細を開くと600×400以上の台紙または1列/2列のDOMカード一覧へ切り替える。",
+    "individual_frame_min_css": [
+      90,
+      90
+    ],
+    "individual_art_min_css": [
+      72,
+      72
+    ],
+    "header_emblem_center_source": [
+      96,
+      56
+    ],
+    "header_emblem_size_source": 64,
+    "header_text_anchor_source": [
+      160,
+      56
+    ],
+    "header_text_anchor_mode": "left_center",
+    "name_anchor_mode": "top_center",
+    "inside_content": [
+      "切手の絵",
+      "切手枠",
+      "実績名",
+      "選択とフォーカス枠"
+    ],
+    "outside_content": [
+      "条件文",
+      "進捗",
+      "獲得日",
+      "獲得・未解除・仮達成の状態文",
+      "目標固定・未読・装着の操作と表示"
+    ],
+    "usage": "完成した台紙を鑑賞する固定配置。通常の手帳の実績カードは可変高DOMで別に構成する。",
+    "header_text_max_font_css": 24,
+    "name_max_width_source": 336,
+    "header_line_height_css": 32,
+    "large_text_rule": "名称の文字が16CSS pxを超える設定では固定台紙の6枚配置を使わず、2列/1列のDOMカードへ切り替えて行高と高さを広げる。",
+    "card_hit_targets": "DOMのカード枠を44CSS px以上で配置。絵の目打ちを当たり判定にしない。",
+    "layer_order": [
+      "paper_DOM",
+      "board_base",
+      "family_emblem",
+      "stamp_art",
+      "stamp_frame",
+      "board_foil",
+      "name_DOM",
+      "focus_DOM"
+    ]
+  },
+  "cosmetic_selection": {
+    "slots": [
+      {
+        "id": "title",
+        "maximum_equipped": 1,
+        "choices": 72,
+        "render": "文字のみ。装着中ラベルを表示。"
+      },
+      {
+        "id": "frame",
+        "maximum_equipped": 1,
+        "choices": 4,
+        "render": "所有する額縁から選ぶ。該当するホーム/手帳の装飾枠に反映。"
+      },
+      {
+        "id": "ornament",
+        "maximum_equipped": 1,
+        "choices": 2,
+        "render": "街路樹柄または噴水柄を装飾領域に置く。機能施設は生まれない。"
+      },
+      {
+        "id": "home_background",
+        "maximum_equipped": 1,
+        "choices": 1,
+        "render": "夕景パネルをホームの装飾領域に置く。地図・本編は変更しない。"
+      }
+    ],
+    "none_allowed": true,
+    "preview_is_not_equipped": true,
+    "unowned_can_preview": true,
+    "states": [
+      "unowned",
+      "owned",
+      "preview_selected",
+      "equipped"
+    ],
+    "equipped_indicator": "ui_check＋装着中のDOMラベル。目標ピンや閲覧中の選択枠で代用しない。",
+    "assets": [
+      "ui_check",
+      "ui_lock"
+    ],
+    "family_foil": "系統6件の確定後、その系統の台紙に箔を自動適用。称号や額縁は自動装着しない。",
+    "albums_and_boards": "アルバム・絵葉書・記念台紙は鑑賞用。装備枠を要求しない。共通台紙は外形のみを描き、6切手の配置や見出しはDOMで作る。系統台紙は6枚を表示。総数48の記念台紙は紋章と達成記念の文字を示す。第1集完成はA〜Hの8ページ、全72完成は12系統の12ページを各6枚で閲覧する。"
+  },
+  "mini_city": {
+    "screens": [
+      "PLAY",
+      "PRACTICE",
+      "TUTORIAL"
+    ],
+    "rule": "送り先の完成画（段階0は更地）1枚と景観背景の一部を静止で表示する。街全体の地図を帯へ縮小せず、地区画は132×99CSS px以上を確保する。",
+    "stage_snapshot": "READYまたは練習開始時の段階。大きな変化は結果/ホームで反映。",
+    "routes_visible": false,
+    "vehicles_visible": false,
+    "counts": "計画や資材の現在値はDOMの細い帯で更新する。",
+    "first_stamp": "操作体験でA01を得た時だけ切手図と一文を示す。ほかのライブ通知は手帳アイコンと件数へまとめる。"
+  },
+  "collection_frame": {
+    "outer_canvas": [
+      1200,
+      800
+    ],
+    "inner_window_rect": [
+      96,
+      96,
+      1104,
+      704
+    ],
+    "frame_art_zone": "外周24pxから内窓外側まで。内窓は完全透過。内窓へ葉や雲を侵入させない。",
+    "content_fit": "装飾枠の内側に絵葉書・アルバム等をcontainで配置。数値や条件は別DOM。",
+    "layer_order": [
+      "surface_DOM",
+      "content_art",
+      "reward_frame",
+      "text_DOM",
+      "status_and_focus_DOM"
+    ]
+  },
+  "usage_contracts": [
+    {
+      "id": "district_paused",
+      "screens": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "RESULT"
+      ],
+      "asset_ids": [
+        "ui_pause"
+      ]
+    },
+    {
+      "id": "district_complete",
+      "screens": [
+        "HOME",
+        "DISTRICT_DETAIL",
+        "RESULT"
+      ],
+      "asset_ids": [
+        "ui_check"
+      ]
+    },
+    {
+      "id": "ineligible_goal",
+      "screens": [
+        "PLAY",
+        "HANDBOOK"
+      ],
+      "asset_ids": [
+        "ui_info"
+      ]
+    },
+    {
+      "id": "session_purchase_lock",
+      "screens": [
+        "UPGRADES"
+      ],
+      "asset_ids": [
+        "ui_pause"
+      ]
+    },
+    {
+      "id": "tutorial_first_stamp",
+      "screens": [
+        "TUTORIAL"
+      ],
+      "asset_ids": [
+        "stamp_a01",
+        "stamp_frame"
+      ]
+    },
+    {
+      "id": "mini_city_stages",
+      "screens": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "asset_ids": [
+        "city_plot_empty",
+        "city_residential_s1",
+        "city_residential_s2",
+        "city_residential_s3",
+        "city_residential_s4",
+        "city_residential_s5",
+        "city_market_s1",
+        "city_market_s2",
+        "city_market_s3",
+        "city_market_s4",
+        "city_market_s5",
+        "city_workshop_s1",
+        "city_workshop_s2",
+        "city_workshop_s3",
+        "city_workshop_s4",
+        "city_workshop_s5",
+        "city_park_s1",
+        "city_park_s2",
+        "city_park_s3",
+        "city_park_s4",
+        "city_park_s5",
+        "city_station_s1",
+        "city_station_s2",
+        "city_station_s3",
+        "city_station_s4",
+        "city_station_s5",
+        "city_harbor_s1",
+        "city_harbor_s2",
+        "city_harbor_s3",
+        "city_harbor_s4",
+        "city_harbor_s5",
+        "terrain_riverside",
+        "terrain_seaside",
+        "terrain_highland"
+      ]
+    },
+    {
+      "id": "mini_city_resources",
+      "screens": [
+        "PLAY",
+        "PRACTICE",
+        "TUTORIAL"
+      ],
+      "asset_ids": [
+        "resource_material"
+      ]
+    },
+    {
+      "id": "unread_home",
+      "screens": [
+        "HOME",
+        "HANDBOOK"
+      ],
+      "asset_ids": [
+        "ui_unread"
+      ]
+    },
+    {
+      "id": "cosmetic_owned",
+      "screens": [
+        "HOME",
+        "HANDBOOK"
+      ],
+      "asset_ids": [
+        "ui_check",
+        "ui_lock"
+      ]
+    }
+  ]
+}
