@@ -2393,12 +2393,13 @@ export class AppController implements UIControllerActions {
     if (this.tabLockLost) {
       return;
     }
-    if (scope === 'city_and_achievements') this.clearTutorialDraft();
     this.pendingResetConfirm = null;
     this.audio.playSe('audio_ui_click');
     const prevTutorialCompleted = this.settings.tutorialCompleted;
     const prevOnboarding = this.settings.onboarding ? { ...this.settings.onboarding } : undefined;
     void this.repository.resetData(scope, this.lock).then(async (meta) => {
+      // Keep the resumable draft unless the reset transaction has committed.
+      if (scope === 'city_and_achievements') this.clearTutorialDraft();
       this.lock = {
         tabId: meta.ownerTabId,
         writeEpoch: meta.writeEpoch,
