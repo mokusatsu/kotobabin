@@ -106,4 +106,24 @@ describe('AudioPlayer', () => {
     player.setPreferences({ seEnabled: true, bgmEnabled: false, volume: 0.8 });
     expect(playBgm.paused).toBe(true);
   });
+  it('does not restart an ended track after changing to silence', () => {
+    const player = new AudioPlayer();
+    player.setPreferences({ seEnabled: false, bgmEnabled: true });
+    player.setBgmTrack('home');
+    const bgm = created[0];
+    player.setBgmTrack('none');
+    bgm.dispatchEnded();
+    expect(bgm.playCalls).toBe(1);
+    expect(bgm.paused).toBe(true);
+  });
+
+  it('stops active sound effects when the player is destroyed', () => {
+    const player = new AudioPlayer();
+    player.playSe('audio_round_start');
+    const se = created[0];
+    expect(se.paused).toBe(false);
+    player.destroy();
+    expect(se.paused).toBe(true);
+  });
+
 });

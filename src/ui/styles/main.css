@@ -2198,6 +2198,29 @@ button.kb-play-deliver-hint.is-ready:hover .kb-deliver-action-text {
   background: var(--kb-color-page);
 }
 
+.kb-blocking-dialog {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: inherit;
+}
+
+.kb-blocking-dialog:not([open]) {
+  display: none;
+}
+
+.kb-blocking-dialog::backdrop {
+  background: transparent;
+}
+
+.kb-blocking-dialog > .kb-modal {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
 .kb-launch-modal {
   max-width: 520px;
 }

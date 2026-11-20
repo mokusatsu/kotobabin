@@ -25,7 +25,9 @@ import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
   createDefaultProfileSettings,
   createProfileRepository,
+  ResetGenerationError,
   TabLockError,
+  type CommitFactsParams,
   type OnboardingStateRecord,
   type OnboardingStep,
   type ProfileRepository,
@@ -107,6 +109,7 @@ function createInitialOnboardingUiState(
   };
 }
 
+const AUTOSAVE_EVENT_PREFIX = 'autosave';
 const TUTORIAL_DRAFT_KEY = 'kotobabin:tutorialDraft';
 
 interface TutorialDraft {
@@ -144,6 +147,7 @@ export class AppController implements UIControllerActions {
   private unlocks: Record<string, UnlockRecord> = {};
   private readState: Record<string, ReadStateRecord> = {};
   private recentResults: RoundResultRecord[] = [];
+  private roundRecordSaveFailed = false;
   private paidEquipmentPurchaseCount = 0;
 
   private screen: AppScreen = 'HOME';
@@ -258,7 +262,7 @@ export class AppController implements UIControllerActions {
       resetGeneration: metadata.resetGeneration,
     };
 
-    const snapshot = await this.repository.loadAll();
+    const snapshot = await this.repository.loadAll({ includeEconomyCursors: false });
     this.settings = snapshot.profile;
     this.unlocks = snapshot.unlocks;
     this.readState = snapshot.readState;
@@ -505,6 +509,12 @@ export class AppController implements UIControllerActions {
   }
 
   async reacquireTabLock(): Promise<void> {
+    if (this.repository.backend === 'indexeddb') {
+      // The other owner might have saved new data. Reboot through init
+      // rather than grant write access to this tab’s old in-memory state.
+      window.history.go(0);
+      return;
+    }
     try {
       const meta = await this.repository.acquireTabLock(this.tabId);
       this.lock = {
@@ -546,7 +556,7 @@ export class AppController implements UIControllerActions {
 
     this.autoSaveTimer = window.setInterval(() => {
       if (this.screen !== 'PLAY' && !this.tabLockLost && !this.economy.activeSession) {
-        void this.persistCitySnapshot(`autosave-${++this.eventCounter}`);
+        void this.persistCitySnapshot(this.nextEconomyEventId(AUTOSAVE_EVENT_PREFIX));
       }
     }, 15000);
   }
@@ -649,10 +659,10 @@ export class AppController implements UIControllerActions {
       };
       if (res.evaluation) this.achievements.applyCitySnapshot(achievementSnapshot, timestamp);
       if (res.evaluation && (res.evaluation.newlyUnlockedAchievementIds.length > 0 || res.evaluation.newlyUnlockedRewardIds.length > 0)) {
-        const loaded = await this.repository.loadAll();
+        const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
         this.unlocks = loaded.unlocks;
         this.readState = loaded.readState;
-        const stamps = !this.onboardingUi.active && !eventId.startsWith('autosave-') &&
+        const stamps = !this.onboardingUi.active && !eventId.startsWith(`${AUTOSAVE_EVENT_PREFIX}:`) &&
           this.screen !== 'PLAY' && this.screen !== 'RESULT'
           ? featuredStampIds(res.evaluation.newlyUnlockedAchievementIds) : [];
         this.queueReveals([...stamps, ...rewardRevealIds(res.evaluation.newlyUnlockedRewardIds)]);
@@ -855,6 +865,12 @@ export class AppController implements UIControllerActions {
     this.audio.playSe('audio_ui_click');
     this.difficultyPopupOpen = false;
     this.render();
+    this.focusHomeDistrict(this.selectedDistrictId);
+  }
+
+  private focusHomeDistrict(districtId: string): void {
+    const districtButtons = this.mountEl.querySelectorAll<HTMLButtonElement>('.kb-map-district-btn');
+    Array.from(districtButtons).find((button) => button.dataset.districtId === districtId)?.focus({ preventScroll: true });
   }
 
   startMainRoundWithCourse(courseId: CourseId): void {
@@ -1202,10 +1218,12 @@ export class AppController implements UIControllerActions {
     }
     const deliveryKey: DeliveryKeyOption =
       this.settings.deliveryKey === 'Space' ? 'Space' : 'Enter';
+    const renderInputTransition = () => this.renderPlayTransition();
     this.inputAdapter = new InputAdapter({
       inputElement: this.playInputEl,
       session: this.session,
       deliveryKeys: [deliveryKey],
+      pauseOnEscape: this.session.currentMode !== 'PRACTICE',
       canCommitDelivery: () =>
         !(
           this.session?.currentMode === 'TUTORIAL' &&
@@ -1215,7 +1233,7 @@ export class AppController implements UIControllerActions {
         ),
       onKeyProcessed: (res) => {
         if (res.deadlineReached) {
-          this.render();
+          renderInputTransition();
           return;
         }
         if (res.accepted) {
@@ -1276,6 +1294,10 @@ export class AppController implements UIControllerActions {
         this.renderPlayInPlace();
       },
       onDeliveryAttempt: (res) => {
+        if (res.reason === 'deadline') {
+          renderInputTransition();
+          return;
+        }
         if (res.delivered) {
           this.applyDeliveredFeedback(res.bonus, res.cargoCount);
         } else if (res.reason === 'mid_word') {
@@ -1311,10 +1333,8 @@ export class AppController implements UIControllerActions {
       onImePause: () => {
         this.playFeedback.imePauseReason = true;
       },
-      onPause: () => {
-        this.stopPlayTimer();
-        this.render();
-      },
+      onPause: renderInputTransition,
+      onDeadlineReached: renderInputTransition,
     });
     this.inputAdapter.attach();
   }
@@ -1366,6 +1386,11 @@ export class AppController implements UIControllerActions {
         }
       }
     }, 100);
+  }
+
+  private renderPlayTransition(): void {
+    this.stopPlayTimer();
+    this.render();
   }
 
   private stopPlayTimer(): void {
@@ -1680,8 +1705,9 @@ export class AppController implements UIControllerActions {
     const finalRewards = factsToCommit.some((fact) => fact.type === 'PracticeSessionEnded' ||
       fact.type === 'RoundFinished' && !fact.completed) ? [...this.sessionUnlockedRewardIds] : [];
     this.pendingFacts = [];
+    let factsSaved = false;
     try {
-      const res = await this.repository.commitTypingFacts({
+      const res = await this.commitTypingBatch({
         lock: this.lock,
         facts: factsToCommit,
         citySnapshot: this.cityAchievementSnapshot(),
@@ -1690,12 +1716,13 @@ export class AppController implements UIControllerActions {
           : undefined,
         roundResult,
       });
+      factsSaved = true;
       this.lock = {
         tabId: res.metadata.ownerTabId,
         writeEpoch: res.metadata.writeEpoch,
         resetGeneration: res.metadata.resetGeneration,
       };
-      const loaded = await this.repository.loadAll();
+      const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
       this.recentResults = loaded.results;
@@ -1714,11 +1741,32 @@ export class AppController implements UIControllerActions {
       if (!onboardingCheckpoint && this.session?.currentMode !== 'TUTORIAL') this.render();
       return true;
     } catch (err) {
-      this.pendingFacts.unshift(...factsToCommit);
+      // Never resurrect results/facts invalidated by a deliberate data reset.
+      if (!(err instanceof ResetGenerationError)) {
+        this.pendingFacts.unshift(...factsToCommit);
+      }
+      if (roundResult && !factsSaved) {
+        this.roundRecordSaveFailed = true;
+      }
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
+      } else if (roundResult && !factsSaved) {
+        this.render();
       }
       return false;
+    }
+  }
+
+  private async commitTypingBatch(params: CommitFactsParams) {
+    try {
+      return await this.repository.commitTypingFacts(params);
+    } catch (err) {
+      if (!params.roundResult || err instanceof TabLockError || err instanceof ResetGenerationError || this.tabLockLost) {
+        throw err;
+      }
+      // Facts and the round result are saved in one transaction. Replay the exact
+      // same session ID, fact sequences and lock; never adopt a newer write epoch.
+      return this.repository.commitTypingFacts(params);
     }
   }
 
@@ -1965,6 +2013,10 @@ export class AppController implements UIControllerActions {
       return;
     }
     const res = this.session.commitDelivery();
+    if (res.reason === 'deadline') {
+      this.renderPlayTransition();
+      return;
+    }
     if (res.delivered) {
       this.applyDeliveredFeedback(res.bonus, res.cargoCount);
       this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
@@ -2315,12 +2367,13 @@ export class AppController implements UIControllerActions {
   }
 
   cancelResetSave(): void {
-    if (this.pendingResetConfirm === null) {
-      return;
-    }
+    const scope = this.pendingResetConfirm;
+    if (scope === null) return;
     this.audio.playSe('audio_ui_click');
     this.pendingResetConfirm = null;
     this.render();
+    const trigger = scope === 'city_and_achievements' ? 'city' : scope;
+    this.mountEl.querySelector<HTMLElement>(`[data-testid="settings-reset-${trigger}-btn"]`)?.focus({ preventScroll: true });
   }
 
   confirmResetSave(): void {
@@ -2347,7 +2400,7 @@ export class AppController implements UIControllerActions {
         writeEpoch: meta.writeEpoch,
         resetGeneration: meta.resetGeneration,
       };
-      const loaded = await this.repository.loadAll();
+      const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
       this.settings = loaded.profile;
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
@@ -2495,11 +2548,18 @@ export class AppController implements UIControllerActions {
       );
     }
 
+    if (this.roundRecordSaveFailed && this.screen !== 'PLAY') {
+      shell.appendChild(
+        el('div', { className: 'kb-banner-warning', role: 'status', 'data-testid': 'round-save-warning' },
+          '成績の保存に失敗しました。再読み込みすると記録が残らない場合があります。'),
+      );
+    }
+
     if (this.tabLockLost) {
       const reacquireBtn = el(
         'button',
         { type: 'button', className: 'kb-btn-secondary' },
-        'このタブで再開する',
+        this.repository.backend === 'indexeddb' ? '保存済みの状態から開き直す' : 'このタブで再開する',
       );
       reacquireBtn.addEventListener('click', () => void this.reacquireTabLock());
       shell.appendChild(
@@ -2742,6 +2802,9 @@ export class AppController implements UIControllerActions {
                 this.dictionaryState = { ...this.dictionaryState, ...patch };
                 this.render();
               },
+              onUpdateSearch: (search) => {
+                this.dictionaryState = { ...this.dictionaryState, search, page: 0 };
+              },
               onPracticeWord: (w) => this.startPractice(w),
             }),
           );
@@ -2829,7 +2892,12 @@ export class AppController implements UIControllerActions {
     const prevMainScroll = this.mountEl.querySelector<HTMLElement>('.kb-main > *')?.scrollTop ?? 0;
     const prevLeftScroll = this.mountEl.querySelector<HTMLElement>('.kb-home-left')?.scrollTop ?? 0;
 
+    const activeElement = document.activeElement;
+    const focusedHomeDistrictId = this.screen === 'HOME' && !this.difficultyPopupOpen
+      && activeElement instanceof HTMLButtonElement && activeElement.matches('.kb-map-district-btn')
+      && this.mountEl.contains(activeElement) ? activeElement.dataset.districtId : undefined;
     this.mountEl.replaceChildren(shell);
+    if (focusedHomeDistrictId) this.focusHomeDistrict(focusedHomeDistrictId);
     if (this.isOnboardingUpgrade) {
       shell.querySelector<HTMLElement>('[data-onboarding-heading]')?.focus({ preventScroll: true });
     }
@@ -2849,7 +2917,7 @@ export class AppController implements UIControllerActions {
 
   private handleGlobalKeyDown(e: KeyboardEvent): void {
     this.audio.unlock();
-    if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
+    if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
       return;
     }
 
@@ -2886,7 +2954,7 @@ export class AppController implements UIControllerActions {
       if (state === 'PAUSED') {
         if (e.key === 'Escape' || e.key === 'Enter') {
           e.preventDefault();
-          this.resumePlay();
+          if (!e.repeat) this.resumePlay();
         } else if (e.code === 'KeyR') {
           e.preventDefault();
           this.recheckImeFromPause();
@@ -2976,6 +3044,18 @@ export class AppController implements UIControllerActions {
       return;
     }
 
+    const difficultyModalOpen = this.screen === 'HOME' && this.difficultyPopupOpen;
+    const resetModalOpen = this.screen === 'SETTINGS' && this.pendingResetConfirm !== null;
+    if (difficultyModalOpen || resetModalOpen) {
+      // Modal-local keys must not become page shortcuts if focus is outside the dialog.
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (difficultyModalOpen) this.closeDifficultyPopup();
+        else this.cancelResetSave();
+      }
+      return;
+    }
+
     const navShortcut = NAV_ITEMS.find((item) => e.code === item.code || e.key.toUpperCase() === item.key);
     if (navShortcut) {
       e.preventDefault();
@@ -2983,17 +3063,7 @@ export class AppController implements UIControllerActions {
       return;
     }
     if (e.key === 'Escape') {
-      if (this.screen === 'SETTINGS' && this.pendingResetConfirm !== null) {
-        e.preventDefault();
-        this.cancelResetSave();
-        return;
-      }
-      if (this.screen === 'HOME' && this.difficultyPopupOpen) {
-        e.preventDefault();
-        this.closeDifficultyPopup();
-        return;
-      }
-      if (this.screen === 'HOME' && !this.difficultyPopupOpen && this.onboardingUi.active) {
+      if (this.screen === 'HOME' && this.onboardingUi.active) {
         e.preventDefault();
         this.skipOnboarding();
         return;
@@ -3010,9 +3080,7 @@ export class AppController implements UIControllerActions {
     if (this.screen === 'HOME') {
       if (e.key === 'Enter' && !(active instanceof HTMLButtonElement || active instanceof HTMLAnchorElement)) {
         e.preventDefault();
-        if (this.difficultyPopupOpen) {
-          this.startMainRound();
-        } else if (this.onboardingUi.active) {
+        if (this.onboardingUi.active) {
           if (this.onboardingUi.step === 'S1') {
             this.advanceOnboardingToDistrictSelect();
           }

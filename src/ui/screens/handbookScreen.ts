@@ -158,6 +158,17 @@ function attachLightDismissFallback(dialog: HTMLDialogElement): void {
   });
 }
 
+function bindHandbookDialogKeys(dialog: HTMLDialogElement, dismiss: () => void): void {
+  dialog.addEventListener('keydown', (event) => {
+    // The handbook sits inside the app's global H/J/K/L/S navigation listener.
+    event.stopPropagation();
+    if (event.key === 'Escape' && !event.defaultPrevented && !event.isComposing) {
+      event.preventDefault();
+      dismiss();
+    }
+  });
+}
+
 function renderPostcards(unlockedRewards: ReadonlySet<string>): HTMLElement {
   const dialog = el('dialog', {
     className: 'kb-stamp-dialog kb-postcard-dialog',
@@ -179,13 +190,7 @@ function renderPostcards(unlockedRewards: ReadonlySet<string>): HTMLElement {
     opener?.focus({ preventScroll: true });
     opener = null;
   });
-  dialog.addEventListener('keydown', (event) => {
-    event.stopPropagation();
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      dismiss();
-    }
-  });
+  bindHandbookDialogKeys(dialog, dismiss);
   attachLightDismissFallback(dialog);
 
   const tiles = CATALOG_REWARDS.filter((reward) => reward.kind === 'postcard').map((reward) => {
@@ -570,6 +575,7 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
       dialog.returnValue = '';
       onSelectAchievement(null);
     });
+    bindHandbookDialogKeys(dialog, closeDialog);
     attachLightDismissFallback(dialog);
 
     const headerCloseBtn = el(

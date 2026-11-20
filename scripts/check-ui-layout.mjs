@@ -203,6 +203,14 @@ async function scenario(scale) {
     assert.match(await page.locator('dialog:modal .kb-stamp-flavor').innerText(), /小さな紙の鳥/);
     assert.equal(await page.locator('dialog:modal').getByText('獲得報酬', { exact: true }).count(), 0);
     await inspect('handbook', 'dialog:modal', true);
+    const firstStampId = await page.locator('.kb-stamp-tile').first().getAttribute('data-stamp-id');
+    await page.locator('.kb-stamp-dialog-close').focus();
+    await page.keyboard.press('h');
+    assert.equal(await page.locator('dialog:modal .kb-stamp-dialog-close').count(), 1);
+    await page.keyboard.press('Escape');
+    await page.locator('dialog:modal').waitFor({ state: 'hidden' });
+    await page.waitForFunction((id) => document.activeElement?.getAttribute('data-stamp-id') === id, firstStampId);
+    await page.locator('.kb-stamp-tile').first().tap();
     await page.locator('.kb-stamp-dialog-close').tap();
     await page.getByTestId('handbook-collection-tab').tap();
     await page.waitForFunction(() => {
@@ -500,6 +508,16 @@ async function scenario(scale) {
     await page.locator('.kb-nav-btn[aria-current="page"]').getByText('ホーム', { exact: true }).waitFor();
     await page.evaluate(() => document.activeElement?.blur());
     await page.keyboard.press('Enter');
+    const launchDialog = page.getByTestId('difficulty-popup');
+    await launchDialog.waitFor();
+    assert(await launchDialog.evaluate((modal) => modal.matches(':modal') && modal.contains(document.activeElement)));
+    await page.keyboard.press('j');
+    assert(await launchDialog.isVisible(), 'A global shortcut must not navigate away from the difficulty dialog.');
+    await inspect('launch-difficulty', 'dialog:modal', true);
+    await page.keyboard.press('Escape');
+    await launchDialog.waitFor({ state: 'hidden' });
+    await page.waitForFunction(() => document.activeElement?.matches('.kb-map-district-btn'));
+    await page.keyboard.press('Enter');
     await page.getByTestId('launch-course-relaxed').tap();
     await start('main');
     const readRemaining = async () => Number((await page.getByTestId('play-timer').innerText()).match(/\d+(?:\.\d+)?/)[0]);
@@ -534,13 +552,32 @@ async function scenario(scale) {
     if (scale === '1.3') await page.locator('.kb-nav-btn').first().focus();
     await page.keyboard.press('l');
     await page.getByRole('button', { name: '未完成のみ' }).waitFor();
-    await page.getByRole('searchbox', { name: 'ことば検索' }).fill(firstWord);
+    const wordSearch = page.getByRole('searchbox', { name: 'ことば検索' });
+    await wordSearch.pressSequentially('xyz');
+    assert.equal(await wordSearch.inputValue(), 'xyz');
+    assert(await wordSearch.evaluate((input) => document.activeElement === input));
+    await wordSearch.fill(firstWord);
     const masteryCard = page.locator('.kb-word-card').filter({ hasText: '熟練度 銅' }).first();
     assert.match(await masteryCard.getByTestId('word-mastery').innerText(),
       new RegExp(`銀まであと${scale === '1.3' ? 1 : 2}回.*最短`, 's'));
     await masteryCard.scrollIntoViewIfNeeded();
     await masteryCard.evaluate((card) => card.setAttribute('data-ui-inspect', 'dictionary'));
     await inspect('dictionary-mastery', '[data-ui-inspect="dictionary"]', true);
+    if (scale === '1.3') {
+      await page.locator('.kb-nav-btn').filter({ hasText: '設定' }).tap();
+      const resetTrigger = page.getByTestId('settings-reset-records-btn');
+      await resetTrigger.tap();
+      const resetDialog = page.getByTestId('settings-reset-confirm-dialog');
+      await resetDialog.waitFor();
+      assert(await resetDialog.evaluate((modal) =>
+        modal.matches(':modal') && document.activeElement?.getAttribute('data-testid') === 'settings-reset-cancel-btn'));
+      await page.keyboard.press('h');
+      assert(await resetDialog.isVisible(), 'The save reset prompt must block global navigation.');
+      await inspect('settings-reset-confirm', 'dialog:modal', true);
+      await page.keyboard.press('Escape');
+      await resetDialog.waitFor({ state: 'hidden' });
+      assert(await resetTrigger.evaluate((button) => document.activeElement === button));
+    }
     const sampled = await page.evaluate(() => ({ frames: window.__layoutFrames ?? 0, issues: window.__layoutIssues ? [...window.__layoutIssues.values()] : [] }));
     result.frames += sampled.frames;
     result.issues.push(...sampled.issues);

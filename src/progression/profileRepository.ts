@@ -168,6 +168,8 @@ export interface ProfileSnapshot {
   metadata: MetadataRecord;
 }
 
+export type AppProfileSnapshot = Omit<ProfileSnapshot, 'economyCursors'>;
+
 export interface CommitFactsParams {
   lock: TabLockToken;
   facts: ConfirmedFact[];
@@ -210,6 +212,8 @@ export interface ProfileRepository {
   init(tabId?: string): Promise<MetadataRecord>;
   acquireTabLock(tabId: string): Promise<MetadataRecord>;
   loadAll(): Promise<ProfileSnapshot>;
+  /** Skip the write-only economy event ledger for runtime snapshots. */
+  loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
   commitTypingFacts(params: CommitFactsParams): Promise<CommitFactsResult>;
   commitCityEconomy(params: CommitCityEconomyParams): Promise<CommitCityEconomyResult>;
   saveProfile(
@@ -420,7 +424,10 @@ export class MemoryProfileRepository implements ProfileRepository {
     return { ...this.metadata };
   }
 
-  async loadAll(): Promise<ProfileSnapshot> {
+  async loadAll(): Promise<ProfileSnapshot>;
+  async loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
+  async loadAll(options?: { includeEconomyCursors: false }): Promise<AppProfileSnapshot> {
+    const includeEconomyCursors = options?.includeEconomyCursors !== false;
     return {
       profile: { ...this.profile },
       results: this.results.map((r) => ({ ...r, wordIds: [...r.wordIds] })),
@@ -447,7 +454,9 @@ export class MemoryProfileRepository implements ProfileRepository {
       economyProfile: this.economyProfile
         ? { ...this.economyProfile, state: { ...this.economyProfile.state } }
         : null,
-      economyCursors: Object.fromEntries(this.economyCursors.entries()),
+      ...(includeEconomyCursors
+        ? { economyCursors: Object.fromEntries(this.economyCursors.entries()) }
+        : {}),
       metadata: { ...this.metadata },
     };
   }
@@ -717,7 +726,10 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     return updated;
   }
 
-  async loadAll(): Promise<ProfileSnapshot> {
+  async loadAll(): Promise<ProfileSnapshot>;
+  async loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
+  async loadAll(options?: { includeEconomyCursors: false }): Promise<AppProfileSnapshot> {
+    const includeEconomyCursors = options?.includeEconomyCursors !== false;
     const db = this.requireDb();
     const tx = db.transaction([...STORE_NAMES], 'readonly');
 
@@ -743,7 +755,9 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       idbRequestToPromise(tx.objectStore('factCursors').getAll()),
       idbRequestToPromise(tx.objectStore('city').get('current')),
       idbRequestToPromise(tx.objectStore('economyProfile').get('singleton')),
-      idbRequestToPromise(tx.objectStore('economyCursors').getAll()),
+      includeEconomyCursors
+        ? idbRequestToPromise(tx.objectStore('economyCursors').getAll())
+        : undefined,
       idbRequestToPromise(tx.objectStore('metadata').get('singleton')),
     ]);
 
@@ -770,7 +784,7 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     }
 
     const economyCursors: Record<string, EconomyCursorRecord> = {};
-    for (const ec of economyCursorsRaw as EconomyCursorRecord[]) {
+    for (const ec of (economyCursorsRaw ?? []) as EconomyCursorRecord[]) {
       economyCursors[ec.cursorKey] = ec;
     }
 
@@ -792,7 +806,7 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       factCursors,
       city: (cityRaw as CityStoreRecord | undefined) ?? null,
       economyProfile: (economyProfileRaw as EconomyProfileStoreRecord | undefined) ?? null,
-      economyCursors,
+      ...(includeEconomyCursors ? { economyCursors } : {}),
       metadata: (metadataRaw as MetadataRecord | undefined) ?? createDefaultMetadata(),
     };
   }

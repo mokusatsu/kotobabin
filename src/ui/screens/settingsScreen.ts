@@ -1,6 +1,7 @@
 import type { ProfileSettingsRecord } from '@/progression/profileRepository';
 import type { UIControllerActions } from '../types';
 import { el } from '../utils/dom';
+import { mountBlockingDialog } from '../utils/blockingDialog';
 
 export interface SettingsScreenProps {
   settings: ProfileSettingsRecord;
@@ -225,29 +226,29 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
     );
     confirmBtn.addEventListener('click', () => actions.confirmResetSave());
 
-    const backdrop = el(
-      'div',
-      { className: 'kb-modal-backdrop' },
+    const dialog = el(
+      'dialog',
+      {
+        className: 'kb-modal-backdrop kb-blocking-dialog',
+        'aria-modal': 'true',
+        'aria-labelledby': 'kb-reset-confirm-title',
+        'aria-describedby': 'kb-reset-confirm-description',
+        'data-testid': 'settings-reset-confirm-dialog',
+      },
       el(
         'div',
-        {
-          className: 'kb-modal kb-card kb-stack-sm',
-          role: 'dialog',
-          'aria-modal': 'true',
-          'aria-labelledby': 'kb-reset-confirm-title',
-          'data-testid': 'settings-reset-confirm-dialog',
-        },
+        { className: 'kb-modal kb-card kb-stack-sm' },
         el('h2', { id: 'kb-reset-confirm-title', className: 'kb-h2' }, copy.title),
-        el('p', { className: 'kb-small' }, copy.body),
+        el('p', { id: 'kb-reset-confirm-description', className: 'kb-small' }, copy.body),
         el('div', { className: 'kb-row-end kb-row-gap' }, cancelBtn, confirmBtn),
       ),
     );
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        actions.cancelResetSave();
-      }
+    mountBlockingDialog(dialog, {
+      focusOrder: [cancelBtn, confirmBtn],
+      initialFocus: cancelBtn,
+      onDismiss: () => actions.cancelResetSave(),
     });
-    confirmModal = backdrop;
+    confirmModal = dialog;
   }
 
   return el('div', { className: 'kb-settings-screen' }, grid, confirmModal);

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { IDBFactory } from 'fake-indexeddb';
+import { describe, expect, it, vi } from 'vitest';
+import { IDBFactory, IDBObjectStore } from 'fake-indexeddb';
 import type { WordCompletedFact } from '@/contracts/types';
 import { AchievementEngine } from '@/progression/achievementEngine';
 import {
@@ -176,6 +176,51 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     const afterEcon = await repo.loadAll();
     expect(afterEcon.city?.state.coins).toBe(100);
     repo.close();
+  });
+
+  it.each(['indexeddb', 'memory'])('skips economy cursor materialization for routine %s snapshots without weakening deduplication', async (backend) => {
+    const repo = backend === 'indexeddb'
+      ? new IndexedDbProfileRepository({ dbName: 'cursor-projection', indexedDB: new IDBFactory() })
+      : new MemoryProfileRepository();
+    const { writeEpoch, resetGeneration } = await repo.init('projection-tab');
+    const lock = { tabId: 'projection-tab', writeEpoch, resetGeneration };
+    const params = {
+      lock,
+      cityId: 'city-1',
+      economyEventId: 'auto-1',
+      cityRecord: {
+        id: 'current' as const,
+        cityId: 'city-1',
+        state: { coins: 100 },
+        revision: 1,
+        updatedAt: 1000,
+      },
+    };
+    await repo.commitTypingFacts({ lock, facts: [makeFact(1)] });
+    expect((await repo.commitCityEconomy(params)).applied).toBe(true);
+
+    const storeRead = vi.spyOn(IDBObjectStore.prototype, 'getAll');
+    const cursorBulkReads = () => storeRead.mock.contexts.filter(
+      (store) => (store as IDBObjectStore).name === 'economyCursors',
+    ).length;
+    try {
+      const projected = await repo.loadAll({ includeEconomyCursors: false });
+      expect(projected).not.toHaveProperty('economyCursors');
+      expect(cursorBulkReads()).toBe(0);
+      expect((await repo.commitCityEconomy({
+        ...params,
+        cityRecord: { ...params.cityRecord, state: { coins: 999 }, revision: 2 },
+      })).applied).toBe(false);
+
+      const { economyCursors, ...full } = await repo.loadAll();
+      expect(cursorBulkReads()).toBe(backend === 'indexeddb' ? 1 : 0);
+      expect(full).toEqual(projected);
+      expect(full.city?.state.coins).toBe(100);
+      expect(economyCursors['city-1:auto-1']).toMatchObject({ economyEventId: 'auto-1' });
+    } finally {
+      storeRead.mockRestore();
+      repo.close();
+    }
   });
 
   it('rejects stale tab writes when another tab acquires the single-tab lock', async () => {

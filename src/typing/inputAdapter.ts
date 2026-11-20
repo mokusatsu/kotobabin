@@ -11,11 +11,13 @@ export interface InputAdapterOptions {
   inputElement: HTMLInputElement;
   session: GameSession;
   deliveryKeys?: readonly DeliveryKeyOption[];
+  pauseOnEscape?: boolean;
   canCommitDelivery?: () => boolean;
   onKeyProcessed?: (result: KeyHandleResult) => void;
   onDeliveryAttempt?: (result: DeliveryAttemptResult) => void;
   onNotice?: (message: string) => void;
   onImePause?: () => void;
+  onDeadlineReached?: () => void;
   onPause?: () => void;
 }
 
@@ -23,11 +25,13 @@ export class InputAdapter {
   private readonly inputElement: HTMLInputElement;
   private readonly session: GameSession;
   private deliveryKeys: Set<DeliveryKeyOption>;
+  private readonly pauseOnEscape: boolean;
   private readonly canCommitDelivery?: () => boolean;
   private readonly onKeyProcessed?: (result: KeyHandleResult) => void;
   private readonly onDeliveryAttempt?: (result: DeliveryAttemptResult) => void;
   private readonly onNotice?: (message: string) => void;
   private readonly onImePause?: () => void;
+  private readonly onDeadlineReached?: () => void;
   private readonly onPause?: () => void;
 
   private isComposing = false;
@@ -44,11 +48,13 @@ export class InputAdapter {
     this.inputElement = options.inputElement;
     this.session = options.session;
     this.deliveryKeys = new Set(options.deliveryKeys ?? ['Space']);
+    this.pauseOnEscape = options.pauseOnEscape ?? true;
     this.canCommitDelivery = options.canCommitDelivery;
     this.onKeyProcessed = options.onKeyProcessed;
     this.onDeliveryAttempt = options.onDeliveryAttempt;
     this.onNotice = options.onNotice;
     this.onImePause = options.onImePause;
+    this.onDeadlineReached = options.onDeadlineReached;
     this.onPause = options.onPause;
 
     this.handleKeyDownBound = (e) => this.onKeyDown(e);
@@ -72,7 +78,7 @@ export class InputAdapter {
       return;
     }
     this.attached = true;
-    window.addEventListener('keydown', this.handleKeyDownBound);
+    this.inputElement.addEventListener('keydown', this.handleKeyDownBound);
     this.inputElement.addEventListener('input', this.handleInputBound);
     this.inputElement.addEventListener(
       'compositionstart',
@@ -95,7 +101,7 @@ export class InputAdapter {
       return;
     }
     this.attached = false;
-    window.removeEventListener('keydown', this.handleKeyDownBound);
+    this.inputElement.removeEventListener('keydown', this.handleKeyDownBound);
     this.inputElement.removeEventListener('input', this.handleInputBound);
     this.inputElement.removeEventListener(
       'compositionstart',
@@ -124,21 +130,15 @@ export class InputAdapter {
       return;
     }
 
-    if (e.shiftKey && e.key === 'Enter') {
+    if (
+      e.defaultPrevented ||
+      this.inputElement.ownerDocument.activeElement !== this.inputElement ||
+      e.ctrlKey ||
+      e.altKey ||
+      e.metaKey ||
+      (e.shiftKey && e.key === 'Enter')
+    ) {
       return;
-    }
-
-    if (e.repeat) {
-      e.preventDefault();
-      return;
-    }
-
-    if (e.ctrlKey || e.altKey || e.metaKey) {
-      return;
-    }
-
-    if (document.activeElement !== this.inputElement) {
-      this.inputElement.focus({ preventScroll: true });
     }
 
     if (
@@ -147,26 +147,38 @@ export class InputAdapter {
       e.keyCode === 229 ||
       e.key === 'Process'
     ) {
-      this.triggerImePause();
+      e.stopPropagation();
+      this.triggerPause(true);
       return;
     }
 
-    if (e.key === 'Escape') {
+    const isDeliveryKey =
+      (e.key === ' ' && this.deliveryKeys.has('Space')) ||
+      (e.key === 'Enter' && this.deliveryKeys.has('Enter'));
+    const isCorrectionKey = e.key === 'Backspace' || e.key === 'Delete';
+    const isPauseKey = this.pauseOnEscape && e.key === 'Escape';
+    const shouldScore = isScorableKey(e.key);
+
+    if (e.repeat) {
+      if (shouldScore || isDeliveryKey || isCorrectionKey || isPauseKey) {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    if (isPauseKey) {
       e.preventDefault();
       this.triggerPause();
       return;
     }
 
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (isCorrectionKey) {
       e.preventDefault();
       this.onNotice?.('訂正は不要です');
       return;
     }
 
-    if (
-      (e.key === ' ' && this.deliveryKeys.has('Space')) ||
-      (e.key === 'Enter' && this.deliveryKeys.has('Enter'))
-    ) {
+    if (isDeliveryKey) {
       e.preventDefault();
       const snap = this.session.getSnapshot();
       if (snap.atWordBoundary && snap.cargoCount > 0 && this.canCommitDelivery && !this.canCommitDelivery()) {
@@ -183,8 +195,9 @@ export class InputAdapter {
       return;
     }
 
-    if (isScorableKey(e.key)) {
+    if (shouldScore) {
       const result = this.session.handleKey(e.key);
+      if (result.deadlineReached) e.preventDefault();
       this.inputElement.value = '';
       this.onKeyProcessed?.(result);
     }
@@ -202,13 +215,13 @@ export class InputAdapter {
     this.inputElement.value = '';
 
     if (isImeOrPaste && (this.isComposing || inputEvent.isComposing)) {
-      this.triggerImePause();
+      this.triggerPause(true);
     }
   }
 
   private onCompositionStart(): void {
     this.isComposing = true;
-    this.triggerImePause();
+    this.triggerPause(true);
   }
 
   private onCompositionEnd(): void {
@@ -216,18 +229,14 @@ export class InputAdapter {
     this.inputElement.value = '';
   }
 
-  private triggerImePause(): void {
-    const paused = this.session.pause();
-    if (paused) {
-      this.onImePause?.();
+  private triggerPause(ime = false): void {
+    if (this.session.pause()) {
+      if (ime) this.onImePause?.();
       this.onPause?.();
-    }
-  }
-
-  private triggerPause(): void {
-    const paused = this.session.pause();
-    if (paused) {
-      this.onPause?.();
+    } else if (this.session.currentState === 'RESULT') {
+      // The deadline wins if the action arrives after time runs out, even
+      // when the UI's periodic timer has not observed it yet.
+      this.onDeadlineReached?.();
     }
   }
 }
