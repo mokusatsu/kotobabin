@@ -3151,6 +3151,17 @@ export class AppController implements UIControllerActions {
       return;
     }
     if (e.key === 'Escape') {
+      if (this.screen === 'RESULT') {
+        e.preventDefault();
+        // A held Escape that dismissed the reveal must not also leave the report.
+        if (e.repeat) return;
+        if (!this.resultRevealDone && getResultRevealIds(this.lastResult?.evaluation).length > 0) {
+          this.skipResultReveal();
+        } else {
+          this.navigate('HOME');
+        }
+        return;
+      }
       if (this.screen === 'HOME' && this.onboardingUi.active) {
         e.preventDefault();
         this.skipOnboarding();
@@ -3208,9 +3219,6 @@ export class AppController implements UIControllerActions {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           this.advanceResultReveal();
-        } else if (e.key === 'Escape') {
-          e.preventDefault();
-          this.skipResultReveal();
         }
         return;
       }

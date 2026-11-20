@@ -106,7 +106,12 @@ export function renderStampReveal(options: {
     className: 'kb-stamp-dialog kb-stamp-reveal-dialog', 'aria-modal': 'true',
     'aria-labelledby': 'kb-stamp-reveal-title', tabindex: -1,
   }, card);
-  dialog.addEventListener('keydown', (event) => event.stopPropagation());
+  dialog.addEventListener('keydown', (event) => {
+    event.stopPropagation();
+    if (event.key !== 'Escape' || event.defaultPrevented || !onSkip) return;
+    event.preventDefault();
+    if (!event.repeat) onSkip();
+  });
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     onSkip?.();

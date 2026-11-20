@@ -73,6 +73,28 @@ describe('ordinary round persistence', () => {
     expect(app.getRecentResults()[0]?.completedWordCount).toBe(10);
   });
 
+  it.each(['focused skip button', 'window'])('skips the reveal with Escape from %s without leaving the result on repeat', async (origin) => {
+    const { app, mount } = await finishRound(10);
+    await vi.waitFor(() => expect(app.getRecentResults()).toHaveLength(1));
+    const skip = resultButton(mount, '演出をスキップ');
+    expect(skip.querySelector('kbd')?.textContent).toBe('Esc');
+
+    function pressEscape(target: EventTarget, repeat = false) {
+      const event = new KeyboardEvent('keydown', { key: 'Escape', repeat, bubbles: true, cancelable: true });
+      target.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    }
+
+    skip.focus();
+    pressEscape(origin === 'window' ? window : skip);
+    expect(resultButton(mount, '同じ問題でもう一度').disabled).toBe(false);
+    pressEscape(window, true);
+    expect(app['screen']).toBe('RESULT');
+
+    pressEscape(window);
+    expect(app['screen']).toBe('HOME');
+  });
+
   it('routes the advertised Enter shortcut to replay without hijacking a focused button', async () => {
     const { app, mount } = await finishRound(10);
     await vi.waitFor(() => expect(app.getRecentResults()).toHaveLength(1));
