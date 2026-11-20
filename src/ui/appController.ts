@@ -43,7 +43,7 @@ import {
 } from '@/typing/courseGenerator';
 import { GameSession, type SessionSnapshot, type TutorialSessionCheckpoint } from '@/typing/gameSession';
 import { InputAdapter, type DeliveryKeyOption } from '@/typing/inputAdapter';
-import { WORDS_DATA } from '@/contracts/data';
+import { ROMAJI_RULES, WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
 import { NAV_ITEMS, renderNormalHeader, renderPlayHeader } from './components/header';
 import {
@@ -1175,18 +1175,34 @@ export class AppController implements UIControllerActions {
       this.currentPlanId = `${this.selectedCourseId}:${seed}`;
     }
 
-    const matchingBest = this.recentResults.filter(
-      (r) => r.comparisonKey === this.currentComparisonKey && r.completed,
-    );
-    const bestScore =
-      matchingBest.length > 0 ? Math.max(...matchingBest.map((r) => r.score)) : null;
-    const bestSpeed =
-      matchingBest.length > 0 ? Math.max(...matchingBest.map((r) => r.canonicalKpm)) : null;
+    const guideEnabled = mode === 'TUTORIAL' || this.settings.guideDefault;
+    let bestScore: number | null = null;
+    let bestCanonicalLength: number | null = null;
+    if (mode === 'MAIN') {
+      for (const result of this.recentResults) {
+        if (
+          result.comparisonKey !== this.currentComparisonKey ||
+          result.ruleVersion !== ROMAJI_RULES.inputRuleVersion ||
+          !(result.timestamp >= this.settings.catalogStartedAt) ||
+          result.completed !== true ||
+          !(result.completedWordCount >= 10) ||
+          result.rescueUsed !== false ||
+          result.guideUsed !== guideEnabled
+        ) {
+          continue;
+        }
+        bestScore = bestScore === null ? result.score : Math.max(bestScore, result.score);
+        bestCanonicalLength = bestCanonicalLength === null
+          ? result.totalCanonicalLength
+          : Math.max(bestCanonicalLength, result.totalCanonicalLength);
+      }
+    }
 
     this.currentSessionContext = {
       orderKey: this.currentPlanId,
       comparisonBestScore: bestScore,
-      comparisonBestSpeed: bestSpeed,
+      comparisonBestCanonicalLength: bestCanonicalLength,
+      comparisonGuideUsed: guideEnabled,
       practiceQualifiedWordIds: this.dictionary.getMasteredWordIds(),
     };
     this.achievements.startSession(sessionId, mode, this.currentSessionContext);
@@ -1198,7 +1214,7 @@ export class AppController implements UIControllerActions {
       districtId,
       mode,
       wordProvider,
-      guideEnabled: mode === 'TUTORIAL' || this.settings.guideDefault,
+      guideEnabled,
       onFact: (fact) => this.handleSessionFact(fact),
     });
 

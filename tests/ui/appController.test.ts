@@ -2,6 +2,8 @@
 import { IDBFactory } from 'fake-indexeddb';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import visualResourceManifest from '@spec-data/visual_resource_manifest.json';
+import { ROMAJI_RULES } from '@/contracts/data';
+import type { RoundResultRecord } from '@/progression/profileRepository';
 import { CATALOG_ACHIEVEMENTS, CATALOG_REWARDS } from '@/progression/achievementEngine';
 import { getEquippedStampFrameAsset, STAMP_FRAMES } from '@/progression/stampFrameCatalog';
 import { AppController } from '@/ui/appController';
@@ -88,6 +90,52 @@ describe('AppController UI integration', () => {
     expect(mount.querySelector('[data-testid="home-practice-btn"]')).not.toBeNull();
     expect(mount.querySelector('[data-testid="play-word-ja"]')).toBeNull();
   }, 12000);
+
+  it('freezes independent comparison bests from eligible normal rounds of the same conditions', async () => {
+    const mount = document.createElement('div');
+    document.body.appendChild(mount);
+    controller = new AppController(mount);
+    await controller.init();
+    controller.startMainRound(123);
+    const fixture: RoundResultRecord = {
+      sessionId: 'prior', timestamp: controller['settings'].catalogStartedAt,
+      courseId: controller['selectedCourseId'], planId: controller['currentPlanId'],
+      comparisonKey: controller['currentComparisonKey'], wordIds: [],
+      ruleVersion: ROMAJI_RULES.inputRuleVersion, completed: true, completedWordCount: 10,
+      correctKeyCount: 55, mistakeCount: 0, totalCanonicalLength: 55, score: 500,
+      canonicalKpm: 55 / 90 * 60, rescueUsed: false, guideUsed: true,
+    };
+
+    const ineligible: Partial<RoundResultRecord>[] = [
+      { completedWordCount: 9 },
+      { rescueUsed: true },
+      { guideUsed: false },
+      { timestamp: fixture.timestamp - 1 },
+      { ruleVersion: 'older' },
+      { completed: false },
+      { comparisonKey: 'different' },
+    ];
+
+    for (const overrides of ineligible) {
+      controller['recentResults'] = [{ ...fixture, ...overrides }];
+      controller.startMainRound(123);
+      expect(controller['currentSessionContext'], JSON.stringify(overrides)).toMatchObject({
+        comparisonBestScore: null,
+        comparisonBestCanonicalLength: null,
+      });
+    }
+
+    controller['recentResults'] = [fixture, {
+      ...fixture, sessionId: 'faster', score: 400, totalCanonicalLength: 70,
+      canonicalKpm: 70 / 90 * 60,
+    }];
+    controller.startMainRound(123);
+    expect(controller['currentSessionContext']).toMatchObject({
+      comparisonBestScore: 500,
+      comparisonBestCanonicalLength: 70,
+      comparisonGuideUsed: true,
+    });
+  });
 
   it('keeps a paused round stopped until the player releases and presses a resume key again', async () => {
     const mount = document.createElement('div');
