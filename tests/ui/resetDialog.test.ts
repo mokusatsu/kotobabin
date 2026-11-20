@@ -42,6 +42,10 @@ describe('save reset confirmation', () => {
       const cancelButton = mount.querySelector<HTMLButtonElement>('[data-testid="settings-reset-cancel-btn"]')!;
       const confirmButton = mount.querySelector<HTMLButtonElement>('[data-testid="settings-reset-confirm-btn"]')!;
       expect.soft(document.activeElement === cancelButton).toBe(true);
+      if (scope === 'records') {
+        expect(popup()?.textContent).toContain('同じ条件で得点や速さを比べるための履歴を削除');
+        expect(popup()?.textContent).toContain('獲得した切手と報酬');
+      }
       if (scope === 'city') {
         expect(popup()?.textContent).toContain('直近記録は残ります');
       }

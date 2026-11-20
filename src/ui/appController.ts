@@ -2372,6 +2372,10 @@ export class AppController implements UIControllerActions {
     this.audio.playSe('audio_ui_click');
     this.pendingResetConfirm = null;
     this.render();
+    this.focusResetOpener(scope);
+  }
+
+  private focusResetOpener(scope: 'records' | 'city_and_achievements' | 'settings'): void {
     const trigger = scope === 'city_and_achievements' ? 'city' : scope;
     this.mountEl.querySelector<HTMLElement>(`[data-testid="settings-reset-${trigger}-btn"]`)?.focus({ preventScroll: true });
   }
@@ -2439,7 +2443,13 @@ export class AppController implements UIControllerActions {
         }
         this.settingsNotice = '入力・表示・サウンドの設定を初期化しました。';
       } else {
-        this.settingsNotice = '直近記録を初期化しました。';
+        this.achievements = new AchievementEngine({
+          progress: loaded.achievementProgress,
+          unlocks: loaded.unlocks,
+          rewards: loaded.rewards,
+          factCursors: loaded.factCursors,
+        });
+        this.settingsNotice = '直近記録と成長比較の履歴を初期化しました。';
       }
       const hasPriorActivity =
         this.recentResults.length > 0 ||
@@ -2450,6 +2460,12 @@ export class AppController implements UIControllerActions {
     }).catch((err) => {
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
+        return;
+      }
+      if (this.screen === 'SETTINGS') {
+        this.settingsNotice = '初期化の結果を確認できませんでした。データの状態を確認してから、必要に応じてもう一度お試しください。';
+        this.render();
+        if (this.pendingResetConfirm === null) this.focusResetOpener(scope);
       }
     });
   }

@@ -170,6 +170,12 @@ export interface ProfileSnapshot {
 
 export type AppProfileSnapshot = Omit<ProfileSnapshot, 'economyCursors'>;
 
+function clearGrowthHistory(progress: AchievementProgressState): AchievementProgressState {
+  return progress.series
+    ? { ...progress, series: { ...progress.series, records: {} } }
+    : progress;
+}
+
 export interface CommitFactsParams {
   lock: TabLockToken;
   facts: ConfirmedFact[];
@@ -627,6 +633,8 @@ export class MemoryProfileRepository implements ProfileRepository {
 
     if (scope === 'records') {
       this.results = [];
+      this.achievementProgress = clearGrowthHistory(this.achievementProgress);
+      this.metadata = { ...this.metadata, resetGeneration: this.metadata.resetGeneration + 1 };
     } else if (scope === 'city_and_achievements') {
       this.achievementProgress = createInitialAchievementProgress();
       this.unlocks.clear();
@@ -1181,7 +1189,15 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     let updatedMetadata = metadata;
 
     if (scope === 'records') {
+      const progressStore = tx.objectStore('achievementProgress');
+      const progress = await idbRequestToPromise(progressStore.get('singleton')) as
+        { id: 'singleton'; state: AchievementProgressState } | undefined;
       tx.objectStore('results').clear();
+      if (progress?.state.series) {
+        progressStore.put({ id: 'singleton', state: clearGrowthHistory(progress.state) });
+      }
+      updatedMetadata = { ...metadata, resetGeneration: metadata.resetGeneration + 1 };
+      tx.objectStore('metadata').put(updatedMetadata);
     } else if (scope === 'city_and_achievements') {
       tx.objectStore('achievementProgress').put({
         id: 'singleton',

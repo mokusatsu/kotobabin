@@ -223,6 +223,69 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     }
   });
 
+  it.each(['indexeddb', 'memory'])('resets the growth baseline without losing earned progress (%s)', async (backend) => {
+    const indexedDB = new IDBFactory();
+    const open = () => new IndexedDbProfileRepository({ dbName: 'growth-reset', indexedDB });
+    let repo = backend === 'indexeddb' ? open() : new MemoryProfileRepository();
+    const { ownerTabId, writeEpoch, resetGeneration } = await repo.init('growth-tab');
+    let lock = { tabId: ownerTabId, writeEpoch, resetGeneration };
+    const run = (sessionId: string, length: number, score: number) => {
+      const comparisonKey = 'same-order-v1';
+      const result = {
+        sessionId, timestamp: length, comparisonKey, courseId: 'relaxed' as const,
+        planId: 'plan', ruleVersion: '1.0.0', wordIds: ['daily_r01'],
+        completed: true, completedWordCount: 10, correctKeyCount: length, mistakeCount: 0,
+        totalCanonicalLength: length, score, canonicalKpm: length * 2 / 3, rescueUsed: false,
+        guideUsed: true,
+      };
+      return repo.commitTypingFacts({
+        lock,
+        facts: [
+          { ...makeFact(1, sessionId), inputElapsedMs: 700 },
+          { ...result, type: 'RoundFinished', mode: 'MAIN', factSequence: 2, elapsedMs: 90_000,
+            districtId: 'residential', baseScore: score, deliveryBonus: 0, longestCleanStreak: 10, skips: 0 },
+        ],
+        roundResult: result,
+      });
+    };
+
+    expect((await run('old-first', 60, 100)).evaluation.recordUpdates).toEqual({ speed: false, score: false });
+    expect((await run('old-pb', 75, 150)).evaluation.recordUpdates).toEqual({ speed: true, score: true });
+    const before = await repo.loadAll();
+    expect(before.results).toHaveLength(2);
+    expect(before.unlocks['series-score_pb-1']).toBeDefined();
+    expect(Object.keys(before.rewards).length).toBeGreaterThan(0);
+    const resetMeta = await repo.resetData('records', lock);
+    expect(resetMeta.resetGeneration).toBe(lock.resetGeneration + 1);
+    if (backend === 'indexeddb') {
+      repo.close();
+      repo = open();
+      await repo.init();
+    }
+    const after = await repo.loadAll();
+    expect(after.results).toEqual([]);
+    const { series: oldSeries, ...oldProgress } = before.achievementProgress;
+    const { series: newSeries, ...newProgress } = after.achievementProgress;
+    expect(newProgress).toEqual(oldProgress);
+    expect(after.unlocks).toEqual(before.unlocks);
+    expect(after.rewards).toEqual(before.rewards);
+    expect(after.readState).toEqual(before.readState);
+    expect(after.factCursors).toEqual(before.factCursors);
+    expect(after.metadata.resetGeneration).toBe(resetMeta.resetGeneration);
+    await expect(run('old-pb', 75, 150)).rejects.toThrow(ResetGenerationError);
+    expect((await repo.loadAll()).results).toEqual([]);
+    lock = { ...lock, resetGeneration: resetMeta.resetGeneration };
+
+    expect((await run('new-first', 90, 200)).evaluation.recordUpdates).toEqual({ speed: false, score: false });
+    expect(newSeries).toEqual({ ...oldSeries, records: {} });
+    expect((await run('new-pb', 105, 250)).evaluation.recordUpdates).toEqual({ speed: true, score: true });
+    const latest = await repo.loadAll();
+    expect(Object.values(latest.achievementProgress.series!.records)).toEqual([
+      { length: 105, score: 250, speedUpdates: 1, scoreUpdates: 1 },
+    ]);
+    repo.close();
+  });
+
   it('rejects stale tab writes when another tab acquires the single-tab lock', async () => {
     const idb = new IDBFactory();
     const dbName = 'kotobabin-test-tab-lock';

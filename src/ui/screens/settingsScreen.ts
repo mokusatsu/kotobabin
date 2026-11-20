@@ -20,7 +20,7 @@ const RESET_CONFIRM_COPY: Record<
 > = {
   records: {
     title: '直近記録を初期化しますか？',
-    body: '保存されている直近リザルト（履歴）を削除します。街のレベル・資材・手帳・各種設定は残ります。',
+    body: '直近のリザルトと、同じ条件で得点や速さを比べるための履歴を削除します。獲得した切手と報酬、街、各種設定は残ります。',
     confirmLabel: '記録を初期化する',
   },
   city_and_achievements: {
