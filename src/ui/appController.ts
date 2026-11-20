@@ -3214,7 +3214,13 @@ export class AppController implements UIControllerActions {
         }
         return;
       }
-      if (e.code === 'KeyH') {
+      if (
+        e.key === 'Enter' && this.lastResult &&
+        !(active instanceof HTMLButtonElement || active instanceof HTMLAnchorElement)
+      ) {
+        e.preventDefault();
+        if (!e.repeat) void this.retrySameSeed();
+      } else if (e.code === 'KeyH') {
         e.preventDefault();
         this.navigate('HOME');
       } else if (e.code === 'KeyU') {

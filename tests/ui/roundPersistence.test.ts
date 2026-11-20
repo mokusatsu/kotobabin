@@ -73,6 +73,31 @@ describe('ordinary round persistence', () => {
     expect(app.getRecentResults()[0]?.completedWordCount).toBe(10);
   });
 
+  it('routes the advertised Enter shortcut to replay without hijacking a focused button', async () => {
+    const { app, mount } = await finishRound(10);
+    await vi.waitFor(() => expect(app.getRecentResults()).toHaveLength(1));
+    resultButton(mount, '演出をスキップ').click();
+
+    const pressEnter = (target: EventTarget, repeat = false) => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', repeat, bubbles: true, cancelable: true });
+      target.dispatchEvent(event);
+      return event;
+    };
+
+    pressEnter(window, true);
+    expect(app['screen']).toBe('RESULT');
+    const newProblem = resultButton(mount, '別の問題');
+    newProblem.focus();
+    expect(pressEnter(newProblem).defaultPrevented).toBe(false);
+    expect(app['screen']).toBe('RESULT');
+    newProblem.blur();
+
+    expect(pressEnter(window).defaultPrevented).toBe(true);
+    expect(app['screen']).toBe('PLAY');
+    expect(app['currentSeed']).toBe(123);
+    expect(app['currentSessionContext']?.comparisonBestScore).toBe(app.getRecentResults()[0]?.score);
+  });
+
   it('does not wait for the separate city transaction once the typing record is available', async () => {
     let release!: () => void;
     const gate = new Promise<void>((resolve) => { release = resolve; });
