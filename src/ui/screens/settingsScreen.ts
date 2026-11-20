@@ -25,7 +25,7 @@ const RESET_CONFIRM_COPY: Record<
   },
   city_and_achievements: {
     title: '街と手帳を初期化しますか？',
-    body: '街のレベル・資材・設備・配達手帳・直近記録を初期状態に戻します（各種設定とチュートリアル完了状態は残ります）。',
+    body: '街のレベル・資材・設備・配達手帳を初期状態に戻します。設定・チュートリアル完了状態・直近記録は残ります。',
     confirmLabel: '街と手帳を初期化する',
   },
   settings: {

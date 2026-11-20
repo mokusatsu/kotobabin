@@ -42,6 +42,9 @@ describe('save reset confirmation', () => {
       const cancelButton = mount.querySelector<HTMLButtonElement>('[data-testid="settings-reset-cancel-btn"]')!;
       const confirmButton = mount.querySelector<HTMLButtonElement>('[data-testid="settings-reset-confirm-btn"]')!;
       expect.soft(document.activeElement === cancelButton).toBe(true);
+      if (scope === 'city') {
+        expect(popup()?.textContent).toContain('直近記録は残ります');
+      }
 
       press(document.activeElement ?? document.body, 'h', { code: 'KeyH' });
       expect(popup()).not.toBeNull();
