@@ -27,7 +27,7 @@ describe('ordinary round persistence', () => {
     vi.unstubAllGlobals();
   });
 
-  async function finishRound(): Promise<{ app: AppController; mount: HTMLElement }> {
+  async function finishRound(wordCount = 1): Promise<{ app: AppController; mount: HTMLElement }> {
     let gameTimeMs = 0;
     vi.spyOn(performance, 'now').mockImplementation(() => gameTimeMs);
     const mount = document.createElement('div');
@@ -39,13 +39,124 @@ describe('ordinary round persistence', () => {
     app.completeInputCheck();
     vi.advanceTimersByTime(3000);
     const input = mount.querySelector<HTMLInputElement>('input.kb-hidden-input')!;
-    const prompt = mount.querySelector('.kb-prompt-roman')?.textContent?.trim() ?? '';
-    expect(prompt).not.toBe('');
-    for (const key of prompt) input.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+    for (let i = 0; i < wordCount; i++) {
+      const prompt = mount.querySelector('.kb-prompt-roman')?.textContent?.trim() ?? '';
+      expect(prompt).not.toBe('');
+      for (const key of prompt) input.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+    }
     gameTimeMs = 91_000;
     vi.advanceTimersByTime(100);
     return { app, mount };
   }
+
+  function resultButton(mount: HTMLElement, label: string): HTMLButtonElement {
+    const button = [...mount.querySelectorAll('button')].find((b) => b.textContent?.includes(label));
+    expect(button).toBeDefined();
+    return button!;
+  }
+
+  it('waits for the result commit before same-order replay comparison', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const original = IndexedDbProfileRepository.prototype.commitTypingFacts;
+    vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockImplementationOnce(async function (this: IndexedDbProfileRepository, params) {
+        await gate;
+        return original.call(this, params);
+      });
+    const { app, mount } = await finishRound(10);
+    resultButton(mount, '演出をスキップ').click();
+    resultButton(mount, '同じ問題でもう一度').click();
+    expect(resultButton(mount, '記録を確認中').disabled).toBe(true);
+    release();
+    await vi.waitFor(() => expect(app['currentSessionContext']?.comparisonBestScore).toBe(app.getRecentResults()[0]?.score));
+    expect(app.getRecentResults()[0]?.completedWordCount).toBe(10);
+  });
+
+  it('does not wait for the separate city transaction once the typing record is available', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const original = IndexedDbProfileRepository.prototype.commitCityEconomy;
+    const city = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitCityEconomy')
+      .mockImplementation(async function (this: IndexedDbProfileRepository, params) {
+        if (params.economyEventId.startsWith('round-city:')) await gate;
+        return original.call(this, params);
+      });
+    try {
+      const { app, mount } = await finishRound(10);
+      resultButton(mount, '演出をスキップ').click();
+      resultButton(mount, '同じ問題でもう一度').click();
+      await vi.waitFor(() => expect(mount.querySelector('input.kb-hidden-input')).not.toBeNull());
+      expect(city.mock.calls.some(([params]) => params.economyEventId.startsWith('round-city:'))).toBe(true);
+      expect(app.getRecentResults()[0]?.completedWordCount).toBe(10);
+      expect(app['currentSessionContext']?.comparisonBestScore).toBe(app.getRecentResults()[0]?.score);
+    } finally {
+      release();
+    }
+  });
+
+  it('does not launch a deferred replay after navigation', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const original = IndexedDbProfileRepository.prototype.commitTypingFacts;
+    vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockImplementationOnce(async function (this: IndexedDbProfileRepository, params) {
+        await gate;
+        return original.call(this, params);
+      });
+    const { app, mount } = await finishRound();
+    resultButton(mount, '演出をスキップ').click();
+    resultButton(mount, '同じ問題でもう一度').click();
+    app.navigate('HOME');
+    release();
+    await vi.waitFor(() => expect(app.getRecentResults()).toHaveLength(1));
+    expect(app['screen']).toBe('HOME');
+  });
+
+  it('keeps the result visible when a pending replay save fails twice', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const commit = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockImplementation(async () => {
+        await gate;
+        throw new Error('persistent storage failure');
+      });
+    const { app, mount } = await finishRound(10);
+    resultButton(mount, '演出をスキップ').click();
+    resultButton(mount, '同じ問題でもう一度').click();
+    release();
+    await vi.waitFor(() => expect(mount.querySelector('[data-testid="round-save-warning"]')).not.toBeNull());
+    const fallback = resultButton(mount, '保存済みの記録で同じ問題を始める');
+    expect(commit).toHaveBeenCalledTimes(2);
+    expect(app.getRecentResults()).toHaveLength(0);
+    fallback.click();
+    expect(mount.querySelector('input.kb-hidden-input')).not.toBeNull();
+    expect(app['currentSessionContext']?.comparisonBestScore).toBeNull();
+  });
+
+  it('offers an explicit replay after storage remains pending, without auto-launch', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const original = IndexedDbProfileRepository.prototype.commitTypingFacts;
+    vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockImplementationOnce(async function (this: IndexedDbProfileRepository, params) {
+        await gate;
+        return original.call(this, params);
+      });
+    const { mount } = await finishRound();
+    const timeout = vi.spyOn(window, 'setTimeout');
+    resultButton(mount, '演出をスキップ').click();
+    resultButton(mount, '同じ問題でもう一度').click();
+    const expireReplay = timeout.mock.calls.find(([, delay]) => delay === 2500)?.[0];
+    expect(expireReplay).toBeTypeOf('function');
+    (expireReplay as () => void)();
+    const fallback = resultButton(mount, '保存済みの記録で同じ問題を始める');
+    expect(fallback.disabled).toBe(false);
+    release();
+    await vi.waitFor(() => expect(controller?.getRecentResults()).toHaveLength(1));
+    resultButton(mount, '保存済みの記録で同じ問題を始める').click();
+    expect(mount.querySelector('input.kb-hidden-input')).not.toBeNull();
+  });
 
   it.each([false, true])('retries the exact round once with no double counting (already committed: %s)', async (alreadyCommitted) => {
     const original = IndexedDbProfileRepository.prototype.commitTypingFacts;

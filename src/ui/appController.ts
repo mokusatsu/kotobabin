@@ -148,6 +148,10 @@ export class AppController implements UIControllerActions {
   private readState: Record<string, ReadStateRecord> = {};
   private recentResults: RoundResultRecord[] = [];
   private roundRecordSaveFailed = false;
+  private roundResultReady: Promise<boolean> | null = null;
+  private replayRequest = 0;
+  private replayWaitTimer: number | null = null;
+  private replayWaitState: 'idle' | 'waiting' | 'retry' = 'idle';
   private paidEquipmentPurchaseCount = 0;
 
   private screen: AppScreen = 'HOME';
@@ -448,6 +452,7 @@ export class AppController implements UIControllerActions {
   }
 
   destroy(): void {
+    this.cancelReplayWait();
     window.removeEventListener('keydown', this.handleGlobalKeyDownBound);
     this.mountEl.removeEventListener('pointerdown', this.handlePointerUnlockBound);
     this.clearOnboardingArrivalTimer();
@@ -498,6 +503,7 @@ export class AppController implements UIControllerActions {
   }
 
   private handleTabLockLost(): void {
+    this.cancelReplayWait();
     if (this.tabLockLost) {
       return;
     }
@@ -694,6 +700,7 @@ export class AppController implements UIControllerActions {
   }
 
   navigate(screen: AppScreen): void {
+    this.cancelReplayWait();
     if (this.screen === 'PLAY' && screen !== 'PLAY') {
       return;
     }
@@ -892,6 +899,42 @@ export class AppController implements UIControllerActions {
     this.launchSession('MAIN', 'READY', this.currentSeed, null);
   }
 
+  private cancelReplayWait(): void {
+    this.replayRequest++;
+    if (this.replayWaitTimer !== null) window.clearTimeout(this.replayWaitTimer);
+    this.replayWaitTimer = null;
+    this.replayWaitState = 'idle';
+  }
+
+  private async retrySameSeed(): Promise<void> {
+    if (this.screen !== 'RESULT' || this.tabLockLost || this.replayWaitState === 'waiting') return;
+    const seed = this.currentSeed;
+    if (!this.roundResultReady || this.replayWaitState === 'retry') {
+      this.startMainRound(seed);
+      return;
+    }
+
+    const request = ++this.replayRequest;
+    this.replayWaitState = 'waiting';
+    this.replayWaitTimer = window.setTimeout(() => {
+      this.cancelReplayWait();
+      this.replayWaitState = 'retry';
+      this.render();
+    }, 2500);
+    this.render();
+
+    // Only a confirmed typing record may enter the starting comparison snapshot.
+    const ready = await this.roundResultReady;
+    if (request !== this.replayRequest || this.screen !== 'RESULT' || this.tabLockLost) return;
+    if (ready) {
+      this.startMainRound(seed);
+    } else {
+      this.cancelReplayWait();
+      this.replayWaitState = 'retry';
+      this.render();
+    }
+  }
+
   startPractice(preferredWord?: Word): void {
     this.audio.playSe('audio_ui_click');
     this.onboardingUi.active = false;
@@ -1085,6 +1128,7 @@ export class AppController implements UIControllerActions {
     seed: number,
     preferredWordId: string | null,
   ): void {
+    this.cancelReplayWait();
     this.clearInputCountdown();
     this.stopPlayTimer();
     this.inputAdapter?.detach();
@@ -1575,7 +1619,13 @@ export class AppController implements UIControllerActions {
       };
 
       this.lastMistakeWordIds = [...this.mistakeWordIds];
-      void this.commitSessionAndCity(roundRecord);
+      let resolveResultReady!: (ready: boolean) => void;
+      const resultReady = new Promise<boolean>((resolve) => { resolveResultReady = resolve; });
+      this.roundResultReady = resultReady;
+      void this.commitSessionAndCity(roundRecord, undefined, (ready) => {
+        if (this.roundResultReady === resultReady) this.roundResultReady = null;
+        resolveResultReady(ready);
+      });
 
       if (fact.completed) {
         const mergedNewIds = Array.from(
@@ -1712,8 +1762,10 @@ export class AppController implements UIControllerActions {
   private async commitSessionAndCity(
     roundResult: RoundResultRecord | undefined,
     onboardingCheckpoint?: OnboardingStateRecord,
+    resultReady?: (ready: boolean) => void,
   ): Promise<boolean> {
     if (this.tabLockLost) {
+      resultReady?.(false);
       return false;
     }
     const guide = this.onboardingUi;
@@ -1742,6 +1794,7 @@ export class AppController implements UIControllerActions {
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
       this.recentResults = loaded.results;
+      resultReady?.(true);
       const saved = await this.persistCitySnapshot(
         this.nextEconomyEventId('round-city'),
         this.onboardingUi === guide ? onboardingCheckpoint : undefined,
@@ -1757,6 +1810,7 @@ export class AppController implements UIControllerActions {
       if (!onboardingCheckpoint && this.session?.currentMode !== 'TUTORIAL') this.render();
       return true;
     } catch (err) {
+      resultReady?.(false);
       // Never resurrect results/facts invalidated by a deliberate data reset.
       if (!(err instanceof ResetGenerationError)) {
         this.pendingFacts.unshift(...factsToCommit);
@@ -2700,7 +2754,8 @@ export class AppController implements UIControllerActions {
                 onAdvanceReveal: () => this.advanceResultReveal(),
                 onSkipReveal: () => this.skipResultReveal(),
                 onReplayReveal: () => this.replayResultReveal(),
-                onRetrySameSeed: () => this.startMainRound(this.currentSeed),
+                replayWaitState: this.replayWaitState,
+                onRetrySameSeed: () => this.retrySameSeed(),
                 onRetryNewSeed: () => this.startMainRound(),
                 onReviewMistakes: () => {
                   const firstMistakeId = this.lastMistakeWordIds[0];
