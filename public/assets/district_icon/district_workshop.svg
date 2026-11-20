@@ -1,3 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="工房街のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 47.2,27.1 41.4,44.9 22.6,44.9 16.8,27.1" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="工房街のアイコン">
+  <g stroke="#203D36" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M18 62 L64 24 L110 62" fill="none" stroke="#A97449" stroke-width="10"/>
+    <line x1="34" y1="50" x2="94" y2="50" stroke="#A97449" stroke-width="8"/>
+    <g transform="rotate(-32 64 78)">
+      <rect x="59" y="64" width="10" height="44" rx="3" fill="#D7AE82"/>
+      <rect x="42" y="48" width="44" height="20" rx="5" fill="#24594F"/>
+    </g>
+  </g>
 </svg>

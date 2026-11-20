@@ -7,6 +7,7 @@ import {
 } from '@/progression/achievementEngine';
 import { renderCityMap } from '../components/cityMap';
 import { renderCoachMark } from '../components/coachMark';
+import { getTutorialRevealIds, renderStampReveal, STAMP_REVEAL_DURATION_MS } from '../components/stampReveal';
 import type { OnboardingUiState, UIControllerActions } from '../types';
 import { assetImg, el, ensurePersistentAssetKeepalive } from '../utils/dom';
 import {
@@ -15,6 +16,7 @@ import {
   DISTRICT_NAME_MAP,
   formatMaterials,
   formatMaterialsRemaining,
+  formatCoins,
   getAffordableUpgradeFlags,
 } from '../utils/format';
 
@@ -46,7 +48,8 @@ function preloadHomeNextAssets(): void {
     './assets/sprites/cargo_wagon_stage0.png',
     './assets/sprites/anim_courier_cart.png',
     './assets/sprites/anim_central_hub.png',
-    './assets/sprites/building_residential_stage0.png',
+    './assets/sprites/city_plot.png',
+    './assets/sprites/buildings/residential_stage1.png',
     './assets/achievement_stamp/stamp_a01.webp',
     './assets/achievement_stamp/stamp_a02.webp',
     './assets/achievement_stamp/stamp_a03.webp',
@@ -54,6 +57,154 @@ function preloadHomeNextAssets(): void {
     './assets/achievement_stamp/stamp_e01.webp',
     './assets/achievement_stamp/stamp_j01.webp',
   ]);
+}
+
+function openOnboardingDialog(dialog: HTMLDialogElement, nextBtn: HTMLButtonElement): HTMLDialogElement {
+  dialog.addEventListener('cancel', (e) => e.preventDefault());
+  queueMicrotask(() => {
+    if (!dialog.isConnected) return;
+    if (typeof dialog.showModal === 'function') {
+      dialog.showModal();
+    } else {
+      dialog.open = true;
+      nextBtn.focus();
+    }
+  });
+  return dialog;
+}
+
+function renderOnboardingIntro(actions: UIControllerActions): HTMLDialogElement {
+  const nextBtn = el(
+    'button',
+    { type: 'button', className: 'kb-btn-primary kb-coach-primary-btn', autofocus: true, 'data-testid': 'onboarding-next-btn' },
+    '次へ',
+    el('kbd', { className: 'kb-kbd', 'aria-hidden': 'true' }, 'Enter'),
+  );
+  nextBtn.addEventListener('click', () => actions.advanceOnboardingToDistrictSelect());
+
+  const skipBtn = el(
+    'button',
+    { type: 'button', className: 'kb-btn-secondary kb-coach-skip-btn', 'data-testid': 'onboarding-skip-btn' },
+    'スキップ',
+  );
+  skipBtn.addEventListener('click', () => actions.skipOnboarding());
+
+  const dialog = el(
+    'dialog',
+    {
+      className: 'kb-card kb-modal kb-onboarding-intro kb-onboarding-goal-dialog',
+      'aria-modal': 'true',
+      'aria-labelledby': 'kb-onboarding-intro-title',
+      'aria-describedby': 'kb-onboarding-intro-body',
+      'data-testid': 'onboarding-coach',
+      'data-onboarding-step': 'S1',
+    },
+    el(
+      'div',
+      { className: 'kb-stack-md' },
+      el(
+        'div',
+        { className: 'kb-stack-xs' },
+        el('div', {}, el('span', { className: 'kb-badge kb-coach-step-badge' }, 'ステップ 1 / 9')),
+        el('h2', { id: 'kb-onboarding-intro-title', className: 'kb-h2' }, 'このゲームの目的'),
+      ),
+      assetImg('./assets/raster/onboarding-goal.webp', '荷物を積んだ馬車が、絵本から飛び出した赤い屋根の家へ向かう', {
+        className: 'kb-onboarding-intro-art',
+        width: 1920,
+        height: 819,
+      }),
+      el(
+        'p',
+        { id: 'kb-onboarding-intro-body', className: 'kb-coach-body' },
+        'ことばを入力して荷物を運び、街を発展させましょう。住宅地に資材が30たまると、最初の建物を建てられます。',
+      ),
+      el('div', { className: 'kb-coach-actions' }, skipBtn, nextBtn),
+    ),
+  );
+  return openOnboardingDialog(dialog, nextBtn);
+}
+
+function renderOnboardingReceipt(
+  economy: CityEconomy,
+  achievements: AchievementEngine,
+  receipt: OnboardingUiState['receipt'],
+  actions: UIControllerActions,
+): HTMLDialogElement {
+  const earned = (receipt?.unlockedStampIds ?? []).filter((id) => achievements.isUnlocked(id));
+  const stampId = earned.includes('A01') ? 'A01' : earned[0] ?? 'A01';
+  const stamp = CATALOG_ACHIEVEMENTS.find((item) => item.id === stampId && achievements.isUnlocked(item.id));
+  const supportMaterials = BigInt(receipt?.supportMaterialsMicro ?? 0);
+  const supportCoins = BigInt(receipt?.supportCoinsMicro ?? 0);
+  const support = [
+    supportMaterials > 0n ? `資材 +${formatMaterialsRemaining(supportMaterials)}` : '',
+    supportCoins > 0n ? `コイン +${formatMaterialsRemaining(supportCoins)}` : '',
+  ].filter(Boolean).join('、');
+
+  const nextBtn = el('button', {
+    type: 'button', className: 'kb-btn-primary kb-coach-primary-btn', autofocus: true,
+    'data-testid': 'onboarding-build-next-btn',
+  }, '建築へ進む');
+  nextBtn.addEventListener('click', () => actions.beginOnboardingConstruction());
+  const skipBtn = el('button', {
+    type: 'button', className: 'kb-btn-secondary kb-coach-skip-btn', 'data-testid': 'onboarding-skip-btn',
+  }, 'スキップ');
+  skipBtn.addEventListener('click', () => actions.skipOnboarding());
+
+  const dialog = el(
+    'dialog',
+    {
+      className: 'kb-card kb-modal kb-onboarding-intro',
+      'aria-modal': 'true',
+      'aria-labelledby': 'kb-onboarding-receipt-title',
+      'data-testid': 'onboarding-receipt',
+      'data-onboarding-step': 'S5',
+    },
+    el('div', { className: 'kb-stack-sm' },
+      el('div', {}, el('span', { className: 'kb-badge kb-coach-step-badge' }, 'ステップ 5 / 9')),
+      el('h2', { id: 'kb-onboarding-receipt-title', className: 'kb-h2' }, earned.length ? '実績を獲得！' : '配達完了！'),
+      stamp ? el('div', { className: 'kb-onboarding-stamp' },
+        assetImg(`./assets/achievement_stamp/${stamp.stamp_asset_id}.webp`, '', {
+          decorative: true, width: 72, height: 72, fallbackSrc: './assets/shared_frame/stamp_frame.svg',
+        }),
+        el('div', { className: 'kb-stack-xs' },
+          el('strong', {}, `${stamp.name}${earned.length > 1 ? ` ほか${earned.length - 1}枚` : ''}`),
+          el('span', { className: 'kb-small' }, earned.length ? '獲得した切手は配達手帳で見られます。' : '配達手帳に入っている切手です。'),
+        ),
+      ) : null,
+      receipt ? el('p', { className: 'kb-coach-body' }, `今回の配達で、住宅地に ${formatMaterials(receipt.generatedMaterialsMicro)} 資材を届けました。`) : null,
+      support ? el('p', { className: 'kb-coach-body' },
+        el('strong', {}, '街づくり支援 '), support,
+        '。最初の建築と設備の購入に使えます。',
+      ) : null,
+      el('p', { className: 'kb-coach-body' },
+        `住宅地の資材 ${formatMaterials(economy.districts.residential.stockMicro)} ・ 所持コイン ${formatCoins(economy.coinsMicro)}`,
+      ),
+      el('div', { className: 'kb-coach-actions' }, skipBtn, nextBtn),
+    ),
+  );
+  return openOnboardingDialog(dialog, nextBtn);
+}
+
+function renderOnboardingStampReveal(
+  achievements: AchievementEngine,
+  onboarding: OnboardingUiState,
+  reducedMotion: boolean,
+  actions: UIControllerActions,
+): HTMLDialogElement | null {
+  const awards = getTutorialRevealIds(achievements, onboarding.receipt);
+  const index = onboarding.stampRevealIndex;
+  if (index >= awards.length) return null;
+  const dialog = renderStampReveal({
+    achievementId: awards[index], index, total: awards.length, reducedMotion,
+    newlyUnlocked: onboarding.receipt?.unlockedStampIds.includes(awards[index]) ?? false,
+    advanceLabel: index === awards.length - 1 ? '届いた資材を見る' : `次へ（あと${awards.length - index - 1}件）`,
+    minimumDurationMs: STAMP_REVEAL_DURATION_MS,
+    onAdvance: () => actions.advanceOnboardingStampReveal(),
+  });
+  dialog.classList.add('kb-onboarding-reveal-dialog');
+  dialog.dataset.testid = 'onboarding-stamp-reveal';
+  dialog.dataset.onboardingStep = 'S5';
+  return dialog;
 }
 
 export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
@@ -73,36 +224,19 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
 
   const isS1Onboarding = Boolean(onboarding?.active) && onboarding?.step === 'S1';
   const isS2Onboarding = Boolean(onboarding?.active) && onboarding?.step === 'S2';
-  const isHomeOnboarding = isS1Onboarding || isS2Onboarding;
+  const isS5Onboarding = Boolean(onboarding?.active) && onboarding?.step === 'S5';
+  const isHomeOnboarding = isS1Onboarding || isS2Onboarding || isS5Onboarding;
 
   const selectedDistrict = economy.districts[selectedDistrictId];
   const districtCatalog = CITY_CATALOG.districts.find((d) => d.id === selectedDistrictId);
   const canDeliverToSelected = selectedDistrict.open;
 
-  let s1CoachEl: HTMLElement | null = null;
   let s2CoachEl: HTMLElement | null = null;
-  if (isS1Onboarding) {
-    s1CoachEl = renderCoachMark({
-      stepBadge: 'ステップ 1 / 4',
-      title: 'このゲームの目的は、荷物を運んで街を発展させること',
-      body: '荷物を運んで下の「必要な資材」を 30 ためると、住宅地に最初の建物が建ちます。',
-      pointerDirection: 'down',
-      compactHeader: true,
-      primaryLabel: '次へ',
-      primaryTestId: 'onboarding-next-btn',
-      onPrimary: () => actions.advanceOnboardingToDistrictSelect(),
-      secondaryLabel: 'スキップ',
-      secondaryTestId: 'onboarding-skip-btn',
-      onSecondary: () => actions.skipOnboarding(),
-      testId: 'onboarding-coach',
-      step: 'S1',
-      className: 'kb-home-coach-overlay is-step-s1',
-    });
-  } else if (isS2Onboarding) {
+  if (isS2Onboarding) {
     s2CoachEl = renderCoachMark({
-      stepBadge: 'ステップ 2 / 4',
+      stepBadge: 'ステップ 2 / 9',
       title: '荷物を運ぶ地区を選ぼう',
-      body: 'いま開通しているのは「住宅地」だけです。光っている「住宅地」をタップしましょう。',
+      body: '最初の届け先は「住宅地」です。光っている住宅地を選びましょう。',
       pointerDirection: 'up',
       compactHeader: true,
       subNote: onboarding?.lockedDistrictNotice ?? null,
@@ -135,10 +269,9 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
   const mapViewport = el(
     'div',
     {
-      className: `kb-home-map-viewport${isHomeOnboarding ? ' is-onboarding' : ''}${isS2Onboarding ? ' is-onboard-spotlight-map' : ''}`,
+      className: `kb-home-map-viewport${isS2Onboarding ? ' is-onboard-spotlight-map' : ''}`,
     },
     mapEl,
-    s1CoachEl,
   );
 
   const nextStage = selectedDistrict.stage < 5 ? selectedDistrict.stage + 1 : null;
@@ -199,7 +332,7 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
 
   const districtInfoCard = el(
     'div',
-    { className: `kb-card kb-district-summary${isS1Onboarding ? ' is-onboard-spotlight-card' : ''}` },
+    { className: 'kb-card kb-district-summary' },
     el(
       'div',
       { className: 'kb-row-between' },
@@ -215,15 +348,13 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
             : '未開通（他地区を強化して条件を満たすと自動で開通します）',
         ),
       ),
-      isS1Onboarding
-        ? el('span', { className: 'kb-badge kb-small' }, '目標: 30 資材で Lv.1 に発展')
-        : el('div', { className: 'kb-row-gap' }, upgradeBtn, toUpgradesBtn, toDetailBtn),
+      el('div', { className: 'kb-row-gap' }, upgradeBtn, toUpgradesBtn, toDetailBtn),
     ),
     selectedDistrict.open && nextStage !== null
       ? el(
           'div',
           {
-            className: `kb-stack-xs${onboarding?.active && onboarding.step === 'S1' ? ' is-onboard-highlight' : ''}`,
+            className: 'kb-stack-xs',
             'data-testid': 'home-next-level-materials',
           },
           el(
@@ -438,7 +569,7 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
     difficultyModal = backdrop;
   }
 
-  const onboardingBackdrop = isHomeOnboarding
+  const onboardingBackdrop = isS2Onboarding
     ? el('div', {
         className: 'kb-onboard-backdrop',
         'data-testid': 'onboarding-backdrop',
@@ -446,7 +577,7 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
       })
     : null;
 
-  const stepClass = isHomeOnboarding && onboarding?.step ? ` is-onboarding-${onboarding.step.toLowerCase()}` : '';
+  const stepClass = isS2Onboarding ? ' is-onboarding-s2' : '';
   return el(
     'div',
     { className: `kb-home-screen${isHomeOnboarding ? ` is-onboarding${stepClass}` : ''}` },
@@ -454,5 +585,8 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
     mainMapArea,
     bottomStrip,
     difficultyModal,
+    isS1Onboarding ? renderOnboardingIntro(actions) : null,
+    isS5Onboarding ? renderOnboardingStampReveal(achievements, onboarding, reducedMotion, actions)
+      ?? renderOnboardingReceipt(economy, achievements, onboarding.receipt, actions) : null,
   );
 }

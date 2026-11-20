@@ -105,15 +105,16 @@ export function formatCountdownSec(ms: number): string {
 export function buildCityAchievementSnapshot(
   economy: CityEconomy,
   paidEquipmentPurchaseCount: number,
+  seriesEligible = true,
 ): CityAchievementSnapshot {
   const snap = economy.snapshot();
-  const districts = {} as Record<DistrictId, { stage: number; shops: number }>;
+  const districts = {} as CityAchievementSnapshot['districts'];
   let openedRoutesCount = 0;
   let railRoutesCount = 0;
 
   for (const dId of DISTRICT_ORDER) {
     const d = snap.districts[dId];
-    districts[dId] = { stage: d.stage, shops: d.shops };
+    districts[dId] = { stage: d.stage, shops: d.shops, crews: d.crews };
     if (d.open) {
       openedRoutesCount += 1;
     }
@@ -124,6 +125,7 @@ export function buildCityAchievementSnapshot(
 
   return {
     districts,
+    seriesEligible,
     openedRoutesCount,
     railRoutesCount,
     currentCityArrivedMaterials: Number(BigInt(snap.city_arrived_micro) / MICRO),

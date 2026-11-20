@@ -1,3 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="住宅地のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 48.0,32.0 32.0,48.0 16.0,32.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="住宅地のアイコン">
+  <g stroke="#203D36" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M18 62 L64 24 L110 62 Z" fill="#B34E39"/>
+    <rect x="28" y="62" width="72" height="44" rx="4" fill="#FFFDF7"/>
+    <rect x="42" y="74" width="18" height="18" rx="2" fill="#74A8BE"/>
+    <line x1="51" y1="74" x2="51" y2="92" stroke-width="3.5"/>
+    <line x1="42" y1="83" x2="60" y2="83" stroke-width="3.5"/>
+    <rect x="70" y="72" width="18" height="34" rx="2" fill="#D7AE82"/>
+  </g>
 </svg>

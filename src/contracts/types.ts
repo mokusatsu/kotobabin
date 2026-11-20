@@ -56,6 +56,7 @@ export interface WordCompletedFact extends ConfirmedFactBase {
   canonicalLength: number;
   mistakes: number;
   wordPosition: number;
+  inputElapsedMs?: number;
 }
 
 export interface DeliveryCommittedFact extends ConfirmedFactBase {
@@ -89,6 +90,7 @@ export interface RoundFinishedFact extends ConfirmedFactBase {
   skips: number;
   guideUsed: boolean;
   elapsedMs: number;
+  comparisonKey?: string;
 }
 
 export type ConfirmedFact =

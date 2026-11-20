@@ -13,7 +13,6 @@ import {
   DISTRICT_NAME_MAP,
   formatCountdownSec,
   formatMaterials,
-  formatMaterialsRemaining,
   getDestinationRasterSprite,
 } from '../utils/format';
 
@@ -27,6 +26,7 @@ export interface PlayScreenProps {
   onboarding?: OnboardingUiState;
   onboardingInProgress?: boolean;
   inputEl: HTMLInputElement;
+  countdownRemaining?: number | null;
   actions: UIControllerActions;
 }
 
@@ -404,59 +404,12 @@ function syncPlayWorldBackdrop(
   worldBg.setAttribute('data-last-cargo-count', String(clampedCargo));
 }
 
-function renderInputCheckCard(actions: UIControllerActions, isTutorial = false): HTMLElement {
-  const testInput = el('input', {
-    type: 'text',
-    className: 'kb-input-check-box',
-    placeholder: '半角英字で a を1回押してください',
-    'aria-label': '半角入力確認',
-    autocomplete: 'off',
-    autocapitalize: 'off',
-    spellcheck: 'false',
-  }) as HTMLInputElement;
+function renderInputCheckCard(actions: UIControllerActions, isTutorial = false, snapshot?: SessionSnapshot, countdown: number | null = null): HTMLElement {
+  const resuming = snapshot && (snapshot.completedWordCount > 0 || snapshot.typed.length > 0 || snapshot.mistakeCount > 0);
 
-  const hintEl = el('p', { className: 'kb-secondary kb-small' }, '日本語入力（IME）がオンの場合は半角英数に切り替えてください。');
-
-  testInput.addEventListener('keydown', (e) => {
-    if (e.isComposing || e.keyCode === 229 || e.key === 'Process') {
-      hintEl.textContent = '日本語入力が検出されました。半角英数モードにしてから「a」を押してください。';
-      hintEl.className = 'kb-accent kb-small';
-      return;
-    }
-    if (e.key === 'a' || e.key === 'A') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      testInput.value = '';
-      actions.completeInputCheck();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      actions.cancelInputCheck();
-    }
-  });
-
-  testInput.addEventListener('input', (e) => {
-    e.stopPropagation();
-    const val = testInput.value;
-    testInput.value = '';
-    if (val === 'a' || val === 'A') {
-      actions.completeInputCheck();
-    } else if (val.length > 0) {
-      hintEl.textContent = '半角の「a」を入力してください（全角「あ」などは無効です）。';
-      hintEl.className = 'kb-accent kb-small';
-    }
-  });
-
-  const cancelBtn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '戻る');
+  const cancelBtn = el('button', { type: 'button', className: 'kb-btn-secondary' },
+    el('span', {}, '戻る'), el('kbd', { className: 'kb-kbd' }, 'Esc'));
   cancelBtn.addEventListener('click', () => actions.cancelInputCheck());
-
-  queueMicrotask(() => testInput.focus({ preventScroll: true }));
-  window.requestAnimationFrame(() => {
-    if (testInput.isConnected) {
-      testInput.focus({ preventScroll: true });
-    }
-  });
 
   const card = el(
     'section',
@@ -465,21 +418,16 @@ function renderInputCheckCard(actions: UIControllerActions, isTutorial = false):
       ? el(
           'div',
           { className: 'kb-badge kb-small', 'data-testid': 'onboarding-input-check-note' },
-          '住宅地への配達準備：まず半角英数で「a」を1回押しましょう',
+          resuming ? `続きから再開します。完了 ${snapshot.completedWordCount}語・積載 ${snapshot.cargoCount}/5 を保存しています。`
+            : '住宅地への配達準備をしましょう。',
         )
       : null,
-    el('h2', { className: 'kb-h2' }, '半角入力の確認'),
-    el(
-      'p',
-      {},
-      'キーボードが半角英字入力になっているか確認します。',
-      el('br'),
-      '半角で「a」を',
-      el('span', { className: 'kb-nowrap' }, '1回'),
-      '押してください。',
-    ),
-    testInput,
-    hintEl,
+    el('h2', { className: 'kb-h2' }, countdown === null ? 'スタート前の確認' : 'まもなくスタート'),
+    countdown === null
+      ? el('kbd', { className: 'kb-kbd kb-input-start-key', 'aria-label': 'Fキー' }, 'F')
+      : el('div', { className: 'kb-start-countdown', 'data-testid': 'start-countdown', role: 'status', 'aria-live': 'assertive' }, String(countdown)),
+    el('p', {}, countdown === null ? 'Fを押すと開始します' : '3・2・1のあとにスタートします。'),
+    countdown === null ? el('p', { className: 'kb-secondary kb-small' }, '日本語入力（IME）をオフにし、半角英数に切り替えてください。') : null,
     cancelBtn,
   );
 
@@ -502,7 +450,7 @@ function renderPausedCard(feedback: PlayUiFeedback, actions: UIControllerActions
   const resumeBtn = el(
     'button',
     { type: 'button', className: 'kb-btn-primary' },
-    el('span', {}, '入力欄にフォーカスして再開'),
+    el('span', {}, '再開する'),
     el('kbd', { className: 'kb-kbd' }, 'Enter'),
   );
   resumeBtn.addEventListener('click', () => actions.resumePlay());
@@ -542,6 +490,7 @@ function renderPausedCard(feedback: PlayUiFeedback, actions: UIControllerActions
           '日本語入力（IME）が検出されたため一時停止しました。半角英数に切り替えてから再開してください。',
         )
       : el('p', { className: 'kb-secondary' }, 'お題は一時停止中に隠しています。再開すると表示されます。'),
+    el('p', { className: 'kb-secondary kb-small' }, '「このことばをスキップ」は、積んだ荷物を配達してから次のことばへ進みます。'),
     el('div', { className: 'kb-stack-sm kb-center-actions' }, resumeBtn, recheckBtn, skipBtn, quitBtn),
   );
 }
@@ -715,104 +664,6 @@ function renderEfficiencyTable(cargoCount: number): HTMLElement {
   );
 }
 
-function renderOnboardingCompleteCard(
-  economy: CityEconomy,
-  achievements: AchievementEngine,
-  onboarding: OnboardingUiState,
-  actions: UIControllerActions,
-): HTMLElement {
-  const resDistrict = economy.districts.residential;
-  const lv1ReqMicro = economy.developmentCost('residential', 1).materialsMicro;
-  const currentProgressMicro = resDistrict.stockMicro + resDistrict.queueMicro;
-  const remainingMicro =
-    lv1ReqMicro > currentProgressMicro ? lv1ReqMicro - currentProgressMicro : 0n;
-  const progressPct =
-    lv1ReqMicro > 0n
-      ? Math.min(100, Number((currentProgressMicro * 100n) / lv1ReqMicro))
-      : 100;
-
-  const stampFilterIds =
-    onboarding.unlockedStampIds.length > 0
-      ? onboarding.unlockedStampIds
-      : ['A01', 'A02', 'A03', 'E01', 'J01'];
-  const unlockedStamps = CATALOG_ACHIEVEMENTS.filter(
-    (a) => stampFilterIds.includes(a.id) && achievements.isUnlocked(a.id),
-  );
-
-  const finishBtn = el(
-    'button',
-    {
-      type: 'button',
-      className: 'kb-btn-primary',
-      'data-testid': 'onboarding-finish-home-btn',
-    },
-    el('span', {}, 'ホームへ戻る'),
-    el('kbd', { className: 'kb-kbd' }, 'Enter'),
-  );
-  finishBtn.addEventListener('mousedown', (e) => e.preventDefault());
-  finishBtn.addEventListener('click', () => actions.finishOnboardingToHome());
-
-  const card = el(
-    'section',
-    {
-      className: 'kb-card kb-onboard-complete-card kb-stack-sm',
-      role: 'region',
-      'aria-live': 'polite',
-      'aria-label': 'チュートリアル完了',
-      'data-testid': 'onboarding-complete-card',
-      'data-onboarding-step': 'S5',
-    },
-    el('span', { className: 'kb-badge' }, 'チュートリアル完了'),
-    el('h2', { className: 'kb-h2' }, '配達完了！住宅地に資材が届きました'),
-    el(
-      'p',
-      { className: 'kb-small' },
-      'まとめて運んだことで効率よく資材が届きました。この調子で街を発展させましょう！',
-    ),
-    el(
-      'div',
-      { className: 'kb-onboard-progress-box', 'data-testid': 'onboarding-s5-materials' },
-      el(
-        'div',
-        { className: 'kb-row-between kb-small' },
-        el('strong', {}, `今回生み出した資材: +${formatMaterials(onboarding.generatedMaterialsMicro)} 資材`),
-        el('span', {}, `最初の建物（住宅地 Lv.1）まで あと ${formatMaterialsRemaining(remainingMicro)} 資材`),
-      ),
-      el(
-        'div',
-        { className: 'kb-progress-track' },
-        el('div', { className: 'kb-progress-fill', style: `width: ${progressPct}%` }),
-      ),
-    ),
-    el(
-      'div',
-      { className: 'kb-onboard-stamp-strip' },
-      el('div', { className: 'kb-small kb-secondary' }, 'できたことが、切手になります'),
-      unlockedStamps.length > 0
-        ? el(
-            'div',
-            { className: 'kb-row-wrap kb-onboard-stamp-list' },
-            ...unlockedStamps.map((a) =>
-              el(
-                'div',
-                { className: 'kb-onboard-stamp-chip', 'data-stamp-id': a.id },
-                assetImg(`./assets/achievement_stamp/${a.stamp_asset_id}.webp`, a.name, {
-                  width: 32,
-                  height: 32,
-                  fallbackSrc: './assets/shared_frame/stamp_frame.svg',
-                }),
-                el('strong', { className: 'kb-small' }, a.name),
-              ),
-            ),
-          )
-        : null,
-    ),
-    el('div', { className: 'kb-row-gap kb-center-actions' }, finishBtn),
-  );
-
-  return card;
-}
-
 export function syncPlayScreen(
   container: HTMLElement,
   props: PlayScreenProps,
@@ -828,6 +679,7 @@ export function syncPlayScreen(
     onboarding,
     onboardingInProgress = false,
     inputEl,
+    countdownRemaining = null,
     actions,
   } = props;
 
@@ -863,7 +715,7 @@ export function syncPlayScreen(
       isTutorialMode,
       onboarding,
     );
-    contentHost.appendChild(renderInputCheckCard(actions, isTutorialMode));
+    contentHost.appendChild(renderInputCheckCard(actions, isTutorialMode, snapshot, countdownRemaining));
     return;
   }
 
@@ -903,8 +755,6 @@ export function syncPlayScreen(
 
   const showStreak = snapshot.mode === 'MAIN' && snapshot.currentCleanStreak >= 2;
   const isUrgentTimer = snapshot.mode === 'MAIN' && snapshot.remainingMs <= 10_000;
-  const isS5Complete =
-    isTutorialMode && Boolean(onboarding?.active) && onboarding?.step === 'S5';
   const names = feedback.lastUnlockedStampNames;
   const toastLabel =
     names.length > 1
@@ -965,23 +815,19 @@ export function syncPlayScreen(
   );
   contentHost.appendChild(statusBar);
 
-  if (isS5Complete) {
-    contentHost.appendChild(renderOnboardingCompleteCard(economy, achievements, onboarding!, actions));
-    return;
-  }
-
   if (isTutorialMode && onboarding?.deliveryInTransit) {
     const arrived = onboarding.deliveryArrived;
     const transitCard = renderCoachMark({
-      stepBadge: 'ステップ 4 / 4',
-      title: arrived
-        ? '住宅地に資材が到着しました！'
-        : '荷馬車が出発しました！住宅地へ資材を届けています…',
-      body: arrived
-        ? `まとめて運んだ資材が住宅地の在庫に加わりました（現在 ${formatMaterials(economy.districts.residential.stockMicro)} / 30 資材）。`
-        : 'まとめて積み込んだ荷物が街道を進んで住宅地へ向かっています。',
+      stepBadge: 'ステップ 4 / 9',
+      title: onboarding.saveFailed ? '保存をもう一度試してください' : arrived ? '住宅地に資材が到着しました！' : '荷馬車が出発しました！',
+      body: onboarding.saveFailed ? '配達は完了しています。切手と街の状態を保存してから、建築へ進みます。' : arrived
+        ? `住宅地の在庫は ${formatMaterials(economy.districts.residential.stockMicro)} 資材です。`
+        : '住宅地へ荷物を届けています。',
       pointerDirection: 'none',
       compactHeader: true,
+      primaryLabel: onboarding.saveFailed ? '保存を再試行' : undefined,
+      primaryTestId: 'onboarding-retry-save-btn',
+      onPrimary: () => actions.retryOnboardingArrival(),
       secondaryLabel: 'スキップしてホームへ',
       secondaryTestId: 'onboarding-skip-btn',
       onSecondary: () => {
@@ -1025,7 +871,7 @@ export function syncPlayScreen(
             ? `いま 1 個積んでいます。あと1語ノーミスで積み、2個以上にして ${deliveryKey} で運びましょう。`
             : `続けて2語ノーミスで積み、2個以上まとめて ${deliveryKey} キーで運びましょう（5個で自動）。`;
       guideCard = renderCoachMark({
-        stepBadge: 'ステップ 4 / 4',
+        stepBadge: 'ステップ 4 / 9',
         title: '荷物をたくさん積み込むと効率が上がる！',
         body: guideText,
         bodyAccent: showSingleDeliveryWarning,
@@ -1047,7 +893,7 @@ export function syncPlayScreen(
           ? `表示のローマ字（${targetGuide}）をそのまま打ちましょう。1語ノーミスで荷物+1！`
           : 'お題のローマ字をそのまま打ちましょう。1語ノーミスで荷物+1！';
       guideCard = renderCoachMark({
-        stepBadge: 'ステップ 3 / 4',
+        stepBadge: 'ステップ 3 / 9',
         title: 'タイピングで荷物を積み込もう',
         body: guideInstruction,
         bodyAccent: showZeroCargoMistake,
@@ -1078,7 +924,7 @@ export function syncPlayScreen(
 
   const paperLead =
     snapshot.mode === 'MAIN' && snapshot.state === 'READY'
-      ? '最初の1文字で90秒スタート'
+      ? '90秒の配達をはじめよう'
       : 'いま打つことば';
 
   paper.appendChild(
@@ -1115,7 +961,8 @@ export function syncPlayScreen(
     const def = CATALOG_ACHIEVEMENTS.find((a) => a.id === pinnedAchievementId);
     if (def) {
       const provisional = achievements.getProvisionalStatuses(snapshot.sessionId)[def.id];
-      const isIneligible = provisional === 'disqualified_this_round';
+      const isIneligible = provisional === 'disqualified_this_round'
+        || ('seriesId' in def && def.scope === '通常' && (snapshot.mode !== 'MAIN' || snapshot.skips > 0 || snapshot.rescueUsed));
       contentHost.appendChild(
         el(
           'div',
@@ -1163,13 +1010,13 @@ export function syncPlayScreen(
         'そのままホームへ戻る',
       );
       rescueHomeBtn.addEventListener('mousedown', (e) => e.preventDefault());
-      rescueHomeBtn.addEventListener('click', () => actions.finishOnboardingToHome());
+      rescueHomeBtn.addEventListener('click', () => actions.skipOnboarding());
 
-      contentHost.appendChild(
+      contentHost.querySelector('.kb-play-coach-overlay .kb-coach-inner')?.appendChild(
         el(
           'div',
           {
-            className: 'kb-banner-info kb-row-between kb-onboard-rescue-bar',
+            className: 'kb-row-between kb-onboard-rescue-bar',
             'data-testid': 'onboarding-rescue-bar',
           },
           el('span', { className: 'kb-small' }, 'ミスが続いています。練習しますか？'),

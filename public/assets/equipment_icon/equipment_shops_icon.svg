@@ -1,3 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="店舗のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,40.0 18.1,40.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="店舗のアイコン">
+  <g stroke="#203D36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 9 H28 L26 15 C22 17 18 17 16 15 C14 17 10 17 6 15 Z" fill="#B34E39"/>
+    <rect x="6" y="15" width="20" height="12" fill="#FFFDF7"/>
+    <rect x="13" y="19" width="6" height="8" fill="#D7AE82"/>
+  </g>
 </svg>

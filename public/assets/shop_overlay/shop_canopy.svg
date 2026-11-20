@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" role="img" aria-label="店舗の共通ひさし">
-  <rect x="8" y="10" width="48" height="24" rx="4" fill="#B58A3C" stroke="#203D36" stroke-width="2"/>
-  <rect x="12" y="14" width="40" height="16" rx="2" fill="#FFFDF7"/>
-  <line x1="20" y1="34" x2="20" y2="44" stroke="#203D36" stroke-width="3"/>
-  <line x1="44" y1="34" x2="44" y2="44" stroke="#203D36" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="店舗の共通ひさし">
+  <g stroke="#203D36" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M72 132 H440 L468 204 C444 222 412 222 388 204 C364 222 332 222 308 204 C284 222 252 222 228 204 C204 222 172 222 148 204 C124 222 92 222 68 204 Z" fill="#B34E39"/>
+    <path d="M148 132 L132 206 M228 132 L218 206 M308 132 L314 206 M388 132 L400 206" stroke="#FFFDF7" stroke-width="24"/>
+    <path d="M72 132 H440" stroke="#A97449" stroke-width="14"/>
+  </g>
 </svg>

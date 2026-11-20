@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" role="img" aria-label="店舗の共通のぼり">
-  <line x1="8" y1="4" x2="8" y2="60" stroke="#203D36" stroke-width="2.5"/>
-  <rect x="10" y="8" width="16" height="34" rx="2" fill="#24594F" stroke="#203D36" stroke-width="1.5"/>
-  <circle cx="18" cy="25" r="4" fill="#B58A3C"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="店舗の共通のぼり">
+  <g stroke="#203D36" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <line x1="344" y1="128" x2="452" y2="128" stroke="#A97449" stroke-width="14"/>
+    <path d="M364 134 H438 V372 L401 340 L364 372 Z" fill="#24594F"/>
+    <path d="M376 146 H426 V346 L401 324 L376 346 Z" fill="none" stroke="#E8C97A" stroke-width="5"/>
+    <circle cx="401" cy="228" r="22" fill="#FBF3DE"/>
+    <path d="M389 224 L401 234 L413 224 V238 H389 Z" fill="#B34E39" stroke-width="4"/>
+  </g>
 </svg>

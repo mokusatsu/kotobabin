@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ことば便のシンボル">
-  <rect x="4" y="12" width="56" height="40" rx="4" fill="#B34E39"/>
-  <path d="M8 16 L32 34 L56 16" fill="none" stroke="#FFFDF7" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="8" y="16" width="48" height="32" rx="2" fill="none" stroke="#FFFDF7" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <g stroke="#203D36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 34 C22 28 20 16 28 9 C38 14 40 24 32 34 Z" fill="#24594F"/>
+    <line x1="32" y1="34" x2="29" y2="15" stroke="#FFFDF7" stroke-width="1.6"/>
+    <path d="M10 26 L32 41 L54 26 V52 C54 54 52 56 50 56 H14 C12 56 10 54 10 52 Z" fill="#B34E39"/>
+    <path d="M10 26 L32 41 L54 26" fill="none" stroke="#FFFDF7" stroke-width="2.4"/>
+    <path d="M10 52 L24 38 M54 52 L40 38" stroke="#E58B76" stroke-width="1.8"/>
+  </g>
 </svg>

@@ -1,3 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="達成・取得済み">
-  <path d="M16 33 L27 44 L48 20" fill="none" stroke="#24594F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="達成・取得済み">
+<circle cx="16" cy="16" r="12" fill="#24594F" stroke="#203D36" stroke-width="2"/><path d="M10.5 16.5 L14.5 20.5 L22 12" fill="none" stroke="#FFFDF7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

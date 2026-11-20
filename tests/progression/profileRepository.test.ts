@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
 import type { WordCompletedFact } from '@/contracts/types';
+import { AchievementEngine } from '@/progression/achievementEngine';
 import {
   IndexedDbProfileRepository,
   MemoryProfileRepository,
@@ -29,6 +30,38 @@ function makeFact(seq: number, sessionId = 'session-1'): WordCompletedFact {
 }
 
 describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
+  it('keeps mastery and round delivery observations through partial commits and retry', async () => {
+    const idb = new IDBFactory();
+    const repo = new IndexedDbProfileRepository({ dbName: 'series-progress', indexedDB: idb });
+    const meta = await repo.init('series-tab');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch };
+    const first = { ...makeFact(1), inputElapsedMs: 700 };
+    await repo.commitTypingFacts({ lock, facts: [first, {
+      ...first, type: 'DeliveryCommitted', factSequence: 2,
+      reason: 'manual', cargoCount: 1, bonus: 10, precedingWordPosition: 1,
+    }] });
+    await repo.commitTypingFacts({ lock, facts: [first, {
+      ...first, factSequence: 3, wordPosition: 2, inputElapsedMs: 600,
+    }, {
+      ...first, type: 'RoundFinished', factSequence: 4, elapsedMs: 90_000,
+      courseId: 'relaxed', districtId: 'residential', completed: true, completedWordCount: 2,
+      correctKeyCount: 12, mistakeCount: 0, totalCanonicalLength: 12, score: 130,
+      baseScore: 120, deliveryBonus: 10, longestCleanStreak: 2, rescueUsed: false, skips: 0, guideUsed: true,
+    }] });
+    await repo.commitTypingFacts({ lock, facts: [{ ...first, sessionId: 'practice-1', mode: 'PRACTICE', inputElapsedMs: 800 }] });
+    repo.close();
+
+    const reopened = new IndexedDbProfileRepository({ dbName: 'series-progress', indexedDB: idb });
+    await reopened.init();
+    const snapshot = await reopened.loadAll();
+    const achievement = new AchievementEngine({ progress: snapshot.achievementProgress, unlocks: snapshot.unlocks });
+    expect(achievement.getWordMastery('daily_r01')).toEqual({ cleanSessions: 2, bestMs: 600 });
+    expect(achievement.getSeriesMetric('cargo_residential')).toBe(1);
+    expect(snapshot.unlocks['series-manual_1-1']).toBeDefined();
+    expect(snapshot.readState['achievement:series-manual_1-1']?.read).toBe(false);
+    reopened.close();
+  });
+
   it('creates IndexedDB v4 with all 11 stores and persists round-trip data', async () => {
     const idb = new IDBFactory();
     const dbName = 'kotobabin-test-roundtrip';

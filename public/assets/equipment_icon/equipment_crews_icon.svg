@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="配送班のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,24.0 45.9,40.0 32.0,48.0 18.1,40.0 18.1,24.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="配送班のアイコン">
+  <g stroke="#203D36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 10 H20 V20 H5 Z" fill="#D9E6E1"/>
+    <path d="M20 13 H26 L28 20 H20 Z" fill="#B34E39"/>
+    <circle cx="10" cy="23" r="4" fill="#E8C97A"/>
+    <circle cx="24" cy="24" r="2.8" fill="#E8C97A"/>
+  </g>
 </svg>

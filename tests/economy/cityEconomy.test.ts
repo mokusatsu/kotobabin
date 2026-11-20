@@ -103,6 +103,26 @@ describe('math helpers', () => {
   });
 });
 
+describe('tutorial supplies', () => {
+  it('tops up only the missing whole resources and preserves typing and delivery records', () => {
+    const economy = new CityEconomy();
+    economy.districts.residential.stockMicro = 11_200_000n;
+    economy.coinsMicro = 22_400_000n;
+    const lifetime = { ...economy.lifetime };
+    expect(economy.grantTutorialSupplies()).toEqual({ materialsMicro: 19n * MICRO, coinsMicro: 28n * MICRO });
+    expect(economy.lifetime).toEqual(lifetime);
+    expect(economy.grantTutorialSupplies()).toEqual({ materialsMicro: 0n, coinsMicro: 0n });
+    const restored = CityEconomy.fromSnapshot(economy.snapshot());
+    restored.upgradeDistrict('residential');
+    const purchase = restored.purchase('packaging', 1);
+    expect(purchase.count).toBe(1);
+    expect(restored.districts.residential.stage).toBe(1);
+    expect(restored.packagingLevel).toBe(1);
+    expect(restored.grantTutorialSupplies()).toEqual({ materialsMicro: 0n, coinsMicro: 0n });
+    restored.assertInvariants();
+  });
+});
+
 describe('WorldClock', () => {
   it('caps offline progress at 8 hours and prevents clock rollback', () => {
     expect(OFFLINE_CAP_MS).toBe(28_800_000);

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
 import { AppController } from '@/ui/appController';
 import { IndexedDbProfileRepository } from '@/progression/profileRepository';
+import { STAMP_REVEAL_DURATION_MS } from '@/ui/components/stampReveal';
+import { passStartGate } from './startHelpers';
 
 async function flushUi(ms = 30): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -32,17 +34,30 @@ function pressWindowKey(key: string, code?: string): void {
   window.dispatchEvent(new KeyboardEvent('keydown', { key, code, bubbles: true }));
 }
 
-function passInputCheck(mount: HTMLElement): void {
-  const box = mount.querySelector<HTMLInputElement>('input.kb-input-check-box');
-  if (!box) {
-    throw new Error('Expected input.kb-input-check-box in DOM');
-  }
-  box.focus();
-  box.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
-}
-
 function getPromptRomaji(mount: HTMLElement): string {
   return mount.querySelector('.kb-prompt-roman')?.textContent?.trim() ?? '';
+}
+
+async function watchStampReveals(mount: HTMLElement, ids = ['A01', 'A02', 'A03', 'reward_family_a_postcard']): Promise<void> {
+  for (const id of ids) {
+    const card = mount.querySelector('[data-testid="gacha-reveal-card"]');
+    expect(card?.getAttribute('data-reveal-id')).toBe(id);
+    if (id === 'reward_family_a_postcard') {
+      expect(card?.textContent).toContain('絵葉書を獲得');
+      expect(card?.querySelector('img')?.getAttribute('src')).toContain('postcard_a.webp');
+    } else {
+      expect(card?.querySelector('.kb-gacha-reward')?.textContent).toContain('報酬');
+    }
+    const next = card?.querySelector<HTMLButtonElement>('[data-testid="gacha-next-btn"]');
+    expect(next?.disabled).toBe(true);
+    next?.click();
+    expect(mount.querySelector('[data-testid="gacha-reveal-card"]')).toBe(card);
+    expect(mount.querySelector('[data-testid="gacha-skip-btn"]')).toBeNull();
+    await flushUi(STAMP_REVEAL_DURATION_MS + 100);
+    expect(next?.disabled).toBe(false);
+    next?.click();
+    await flushUi();
+  }
 }
 
 describe('Onboarding / Tutorial Integration', () => {
@@ -75,18 +90,15 @@ describe('Onboarding / Tutorial Integration', () => {
     return { controller, mount };
   }
 
-  it('walks through S1 -> S2 -> locked guard -> INPUT_CHECK -> S3 -> S4 (1-cargo guard & collapse lesson) -> S5 -> Home and persists completion', async () => {
+  it('continues from typing through the earned stamp, building a house, and buying the first facility before completion', async () => {
     const { controller, mount } = await mountFreshApp();
 
-    // S1: Smartphone-style backdrop + bottom goal spotlight (no map spotlight yet, downward pointer, Next button present)
-    const s1Coach = mount.querySelector('[data-testid="onboarding-coach"]');
-    expect(s1Coach).not.toBeNull();
-    expect(s1Coach?.getAttribute('data-onboarding-step')).toBe('S1');
-    expect(s1Coach?.getAttribute('data-pointer')).toBe('down');
-    expect(s1Coach?.textContent).toContain('街を発展');
-    expect(mount.querySelector('[data-testid="onboarding-backdrop"]')).not.toBeNull();
-    expect(mount.querySelector('.kb-district-summary')?.classList.contains('is-onboard-spotlight-card')).toBe(true);
-    expect(mount.querySelector('[data-testid="home-next-level-materials"]')?.classList.contains('is-onboard-highlight')).toBe(true);
+    // S1: Open the goal dialog on the first visit.
+    const intro = mount.querySelector('dialog[open][data-testid="onboarding-coach"]');
+    expect(intro?.getAttribute('data-onboarding-step')).toBe('S1');
+    expect(intro?.querySelector('h2')?.textContent).toBe('このゲームの目的');
+    expect(intro?.textContent).toContain('街を発展');
+    expect(document.activeElement).toBe(intro?.querySelector('[data-testid="onboarding-next-btn"]'));
     expect(mount.querySelector('[data-testid="map-onboard-target-badge"]')).toBeNull();
     expect(Array.from(mount.querySelectorAll<HTMLButtonElement>('.kb-nav-btn')).every((b) => b.disabled)).toBe(true);
 
@@ -109,7 +121,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(nextBtn).not.toBeNull();
     nextBtn?.click();
 
-    // S2: Map spotlight replaces goal card spotlight; no Next button; global Enter does NOT skip district selection
+    // S2: Close the goal dialog and highlight residential on the map.
     const s2Coach = mount.querySelector('[data-testid="onboarding-coach"]');
     expect(s2Coach?.getAttribute('data-onboarding-step')).toBe('S2');
     expect(s2Coach?.getAttribute('data-pointer')).toBe('up');
@@ -118,7 +130,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(s2Coach?.textContent).not.toContain('拠点');
     expect(mount.querySelector('[data-testid="onboarding-next-btn"]')).toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-action-hint"]')).toBeNull();
-    expect(mount.querySelector('.kb-district-summary')?.classList.contains('is-onboard-spotlight-card')).toBe(false);
+    expect(mount.querySelector('dialog[data-testid="onboarding-coach"]')).toBeNull();
     expect(mount.querySelector('.kb-home-map-viewport')?.classList.contains('is-onboard-spotlight-map')).toBe(true);
     expect(mount.querySelector('.kb-city-map')?.classList.contains('has-onboard-spotlight')).toBe(true);
     expect(mount.querySelector('.kb-map-district-btn[data-district-id="residential"]')?.classList.contains('is-onboard-target')).toBe(true);
@@ -152,7 +164,7 @@ describe('Onboarding / Tutorial Integration', () => {
 
     // Cancelling INPUT_CHECK (戻る) returns to Home at S2 with onboarding backdrop visible
     const inputCheckBackBtn = Array.from(mount.querySelectorAll<HTMLButtonElement>('.kb-play-paper button')).find(
-      (btn) => btn.textContent?.trim() === '戻る',
+      (btn) => btn.textContent?.trim().startsWith('戻る'),
     );
     expect(inputCheckBackBtn).not.toBeUndefined();
     inputCheckBackBtn?.click();
@@ -166,7 +178,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-testid="onboarding-input-check-note"]')).not.toBeNull();
 
     // Pass INPUT_CHECK with 'a' -> S3
-    passInputCheck(mount);
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S3');
     expect(mount.querySelector('[data-testid="onboarding-efficiency-table"]')).toBeNull();
 
@@ -208,7 +220,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('打ち切ってから');
     typeKeys(mount, midWordRomaji.slice(1));
 
-    // Deliver cargo -> Stage 1 (transit) -> Stage 2 (arrival celebration, modal still hidden) -> Stage 3 (S5 card)
+    // Deliver cargo, watch it arrive, and show the earned stamp with support supplies.
     pressKey(mount, 'Enter');
     expect(mount.querySelector('[data-testid="onboarding-complete-card"]')).toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('荷馬車が出発しました');
@@ -220,18 +232,56 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-world-dest-label]')?.textContent).not.toContain('在庫 0');
     await flushUi(900);
 
-    const completeCard = mount.querySelector('[data-testid="onboarding-complete-card"]');
-    expect(completeCard).not.toBeNull();
-    expect(completeCard?.textContent).toContain('できたことが、切手になります');
-    expect(completeCard?.textContent).toContain('はじめのことば');
-    expect(completeCard?.textContent).not.toContain('はじめの一歩');
+    controller.beginOnboardingConstruction();
+    expect(mount.querySelector('[data-testid="onboarding-stamp-reveal"]')).not.toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-receipt"]')).toBeNull();
+    await watchStampReveals(mount);
+    const receipt = mount.querySelector('dialog[open][data-testid="onboarding-receipt"]');
+    expect(receipt?.textContent).toContain('実績を獲得');
+    expect(receipt?.textContent).toContain('はじめのことば');
+    expect(receipt?.textContent).toContain('街づくり支援');
+    expect(controller.getSettings().onboarding?.status).toBe('in_progress');
+    expect(controller.getSettings().tutorialCompleted).toBe(false);
+    expect(controller.getUnlocks().A01).toBeDefined();
 
-    const matText = mount.querySelector('[data-testid="onboarding-s5-materials"]')?.textContent ?? '';
-    expect(matText).toContain('今回生み出した資材: +');
-    expect(matText).not.toContain('+0 資材');
-
+    mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-build-next-btn"]')?.click();
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S6');
+    controller.navigate('HOME');
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')).not.toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('select');
+    expect(mount.querySelector('[data-testid="upgrade-district-btn"]')).toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-coach"]')?.textContent).toContain('住宅地を選ぼう');
+    expect(mount.querySelector<HTMLButtonElement>('[data-testid="town-node-packaging"]')?.disabled).toBe(true);
+    controller.upgradeDistrict('residential');
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S6');
+    mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('upgrade');
+    const buildBtn = mount.querySelector<HTMLButtonElement>('[data-testid="upgrade-district-btn"]');
+    expect(buildBtn?.classList.contains('kb-onboard-action-target')).toBe(true);
+    expect(buildBtn?.disabled).toBe(false);
+    buildBtn?.click();
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S7');
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('select');
+    expect(mount.querySelector('[data-testid="buy-packaging-btn"]')).toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-coach"]')?.textContent).toContain('荷づくり台を選ぼう');
+    const packagingTarget = mount.querySelector<HTMLButtonElement>('[data-testid="town-node-packaging"]');
+    expect(packagingTarget?.classList.contains('is-onboard-target')).toBe(true);
+    expect(mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.disabled).toBe(true);
+    controller.buyEquipment('packaging');
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S7');
+    packagingTarget?.click();
+    const buyBtn = mount.querySelector<HTMLButtonElement>('[data-testid="buy-packaging-btn"]');
+    expect(buyBtn?.classList.contains('kb-onboard-action-target')).toBe(true);
+    expect(buyBtn?.disabled).toBe(false);
+    buyBtn?.click();
+    buyBtn?.click();
+    expect(mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S8');
+    expect(mount.textContent).toContain('施設を拡張できました');
+    await vi.waitFor(() => expect(mount.querySelector('dialog[open][data-testid="onboarding-complete-dialog"]')).not.toBeNull());
+    expect(Object.keys(controller.getUnlocks())).toHaveLength(3);
+    expect(mount.textContent).toContain('荷づくり台 Lv.1');
+    expect(controller.getSettings().onboarding?.status).toBe('completed');
     const finishBtn = mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-finish-home-btn"]');
-    expect(finishBtn?.textContent).toContain('ホームへ戻る');
     finishBtn?.click();
     await flushUi();
 
@@ -239,10 +289,11 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('.kb-home-screen')).not.toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-coach"]')).toBeNull();
     const homeMaterials = mount.querySelector('[data-testid="home-next-level-materials"]')?.textContent ?? '';
-    expect(homeMaterials).toMatch(/(輸送待ち \+[1-9]|[1-9]\d* \/ 30)/);
+    expect(homeMaterials).toContain('/ 150 資材');
+    expect(mount.textContent).toContain('住宅地（Lv.1 / 5）');
 
     // Verify UPGRADES displays consistent integer arrived vs remaining materials (arrived + remaining === 30)
-    pressWindowKey('2', 'Digit2');
+    pressWindowKey('j', 'KeyJ');
     const upgradesText = mount.textContent ?? '';
     const statusMatch = upgradesText.match(/到着済み (\d+) \/ 必要資材 (\d+)/);
     const remainMatch = upgradesText.match(/資材不足（あと (\d+)）/);
@@ -251,7 +302,7 @@ describe('Onboarding / Tutorial Integration', () => {
     }
 
     // Verify dictionary counted completed words from tutorial, labels practice mastery clearly, and immediately prompts clicked practice word
-    pressWindowKey('4', 'Digit4');
+    pressWindowKey('l', 'KeyL');
     expect(mount.textContent).toContain('ことば図鑑');
     expect(mount.textContent).toContain('完了 4 / 960語');
     const firstCard = mount.querySelector('.kb-word-card');
@@ -259,6 +310,7 @@ describe('Onboarding / Tutorial Integration', () => {
     const selectedWordText = firstCard?.querySelector('.kb-word-display')?.textContent ?? '';
     expect(selectedWordText.length).toBeGreaterThan(0);
     firstCard?.querySelector<HTMLButtonElement>('button')?.click();
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="play-word-ja"]')?.textContent).toBe(selectedWordText);
     controller.endPracticeToHome();
 
@@ -268,7 +320,7 @@ describe('Onboarding / Tutorial Integration', () => {
     mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
     mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
     expect(mount.querySelector('[data-testid="onboarding-input-check-note"]')).not.toBeNull();
-    passInputCheck(mount);
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S3');
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).not.toContain('打ち間違えても大丈夫');
     expect(mount.querySelector('.kb-mistake-pop')).toBeNull();
@@ -277,8 +329,8 @@ describe('Onboarding / Tutorial Integration', () => {
     controller.skipOnboarding();
     await flushUi();
     controller.startMainRound(99);
-    expect(mount.querySelector('.kb-input-check-box')).not.toBeNull();
-    passInputCheck(mount);
+    expect(mount.querySelector('.kb-input-start-key')).not.toBeNull();
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="play-word-ja"]')).not.toBeNull();
     expect(mount.querySelector('.kb-mistake-pop')).toBeNull();
 
@@ -294,13 +346,126 @@ describe('Onboarding / Tutorial Integration', () => {
     const second = await mountFreshApp();
     expect(second.mount.querySelector('.kb-home-screen')).not.toBeNull();
     expect(second.mount.querySelector('[data-testid="onboarding-coach"]')).toBeNull();
-  });
+  }, 45000);
+
+  it('reveals the earned postcard after the three stamps from automatic delivery', async () => {
+    const { controller, mount } = await mountFreshApp();
+    controller.updateSettings({ reduceMotion: true });
+    mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
+    mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
+    await passStartGate(mount);
+    for (let count = 0; count < 5; count += 1) typeKeys(mount, getPromptRomaji(mount));
+    await flushUi(600);
+    expect(controller.getUnlocks().A02).toBeUndefined();
+    expect(controller.getUnlocks().A04).toBeDefined();
+    await watchStampReveals(mount, ['A01', 'A03', 'A04', 'reward_family_a_postcard']);
+    expect(mount.querySelector('[data-testid="onboarding-receipt"]')).not.toBeNull();
+  }, 20000);
+
+  it('restores completed words, held cargo, partial input, and the earned stamp before the first delivery', async () => {
+    let app = await mountFreshApp();
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
+    app.mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
+    await passStartGate(app.mount);
+    typeKeys(app.mount, 'neko');
+    typeKeys(app.mount, 'ha');
+    app.controller.destroy();
+    await flushUi(100);
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-input-check-note"]')?.textContent).toContain('完了 1語・積載 1/5');
+    await passStartGate(app.mount);
+    expect(app.mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S4');
+    expect(app.mount.querySelector('.kb-roman-typed')?.textContent).toBe('ha');
+    expect(app.mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 1/5');
+    expect(app.mount.textContent).toContain('スコア 40点');
+    expect(app.mount.querySelector('[data-world-dest-label]')?.textContent).toContain('在庫 0');
+    typeKeys(app.mount, 'na');
+    expect(app.mount.textContent).toContain('完了 2語');
+    expect(app.mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 2/5');
+    await flushUi();
+    expect(app.controller.getUnlocks().A01).toBeDefined();
+    app.controller.skipOnboarding();
+    await flushUi();
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-coach"]')).toBeNull();
+  }, 15000);
+
+  it('saves earned stamps, support supplies, and each expansion checkpoint across reloads', async () => {
+    let app = await mountFreshApp();
+    app.controller.updateSettings({ reduceMotion: true });
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
+    app.mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
+    await passStartGate(app.mount);
+    typeKeys(app.mount, getPromptRomaji(app.mount));
+    typeKeys(app.mount, getPromptRomaji(app.mount));
+    await flushUi();
+    const saveFailure = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitCityEconomy')
+      .mockRejectedValueOnce(new Error('Temporary storage failure'));
+    pressKey(app.mount, 'Enter');
+    await flushUi(500);
+    expect(app.mount.querySelector('[data-testid="onboarding-retry-save-btn"]')).not.toBeNull();
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-retry-save-btn"]')?.click();
+    await flushUi();
+    saveFailure.mockRestore();
+    expect(app.mount.querySelector('dialog[open][data-testid="onboarding-stamp-reveal"]')).not.toBeNull();
+    const receipt = app.controller.getSettings().onboarding?.receipt;
+    expect(receipt?.generatedMaterialsMicro).toBe('11200000');
+    expect(receipt?.supportMaterialsMicro).toBe('19000000');
+    expect(BigInt(receipt?.supportCoinsMicro ?? '0')).toBeGreaterThan(0n);
+    await watchStampReveals(app.mount, ['A01']);
+
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.controller.getSettings().onboarding?.status).toBe('in_progress');
+    expect(app.controller.getSettings().tutorialCompleted).toBe(false);
+    expect(app.controller.getSettings().onboarding?.receipt).toEqual(receipt);
+    expect(app.controller.getUnlocks().A01).toBeDefined();
+    expect(app.mount.querySelector('[data-testid="gacha-reveal-card"]')?.getAttribute('data-reveal-id')).toBe('A02');
+    await watchStampReveals(app.mount, ['A02', 'A03', 'reward_family_a_postcard']);
+    expect(app.mount.querySelector('dialog[open][data-testid="onboarding-receipt"]')).not.toBeNull();
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-build-next-btn"]')?.click();
+    await flushUi();
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S6');
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('select');
+    app.mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
+    await flushUi();
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('upgrade');
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="upgrade-district-btn"]')?.click();
+    await flushUi();
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-step')).toBe('S7');
+    expect(app.controller.getSettings().tutorialCompleted).toBe(false);
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('select');
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="town-node-packaging"]')?.click();
+    await flushUi();
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')?.getAttribute('data-onboarding-phase')).toBe('upgrade');
+    app.mount.querySelector<HTMLButtonElement>('[data-testid="buy-packaging-btn"]')?.click();
+    await flushUi();
+    const completedUnreadCount = app.mount.querySelector('.kb-unread-pill')?.textContent;
+    expect(app.mount.querySelector('.kb-onboarding-final-stamps')?.textContent).toContain('はじめのことば');
+    app.controller.destroy();
+    app = await mountFreshApp();
+    expect(app.mount.querySelector('[data-testid="onboarding-upgrades"]')).toBeNull();
+    expect(app.controller.getSettings().onboarding?.status).toBe('completed');
+    expect(app.controller.getSettings().tutorialCompleted).toBe(true);
+    expect(app.mount.querySelector('.kb-unread-pill')?.textContent).toBe(completedUnreadCount);
+    app.controller.navigate('UPGRADES');
+    expect(app.mount.textContent).toContain('荷づくり台 Lv.1');
+  }, 45000);
 
   it('teaches cargo collapse while preserving base materials and triggers 3-fail rescue bar with practice roundtrip', async () => {
     const { mount } = await mountFreshApp();
     mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
     mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
-    passInputCheck(mount);
+    await passStartGate(mount);
     typeKeys(mount, getPromptRomaji(mount));
 
     // Now in S4 with 1 cargo loaded; trigger mistake to collapse cargo back to 0
@@ -315,14 +480,17 @@ describe('Onboarding / Tutorial Integration', () => {
       pressKey(mount, 'z');
     }
     expect(mount.querySelector('[data-testid="onboarding-rescue-bar"]')).not.toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-play-guide"] [data-testid="onboarding-rescue-bar"]')).not.toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-skip-btn"]')?.textContent).toContain('スキップ');
 
     // Rescue "ゆっくり練習する" opens PRACTICE, labels CTA "チュートリアルに戻る", and returns directly to S3 tutorial typing
     mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-rescue-practice-btn"]')?.click();
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')).toBeNull();
+    await passStartGate(mount);
     const backToTutorialBtn = mount.querySelector<HTMLButtonElement>('[data-testid="practice-try-main-btn"]');
     expect(backToTutorialBtn?.textContent).toContain('チュートリアルに戻る');
     backToTutorialBtn?.click();
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S3');
 
     // Re-enter practice via rescue and confirm Escape restores S2 on Home
@@ -341,7 +509,7 @@ describe('Onboarding / Tutorial Integration', () => {
     secondRun.mount
       .querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')
       ?.click();
-    passInputCheck(secondRun.mount);
+    await passStartGate(secondRun.mount);
     for (let i = 0; i < 3; i++) {
       const target = getPromptRomaji(secondRun.mount);
       pressKey(secondRun.mount, 'z');
@@ -352,7 +520,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(secondRun.mount.querySelector('[data-testid="onboarding-rescue-bar"]')).not.toBeNull();
     typeKeys(secondRun.mount, getPromptRomaji(secondRun.mount));
     expect(secondRun.mount.querySelector('[data-testid="onboarding-rescue-bar"]')).toBeNull();
-  });
+  }, 25000);
 
   it('supports skipping onboarding, restarting from Settings, and suppressing auto-start on prior-activity profiles', async () => {
     const { controller, mount } = await mountFreshApp();
@@ -363,14 +531,14 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-testid="onboarding-coach"]')).toBeNull();
 
     // Navigating to Settings and restarting onboarding opens S1 on Home
-    pressWindowKey('5', 'Digit5');
+    pressWindowKey('s', 'KeyS');
     const restartBtn = mount.querySelector<HTMLButtonElement>('[data-testid="settings-restart-onboarding-btn"]');
     expect(restartBtn).not.toBeNull();
     restartBtn?.click();
     await flushUi();
 
     expect(mount.querySelector('.kb-home-screen')).not.toBeNull();
-    expect(mount.querySelector('[data-testid="onboarding-coach"]')?.getAttribute('data-onboarding-step')).toBe('S1');
+    expect(mount.querySelector('dialog[open][data-testid="onboarding-coach"]')?.getAttribute('data-onboarding-step')).toBe('S1');
 
     // Verify fontScale persists in localStorage and restores across controller reload
     controller.setFontScale('1.3');

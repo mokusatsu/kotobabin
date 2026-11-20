@@ -72,7 +72,7 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
           type: 'button',
           className: `kb-pill-btn${settings.deliveryKey === k ? ' is-selected' : ''}`,
         },
-        k,
+        el('kbd', { className: 'kb-kbd' }, k),
       );
       btn.addEventListener('click', () => actions.updateSettings({ deliveryKey: k }));
       return btn;
@@ -210,7 +210,7 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
         className: 'kb-btn-secondary',
         'data-testid': 'settings-reset-cancel-btn',
       },
-      'キャンセル [Esc]',
+      el('span', {}, 'キャンセル'), el('kbd', { className: 'kb-kbd' }, 'Esc'),
     );
     cancelBtn.addEventListener('click', () => actions.cancelResetSave());
 

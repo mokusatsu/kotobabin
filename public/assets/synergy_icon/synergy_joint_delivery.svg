@@ -1,3 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="共同配送">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,24.0 45.9,40.0 32.0,48.0 18.1,40.0 18.1,24.0" fill="#24594F" opacity="0.85"/>
+  <g stroke="#203D36" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 20 C14 20 18 28 24 32 M6 44 C14 44 18 36 24 32" fill="none" stroke="#24594F" stroke-width="3.2"/>
+    <path d="M58 20 C50 20 46 28 40 32 M58 44 C50 44 46 36 40 32" fill="none" stroke="#B34E39" stroke-width="3.2"/>
+    <rect x="21" y="21" width="22" height="22" rx="3" fill="#D7AE82"/>
+    <path d="M21 32 H43 M32 21 V43" stroke="#B34E39" stroke-width="2.4"/>
+    <circle cx="32" cy="32" r="4" fill="#E8C97A"/>
+  </g>
 </svg>

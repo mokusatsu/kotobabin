@@ -4,6 +4,7 @@ import {
   CATALOG_ACHIEVEMENTS,
 } from '@/progression/achievementEngine';
 import type { LastResultContext, UIControllerActions } from '../types';
+import { featuredStampIds, getResultRevealIds, renderStampReveal } from '../components/stampReveal';
 import { assetImg, el } from '../utils/dom';
 import {
   COURSE_LABELS,
@@ -55,86 +56,26 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
 
   const { snapshot, evaluation, economySummary } = result;
   const newIds = evaluation.newlyUnlockedAchievementIds;
+  const displayNewIds = featuredStampIds(newIds);
+  const revealIds = getResultRevealIds(evaluation);
 
-  // Phase 1: Gacha-style one-by-one stamp reveal ceremony
-  if (!revealDone && newIds.length > 0) {
-    const safeIdx = Math.min(Math.max(0, revealIndex), newIds.length - 1);
-    const id = newIds[safeIdx];
-    const def = CATALOG_ACHIEVEMENTS.find((a) => a.id === id);
-    const isLast = safeIdx >= newIds.length - 1;
-
-    const nextBtn = el(
-      'button',
-      {
-        type: 'button',
-        className: 'kb-btn-primary',
-        'data-testid': 'gacha-next-btn',
-      },
-      el('span', { style: 'white-space: nowrap;' }, isLast ? '配達結果を見る' : `次の切手（あと${newIds.length - 1 - safeIdx}枚）`),
-      el('kbd', { className: 'kb-kbd' }, 'Enter / Space'),
-    );
-    nextBtn.addEventListener('click', onAdvanceReveal);
-    queueMicrotask(() => nextBtn.focus());
-
-    const skipBtn = el(
-      'button',
-      {
-        type: 'button',
-        className: 'kb-btn-secondary',
-        'data-testid': 'gacha-skip-btn',
-      },
-      el('span', {}, '演出をスキップ'),
-      el('kbd', { className: 'kb-kbd' }, 'Esc'),
-    );
-    skipBtn.addEventListener('click', onSkipReveal);
-
-    const card = el(
-      'div',
-      {
-        className: `kb-gacha-card${reducedMotion ? ' is-reduced-motion' : ''}`,
-        'data-reveal-id': id,
-        'data-testid': 'gacha-reveal-card',
-      },
-      el('div', { className: 'kb-gacha-halo', 'aria-hidden': 'true' }),
-      el(
-        'div',
-        { className: 'kb-gacha-counter' },
-        el('span', { className: 'kb-badge kb-streak-pill' }, 'NEW! 切手獲得'),
-        el('span', { className: 'kb-badge' }, `${safeIdx + 1} / ${newIds.length}`),
-      ),
-      el(
-        'div',
-        { className: 'kb-gacha-emblem-wrap' },
-        assetImg(
-          `./assets/achievement_stamp/${def?.stamp_asset_id ?? `stamp_${id.toLowerCase()}`}.webp`,
-          '',
-          {
-            decorative: true,
-            className: 'kb-gacha-stamp-art',
-            width: 92,
-            height: 92,
-          },
-        ),
-        assetImg('./assets/shared_frame/stamp_frame.svg', '', {
-          decorative: true,
-          width: 108,
-          height: 108,
-          className: 'kb-stamp-frame-overlay',
-        }),
-      ),
-      el('h2', { className: 'kb-gacha-title' }, def?.name ?? id),
-      el('p', { className: 'kb-secondary' }, def?.condition ?? ''),
-      el('div', { className: 'kb-gacha-reward' }, `報酬: 称号「${def?.name ?? id}」`),
-      el('div', { className: 'kb-row-gap kb-center-actions' }, nextBtn, skipBtn),
-    );
+  // Phase 1: One-by-one stamp unlock dialogs
+  if (!revealDone && revealIds.length > 0) {
+    const safeIdx = Math.min(Math.max(0, revealIndex), revealIds.length - 1);
+    const isLast = safeIdx >= revealIds.length - 1;
+    const card = renderStampReveal({
+      achievementId: revealIds[safeIdx], index: safeIdx, total: revealIds.length, reducedMotion,
+      advanceLabel: isLast ? '配達結果を見る' : `次へ（あと${revealIds.length - 1 - safeIdx}件）`,
+      onAdvance: onAdvanceReveal, onSkip: onSkipReveal,
+    });
 
     return el(
       'section',
       {
         className: 'kb-gacha-stage',
-        'aria-label': '獲得した切手の演出',
+        'aria-label': '獲得演出',
       },
-      el('div', { className: 'kb-secondary kb-small' }, '90秒の配達お疲れさまでした！ 新しい切手が届いています'),
+      el('div', { className: 'kb-secondary kb-small' }, '90秒の配達お疲れさまでした！'),
       card,
     );
   }
@@ -166,17 +107,23 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
     requestAnimationFrame(step);
   }
 
+  const resultHeading = el('h2', { className: 'kb-h2', tabindex: -1 }, '配達結果');
+  queueMicrotask(() => resultHeading.focus({ preventScroll: true }));
   const leftCard = el(
     'section',
     { className: 'kb-card kb-stack-md', 'aria-label': '配達結果' },
     el(
       'div',
       { className: 'kb-row-between' },
-      el('h2', { className: 'kb-h2' }, '配達結果'),
+      resultHeading,
       el('span', { className: 'kb-badge' }, `${COURSE_LABELS[snapshot.courseId]}・${DISTRICT_NAME_MAP[snapshot.districtId]}`),
     ),
     snapshot.mistakeCount === 0 && snapshot.completedWordCount > 0
       ? el('div', { className: 'kb-badge kb-streak-pill' }, 'ノーミス完走！お見事です！')
+      : null,
+    evaluation.recordUpdates?.speed || evaluation.recordUpdates?.score
+      ? el('p', { className: 'kb-badge is-earned', role: 'status' },
+          `自己ベスト更新！ ${[evaluation.recordUpdates.speed && '速さ', evaluation.recordUpdates.score && 'スコア'].filter(Boolean).join('・')}`)
       : null,
     el(
       'div',
@@ -208,7 +155,6 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   );
 
   // Right 62%: Stamps & City impact
-  const displayNewIds = newIds.slice(0, 3);
   const stampsSection = el(
     'div',
     { className: 'kb-stack-sm' },
@@ -256,8 +202,8 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
               );
             }),
           ),
-          newIds.length > 3
-            ? el('div', { className: 'kb-small' }, `ほか ${newIds.length - 3} 枚の切手も「配達手帳」に届いています。`)
+        newIds.length > displayNewIds.length
+            ? el('div', { className: 'kb-small' }, `ほか ${newIds.length - displayNewIds.length} 枚の切手も「配達手帳」に届いています。`)
             : null,
         )
       : el('p', { className: 'kb-secondary kb-small' }, '今回の新しい切手はありませんでした。'),
@@ -344,10 +290,10 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   const sameBtn = el(
     'button',
     { type: 'button', className: 'kb-btn-primary' },
-    el('span', {}, '同じ問題でもう一度 (Enter)'),
+    el('span', {}, '同じ問題でもう一度'),
+    el('kbd', { className: 'kb-kbd' }, 'Enter'),
   );
   sameBtn.addEventListener('click', onRetrySameSeed);
-  queueMicrotask(() => sameBtn.focus());
 
   const newSeedBtn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '別の問題');
   newSeedBtn.addEventListener('click', onRetryNewSeed);
@@ -356,6 +302,7 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
     'button',
     { type: 'button', className: 'kb-btn-secondary kb-row-gap' },
     el('span', {}, '街の設備'),
+    el('kbd', { className: 'kb-kbd' }, 'J'),
     affordable.any ? el('span', { className: 'kb-affordable-dot' }, '強化可') : null,
   );
   upgradesBtn.addEventListener('click', () => actions.navigate('UPGRADES'));
@@ -363,7 +310,8 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   const reviewBtn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '復習');
   reviewBtn.addEventListener('click', onReviewMistakes);
 
-  const handbookBtn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '手帳');
+  const handbookBtn = el('button', { type: 'button', className: 'kb-btn-secondary' },
+    el('span', {}, '手帳'), el('kbd', { className: 'kb-kbd' }, 'K'));
   handbookBtn.addEventListener('click', () => actions.navigate('HANDBOOK'));
 
   const homeBtn = el(
@@ -375,9 +323,9 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   homeBtn.addEventListener('click', () => actions.navigate('HOME'));
 
   const replayGachaBtn =
-    newIds.length > 0
+    revealIds.length > 0
       ? (() => {
-          const btn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '切手演出をもう一度');
+          const btn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '獲得演出をもう一度');
           btn.addEventListener('click', onReplayReveal);
           return btn;
         })()

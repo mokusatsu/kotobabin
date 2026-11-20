@@ -1,9 +1,11 @@
 import { CITY_CATALOG, ECONOMY_CONFIG } from '@/contracts/data';
 import type { DistrictId, ResearchId, SynergyId } from '@/contracts/types';
 import type { CityEconomy, EquipmentKind, PurchaseQuantity } from '@/economy/cityEconomy';
-import type { UIControllerActions, UpgradeCategory } from '../types';
+import type { OnboardingStep, UIControllerActions, UpgradeCategory } from '../types';
 import { renderCityMap } from '../components/cityMap';
-import { el } from '../utils/dom';
+import { renderCoachMark } from '../components/coachMark';
+import { CATALOG_ACHIEVEMENTS } from '@/progression/achievementEngine';
+import { assetImg, el } from '../utils/dom';
 import {
   DISTRICT_NAME_MAP,
   DISTRICT_ORDER,
@@ -19,6 +21,10 @@ export interface UpgradesScreenProps {
   selectedDistrictId: DistrictId;
   selectedCategory: UpgradeCategory;
   quantity: PurchaseQuantity;
+  onboardingStep?: OnboardingStep | null;
+  onboardingTargetSelected?: boolean;
+  onboardingStampIds?: string[];
+  reducedMotion?: boolean;
   actions: UIControllerActions;
 }
 
@@ -36,6 +42,7 @@ function renderArchitectureDock(
   economy: CityEconomy,
   districtId: DistrictId,
   actions: UIControllerActions,
+  guided = false,
 ): HTMLElement {
   const district = economy.districts[districtId];
   const dCfg = CITY_CATALOG.districts.find((d) => d.id === districtId)!;
@@ -106,8 +113,9 @@ function renderArchitectureDock(
     );
     primaryControl = el(
       'button',
-      { type: 'button', className: 'kb-btn-primary', disabled: !canUpgrade },
-      canUpgrade ? `Lv.${nextStage} へアップグレード` : `資材不足（あと ${formatMaterialsRemaining(reqMatMicro - district.stockMicro)}）`,
+      { type: 'button', className: 'kb-btn-primary', disabled: !canUpgrade, 'data-testid': 'upgrade-district-btn' },
+      guided ? `住宅地に家を建てる（${formatMaterials(reqMatMicro)} 資材）`
+        : canUpgrade ? `Lv.${nextStage} へアップグレード` : `資材不足（あと ${formatMaterialsRemaining(reqMatMicro - district.stockMicro)}）`,
     );
     primaryControl.addEventListener('click', () => actions.upgradeDistrict(districtId));
   }
@@ -121,7 +129,7 @@ function renderArchitectureDock(
       el('strong', {}, `${DISTRICT_NAME_MAP[districtId]} — 街並み Lv.${district.stage} / 5`),
       statusEl,
     ),
-    el('div', { className: 'kb-town-dock-actions' }, primaryControl, detailBtn),
+    el('div', { className: 'kb-town-dock-actions' }, primaryControl, guided ? null : detailBtn),
   );
 }
 
@@ -131,6 +139,7 @@ function renderEquipmentDock(
   districtId: DistrictId,
   quantity: PurchaseQuantity,
   actions: UIControllerActions,
+  guided = false,
 ): HTMLElement {
   const district = economy.districts[districtId];
   const title =
@@ -211,7 +220,7 @@ function renderEquipmentDock(
     el(
       'span',
       {},
-      canBuy
+      guided && canBuy ? `荷づくり台を増やす（${quote.total_cost_coins} コイン）` : canBuy
         ? `${quote.count}個 購入する（${quote.total_cost_coins.toLocaleString('ja-JP')} コイン）`
         : quote.limited_by_funds
           ? `コイン不足（1個 ${nextUnitCoins.toLocaleString('ja-JP')} コイン）`
@@ -243,11 +252,11 @@ function renderEquipmentDock(
         'div',
         { className: 'kb-small kb-secondary' },
         el('span', { className: 'kb-nowrap' }, costSummary),
-        ' ｜ ',
-        el('span', { className: 'kb-nowrap' }, milestoneNote),
+        guided ? null : ' ｜ ',
+        guided ? null : el('span', { className: 'kb-nowrap' }, milestoneNote),
       ),
     ),
-    el('div', { className: 'kb-town-dock-actions' }, qtyButtons, buyBtn),
+    el('div', { className: 'kb-town-dock-actions' }, guided ? null : qtyButtons, buyBtn),
   );
 }
 
@@ -377,12 +386,51 @@ function renderResearchDock(economy: CityEconomy, actions: UIControllerActions):
 }
 
 export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
-  const { economy, selectedDistrictId, selectedCategory, quantity, actions } = props;
+  const {
+    economy, selectedDistrictId, selectedCategory, quantity, onboardingStep,
+    onboardingTargetSelected = false, onboardingStampIds, reducedMotion = false, actions,
+  } = props;
   const district = economy.districts[selectedDistrictId];
   const affordable = getAffordableUpgradeFlags(economy, selectedDistrictId);
   const totalResearchRank = economy.research.materials + economy.research.logistics + economy.research.commerce;
   const maxResearchRank = ECONOMY_CONFIG.research.maximum_rank * 3;
   const synergyCount = economy.synergies.size;
+  const isBuilding = onboardingStep === 'S6';
+  const completed = onboardingStep === 'S8';
+  const choosingTarget = Boolean(onboardingStep && !completed && !onboardingTargetSelected);
+  const hasBuilding = district.stage > 0;
+  const hasEquipment = economy.packagingLevel > 0;
+
+  let guide: HTMLElement | null = null;
+  if (onboardingStep && !completed) {
+    const guideTitle = choosingTarget
+      ? isBuilding ? '住宅地を選ぼう' : '荷づくり台を選ぼう'
+      : isBuilding ? (hasBuilding ? '住宅地を確認できました' : '住宅地に最初の家を建てよう')
+        : '荷づくり台をLvアップしよう';
+    const guideBody = choosingTarget
+      ? isBuilding ? '光っている「住宅地」をタップしましょう。建築の操作パネルが開きます。'
+        : '住宅地に家が建ちました！次に、光っている「荷づくり台」をタップしましょう。'
+      : isBuilding ? (hasBuilding ? '住宅地はすでに発展しています。「荷づくり台へ進む」を選びましょう。'
+        : '「住宅地に家を建てる」をタップしましょう。30資材を使います。')
+        : hasEquipment ? '荷づくり台はすでに強化済みです。「案内を完了する」を選びましょう。'
+          : '「荷づくり台を増やす」をタップしましょう。資材の生産量が1.00倍から1.25倍になります。';
+    const stepNumber = isBuilding ? (choosingTarget ? 6 : 7) : (choosingTarget ? 8 : 9);
+    guide = renderCoachMark({
+      stepBadge: `ステップ ${stepNumber} / 9`,
+      title: guideTitle,
+      body: guideBody,
+      pointerDirection: choosingTarget ? (isBuilding ? 'up' : 'down') : 'down',
+      compactHeader: true,
+      secondaryLabel: 'スキップ',
+      secondaryTestId: 'onboarding-skip-btn',
+      onSecondary: () => actions.skipOnboarding(),
+      step: onboardingStep,
+      className: choosingTarget ? 'kb-upgrade-map-coach' : 'kb-upgrade-action-coach',
+    });
+    const heading = guide.querySelector<HTMLElement>('.kb-coach-title');
+    heading?.setAttribute('data-onboarding-heading', 'true');
+    heading?.setAttribute('tabindex', '-1');
+  }
 
   // Top District Selector Strip
   const districtBar = el(
@@ -419,7 +467,10 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
   const panoramicMap = renderCityMap({
     economy,
     selectedDistrictId,
-    reducedMotion: false,
+    reducedMotion,
+    highlightDistrictId: choosingTarget && isBuilding ? 'residential' : null,
+    highlightFacilityCategory: choosingTarget && !isBuilding ? 'packaging' : null,
+    overlayContent: choosingTarget ? guide : null,
     onSelectDistrict: (dId) => actions.selectDistrict(dId),
     integratedFacilities: {
       packagingLevel: economy.packagingLevel,
@@ -436,6 +487,91 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
     { className: 'kb-town-panoramic-wrap', 'aria-label': '街の全景と施設マップ' },
     panoramicMap,
   );
+
+  if (onboardingStep) {
+    const continueBtn = el('button', {
+      type: 'button', className: 'kb-btn-primary', 'data-testid': 'onboarding-upgrade-next-btn',
+    }, isBuilding ? '荷づくり台へ進む' : '案内を完了する');
+    continueBtn.addEventListener('click', () => {
+      if (isBuilding) actions.advanceOnboardingToEquipment();
+      else actions.finishOnboardingEquipment();
+    });
+    const homeBtn = el('button', {
+      type: 'button', className: 'kb-btn-primary', 'data-testid': 'onboarding-finish-home-btn',
+    }, 'ホームで配達を続ける');
+    homeBtn.addEventListener('click', () => actions.finishOnboardingToHome());
+
+    let actionDock: HTMLElement | null = null;
+    if (choosingTarget) {
+      stageCanvas.classList.add('is-onboard-spotlight-map');
+      for (const button of stageCanvas.querySelectorAll<HTMLButtonElement>('button')) {
+        button.disabled = !button.classList.contains('is-onboard-target') && !button.classList.contains('kb-coach-skip-btn');
+      }
+    } else {
+      stageCanvas.inert = true;
+      stageCanvas.setAttribute('aria-hidden', 'true');
+    }
+    if (!completed && !choosingTarget) {
+      const dockContent = isBuilding && hasBuilding || !isBuilding && hasEquipment
+        ? el('div', { className: 'kb-town-dock-actions' }, continueBtn)
+        : isBuilding ? renderArchitectureDock(economy, selectedDistrictId, actions, true)
+          : renderEquipmentDock('packaging', economy, selectedDistrictId, 1, actions, true);
+      const controls = dockContent.classList.contains('kb-town-dock-actions')
+        ? dockContent : dockContent.querySelector<HTMLElement>('.kb-town-dock-actions');
+      controls?.classList.add('kb-onboarding-action-controls');
+      if (guide) controls?.prepend(guide);
+      controls?.querySelector('button:not(.kb-coach-skip-btn)')?.classList.add('kb-onboard-action-target');
+      actionDock = el('section', {
+        className: 'kb-card kb-town-action-dock is-onboard-action-dock', 'aria-label': '設備の操作パネル',
+      }, dockContent);
+    }
+    let completionDialog: HTMLDialogElement | null = null;
+    if (completed) {
+      completionDialog = el('dialog', {
+        className: 'kb-card kb-onboarding-complete-dialog',
+        'aria-modal': 'true', 'aria-labelledby': 'kb-onboarding-complete-title',
+        'data-testid': 'onboarding-complete-dialog',
+      },
+        el('div', { className: 'kb-stack-md' },
+          el('div', {}, el('span', { className: 'kb-badge' }, 'チュートリアル完了')),
+          el('h2', { id: 'kb-onboarding-complete-title', className: 'kb-h2' }, '施設を拡張できました！'),
+          el('p', { className: 'kb-coach-body' }, '打つ → 運ぶ → 建てる → 設備を増やす。配達を続けるほど、街を大きく育てられます。'),
+          el('strong', {}, `住宅地 Lv.${district.stage} ・ 荷づくり台 Lv.${economy.packagingLevel}`),
+          el('p', { className: 'kb-coach-body' }, `これからの配達の資材生産量は ${formatRatio({
+            numerator: Number(economy.materialMultiplier().numerator),
+            denominator: Number(economy.materialMultiplier().denominator),
+          })}。獲得した切手は配達手帳に保存されています。`),
+          el('div', { className: 'kb-row-wrap kb-onboarding-final-stamps', 'aria-label': '今回獲得した切手' },
+            ...CATALOG_ACHIEVEMENTS.filter((stamp) => onboardingStampIds?.includes(stamp.id)).map((stamp) =>
+              el('span', { className: 'kb-row-gap kb-small' },
+                assetImg(`./assets/achievement_stamp/${stamp.stamp_asset_id}.webp`, '', { decorative: true, width: 32, height: 32 }),
+                stamp.name,
+              ),
+            ),
+          ),
+          el('div', { className: 'kb-coach-actions' }, homeBtn),
+        ),
+      );
+      completionDialog.addEventListener('cancel', (event) => event.preventDefault());
+      const dialog = completionDialog;
+      queueMicrotask(() => {
+        if (!dialog.isConnected) return;
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else dialog.open = true;
+        homeBtn.focus();
+      });
+    }
+    return el('div', {
+      className: `kb-upgrades-world kb-onboarding-upgrades${completed ? '' : ' is-onboarding'}`,
+      'data-onboarding-step': onboardingStep,
+      'data-onboarding-phase': choosingTarget ? 'select' : completed ? 'complete' : 'upgrade',
+      'data-testid': 'onboarding-upgrades',
+    },
+      completed ? null : el('div', { className: 'kb-onboard-backdrop', 'aria-hidden': 'true' }),
+      stageCanvas,
+      completed ? completionDialog : actionDock,
+    );
+  }
 
   // Facility Category Selector Tabs inside Action Dock
   const categoryDefs: readonly { id: UpgradeCategory; label: string; dot?: boolean }[] = [

@@ -3,6 +3,7 @@ import type { EquipmentKind, PurchaseQuantity, RestoreResult, SessionSummary } f
 import type { SessionSnapshot } from '@/typing/gameSession';
 import type { EvaluationResult, UnlockRecord } from '@/progression/achievementEngine';
 import type {
+  OnboardingReceipt,
   OnboardingStateRecord,
   OnboardingStatus,
   OnboardingStep,
@@ -11,7 +12,7 @@ import type {
   RoundResultRecord,
 } from '@/progression/profileRepository';
 
-export type { OnboardingStateRecord, OnboardingStatus, OnboardingStep };
+export type { OnboardingReceipt, OnboardingStateRecord, OnboardingStatus, OnboardingStep };
 
 export type AppScreen =
   | 'HOME'
@@ -66,7 +67,10 @@ export interface OnboardingUiState {
   lastDeliveredBonus: number;
   deliveryInTransit: boolean;
   deliveryArrived: boolean;
-  unlockedStampIds: string[];
+  saveFailed: boolean;
+  upgradeTargetSelected: boolean;
+  stampRevealIndex: number;
+  receipt: OnboardingReceipt | null;
 }
 
 export interface LastResultContext {
@@ -96,6 +100,11 @@ export interface UIControllerActions {
   startTutorial(): void;
   advanceOnboardingToDistrictSelect(): void;
   skipOnboarding(): void;
+  beginOnboardingConstruction(): void;
+  advanceOnboardingStampReveal(): void;
+  retryOnboardingArrival(): void;
+  advanceOnboardingToEquipment(): void;
+  finishOnboardingEquipment(): void;
   finishOnboardingToHome(): void;
   restartOnboarding(): void;
   resumePlay(): void;

@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="自然と季節">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 48.0,32.0 32.0,48.0 16.0,32.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="自然と季節">
+  <g stroke="#203D36" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="30" cy="17" r="8" fill="#E8C97A"/>
+    <path d="M30 5 V7 M42 17 H40 M38 9 L36.5 10.5 M22 9 L23.5 10.5" stroke="#B58A3C" stroke-width="2.2"/>
+    <path d="M10 36 C9 23 18 15 32 17 C33 30 24 38 10 36 Z" fill="#24594F"/>
+    <path d="M8 38 L25 22" fill="none" stroke="#FFFDF7" stroke-width="2"/>
+  </g>
 </svg>

@@ -13,12 +13,12 @@ export interface NormalHeaderProps {
   onNavigate: (screen: AppScreen) => void;
 }
 
-const NAV_ITEMS: readonly { screen: AppScreen; label: string }[] = [
-  { screen: 'HOME', label: 'ホーム' },
-  { screen: 'UPGRADES', label: '街の設備' },
-  { screen: 'HANDBOOK', label: '配達手帳' },
-  { screen: 'DICTIONARY', label: 'ことば図鑑' },
-  { screen: 'SETTINGS', label: '設定' },
+export const NAV_ITEMS: readonly { screen: AppScreen; label: string; key: string; code: string }[] = [
+  { screen: 'HOME', label: 'ホーム', key: 'H', code: 'KeyH' },
+  { screen: 'UPGRADES', label: '街の設備', key: 'J', code: 'KeyJ' },
+  { screen: 'HANDBOOK', label: '配達手帳', key: 'K', code: 'KeyK' },
+  { screen: 'DICTIONARY', label: 'ことば図鑑', key: 'L', code: 'KeyL' },
+  { screen: 'SETTINGS', label: '設定', key: 'S', code: 'KeyS' },
 ];
 
 export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
@@ -33,7 +33,7 @@ export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
   const nav = el(
     'nav',
     { className: 'kb-nav', 'aria-label': 'メインメニュー' },
-    ...NAV_ITEMS.map((item, idx) => {
+    ...NAV_ITEMS.map((item) => {
       const isActive = activeTabScreen === item.screen;
       const badge =
         item.screen === 'HANDBOOK' && unreadCount > 0
@@ -48,7 +48,7 @@ export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
           disabled: navLocked,
         },
         el('span', {}, item.label),
-        el('kbd', { className: 'kb-kbd' }, String(idx + 1)),
+        el('kbd', { className: 'kb-kbd', 'aria-label': `${item.key}キー` }, item.key),
         badge,
       );
       btn.addEventListener('click', () => onNavigate(item.screen));

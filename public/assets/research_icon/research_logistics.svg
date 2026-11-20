@@ -1,3 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="物流設計">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 48.0,32.0 32.0,48.0 16.0,32.0" fill="#24594F" opacity="0.85"/>
+  <g stroke="#203D36" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 18 C22 18 24 28 36 28 H54" fill="none" stroke="#24594F" stroke-width="3.6"/>
+    <path d="M10 30 C20 30 22 40 34 40 H54" fill="none" stroke="#B34E39" stroke-width="3.6"/>
+    <rect x="12" y="45" width="40" height="9" rx="1.5" fill="#E8C97A"/>
+    <path d="M18 45 V49 M26 45 V49 M34 45 V49 M42 45 V49" stroke-width="1.8"/>
+  </g>
 </svg>

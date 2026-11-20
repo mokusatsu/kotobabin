@@ -1,0 +1,81 @@
+{
+  "imageDirectory": "public/assets/equipped_stamp_frame/",
+  "imageSpec": "1024×1024pxの透過PNG。中央に約616×616pxの正方形の開口部を取り、中央と額縁の外側は完全透過。内枠の四辺は直線でつなぐ。装飾は開口部の外側に置き、画像の端から24px以上の透明余白を取る。細い線と柔らかな色の水彩調。看板や荷札は無地。",
+  "groups": [
+    {
+      "name": "便りと旅",
+      "frames": [
+        { "name": "旅の額縁", "filename": "reward_frame_journey.svg", "rewardId": "reward_total_60_frame", "description": "古い地図の黄褐色の紙枠。左上に真鍮の方位磁針、右下に小さな革の旅行鞄。点線の道と針葉樹が四辺を巡る。" },
+        { "name": "赤い郵便箱", "filename": "reward_frame_red_postbox.png", "rewardId": "reward_frame_red_postbox", "stampCount": 10, "description": "くすんだ赤の金属枠と細いクリーム色の縁取り。左下に丸型の郵便ポスト、上辺に投函口を思わせる真鍮金具。" },
+        { "name": "封ろうのしるし", "filename": "reward_frame_wax_seal.png", "rewardId": "reward_frame_wax_seal", "stampCount": 20, "description": "深い紺色の紙枠に細い金線。右下に小さな翼を刻んだえんじ色の封ろう、左上に短く垂れる麻ひも。" },
+        { "name": "リボンで結んだ手紙", "filename": "reward_frame_ribbon_letters.png", "rewardId": "reward_frame_ribbon_letters", "stampCount": 30, "description": "生成りの便箋を重ねた紙枠。左下に水色のリボンで結んだ封筒三枚、右上にふわりと跳ねるリボンの端。" },
+        { "name": "配達自転車", "filename": "reward_frame_delivery_bicycle.png", "rewardId": "reward_frame_delivery_bicycle", "stampCount": 40, "description": "淡い青緑の細枠に車輪のスポークを思わせる銀線。右下に籐かご付きの自転車、左上に小さなベル。" },
+        { "name": "革の配達鞄", "filename": "reward_frame_leather_mailbag.png", "rewardId": "reward_frame_leather_mailbag", "stampCount": 50, "description": "栗色の革を折り返した枠。四隅に生成りの縫い目、上辺中央に曇った真鍮の留め金、下辺に使い込んだ革の皺。" },
+        { "name": "小さな駅舎", "filename": "reward_frame_station_house.png", "rewardId": "reward_frame_station_house", "stampCount": 60, "description": "赤れんがと深緑の木枠。上辺に切妻屋根、下辺に石のホーム、左下に待合のベンチ、右上に丸い駅時計。" },
+        { "name": "出発の汽笛", "filename": "reward_frame_departure_whistle.png", "rewardId": "reward_frame_departure_whistle", "stampCount": 70, "description": "青みがかった鉄色の枠。下辺に短い線路と小さな蒸気機関車、左上にふわりと広がる白い蒸気。" },
+        { "name": "石橋の向こう", "filename": "reward_frame_stone_bridge.png", "rewardId": "reward_frame_stone_bridge", "stampCount": 80, "description": "灰色の切石で組んだ枠。下辺に三連アーチの橋と丸い欄干の柱。石の継ぎ目に少し苔を添える。" },
+        { "name": "高原の道しるべ", "filename": "reward_frame_highland_signpost.png", "rewardId": "reward_frame_highland_signpost", "stampCount": 90, "description": "色あせた白木の枠。上辺に薄紫の山並み、右下に無地の木の矢印、左下に低い草と白い花。" }
+      ]
+    },
+    {
+      "name": "街角と仕事",
+      "frames": [
+        { "name": "広場の額縁", "filename": "reward_frame_plaza.svg", "rewardId": "reward_total_16_frame", "description": "暖色の石畳と金色の内縁。四隅に扇形の石組み、下辺に低い石の欄干と木と鉄のベンチ。" },
+        { "name": "朝市の籠", "filename": "reward_frame_market_basket.png", "rewardId": "reward_frame_market_basket", "stampCount": 100, "description": "はちみつ色の籐編み枠。左下の浅い籠にりんご、右下に青い布と洋梨、上辺の両端に生成りの天幕。" },
+        { "name": "焼きたての店", "filename": "reward_frame_bakery.png", "rewardId": "reward_frame_bakery", "stampCount": 110, "description": "焦げ茶の木枠。上辺に赤と生成りの縞の日よけ、左下に丸パンと麦穂、右下に紙袋からのぞく細長いパン。" },
+        { "name": "花売りの窓", "filename": "reward_frame_florist_window.png", "rewardId": "reward_frame_florist_window", "stampCount": 120, "description": "色あせた水色の木製窓枠。下辺の細長い花箱に淡い桃色と黄色の花、左上に手回しの窓金具。" },
+        { "name": "坂道の街灯", "filename": "reward_frame_hillside_lamp.png", "rewardId": "reward_frame_hillside_lamp", "stampCount": 130, "description": "青灰色の石壁を思わせる枠。左辺から曲がった黒鉄の街灯が伸び、琥珀色の灯りがともる。下辺に斜めの石段。" },
+        { "name": "時計塔の鐘", "filename": "reward_frame_clock_tower.png", "rewardId": "reward_frame_clock_tower", "stampCount": 140, "description": "灰褐色の石枠に細い緑青色の縁。上辺に針と目盛りだけの丸い時計盤、下の両隅に鐘と青銅の金具。" },
+        { "name": "雨上がりの石畳", "filename": "reward_frame_rainy_cobblestones.png", "rewardId": "reward_frame_rainy_cobblestones", "stampCount": 150, "description": "青灰色の丸石を並べた枠。下辺に浅い水たまりと細長い灯りの反射、右上に光る水滴。" },
+        { "name": "港の倉庫", "filename": "reward_frame_harbor_warehouse.png", "rewardId": "reward_frame_harbor_warehouse", "stampCount": 160, "description": "海風で色あせた板張りの枠。左辺に黒い鉄帯と鋲、下辺に木箱と太いロープ、右上に錆びた滑車。" },
+        { "name": "木工房の午後", "filename": "reward_frame_woodworking_shop.png", "rewardId": "reward_frame_woodworking_shop", "stampCount": 170, "description": "なめらかな胡桃材で、四隅の木組みが見える枠。左下に小さな鉋、右下に巻いた削りくず。木目に柔らかな光。" },
+        { "name": "便りの仕分け棚", "filename": "reward_frame_mail_sorting_shelf.png", "rewardId": "reward_frame_mail_sorting_shelf", "stampCount": 180, "description": "淡い樫材の枠を棚の小さな区画に見立てる。上の隅に色違いの封筒、下の隅に無地の荷札とひもで結んだ小包。" }
+      ]
+    },
+    {
+      "name": "庭と季節",
+      "frames": [
+        { "name": "若葉の額縁", "filename": "reward_frame_leaf.svg", "rewardId": "reward_total_08_frame", "description": "細い金の内枠。下の両隅から明るい緑の枝が左右を上り、上辺中央には細い金の縁が見える。" },
+        { "name": "桜の便り", "filename": "reward_frame_cherry_blossoms.png", "rewardId": "reward_frame_cherry_blossoms", "stampCount": 190, "description": "薄桃色の漆と細い金線の枠。左上に満開の桜の小枝、右下にたまった花びら、右辺に舞う花びらを数枚。" },
+        { "name": "藤棚の下", "filename": "reward_frame_wisteria_trellis.png", "rewardId": "reward_frame_wisteria_trellis", "stampCount": 200, "description": "渋い紫の木枠。上辺に竹の格子を渡し、上の両隅から紫と白の藤房を垂らす。下辺は格子の木目を見せる。" },
+        { "name": "雨粒のあじさい", "filename": "reward_frame_rainy_hydrangeas.png", "rewardId": "reward_frame_rainy_hydrangeas", "stampCount": 210, "description": "乳白色の細枠。下の両隅に青と薄紫のあじさい、葉先と上辺に透明な水滴。雨の日の柔らかな輪郭。" },
+        { "name": "夏窓の風鈴", "filename": "reward_frame_summer_wind_chime.png", "rewardId": "reward_frame_summer_wind_chime", "stampCount": 220, "description": "白木と淡い水色の枠。右上にガラスの風鈴を吊り、短冊を右辺の外側になびかせる。左下に細い竹の葉。" },
+        { "name": "ひまわりの庭", "filename": "reward_frame_sunflower_garden.png", "rewardId": "reward_frame_sunflower_garden", "stampCount": 230, "description": "温かな白木の枠。左下に大きなひまわり一輪、右下に背丈の違う二輪。上辺の両端に麦わら帽子のような編み目。" },
+        { "name": "黄金の麦畑", "filename": "reward_frame_golden_wheat.png", "rewardId": "reward_frame_golden_wheat", "stampCount": 240, "description": "淡い黄土色の木枠。下辺に実った麦穂を並べ、左右の角で外向きに倒す。左下の麦の束に青い布ひも。" },
+        { "name": "紅葉の小径", "filename": "reward_frame_autumn_path.png", "rewardId": "reward_frame_autumn_path", "stampCount": 250, "description": "赤褐色の木枠。左上の枝から橙・朱・金のもみじが落ち、右下に薄く積もる。" },
+        { "name": "木の実拾い", "filename": "reward_frame_woodland_nuts.png", "rewardId": "reward_frame_woodland_nuts", "stampCount": 260, "description": "樹皮色の丸い木枠。下の両隅にどんぐり、松ぼっくり、栗のいが。上辺の端に乾いた葉を一枚ずつ。" },
+        { "name": "雪の垣根", "filename": "reward_frame_snowy_fence.png", "rewardId": "reward_frame_snowy_fence", "stampCount": 270, "description": "青みがかった木の柵を模した枠。上辺に積もった雪、下の両隅に雪からのぞく赤い実と常緑の枝。" }
+      ]
+    },
+    {
+      "name": "水辺と空",
+      "frames": [
+        { "name": "夕焼けの額縁", "filename": "reward_frame_sunset.svg", "rewardId": "reward_total_36_frame", "description": "古金色の枠。上辺に半円の夕日と光線、左右にアプリコット色の雲。下辺に緑と金色の丘。" },
+        { "name": "川辺の葦", "filename": "reward_frame_river_reeds.png", "rewardId": "reward_frame_river_reeds", "stampCount": 280, "description": "浅瀬の小石を思わせる灰緑の枠。下辺に淡い流れと白い波紋、左右の下隅から立つ細い葦。" },
+        { "name": "睡蓮の池", "filename": "reward_frame_water_lily_pond.png", "rewardId": "reward_frame_water_lily_pond", "stampCount": 290, "description": "水面の反射を感じる深い青緑の枠。左下に丸い葉と白い睡蓮、右上に桃色の花一輪。縁に小さな波紋。" },
+        { "name": "潮だまり", "filename": "reward_frame_tide_pool.png", "rewardId": "reward_frame_tide_pool", "stampCount": 300, "description": "波に磨かれた石のような砂色の枠。四隅に白い貝殻、薄緑のシーグラス、浅瀬の気泡。" },
+        { "name": "灯台の岬", "filename": "reward_frame_lighthouse_cape.png", "rewardId": "reward_frame_lighthouse_cape", "stampCount": 310, "description": "濃い群青の枠に白い波頭。左下の岩場に赤白の灯台、右上の角に扇形の淡い灯り。" },
+        { "name": "小舟の帰り道", "filename": "reward_frame_homebound_boat.png", "rewardId": "reward_frame_homebound_boat", "stampCount": 320, "description": "青く塗った船べりのような板枠。下辺に小舟の丸い船首と櫂一本、右下に桟橋につないだロープ。" },
+        { "name": "水車小屋", "filename": "reward_frame_watermill.png", "rewardId": "reward_frame_watermill", "stampCount": 330, "description": "水気を帯びた茶色い板枠。左下に木の水車、下辺に水しぶきと苔の石、右上に小屋の屋根瓦。" },
+        { "name": "雲の散歩道", "filename": "reward_frame_cloud_walk.png", "rewardId": "reward_frame_cloud_walk", "stampCount": 340, "description": "明るい青の細枠。上辺の両側に輪郭が柔らかな白い積雲、下辺に淡い青の濃淡。" },
+        { "name": "虹のあと", "filename": "reward_frame_after_the_rainbow.png", "rewardId": "reward_frame_after_the_rainbow", "stampCount": 350, "description": "銀白色の細枠。上辺の外側に淡い七色の弧をかけ、下の両隅に雨粒を乗せた葉。柔らかな朝の色。" },
+        { "name": "霧の山あい", "filename": "reward_frame_misty_mountains.png", "rewardId": "reward_frame_misty_mountains", "stampCount": 360, "description": "灰青色の木枠。上辺に遠く重なる山の稜線、下の両隅に霧から頭を出す針葉樹。青灰と乳白の奥行き。" }
+      ]
+    },
+    {
+      "name": "手仕事と夜の灯り",
+      "frames": [
+        { "name": "青い陶器", "filename": "reward_frame_blue_ceramic.png", "rewardId": "reward_frame_blue_ceramic", "stampCount": 370, "description": "乳白の釉薬をかけた陶製の枠。四隅に藍色の小花と蔓模様。手作りのような釉薬の濃淡。" },
+        { "name": "針と糸", "filename": "reward_frame_needle_and_thread.png", "rewardId": "reward_frame_needle_and_thread", "stampCount": 380, "description": "生成りのリネンに藍色の並縫い。左下に木の糸巻き、右上に小さなボタンと糸の輪。" },
+        { "name": "色ガラスの窓", "filename": "reward_frame_stained_glass.png", "rewardId": "reward_frame_stained_glass", "stampCount": 390, "description": "細い黒鉄で組んだ色ガラスの枠。角は蜂蜜色、左右は青緑、下辺の一部は赤紫。濃淡で差し込む光を描く。" },
+        { "name": "真鍮の蔓飾り", "filename": "reward_frame_brass_vines.png", "rewardId": "reward_frame_brass_vines", "stampCount": 400, "description": "深い青緑の枠の四隅にくすんだ真鍮の蔓模様。長い辺を細い金線でつなぎ、角の曲線を目立たせる。" },
+        { "name": "紺の布表紙", "filename": "reward_frame_navy_notebook.png", "rewardId": "reward_frame_navy_notebook", "stampCount": 410, "description": "深い紺の布張り手帳を模した枠。四隅に真鍮の角金、右下に赤い栞一筋。布の織り目と使い込んだ角の擦れ。" },
+        { "name": "紙の鳥", "filename": "reward_frame_paper_birds.png", "rewardId": "reward_frame_paper_birds", "stampCount": 420, "description": "生成りの紙を折って組んだ枠。左上に青灰の折り目がある紙の鳥、右下に白い紙の鳥。折り目に淡い影。" },
+        { "name": "星を結ぶ", "filename": "reward_frame_linked_stars.png", "rewardId": "reward_frame_linked_stars", "stampCount": 430, "description": "夜空のような濃紺の枠。左右の金の星を細い線でつなぎ、四隅にひときわ明るい星を一つずつ。" },
+        { "name": "月の庭", "filename": "reward_frame_moonlit_garden.png", "rewardId": "reward_frame_moonlit_garden", "stampCount": 440, "description": "藍色の木枠。上辺に銀白の三日月、下の両隅に月明かりを受けた白い花と暗い緑の葉。" },
+        { "name": "銀の霜", "filename": "reward_frame_silver_frost.png", "rewardId": "reward_frame_silver_frost", "stampCount": 450, "description": "冷たい青銀の枠。上の両隅からシダの葉に似た霜の結晶を伸ばし、下辺を薄い銀の線でまとめる。" },
+        { "name": "真珠貝の細工", "filename": "reward_frame_mother_of_pearl.png", "rewardId": "reward_frame_mother_of_pearl", "stampCount": 460, "description": "淡い象牙色の枠の四隅に真珠貝の小片。淡い桃、水色、若草色に光る繊細な色むら。" }
+      ]
+    }
+  ]
+}

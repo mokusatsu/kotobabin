@@ -1,6 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" role="img" aria-label="店舗の共通看板">
-  <rect x="8" y="10" width="48" height="24" rx="4" fill="#B58A3C" stroke="#203D36" stroke-width="2"/>
-  <rect x="12" y="14" width="40" height="16" rx="2" fill="#FFFDF7"/>
-  <line x1="20" y1="34" x2="20" y2="44" stroke="#203D36" stroke-width="3"/>
-  <line x1="44" y1="34" x2="44" y2="44" stroke="#203D36" stroke-width="3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="店舗の共通看板">
+  <g stroke="#203D36" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <line x1="216" y1="48" x2="216" y2="96" stroke="#203D36" stroke-width="8"/>
+    <line x1="296" y1="48" x2="296" y2="96" stroke="#203D36" stroke-width="8"/>
+    <circle cx="256" cy="118" r="56" fill="#B58A3C"/>
+    <circle cx="256" cy="118" r="44" fill="#FFFDF7"/>
+    <path d="M234 108 L256 125 L278 108 V136 H234 Z" fill="#B34E39" stroke-width="5"/>
+    <path d="M234 108 L256 125 L278 108" fill="none" stroke="#FFFDF7" stroke-width="4"/>
+  </g>
 </svg>

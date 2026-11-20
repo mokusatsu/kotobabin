@@ -11,12 +11,15 @@ import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
   CATALOG_REWARDS,
+  LEGACY_ACHIEVEMENTS,
   type CityAchievementSnapshot,
   type UnlockRecord,
   meetsAccuracyThreshold,
   meetsSpeedImprovement,
   meetsSpeedThreshold,
 } from '@/progression/achievementEngine';
+import { SERIES_CATEGORIES, SERIES_STAMPS, STAMP_SERIES } from '@/progression/stampSeries';
+import { STAMP_COUNT_FRAMES } from '@/progression/stampFrameCatalog';
 import {
   DictionaryTracker,
   LEGACY_240_WORD_IDS,
@@ -94,17 +97,65 @@ function makeEmptyCitySnapshot(): CityAchievementSnapshot {
   };
 }
 
+const legacyOnly = (ids: string[]) => ids.filter((id) => !id.startsWith('series-'));
+
 describe('AchievementEngine & DictionaryTracker', () => {
-  it('loads all 72 achievements (A01..L06) and all 40 rewards from catalog', () => {
-    expect(CATALOG_ACHIEVEMENTS).toHaveLength(72);
-    expect(CATALOG_REWARDS).toHaveLength(40);
+  it('keeps guided first construction and equipment below city achievement thresholds', () => {
+    const engine = new AchievementEngine();
+    const city = makeEmptyCitySnapshot();
+    city.districts.residential.stage = 1;
+    city.lifetimeArrivedMaterials = 11.2;
+    city.currentCityArrivedMaterials = 11.2;
+    city.paidEquipmentPurchaseCount = 1;
+    city.packagingLevel = 1;
+    city.seriesEligible = false;
+    expect(engine.applyCitySnapshot(city).newlyUnlockedAchievementIds).toEqual([]);
+    city.districts.residential.stage = 2;
+    city.lifetimeArrivedMaterials = 99;
+    city.paidEquipmentPurchaseCount = 4;
+    expect(engine.applyCitySnapshot(city).newlyUnlockedAchievementIds).toEqual(['I01']);
+    city.districts.residential.stage = 3;
+    city.lifetimeArrivedMaterials = 100;
+    city.paidEquipmentPurchaseCount = 5;
+    expect(engine.applyCitySnapshot(city).newlyUnlockedAchievementIds).toEqual(expect.arrayContaining(['I02', 'J01', 'K01']));
+  });
+
+  it('loads 72 original and 428 expanded achievements with unique stamp text', () => {
+    expect(LEGACY_ACHIEVEMENTS).toHaveLength(72);
+    expect(SERIES_STAMPS).toHaveLength(428);
+    expect(CATALOG_REWARDS).toHaveLength(86);
     const ids = new Set(CATALOG_ACHIEVEMENTS.map((a) => a.id));
-    expect(ids.size).toBe(72);
+    expect(ids.size).toBe(500);
+    const flavor = CATALOG_ACHIEVEMENTS.map((stamp) => stamp.flavor_text?.trim());
+    expect(flavor.every(Boolean)).toBe(true);
+    expect(new Set(flavor).size).toBe(500);
+    expect(Object.fromEntries(Object.keys(SERIES_CATEGORIES).map((key) => [key,
+      STAMP_SERIES.filter(({ category }) => category === key).reduce((count, item) => count + item.stamps.length, 0),
+    ]))).toEqual({
+      typing: 80, words: 105, city: 105, delivery: 66, lifetime: 60, secret: 12,
+    });
     expect(AchievementEngine.getScope('A01')).toBe('all');
     expect(AchievementEngine.getScope('F01')).toBe('practice');
     expect(AchievementEngine.getScope('A05')).toBe('round');
     expect(AchievementEngine.getScope('B03')).toBe('normal');
     expect(AchievementEngine.getScope('I01')).toBe('city');
+  });
+
+  it('restores stamp-count frames from previous saves and reveals them only at new thresholds', () => {
+    expect(STAMP_COUNT_FRAMES.map(({ stampCount }) => stampCount)).toEqual(Array.from({ length: 46 }, (_, i) => (i + 1) * 10));
+    const fromStamps = (count: number) => new AchievementEngine({
+      unlocks: Object.fromEntries(SERIES_STAMPS.slice(0, count).map(({ id }) => [id, {
+        achievementId: id, conditionRevision: 'seed', scope: 'all', unlockedAt: Date.now(), evidenceSummary: '',
+      }])),
+    });
+    const engine = fromStamps(9);
+    const firstFrame = STAMP_COUNT_FRAMES[0].rewardId;
+    expect(engine.getUnlockedRewardIds()).not.toContain(firstFrame);
+    expect(engine.applyFact(makeWordFact()).newlyUnlockedRewardIds).toContain(firstFrame);
+    expect(new AchievementEngine(engine.getSnapshot()).getUnlockedRewardIds()).toContain(firstFrame);
+    const previousSave = fromStamps(20);
+    expect(previousSave.getUnlockedRewardIds()).toEqual(STAMP_COUNT_FRAMES.slice(0, 2).map(({ rewardId }) => rewardId));
+    expect(previousSave.applyCitySnapshot(makeEmptyCitySnapshot()).newlyUnlockedRewardIds).toEqual([]);
   });
 
   it('reproduces screen_fixtures.json 20-word trace: 21 -> 22 (K02) -> 25 (B03, C01, C04) and milestone:24:album', () => {
@@ -169,11 +220,11 @@ describe('AchievementEngine & DictionaryTracker', () => {
     cityBefore.packagingLevel = 10;
 
     const preRoundRes = engine.applyCitySnapshot(cityBefore, 100);
-    expect(preRoundRes.newlyUnlockedAchievementIds).toEqual(['K02']);
-    expect(engine.getUnlockedCount()).toBe(
+    expect(legacyOnly(preRoundRes.newlyUnlockedAchievementIds)).toEqual(['K02']);
+    expect(engine.getLegacyUnlockedCount()).toBe(
       screenFixtures.preRoundPurchase.achievementTotalAfter,
     );
-    expect(engine.getUnlockedCount()).toBe(22);
+    expect(engine.getLegacyUnlockedCount()).toBe(22);
 
     // Start 20-word normal round
     const sessionId = 'fixture-round-1';
@@ -245,10 +296,10 @@ describe('AchievementEngine & DictionaryTracker', () => {
       }),
     );
 
-    expect(roundFinishRes.newlyUnlockedAchievementIds).toEqual(
+    expect(legacyOnly(roundFinishRes.newlyUnlockedAchievementIds)).toEqual(
       screenFixtures.expected.newAchievementIds,
     );
-    expect(roundFinishRes.totalUnlockedCount).toBe(
+    expect(engine.getLegacyUnlockedCount()).toBe(
       screenFixtures.expected.achievementTotalAfter,
     );
     expect(roundFinishRes.newMilestoneRewardKeys).toEqual(
@@ -560,7 +611,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     maxCity.railRoutesCount = 6;
     maxCity.currentCityArrivedMaterials = 100000;
     maxCity.lifetimeArrivedMaterials = 100000;
-    maxCity.paidEquipmentPurchaseCount = 1;
+    maxCity.paidEquipmentPurchaseCount = 5;
     maxCity.packagingLevel = 10;
     maxCity.purchasedSynergies = [
       'joint_delivery',
@@ -661,10 +712,53 @@ describe('AchievementEngine & DictionaryTracker', () => {
       );
     }
 
-    expect(engine.getUnlockedCount()).toBe(72);
-    expect(engine.getUnlockedRewardIds()).toHaveLength(40);
+    expect(engine.getLegacyUnlockedCount()).toBe(72);
+    const countFrameIds = new Set(STAMP_COUNT_FRAMES.map(({ rewardId }) => rewardId));
+    expect(engine.getUnlockedRewardIds().filter((id) => !countFrameIds.has(id))).toHaveLength(40);
     expect(engine.getUnlockedRewardIds()).toContain('reward_first_collection_board');
     expect(engine.getUnlockedRewardIds()).toContain('reward_complete_72_stamp');
+  });
+
+  it('awards exactly the attained speed tiers and isolates same-condition records from guides, ties and abandoned rounds', () => {
+    let engine = new AchievementEngine();
+    const run = (sessionId: string, length: number, overrides: Partial<RoundFinishedFact> = {}) =>
+      engine.applyFact(makeRoundFact({
+        sessionId, comparisonKey: 'plan-a', totalCanonicalLength: length,
+        correctKeyCount: length, score: length * 10, ...overrides,
+      }));
+    const first = run('fast', 337);
+    expect(first.newlyUnlockedAchievementIds).toContain('series-speed-200');
+    expect(first.newlyUnlockedAchievementIds).not.toContain('series-speed-225');
+    expect(first.recordUpdates).toEqual({ speed: false, score: false });
+    expect(run('guide', 600, { guideUsed: true }).recordUpdates).toEqual({ speed: false, score: false });
+    expect(run('tie', 337).recordUpdates).toEqual({ speed: false, score: false });
+    expect(run('rescued', 800, { rescueUsed: true }).recordUpdates).toBeUndefined();
+    expect(run('skipped', 800, { skips: 1 }).recordUpdates).toBeUndefined();
+    expect(run('abort', 800, { completed: false }).recordUpdates).toBeUndefined();
+    expect(run('skip-clock', 800, { elapsedMs: 5000 }).recordUpdates).toBeUndefined();
+    engine = new AchievementEngine(engine.getSnapshot());
+    const improved = run('improved', 338);
+    expect(improved.recordUpdates).toEqual({ speed: true, score: true });
+    expect(improved.newlyUnlockedAchievementIds).toEqual(expect.arrayContaining([
+      'series-speed_pb_standard-1', 'series-score_pb-1',
+    ]));
+    expect(run('improved', 338).applied).toBe(false);
+    expect(engine.getSeriesMetric('speed_pb_standard')).toBe(1);
+  });
+
+  it('keeps original collection rewards tied to original stamps and caps city tiers at attained values', () => {
+    const engine = new AchievementEngine();
+    const city = makeEmptyCitySnapshot();
+    for (const area of Object.values(city.districts)) Object.assign(area, { stage: 5, shops: 50, crews: 50 });
+    const { newlyUnlockedAchievementIds } = engine.applyCitySnapshot(city);
+    expect(newlyUnlockedAchievementIds).toContain('series-shops_market-50');
+    expect(newlyUnlockedAchievementIds).toContain('series-all_stage_two-1');
+    expect(engine.getUnlockedCount()).toBeGreaterThan(72);
+    expect(engine.getUnlockedRewardIds()).not.toContain('reward_complete_72_stamp');
+    expect(engine.getUnlockedRewardIds()).not.toContain('reward_first_collection_board');
+    engine.applyCitySnapshot(makeEmptyCitySnapshot());
+    expect(engine.getSeriesMetric('shops_market')).toBe(0);
+    expect(engine.isUnlocked('series-shops_market-50')).toBe(true);
   });
 
   it('tracks 960 words, 240 legacy filter, clean-3 practice mastery, and course/topic filters', () => {

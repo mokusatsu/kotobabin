@@ -1,7 +1,12 @@
 // @vitest-environment jsdom
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it } from 'vitest';
+import visualResourceManifest from '@spec-data/visual_resource_manifest.json';
+import { CATALOG_ACHIEVEMENTS, CATALOG_REWARDS } from '@/progression/achievementEngine';
+import { getEquippedStampFrameAsset, STAMP_FRAMES } from '@/progression/stampFrameCatalog';
 import { AppController } from '@/ui/appController';
+import { getRewardPreviewAsset } from '@/ui/screens/handbookScreen';
+import { passStartGate } from './startHelpers';
 
 describe('AppController UI integration', () => {
   let controller: AppController | null = null;
@@ -47,11 +52,11 @@ describe('AppController UI integration', () => {
     // Start main round -> enters INPUT_CHECK, no coin counters in header
     controller.navigate('HOME');
     controller.startMainRound(123);
-    expect(mount.textContent).toContain('半角入力の確認');
+    expect(mount.textContent).toContain('Fを押すと開始します');
     expect(mount.querySelector('[data-testid="header-coins"]')).toBeNull();
 
     // Complete input check -> READY
-    controller.completeInputCheck();
+    await passStartGate(mount);
     expect(mount.querySelector('[data-testid="play-word-ja"]')).not.toBeNull();
     expect(mount.querySelector('[data-testid="header-coins"]')).toBeNull();
 
@@ -63,7 +68,7 @@ describe('AppController UI integration', () => {
     // Quit to home
     controller.quitPlayToHome();
     expect(mount.querySelector('[data-testid="home-practice-btn"]')).not.toBeNull();
-  });
+  }, 12000);
 
   it('opens and closes stamp detail dialog without side preview in HANDBOOK', async () => {
     const mount = document.createElement('div');
@@ -94,6 +99,34 @@ describe('AppController UI integration', () => {
     expect(closeBtn).not.toBeNull();
     closeBtn?.click();
     expect(mount.querySelector('dialog.kb-stamp-dialog')).toBeNull();
+  });
+
+  it('places every catalog stamp on exactly one handbook sheet', async () => {
+    const mount = document.createElement('div');
+    document.body.appendChild(mount);
+    controller = new AppController(mount);
+    await controller.init();
+    controller.navigate('HANDBOOK');
+
+    const pagePicker = () => mount.querySelector<HTMLSelectElement>('[data-testid="handbook-page"]')!;
+    const pages = [...pagePicker().options].map((option) => option.value);
+    const seenStamps: string[] = [];
+    const titles: string[] = [];
+    for (const page of pages) {
+      const select = pagePicker();
+      select.value = page;
+      select.dispatchEvent(new Event('change'));
+      const sheets = [...mount.querySelectorAll<HTMLButtonElement>('[data-sheet-id]')].map((button) => button.dataset.sheetId);
+      for (const sheet of sheets) {
+        mount.querySelector<HTMLButtonElement>(`[data-sheet-id="${sheet}"]`)!.click();
+        seenStamps.push(...[...mount.querySelectorAll<HTMLElement>('[data-stamp-id]')].map((tile) => tile.dataset.stampId!));
+        titles.push(mount.querySelector('[data-testid="handbook-sheet-title"]')!.textContent!);
+      }
+    }
+    expect(seenStamps.sort()).toEqual(CATALOG_ACHIEVEMENTS.map(({ id }) => id).sort());
+    const stampNames = CATALOG_ACHIEVEMENTS.flatMap((stamp) =>
+      'tierLabel' in stamp ? [stamp.name, stamp.tierLabel] : [stamp.name]);
+    expect([...titles, ...stampNames].filter((name) => /第[\d一二三四五六七八九十]+段階/.test(name))).toEqual([]);
   });
 
   it('removes district icons and stage wording, selects locked district, and opens difficulty popup on open district click', async () => {
@@ -145,10 +178,10 @@ describe('AppController UI integration', () => {
     (mount.querySelector('.kb-map-district-btn[data-district-id="residential"]') as HTMLButtonElement | null)?.click();
     (mount.querySelector('[data-testid="launch-course-standard"]') as HTMLButtonElement | null)?.click();
     expect(mount.querySelector('[data-testid="difficulty-popup"]')).toBeNull();
-    expect(mount.textContent).toContain('半角入力の確認');
+    expect(mount.textContent).toContain('Fを押すと開始します');
 
     // Complete input check and verify fixed-slot play layout elements
-    controller.completeInputCheck();
+    await passStartGate(mount);
     expect(mount.querySelector('.kb-play-topbar')).not.toBeNull();
     expect(mount.querySelector('.kb-play-paper .kb-play-next-word')).not.toBeNull();
     expect(mount.querySelector('.kb-streak-pill.is-hidden-slot')).not.toBeNull();
@@ -164,5 +197,164 @@ describe('AppController UI integration', () => {
     controller.navigate('UPGRADES');
     expect(mount.textContent).toContain('建築 (Lv.0/5)');
     expect(mount.textContent).not.toContain('段0');
+  }, 12000);
+
+  it('resolves all reward preview assets and lists 50 frames across five handbook groups', async () => {
+    const fsMod = (await import(/* @vite-ignore */ `${'node:'}fs`)) as { existsSync: (p: string) => boolean };
+    const pathMod = (await import(/* @vite-ignore */ `${'node:'}path`)) as { resolve: (...parts: string[]) => string };
+    const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+    const manifestExports = new Set(
+      visualResourceManifest.assets.flatMap((asset) => asset.runtime_exports ?? []),
+    );
+
+    expect(CATALOG_REWARDS).toHaveLength(86);
+    for (const reward of CATALOG_REWARDS) {
+      const assetPath = getRewardPreviewAsset(reward);
+      expect(assetPath.startsWith('./assets/')).toBe(true);
+      const relPath = assetPath.replace(/^\.\//, '');
+      if (!relPath.startsWith('assets/equipped_stamp_frame/')) {
+        expect(manifestExports.has(relPath), `Asset not listed in manifest runtime_exports: ${relPath}`).toBe(true);
+      }
+      const diskPath = pathMod.resolve(cwd, 'public', relPath);
+      expect(fsMod.existsSync(diskPath), `Missing reward preview asset: ${diskPath}`).toBe(true);
+    }
+
+    const releasedFrames = CATALOG_REWARDS.filter((reward) => reward.kind === 'frame');
+    expect(STAMP_FRAMES).toHaveLength(50);
+    expect(new Set(STAMP_FRAMES.map(({ filename }) => filename)).size).toBe(50);
+    expect(STAMP_FRAMES.map(({ rewardId }) => rewardId).sort()).toEqual(releasedFrames.map(({ id }) => id).sort());
+    for (const frame of STAMP_FRAMES) {
+      const frameAsset = getEquippedStampFrameAsset(frame.rewardId);
+      expect(frameAsset).toBe(`./assets/equipped_stamp_frame/${frame.filename}`);
+      expect(fsMod.existsSync(pathMod.resolve(cwd, 'public', frameAsset!))).toBe(true);
+    }
+
+    const mount = document.createElement('div');
+    document.body.appendChild(mount);
+
+    controller = new AppController(mount);
+    await controller.init();
+    controller.navigate('HANDBOOK');
+
+    const collectionTabBtn = Array.from(mount.querySelectorAll('.kb-pill-btn')).find((btn) =>
+      btn.textContent?.includes('絵葉書・称号・額縁'),
+    ) as HTMLButtonElement | undefined;
+    expect(collectionTabBtn).toBeDefined();
+    collectionTabBtn?.click();
+
+    const seenFrames: string[] = [];
+    for (let group = 0; group < 5; group += 1) {
+      const picker = mount.querySelector<HTMLSelectElement>('[data-testid="handbook-frame-group"]')!;
+      picker.value = String(group);
+      picker.dispatchEvent(new Event('change'));
+      const cards = [...mount.querySelectorAll<HTMLElement>('[data-frame-reward]')];
+      expect(cards).toHaveLength(10);
+      seenFrames.push(...cards.map((card) => card.dataset.frameReward!));
+    }
+    expect(seenFrames).toEqual(STAMP_FRAMES.map(({ rewardId }) => rewardId));
+
+    const postcard = mount.querySelector<HTMLButtonElement>('[data-postcard-id="reward_family_a_postcard"]')!;
+    postcard.click();
+    const preview = mount.querySelector<HTMLDialogElement>('[data-testid="postcard-preview"]')!;
+    expect(preview.open).toBe(true);
+    expect(preview.querySelector('.kb-postcard-preview-art')?.getAttribute('src')).toBe(
+      postcard.querySelector('.kb-postcard-thumbnail')?.getAttribute('src'),
+    );
+    preview.querySelector<HTMLButtonElement>('[aria-label="絵葉書を閉じる"]')!.click();
+    expect(preview.open).toBe(false);
+    expect(document.activeElement).toBe(postcard);
+  });
+
+  it('generates all 92 manifest SVG assets with unique bespoke artwork and zero placeholder polygons', async () => {
+    const fsMod = (await import(/* @vite-ignore */ `${'node:'}fs`)) as {
+      existsSync: (p: string) => boolean;
+      readFileSync: (p: string, enc: string) => string;
+    };
+    const pathMod = (await import(/* @vite-ignore */ `${'node:'}path`)) as { resolve: (...parts: string[]) => string };
+    const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+
+    const svgAssets = visualResourceManifest.assets.filter((asset) => asset.kind === 'svg');
+    expect(svgAssets).toHaveLength(92);
+
+    const uniqueBodies = new Set<string>();
+    for (const asset of svgAssets) {
+      for (const relPath of asset.runtime_exports ?? []) {
+        const diskPath = pathMod.resolve(cwd, 'public', relPath);
+        expect(fsMod.existsSync(diskPath), `Missing SVG asset: ${diskPath}`).toBe(true);
+        const content = fsMod.readFileSync(diskPath, 'utf-8');
+        expect(content).toContain('<svg ');
+        expect(content).not.toContain('<polygon points=');
+        expect(content).not.toContain('<circle cx="32" cy="32" r="22"');
+        const innerBody = content.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').trim();
+        expect(innerBody.length).toBeGreaterThan(20);
+        expect(uniqueBodies.has(innerBody), `Duplicate SVG artwork for ${asset.id}`).toBe(false);
+        uniqueBodies.add(innerBody);
+      }
+    }
+    expect(uniqueBodies.size).toBe(92);
+  });
+
+  it('assigns unique stamp_asset_id values to all 500 stamps and resolves every stamp image on disk', async () => {
+    const fsMod = (await import(/* @vite-ignore */ `${'node:'}fs`)) as { existsSync: (p: string) => boolean };
+    const pathMod = (await import(/* @vite-ignore */ `${'node:'}path`)) as { resolve: (...parts: string[]) => string };
+    const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+
+    expect(CATALOG_ACHIEVEMENTS).toHaveLength(500);
+    const assetIds = CATALOG_ACHIEVEMENTS.map((a) => a.stamp_asset_id);
+    expect(new Set(assetIds).size).toBe(500);
+
+    for (const a of CATALOG_ACHIEVEMENTS) {
+      const diskPath = pathMod.resolve(cwd, 'public', 'assets', 'achievement_stamp', `${a.stamp_asset_id}.webp`);
+      expect(fsMod.existsSync(diskPath), `Missing stamp artwork for ${a.id}: ${diskPath}`).toBe(true);
+    }
+  });
+
+  it('exports all 4 reward frames with square 512x512 viewBox and true transparent center without SVG masks', async () => {
+    const fsMod = (await import(/* @vite-ignore */ `${'node:'}fs`)) as {
+      existsSync: (p: string) => boolean;
+      readFileSync: (p: string, enc: string) => string;
+    };
+    const pathMod = (await import(/* @vite-ignore */ `${'node:'}path`)) as { resolve: (...parts: string[]) => string };
+    const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+
+    for (const frameId of ['reward_frame_leaf', 'reward_frame_plaza', 'reward_frame_sunset', 'reward_frame_journey']) {
+      const milestonePath = pathMod.resolve(cwd, 'public', 'assets', 'milestone_svg', `${frameId}.svg`);
+      const equippedPath = pathMod.resolve(cwd, 'public', 'assets', 'equipped_stamp_frame', `${frameId}.svg`);
+      expect(fsMod.existsSync(milestonePath)).toBe(true);
+      expect(fsMod.existsSync(equippedPath)).toBe(true);
+      const milestoneSvg = fsMod.readFileSync(milestonePath, 'utf-8');
+      const equippedSvg = fsMod.readFileSync(equippedPath, 'utf-8');
+      expect(milestoneSvg).toContain('viewBox="0 0 512 512"');
+      expect(milestoneSvg).toContain('data:image/webp;base64,');
+      expect(milestoneSvg).not.toContain('<mask');
+      expect(equippedSvg).toBe(milestoneSvg);
+    }
+  });
+
+  it('provides all 46 additional stamp frames as 1024x1024 RGBA PNGs under equipped_stamp_frame', async () => {
+    const fsMod = (await import(/* @vite-ignore */ `${'node:'}fs`)) as {
+      existsSync: (p: string) => boolean;
+      readFileSync: (p: string) => Uint8Array;
+    };
+    const pathMod = (await import(/* @vite-ignore */ `${'node:'}path`)) as { resolve: (...parts: string[]) => string };
+    const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+
+    const additionalFrames = STAMP_FRAMES.filter(({ stampCount }) => stampCount !== undefined);
+    expect(additionalFrames).toHaveLength(46);
+
+    const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    for (const frame of additionalFrames) {
+      expect(frame.filename.endsWith('.png')).toBe(true);
+      const pngPath = pathMod.resolve(cwd, 'public', 'assets', 'equipped_stamp_frame', frame.filename);
+      expect(fsMod.existsSync(pngPath), `Missing additional frame PNG: ${pngPath}`).toBe(true);
+
+      const bytes = fsMod.readFileSync(pngPath);
+      expect(bytes.length).toBeGreaterThan(33);
+      expect(Array.from(bytes.slice(0, 8))).toEqual(pngSignature);
+      const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      expect(view.getUint32(16, false), `${frame.filename} width`).toBe(1024);
+      expect(view.getUint32(20, false), `${frame.filename} height`).toBe(1024);
+      expect(bytes[25], `${frame.filename} colorType (RGBA=6)`).toBe(6);
+    }
   });
 });

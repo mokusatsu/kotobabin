@@ -1,3 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="商店街のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 48.0,32.0 32.0,48.0 16.0,32.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="商店街のアイコン">
+  <g stroke="#203D36" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <line x1="28" y1="54" x2="28" y2="104" stroke="#A97449" stroke-width="9"/>
+    <line x1="100" y1="54" x2="100" y2="104" stroke="#A97449" stroke-width="9"/>
+    <line x1="20" y1="104" x2="108" y2="104" stroke="#203D36" stroke-width="6"/>
+    <path d="M16 32 H112 L116 56 C104 66 88 66 76 56 C64 66 48 66 36 56 C24 66 16 64 12 56 Z" fill="#B34E39"/>
+    <path d="M40 32 L36 56 M64 32 V56 M88 32 L92 56" stroke="#FFFDF7" stroke-width="5"/>
+  </g>
 </svg>

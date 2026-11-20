@@ -26,6 +26,7 @@ export interface CityMapProps {
   onSelectDistrict: (districtId: DistrictId) => void;
   integratedFacilities?: IntegratedFacilitiesOverlay;
   highlightDistrictId?: DistrictId | null;
+  highlightFacilityCategory?: UpgradeCategory | null;
   overlayContent?: HTMLElement | null;
 }
 
@@ -105,6 +106,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
     onSelectDistrict,
     integratedFacilities,
     highlightDistrictId = null,
+    highlightFacilityCategory = null,
     overlayContent = null,
   } = props;
   const layout = CITY_CATALOG.map_layout;
@@ -116,12 +118,17 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
 
   const patchRects = PATCH_RECTS_BY_LANDSCAPE[economy.landscape];
   const isPatchComposited = Boolean(patchRects);
-  const hasOnboardSpotlight = Boolean(highlightDistrictId);
+  const hasOnboardSpotlight = Boolean(highlightDistrictId || highlightFacilityCategory);
   const mapContainer = el('div', {
     className: `kb-city-map${reducedMotion ? ' is-reduced-motion' : ''}${isPatchComposited ? ' is-patch-composited' : ''}${hasOnboardSpotlight ? ' has-onboard-spotlight' : ''}`,
     role: 'region',
     'aria-label': '街の地図',
   });
+  const spotlightRect = patchRects?.[highlightDistrictId ?? highlightFacilityCategory ?? ''];
+  if (spotlightRect) {
+    mapContainer.style.setProperty('--kb-spotlight-x', `${spotlightRect.labelLeftPct}%`);
+    mapContainer.style.setProperty('--kb-spotlight-y', `${spotlightRect.labelTopPct}%`);
+  }
 
   // Layer 1: Terrain background
   const terrainSrc = `./assets/raster/terrain_${economy.landscape}.jpg`;
@@ -325,6 +332,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
       patchStage: number,
     ): HTMLElement => {
       const selected = integratedFacilities.selectedCategory === cat;
+      const isOnboardTarget = highlightFacilityCategory === cat;
       if (patchRects) {
         const rect = patchRects[patchKey];
         if (rect.widthPct > 0) {
@@ -336,12 +344,15 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
           'button',
           {
             type: 'button',
-            className: `kb-map-facility-pin is-patch-pin${selected ? ' is-selected' : ''}`,
+            className: `kb-map-facility-pin is-patch-pin${selected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
             style: `left: ${rect.labelLeftPct}%; top: ${rect.labelTopPct}%;`,
             'aria-pressed': selected ? 'true' : 'false',
             'data-testid': `town-node-${cat}`,
           },
           el('span', { className: 'kb-map-facility-label' }, `${label} ${sub}`),
+          isOnboardTarget ? el('span', {
+            className: 'kb-map-onboard-badge', 'data-testid': 'map-onboard-target-badge', 'aria-hidden': 'true',
+          }, '▼ ここを選択') : null,
         );
         btn.addEventListener('click', () => integratedFacilities.onSelectCategory(cat));
         return btn;
@@ -351,13 +362,16 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
         'button',
         {
           type: 'button',
-          className: `kb-map-facility-pin${selected ? ' is-selected' : ''}`,
+          className: `kb-map-facility-pin${selected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
           style: `left: ${fallbackLeftPct}%; top: ${fallbackTopPct}%;`,
           'aria-pressed': selected ? 'true' : 'false',
           'data-testid': `town-node-${cat}`,
         },
         assetImg(spriteSrc, label, { className: 'kb-map-facility-img' }),
         el('span', { className: 'kb-map-facility-label' }, `${label} ${sub}`),
+        isOnboardTarget ? el('span', {
+          className: 'kb-map-onboard-badge', 'data-testid': 'map-onboard-target-badge', 'aria-hidden': 'true',
+        }, '▼ ここを選択') : null,
       );
       btn.addEventListener('click', () => integratedFacilities.onSelectCategory(cat));
       return btn;

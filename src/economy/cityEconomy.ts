@@ -832,6 +832,22 @@ export class CityEconomy {
     };
   }
 
+  grantTutorialSupplies(): { materialsMicro: bigint; coinsMicro: bigint } {
+    this.requireIdle();
+    const residential = this.requireDistrict('residential');
+    const firstBuildingCost = this.developmentCost('residential', 1).materialsMicro;
+    const firstEquipmentCost = BigInt(this.nextPriceCoins('packaging', 0)) * this.unit;
+    const materialsMicro = residential.stage === 0 && residential.stockMicro < firstBuildingCost
+      ? ceilDiv(firstBuildingCost - residential.stockMicro, this.unit) * this.unit
+      : 0n;
+    const coinsMicro = this.packagingLevel === 0 && this.coinsMicro < firstEquipmentCost
+      ? ceilDiv(firstEquipmentCost - this.coinsMicro, this.unit) * this.unit
+      : 0n;
+    residential.stockMicro += materialsMicro;
+    this.coinsMicro += coinsMicro;
+    return { materialsMicro, coinsMicro };
+  }
+
   private autoOpenUnlockedDistricts(): DistrictId[] {
     const stageSum = Object.values(this.districts).reduce((acc, x) => acc + x.stage, 0);
     const opened: DistrictId[] = [];

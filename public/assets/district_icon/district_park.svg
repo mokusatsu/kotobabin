@@ -1,3 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="公園通りのアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,24.0 45.9,40.0 32.0,48.0 18.1,40.0 18.1,24.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="公園通りのアイコン">
+  <g stroke="#203D36" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M24 104 V62 A40 40 0 0 1 104 62 V104" fill="none" stroke="#B58A3C" stroke-width="10"/>
+    <path d="M64 96 C40 84 36 56 64 36 C92 56 88 84 64 96 Z" fill="#24594F"/>
+    <line x1="64" y1="46" x2="64" y2="104" stroke="#FFFDF7" stroke-width="4.5"/>
+  </g>
 </svg>

@@ -1,3 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="荷づくり台のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,40.0 18.1,40.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="荷づくり台のアイコン">
+  <g stroke="#203D36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="20" width="24" height="4" rx="1" fill="#A97449"/>
+    <line x1="7" y1="24" x2="7" y2="28"/>
+    <line x1="25" y1="24" x2="25" y2="28"/>
+    <rect x="9" y="10" width="14" height="10" rx="1.5" fill="#D7AE82"/>
+    <path d="M9 15 H23 M16 10 V20" stroke="#B34E39" stroke-width="1.6"/>
+  </g>
 </svg>

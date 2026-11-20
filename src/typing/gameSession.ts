@@ -31,8 +31,16 @@ export function calculateDeliveryBonus(
   return Math.floor((cargoBase * cargoCount) / MAX_CARGO_COUNT);
 }
 
+export type TutorialAction = { type: 'key'; key: string } | { type: 'deliver' } | { type: 'skip' };
+
+export interface TutorialSessionCheckpoint {
+  sessionId: string;
+  actions: TutorialAction[];
+}
+
 export interface GameSessionOptions {
   sessionId?: string;
+  comparisonKey?: string;
   courseId?: CourseId;
   districtId?: DistrictId;
   mode?: SessionMode;
@@ -42,6 +50,7 @@ export interface GameSessionOptions {
   now?: () => number;
   guideEnabled?: boolean;
   onFact?: (fact: ConfirmedFact) => void;
+  tutorialCheckpoint?: TutorialSessionCheckpoint;
 }
 
 export interface KeyHandleResult {
@@ -115,6 +124,7 @@ export class GameSession {
   private readonly now: () => number;
   private readonly onFact?: (fact: ConfirmedFact) => void;
   private readonly emittedFacts: ConfirmedFact[] = [];
+  private readonly comparisonKey?: string;
   private factSequence = 0;
 
   private currentWordIndex = 0;
@@ -122,6 +132,8 @@ export class GameSession {
   private engine: RomajiEngine;
   private atWordBoundary = true;
   private wordMistakes = 0;
+  private wordInputStartedAt: number | null = null;
+  private wordPauseStartedAt: number | null = null;
 
   private completedWordCount = 0;
   private correctKeyCount = 0;
@@ -144,10 +156,13 @@ export class GameSession {
   private activeStartMs: number | null = null;
   private accumulatedActiveMs = 0;
   private finished = false;
+  private readonly tutorialActions: TutorialAction[] = [];
+  private replayingTutorial = false;
 
   constructor(options: GameSessionOptions = {}) {
     sessionCounter += 1;
-    this.sessionId = options.sessionId ?? `session-${sessionCounter}`;
+    this.comparisonKey = options.comparisonKey;
+    this.sessionId = options.tutorialCheckpoint?.sessionId ?? options.sessionId ?? `session-${sessionCounter}`;
     this.courseId = options.courseId ?? 'relaxed';
     this.districtId = options.districtId ?? 'residential';
     this.mode = options.mode ?? 'MAIN';
@@ -175,6 +190,17 @@ export class GameSession {
 
     this.currentWord = this.getWord(0);
     this.engine = new RomajiEngine(this.currentWord.reading);
+    if (options.tutorialCheckpoint) {
+      if (this.mode !== 'TUTORIAL') throw new Error('Only tutorial sessions can resume this checkpoint');
+      this.replayingTutorial = true;
+      for (const action of options.tutorialCheckpoint.actions) {
+        if (action.type === 'key') this.handleKey(action.key);
+        else if (action.type === 'deliver') this.commitDelivery();
+        else if (action.type === 'skip') this.skipWord();
+      }
+      this.replayingTutorial = false;
+      this.tutorialActions.push(...options.tutorialCheckpoint.actions);
+    }
   }
 
   get facts(): readonly ConfirmedFact[] {
@@ -187,6 +213,10 @@ export class GameSession {
 
   get currentMode(): SessionMode {
     return this.mode;
+  }
+
+  getTutorialCheckpoint(): TutorialSessionCheckpoint {
+    return { sessionId: this.sessionId, actions: [...this.tutorialActions] };
   }
 
   setGuideEnabled(enabled: boolean): void {
@@ -229,6 +259,12 @@ export class GameSession {
       return;
     }
     this.state = this.inputCheckReturnState;
+  }
+
+  startRound(timestamp = this.now()): void {
+    if (this.state !== 'READY') return;
+    this.activeStartMs = timestamp;
+    this.state = 'PLAYING';
   }
 
   getElapsedMs(timestamp?: number): number {
@@ -309,7 +345,11 @@ export class GameSession {
       }
     }
 
+    if (this.mode === 'TUTORIAL' && !this.replayingTutorial) {
+      this.tutorialActions.push({ type: 'key', key });
+    }
     this.atWordBoundary = false;
+    this.wordInputStartedAt ??= currentNow;
     const stepResult = this.engine.step(key);
 
     if (!stepResult.accepted) {
@@ -365,6 +405,7 @@ export class GameSession {
       canonicalLength: completedWord.canonicalLength,
       mistakes: this.wordMistakes,
       wordPosition: this.completedWordCount,
+      inputElapsedMs: currentNow - this.wordInputStartedAt,
     };
     this.emitFact(wordFact);
 
@@ -444,6 +485,9 @@ export class GameSession {
     }
 
     const deliveredCount = this.cargoCount;
+    if (this.mode === 'TUTORIAL' && !this.replayingTutorial) {
+      this.tutorialActions.push({ type: 'deliver' });
+    }
     const bonus = this.commitCargo('manual', currentNow);
     return {
       delivered: true,
@@ -476,6 +520,7 @@ export class GameSession {
     }
 
     this.pausedFromState = this.state;
+    this.wordPauseStartedAt = currentNow;
     this.state = 'PAUSED';
     return true;
   }
@@ -488,6 +533,10 @@ export class GameSession {
     const currentNow = timestamp ?? this.now();
     const targetState = this.pausedFromState;
     this.pausedFromState = null;
+    if (this.wordInputStartedAt !== null && this.wordPauseStartedAt !== null) {
+      this.wordInputStartedAt += Math.max(0, currentNow - this.wordPauseStartedAt);
+    }
+    this.wordPauseStartedAt = null;
     this.state = targetState;
 
     if (targetState === 'PLAYING') {
@@ -502,6 +551,9 @@ export class GameSession {
     }
 
     const currentNow = timestamp ?? this.now();
+    if (this.mode === 'TUTORIAL' && !this.replayingTutorial) {
+      this.tutorialActions.push({ type: 'skip' });
+    }
     if (this.cargoCount > 0) {
       this.commitCargo('skip', currentNow);
     }
@@ -610,6 +662,7 @@ export class GameSession {
     this.currentWord = this.getWord(this.currentWordIndex);
     this.engine = new RomajiEngine(this.currentWord.reading);
     this.wordMistakes = 0;
+    this.wordInputStartedAt = null;
     this.atWordBoundary = true;
   }
 
@@ -681,6 +734,7 @@ export class GameSession {
       skips: this.skips,
       guideUsed: this.guideUsed,
       elapsedMs,
+      comparisonKey: this.comparisonKey,
     };
     this.emitFact(fact);
   }
@@ -701,6 +755,6 @@ export class GameSession {
 
   private emitFact(fact: ConfirmedFact): void {
     this.emittedFacts.push(fact);
-    this.onFact?.(fact);
+    if (!this.replayingTutorial) this.onFact?.(fact);
   }
 }

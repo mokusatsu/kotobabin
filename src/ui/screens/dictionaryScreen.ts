@@ -1,4 +1,6 @@
 import type { TopicId, Word } from '@/contracts/types';
+import type { WordMastery } from '@/progression/seriesProgress';
+import { STAMP_RANKS, WORD_RANKS } from '@/progression/stampSeries';
 import {
   DictionaryTracker,
   type DictionaryCollectionFilter,
@@ -20,6 +22,7 @@ export interface DictionaryScreenProps {
   state: DictionaryScreenState;
   onUpdateState: (patch: Partial<DictionaryScreenState>) => void;
   onPracticeWord: (word: Word) => void;
+  getMastery: (wordId: string) => Readonly<WordMastery> | undefined;
 }
 
 const PAGE_SIZE = 48;
@@ -43,7 +46,7 @@ const TOPIC_OPTIONS: readonly ('all' | TopicId)[] = [
 ];
 
 export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElement {
-  const { tracker, state, onUpdateState, onPracticeWord } = props;
+  const { tracker, state, onUpdateState, onPracticeWord, getMastery } = props;
   const summary = tracker.getSummary();
   const filtered = tracker.filterWords({
     collection: state.collection,
@@ -131,6 +134,11 @@ export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElemen
     'div',
     { className: 'kb-word-grid' },
     ...pageItems.map((item) => {
+      const mastery = getMastery(item.word.id);
+      const clean = mastery?.cleanSessions ?? 0;
+      const next = WORD_RANKS.findIndex((target) => clean < target);
+      const rank = next < 0 ? '虹' : next === 0 ? null : STAMP_RANKS[next - 1];
+      const progress = next < 0 ? '最高ランク' : `${STAMP_RANKS[next]}まであと${WORD_RANKS[next] - clean}回`;
       const practiceBtn = el(
         'button',
         { type: 'button', className: 'kb-btn-secondary kb-small kb-word-practice-btn kb-nowrap' },
@@ -164,6 +172,11 @@ export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElemen
           { className: 'kb-word-card-foot' },
           el('span', { className: 'kb-word-reading kb-secondary', title: item.word.reading }, item.word.reading),
           practiceBtn,
+        ),
+        el('div', { className: 'kb-word-mastery kb-small', 'data-testid': 'word-mastery' },
+          rank ? el('strong', {}, `熟練度 ${rank}`) : null,
+          el('span', {}, progress),
+          mastery?.bestMs === undefined ? null : el('span', {}, `最短 ${(mastery.bestMs / 1000).toFixed(2)}秒`),
         ),
       );
     }),

@@ -56,13 +56,24 @@ export interface TabLockToken {
 }
 
 export type OnboardingStatus = 'not_started' | 'in_progress' | 'completed' | 'skipped';
-export type OnboardingStep = 'S1' | 'S2' | 'S3' | 'S4' | 'S5';
+export type OnboardingStep = 'S1' | 'S2' | 'S3' | 'S4' | 'S5' | 'S6' | 'S7' | 'S8';
+
+export interface OnboardingReceipt {
+  unlockedStampIds: string[];
+  unlockedRewardIds?: string[];
+  generatedMaterialsMicro: string;
+  supportMaterialsMicro: string;
+  supportCoinsMicro: string;
+}
 
 export interface OnboardingStateRecord {
   version: 1;
   status: OnboardingStatus;
   step: OnboardingStep;
   updatedAt: number;
+  receipt?: OnboardingReceipt;
+  upgradeTargetSelected?: boolean;
+  stampRevealIndex?: number;
 }
 
 export interface ProfileSettingsRecord {
@@ -182,6 +193,7 @@ export interface CommitCityEconomyParams {
   cityRecord: CityStoreRecord;
   economyProfileRecord?: EconomyProfileStoreRecord;
   cityAchievementSnapshot?: CityAchievementSnapshot;
+  onboarding?: { state: OnboardingStateRecord; tutorialCompleted: boolean };
   timestamp?: number;
 }
 
@@ -283,6 +295,7 @@ function applyFactsAndCityToEngine(
 
   let appliedFactCount = 0;
   let skippedFactCount = 0;
+  let recordUpdates: EvaluationResult['recordUpdates'];
   const newlyUnlockedAchievements: string[] = [];
   const newlyUnlockedRewards: string[] = [];
   const newMilestoneRewardKeys: string[] = [];
@@ -294,6 +307,7 @@ function applyFactsAndCityToEngine(
       continue;
     }
     appliedFactCount += 1;
+    recordUpdates = res.recordUpdates ?? recordUpdates;
     newlyUnlockedAchievements.push(...res.newlyUnlockedAchievementIds);
     newlyUnlockedRewards.push(...res.newlyUnlockedRewardIds);
     newMilestoneRewardKeys.push(...res.newMilestoneRewardKeys);
@@ -339,6 +353,7 @@ function applyFactsAndCityToEngine(
       newlyUnlockedRewardIds: newlyUnlockedRewards,
       newMilestoneRewardKeys,
       totalUnlockedCount: engine.getUnlockedCount(),
+      recordUpdates,
     },
     appliedFactCount,
     skippedFactCount,
@@ -497,6 +512,13 @@ export class MemoryProfileRepository implements ProfileRepository {
       appliedAt: params.timestamp ?? Date.now(),
     });
     this.city = { ...params.cityRecord, state: { ...params.cityRecord.state } };
+    if (params.onboarding) {
+      this.profile = {
+        ...this.profile,
+        onboarding: params.onboarding.state,
+        tutorialCompleted: params.onboarding.tutorialCompleted,
+      };
+    }
     if (params.economyProfileRecord) {
       this.economyProfile = {
         ...params.economyProfileRecord,
@@ -921,6 +943,9 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       'rewards',
       'readState',
     ];
+    if (params.onboarding) {
+      stores.push('profile');
+    }
     const tx = db.transaction(stores, 'readwrite');
 
     const metadata =
@@ -956,6 +981,17 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       appliedAt: now,
     } satisfies EconomyCursorRecord);
     tx.objectStore('city').put(params.cityRecord);
+    if (params.onboarding) {
+      const profileStore = tx.objectStore('profile');
+      const current = (await idbRequestToPromise(profileStore.get('singleton'))) as
+        | ProfileSettingsRecord
+        | undefined;
+      profileStore.put({
+        ...(current ?? createDefaultProfileSettings()),
+        onboarding: params.onboarding.state,
+        tutorialCompleted: params.onboarding.tutorialCompleted,
+      } satisfies ProfileSettingsRecord);
+    }
     if (params.economyProfileRecord) {
       tx.objectStore('economyProfile').put(params.economyProfileRecord);
     }

@@ -1,3 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="駅前のアイコン">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,24.0 45.9,40.0 32.0,48.0 18.1,40.0 18.1,24.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="駅前のアイコン">
+  <g stroke="#203D36" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M16 96 L40 76 H88 L112 96 Z" fill="#B34E39"/>
+    <rect x="46" y="34" width="36" height="68" rx="3" fill="#FFFDF7"/>
+    <path d="M42 34 L64 16 L86 34 Z" fill="#24594F"/>
+    <circle cx="64" cy="58" r="12" fill="#FBF3DE"/>
+    <path d="M64 51 V58 H70" fill="none" stroke-width="4"/>
+  </g>
 </svg>

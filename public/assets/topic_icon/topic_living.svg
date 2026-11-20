@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="生きもの">
-  <circle cx="32" cy="32" r="22" fill="#F5F1E7" stroke="#24594F" stroke-width="2.5"/><polygon points="32.0,16.0 45.9,24.0 45.9,40.0 32.0,48.0 18.1,40.0 18.1,24.0" fill="#24594F" opacity="0.85"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="生きもの">
+  <g stroke="#203D36" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 33 C25 22 31 15 39 17 C40 26 35 33 27 33 Z" fill="#24594F"/>
+    <path d="M9 26 C9 19 15 16 20 19 C23 19 26 22 25 26 C24 31 18 34 12 32 L7 34 Z" fill="#E58B76"/>
+    <path d="M24 20 L28 21 L24 23 Z" fill="#B58A3C"/>
+    <circle cx="21" cy="21" r="1.2" fill="#203D36" stroke="none"/>
+  </g>
 </svg>

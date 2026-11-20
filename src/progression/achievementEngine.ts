@@ -18,6 +18,9 @@ import {
   COURSE_WORD_COUNTS,
   LEGACY_240_WORD_IDS,
 } from './dictionaryTracker';
+import { SERIES_STAMPS, type SeriesStamp } from './stampSeries';
+import { STAMP_COUNT_FRAMES } from './stampFrameCatalog';
+import { SeriesProgress, type RecordUpdates, type SeriesProgressState, type WordMastery } from './seriesProgress';
 
 export type AchievementScope = 'all' | 'practice' | 'round' | 'normal' | 'city';
 export type AchievementFamilyId =
@@ -37,6 +40,7 @@ export type AchievementFamilyId =
 export interface CatalogAchievementDefinition {
   id: string;
   name: string;
+  flavor_text: string;
   condition: string;
   scope: '全' | '練' | '便' | '通常' | '街';
   hidden: boolean;
@@ -54,11 +58,25 @@ export interface CatalogRewardDefinition {
   asset_refs: string[];
 }
 
-export const CATALOG_ACHIEVEMENTS: readonly CatalogAchievementDefinition[] =
+export const LEGACY_ACHIEVEMENTS: readonly CatalogAchievementDefinition[] =
   ACHIEVEMENT_CATALOG.achievements as unknown as CatalogAchievementDefinition[];
 
-export const CATALOG_REWARDS: readonly CatalogRewardDefinition[] =
-  ACHIEVEMENT_CATALOG.rewards as unknown as CatalogRewardDefinition[];
+export const CATALOG_ACHIEVEMENTS: readonly (CatalogAchievementDefinition | SeriesStamp)[] = [
+  ...LEGACY_ACHIEVEMENTS, ...SERIES_STAMPS,
+];
+const achievementById = new Map(CATALOG_ACHIEVEMENTS.map((stamp) => [stamp.id, stamp]));
+
+export const CATALOG_REWARDS: readonly CatalogRewardDefinition[] = [
+  ...ACHIEVEMENT_CATALOG.rewards as unknown as CatalogRewardDefinition[],
+  ...STAMP_COUNT_FRAMES.map((frame) => ({
+    id: frame.rewardId,
+    name: frame.name,
+    kind: 'frame',
+    trigger: `切手を${frame.stampCount}枚集める`,
+    asset_refs: [frame.rewardId],
+  })),
+];
+const rewardById = new Map(CATALOG_REWARDS.map((reward) => [reward.id, reward]));
 
 export const FIRST_COLLECTION_FAMILIES: readonly AchievementFamilyId[] = [
   'A',
@@ -124,6 +142,7 @@ export interface RewardRecord {
 }
 
 export interface AchievementProgressState {
+  series?: SeriesProgressState;
   lifetimeCompletedWords: number;
   manualDeliveryCount: number;
   groupedDeliveryCount: number;
@@ -143,7 +162,8 @@ export interface AchievementProgressState {
 }
 
 export interface CityAchievementSnapshot {
-  districts: Record<DistrictId, { stage: number; shops: number }>;
+  districts: Record<DistrictId, { stage: number; shops: number; crews?: number }>;
+  seriesEligible?: boolean;
   openedRoutesCount: number;
   railRoutesCount: number;
   currentCityArrivedMaterials: number;
@@ -204,6 +224,7 @@ export interface EvaluationResult {
   newlyUnlockedRewardIds: string[];
   newMilestoneRewardKeys: string[];
   totalUnlockedCount: number;
+  recordUpdates?: RecordUpdates;
 }
 
 export interface AchievementEngineSnapshot {
@@ -309,6 +330,7 @@ function createEmptySessionTracker(
 
 export class AchievementEngine {
   private readonly progress: AchievementProgressState;
+  private readonly series: SeriesProgress;
   private readonly distinctWordSet: Set<string>;
   private readonly practiceCleanTagSet: Set<WordTag>;
   private readonly normal5WordCoursesSet: Set<CourseId>;
@@ -336,6 +358,7 @@ export class AchievementEngine {
       : base;
 
     this.distinctWordSet = new Set(this.progress.distinctCompletedWordIds);
+    this.series = new SeriesProgress(incoming?.series);
     this.practiceCleanTagSet = new Set(this.progress.practiceCleanTags);
     this.normal5WordCoursesSet = new Set(this.progress.normalCompletedCoursesWith5Words);
     this.normalMasteredCoursesSet = new Set(this.progress.normalMasteredCourses20Words95Acc);
@@ -348,7 +371,7 @@ export class AchievementEngine {
   }
 
   static getScope(achievementId: string): AchievementScope {
-    const def = CATALOG_ACHIEVEMENTS.find((a) => a.id === achievementId);
+    const def = achievementById.get(achievementId);
     if (!def) {
       throw new Error(`Unknown achievement ID: ${achievementId}`);
     }
@@ -363,8 +386,25 @@ export class AchievementEngine {
     return this.unlocks.size;
   }
 
+  getLegacyUnlockedCount(): number {
+    return LEGACY_ACHIEVEMENTS.filter((stamp) => this.unlocks.has(stamp.id)).length;
+  }
+
+  getSeriesMetric(id: string): number {
+    return this.series.metric(id);
+  }
+
+  getWordMastery(id: string): Readonly<WordMastery> | undefined {
+    return this.series.wordMastery(id);
+  }
+
   getUnlockedRewardIds(): string[] {
-    return Array.from(this.rewards.keys());
+    // Unlock counts from older saves are enough to restore already-earned frames.
+    const owned = new Set(this.rewards.keys());
+    for (const frame of STAMP_COUNT_FRAMES) {
+      if (frame.stampCount <= this.unlocks.size) owned.add(frame.rewardId);
+    }
+    return [...owned];
   }
 
   isUnlocked(achievementId: string): boolean {
@@ -382,6 +422,7 @@ export class AchievementEngine {
     return {
       progress: {
         ...this.progress,
+        series: this.series.snapshot(),
         completedRoundsByOrder: { ...this.progress.completedRoundsByOrder },
         distinctCompletedWordIds: [...this.progress.distinctCompletedWordIds],
         practiceCleanCountsByWord: { ...this.progress.practiceCleanCountsByWord },
@@ -456,11 +497,13 @@ export class AchievementEngine {
     }
 
     this.factCursors.set(fact.sessionId, fact.factSequence);
+    const previousUnlockedCount = this.unlocks.size;
 
     const unlockTs =
       wallClockTimestamp ?? (fact.timestamp >= 1_000_000_000_000 ? fact.timestamp : Date.now());
     const session = this.ensureSession(fact.sessionId, fact.mode);
     const newlyUnlocked: string[] = [];
+    const firstCompletion = fact.type === 'WordCompleted' && !this.distinctWordSet.has(fact.wordId);
 
     switch (fact.type) {
       case 'WordCompleted':
@@ -477,8 +520,13 @@ export class AchievementEngine {
         break;
     }
 
+    const recordUpdates = this.series.applyFact(fact, firstCompletion, session.orderKey, (stamp, value) => {
+      this.unlockAchievement(stamp.id, SCOPE_MAP[stamp.scope], unlockTs, `value=${value}`, newlyUnlocked);
+    });
+    if (fact.type === 'RoundFinished' || fact.type === 'PracticeSessionEnded') this.activeSessions.delete(fact.sessionId);
+
     const { newlyUnlockedRewardIds, newMilestoneRewardKeys } = this.grantEligibleRewards(
-      unlockTs,
+      unlockTs, previousUnlockedCount,
     );
 
     return {
@@ -487,6 +535,7 @@ export class AchievementEngine {
       newlyUnlockedRewardIds,
       newMilestoneRewardKeys,
       totalUnlockedCount: this.unlocks.size,
+      recordUpdates,
     };
   }
 
@@ -494,6 +543,7 @@ export class AchievementEngine {
     city: CityAchievementSnapshot,
     timestamp = Date.now(),
   ): EvaluationResult {
+    const previousUnlockedCount = this.unlocks.size;
     const newlyUnlocked: string[] = [];
     const unlock = (id: string, evidence: string) => {
       this.unlockAchievement(id, 'city', timestamp, evidence, newlyUnlocked);
@@ -513,8 +563,8 @@ export class AchievementEngine {
     );
 
     // Family I: District stages (same city)
-    if (highestStage >= 1) unlock('I01', `highest_stage=${highestStage}`);
-    if ((city.districts.residential?.stage ?? 0) >= 2) {
+    if (highestStage >= 2) unlock('I01', `highest_stage=${highestStage}`);
+    if ((city.districts.residential?.stage ?? 0) >= 3) {
       unlock('I02', `residential_stage=${city.districts.residential.stage}`);
     }
     if (stagesAtLeast1 >= 3) unlock('I03', `districts_stage>=1:${stagesAtLeast1}`);
@@ -523,7 +573,7 @@ export class AchievementEngine {
     if (stagesAtLeast5 >= 6) unlock('I06', `districts_stage>=5:${stagesAtLeast5}`);
 
     // Family J: Materials arrival & routes
-    if (city.lifetimeArrivedMaterials > 0 || city.currentCityArrivedMaterials > 0) {
+    if (city.lifetimeArrivedMaterials >= 100) {
       unlock('J01', `arrived=${city.lifetimeArrivedMaterials}`);
     }
     if (city.lifetimeArrivedMaterials >= 1000) {
@@ -543,7 +593,7 @@ export class AchievementEngine {
     }
 
     // Family K: Equipment, synergies, restart, research
-    if (city.paidEquipmentPurchaseCount >= 1) {
+    if (city.paidEquipmentPurchaseCount >= 5) {
       unlock('K01', `paid_equipment=${city.paidEquipmentPurchaseCount}`);
     }
     if (city.packagingLevel >= 10) {
@@ -567,8 +617,12 @@ export class AchievementEngine {
       unlock('K06', `max_research_rank=${maxResearchRank}`);
     }
 
+    if (city.seriesEligible !== false) {
+      this.series.applyCity(city, (stamp, value) => unlock(stamp.id, `value=${value}`));
+    }
+
     const { newlyUnlockedRewardIds, newMilestoneRewardKeys } =
-      this.grantEligibleRewards(timestamp);
+      this.grantEligibleRewards(timestamp, previousUnlockedCount);
 
     return {
       applied: true,
@@ -586,7 +640,7 @@ export class AchievementEngine {
     const result: Record<string, ProvisionalAchievementStatus> = {};
     const normalDisqualified = session ? session.skipsObserved > 0 : false;
 
-    for (const def of CATALOG_ACHIEVEMENTS) {
+    for (const def of LEGACY_ACHIEVEMENTS) {
       if (this.unlocks.has(def.id)) {
         result[def.id] = 'confirmed';
         continue;
@@ -780,7 +834,7 @@ export class AchievementEngine {
       this.progress.roundsWith5WordsCompleted += 1;
     }
     const orderKey =
-      session.orderKey ?? `${fact.courseId}:${session.completedWordIds.join(',')}`;
+      session.orderKey ?? fact.comparisonKey ?? `${fact.courseId}:${session.completedWordIds.join(',')}`;
     const orderCount = (this.progress.completedRoundsByOrder[orderKey] ?? 0) + 1;
     this.progress.completedRoundsByOrder[orderKey] = orderCount;
 
@@ -1220,7 +1274,7 @@ export class AchievementEngine {
     newlyUnlocked.push(achievementId);
   }
 
-  private grantEligibleRewards(timestamp: number): {
+  private grantEligibleRewards(timestamp: number, previousUnlockedCount: number): {
     newlyUnlockedRewardIds: string[];
     newMilestoneRewardKeys: string[];
   } {
@@ -1239,8 +1293,6 @@ export class AchievementEngine {
       newlyUnlockedRewardIds.push(rewardId);
     };
 
-    const rewardById = new Map(CATALOG_REWARDS.map((r) => [r.id, r]));
-
     // 1. Family postcards (3+) & foil boards (6+)
     const familyCounts: Record<AchievementFamilyId, number> = {
       A: 0,
@@ -1257,7 +1309,7 @@ export class AchievementEngine {
       L: 0,
     };
 
-    for (const def of CATALOG_ACHIEVEMENTS) {
+    for (const def of LEGACY_ACHIEVEMENTS) {
       if (this.unlocks.has(def.id)) {
         familyCounts[def.family_id] += 1;
       }
@@ -1279,7 +1331,7 @@ export class AchievementEngine {
     }
 
     // 2. Total unlocked milestones (8, 16, 24, 36, 48, 60, 72)
-    const totalUnlocked = this.unlocks.size;
+    const totalUnlocked = Object.values(familyCounts).reduce((sum, count) => sum + count, 0);
     for (const threshold of MILESTONE_THRESHOLDS) {
       if (totalUnlocked >= threshold) {
         const rewardIds = TOTAL_MILESTONE_CATALOG_REWARDS[threshold] ?? [];
@@ -1300,6 +1352,12 @@ export class AchievementEngine {
     if (firstCollectionComplete) {
       grant('reward_first_collection_board', 'memorial_board');
       grant('reward_first_collection_stamp', 'memorial_stamp');
+    }
+
+    for (const frame of STAMP_COUNT_FRAMES) {
+      if (previousUnlockedCount < frame.stampCount && frame.stampCount <= this.unlocks.size) {
+        grant(frame.rewardId, 'frame');
+      }
     }
 
     return { newlyUnlockedRewardIds, newMilestoneRewardKeys };

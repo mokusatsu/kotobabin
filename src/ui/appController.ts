@@ -17,10 +17,11 @@ import { WorldClock } from '@/economy/worldClock';
 import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
-  type AchievementFamilyId,
+  type SessionStartContext,
   type UnlockRecord,
 } from '@/progression/achievementEngine';
 import { DictionaryTracker } from '@/progression/dictionaryTracker';
+import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
   createDefaultProfileSettings,
   createProfileRepository,
@@ -38,16 +39,20 @@ import {
   GENERATOR_VERSION,
   getTutorialWords,
 } from '@/typing/courseGenerator';
-import { GameSession, type SessionSnapshot } from '@/typing/gameSession';
+import { GameSession, type SessionSnapshot, type TutorialSessionCheckpoint } from '@/typing/gameSession';
 import { InputAdapter, type DeliveryKeyOption } from '@/typing/inputAdapter';
 import { WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
-import { renderNormalHeader, renderPlayHeader } from './components/header';
+import { NAV_ITEMS, renderNormalHeader, renderPlayHeader } from './components/header';
+import {
+  featuredStampIds, getResultRevealIds, getTutorialRevealIds, renderStampReveal, rewardRevealIds, STAMP_REVEAL_DURATION_MS,
+} from './components/stampReveal';
 import { renderDictionaryScreen, type DictionaryScreenState } from './screens/dictionaryScreen';
 import { renderDistrictDetailScreen } from './screens/districtDetailScreen';
 import {
   renderHandbookScreen,
   type HandbookFilter,
+  type HandbookGroup,
   type HandbookTab,
 } from './screens/handbookScreen';
 import { renderHomeScreen } from './screens/homeScreen';
@@ -68,7 +73,6 @@ import type {
 import { el } from './utils/dom';
 import {
   buildCityAchievementSnapshot,
-  DISTRICT_NAME_MAP,
   DISTRICT_ORDER,
   formatCoins,
   formatDurationMs,
@@ -96,8 +100,32 @@ function createInitialOnboardingUiState(
     lastDeliveredBonus: 0,
     deliveryInTransit: false,
     deliveryArrived: false,
-    unlockedStampIds: [],
+    saveFailed: false,
+    upgradeTargetSelected: false,
+    stampRevealIndex: 0,
+    receipt: null,
   };
+}
+
+const TUTORIAL_DRAFT_KEY = 'kotobabin:tutorialDraft';
+
+interface TutorialDraft {
+  contentVersion: string;
+  savedAt: number;
+  step: 'S3' | 'S4';
+  session: TutorialSessionCheckpoint;
+  city: CityEconomySnapshot;
+  generatedMaterialsMicro: string;
+  unlockedStampIds: string[];
+  unlockedRewardIds?: string[];
+  deliveryInTransit: boolean;
+  rescueOffered: boolean;
+}
+
+function createTutorialWordProvider(): (index: number) => Word {
+  const words = getTutorialWords();
+  const fallback = new CourseGenerator({ courseId: 'relaxed', seed: 1, preferredWordId: null });
+  return (index) => index < words.length ? words[index] : fallback.getWordAt(index - words.length);
 }
 
 export class AppController implements UIControllerActions {
@@ -126,10 +154,14 @@ export class AppController implements UIControllerActions {
   private purchaseQuantity: PurchaseQuantity = 1;
   private selectedNewCityLandscape: LandscapeId = 'riverside';
 
-  private handbookFamily: AchievementFamilyId = 'A';
+  private handbookGroup: HandbookGroup = 'all';
+  private handbookPage = 0;
+  private handbookSheetId: string | null = null;
   private handbookSelectedId: string | null = null;
+  private handbookDetailAnchor: string | null = null;
   private handbookFilter: HandbookFilter = 'all';
   private handbookTab: HandbookTab = 'stamps';
+  private handbookFrameGroup: number | null = null;
   private readonly revealedHiddenIds = new Set<string>();
 
   private dictionaryState: DictionaryScreenState = {
@@ -153,6 +185,7 @@ export class AppController implements UIControllerActions {
   private currentSeed = 1;
   private currentGenerator: CourseGenerator | null = null;
   private currentComparisonKey = '';
+  private currentSessionContext?: SessionStartContext;
   private currentPlanId = '';
   private pendingFacts: ConfirmedFact[] = [];
   private sessionWordIds: string[] = [];
@@ -161,6 +194,7 @@ export class AppController implements UIControllerActions {
   private initialStageSnapshot = 0;
   private sessionBeforeIncomePerSecMicro = 0n;
   private sessionUnlockedAchievementIds: string[] = [];
+  private sessionUnlockedRewardIds: string[] = [];
   private resultRevealIndex = 0;
   private resultRevealDone = true;
   private lastResult: LastResultContext | null = null;
@@ -193,6 +227,8 @@ export class AppController implements UIControllerActions {
   private playTimerHandle: number | null = null;
   private feedbackClearTimer: number | null = null;
   private onboardingArrivalTimer: number | null = null;
+  private inputCountdownTimer: number | null = null;
+  private inputCountdownValue: number | null = null;
   private tabChannel: BroadcastChannel | null = null;
   private eventCounter = 0;
   private readonly handleGlobalKeyDownBound = (e: KeyboardEvent) => this.handleGlobalKeyDown(e);
@@ -200,6 +236,9 @@ export class AppController implements UIControllerActions {
   private playHostEl: HTMLElement | null = null;
   private onboardingUi: OnboardingUiState = createInitialOnboardingUiState(false, 'S1');
   private onboardingKeyMistakeStreak = 0;
+  private onboardingStampReadyAt = 0;
+  private cityRevealIds: string[] = [];
+  private cityRevealIndex = 0;
   private pendingResetConfirm: 'records' | 'city_and_achievements' | 'settings' | null = null;
   private settingsNotice: string | null = null;
 
@@ -224,13 +263,28 @@ export class AppController implements UIControllerActions {
     this.unlocks = snapshot.unlocks;
     this.readState = snapshot.readState;
     this.recentResults = snapshot.results;
+    let tutorialDraft: TutorialDraft | null = null;
+    try {
+      const draft = JSON.parse(window.localStorage.getItem(TUTORIAL_DRAFT_KEY) ?? 'null') as TutorialDraft | null;
+      if (
+        draft?.contentVersion === WORDS_DATA.contentVersion &&
+        (draft.step === 'S3' || draft.step === 'S4') &&
+        Array.isArray(draft.session?.actions) &&
+        draft.savedAt >= (this.settings.onboarding?.updatedAt ?? 0)
+      ) {
+        tutorialDraft = draft;
+      }
+    } catch {
+      // Continue with the IndexedDB profile when browser storage is unavailable.
+    }
 
-    if (snapshot.city?.state) {
+    if (tutorialDraft || snapshot.city?.state) {
       try {
         this.economy = CityEconomy.fromSnapshot(
-          snapshot.city.state as unknown as CityEconomySnapshot,
+          tutorialDraft?.city ?? snapshot.city!.state as unknown as CityEconomySnapshot,
         );
       } catch {
+        tutorialDraft = null;
         this.economy = new CityEconomy(Date.now());
       }
     } else {
@@ -244,7 +298,8 @@ export class AppController implements UIControllerActions {
 
     const nowWall = Date.now();
     this.worldClock = new WorldClock(this.economy.savedWallMs || nowWall);
-    const restore = this.economy.restoreAt(nowWall);
+    const restore = this.economy.restoreAt(tutorialDraft ? this.economy.savedWallMs : nowWall);
+    if (tutorialDraft) this.economy.savedWallMs = nowWall;
     this.worldClock.commitWallMs(nowWall);
     this.lastEconomyWallMs = nowWall;
 
@@ -263,8 +318,12 @@ export class AppController implements UIControllerActions {
       this.recentResults.length > 0 ||
       BigInt(this.economy.snapshot().lifetime.arrived_micro) > 0n;
     this.syncOnboardingStateFromProfile(hasPriorActivity);
+    if (tutorialDraft) {
+      this.restoreTutorialDraft(tutorialDraft);
+    }
     if (
       hasPriorActivity &&
+      !this.onboardingUi.active &&
       restore.wall_elapsed_ms >= 60_000 &&
       (BigInt(restore.arrived_micro) >= 1_000_000n ||
         BigInt(restore.shop_coins_micro) >= 1_000_000n ||
@@ -306,6 +365,75 @@ export class AppController implements UIControllerActions {
     window.addEventListener('keydown', this.handleGlobalKeyDownBound);
     this.mountEl.addEventListener('pointerdown', this.handlePointerUnlockBound, { passive: true });
     this.render();
+    if (tutorialDraft && this.onboardingUi.deliveryInTransit) {
+      this.handleOnboardingWagonLanded();
+    }
+  }
+
+  private saveTutorialDraft(): void {
+    if (this.tabLockLost || this.session?.currentMode !== 'TUTORIAL' || !this.onboardingUi.active) return;
+    const step = this.onboardingUi.step;
+    if (step !== 'S3' && step !== 'S4') return;
+    const draft: TutorialDraft = {
+      contentVersion: WORDS_DATA.contentVersion,
+      savedAt: Date.now(),
+      step,
+      session: this.session.getTutorialCheckpoint(),
+      city: this.economy.snapshot(),
+      generatedMaterialsMicro: this.onboardingUi.generatedMaterialsMicro.toString(),
+      unlockedStampIds: [...this.sessionUnlockedAchievementIds],
+      unlockedRewardIds: [...this.sessionUnlockedRewardIds],
+      deliveryInTransit: this.onboardingUi.deliveryInTransit,
+      rescueOffered: this.onboardingUi.rescueOffered,
+    };
+    try {
+      window.localStorage.setItem(TUTORIAL_DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // IndexedDB remains the persistent store when localStorage is restricted.
+    }
+  }
+
+  private clearTutorialDraft(): void {
+    try {
+      window.localStorage.removeItem(TUTORIAL_DRAFT_KEY);
+    } catch {
+      // Ignore storage restrictions.
+    }
+  }
+
+  private restoreTutorialDraft(draft: TutorialDraft): void {
+    this.setOnboardingProfile({
+      version: 1, status: 'in_progress', step: draft.step, updatedAt: draft.savedAt,
+    });
+    this.onboardingUi = createInitialOnboardingUiState(true, draft.step);
+    this.onboardingUi.generatedMaterialsMicro = BigInt(draft.generatedMaterialsMicro);
+    this.onboardingUi.deliveryInTransit = draft.deliveryInTransit;
+    this.onboardingUi.rescueOffered = draft.rescueOffered;
+    this.session = new GameSession({
+      mode: 'TUTORIAL',
+      wordProvider: createTutorialWordProvider(),
+      tutorialCheckpoint: draft.session,
+      guideEnabled: true,
+      onFact: (fact) => this.handleSessionFact(fact),
+    });
+    this.selectedDistrictId = 'residential';
+    this.selectedCourseId = 'relaxed';
+    this.currentComparisonKey = `tutorial:${WORDS_DATA.contentVersion}`;
+    this.currentPlanId = 'tutorial';
+    this.sessionUnlockedAchievementIds = draft.unlockedStampIds;
+    this.sessionUnlockedRewardIds = draft.unlockedRewardIds ?? [];
+    this.pendingFacts = [...this.session.facts];
+    for (const fact of this.session.facts) {
+      const evaluated = this.achievements.applyFact(fact, Date.now());
+      this.recordSessionRewards(evaluated.newlyUnlockedRewardIds);
+      if (fact.type === 'WordCompleted') this.dictionary.markCompleted(fact.wordId);
+    }
+    const restored = this.session.getSnapshot();
+    this.lastObservedCargoCount = restored.cargoCount;
+    this.onboardingUi.collapseLessonShown = restored.cargoCount >= 2 || restored.mistakeCount > 0;
+    this.initialStageSnapshot = this.economy.districts.residential.stage;
+    if (!draft.deliveryInTransit) this.session.enterInputCheck('TUTORIAL');
+    this.screen = 'PLAY';
   }
 
   private clearOnboardingArrivalTimer(): void {
@@ -319,6 +447,11 @@ export class AppController implements UIControllerActions {
     window.removeEventListener('keydown', this.handleGlobalKeyDownBound);
     this.mountEl.removeEventListener('pointerdown', this.handlePointerUnlockBound);
     this.clearOnboardingArrivalTimer();
+    this.clearInputCountdown();
+    if (this.feedbackClearTimer !== null) {
+      window.clearTimeout(this.feedbackClearTimer);
+      this.feedbackClearTimer = null;
+    }
     this.audio.destroy();
     if (this.economyTickTimer !== null) {
       window.clearInterval(this.economyTickTimer);
@@ -397,10 +530,12 @@ export class AppController implements UIControllerActions {
     this.economyTickTimer = window.setInterval(() => {
       if (this.screen !== 'PLAY' && !this.tabLockLost) {
         const completedCount = this.advanceEconomyToNow();
+        const onboardingHome = this.screen === 'HOME' && this.onboardingUi.active;
         if (
-          completedCount > 0 ||
-          (this.screen === 'HOME' && !this.difficultyPopupOpen) ||
-          this.screen === 'DISTRICT_DETAIL'
+          !onboardingHome && this.cityRevealIds.length === 0 &&
+          (completedCount > 0 ||
+            (this.screen === 'HOME' && !this.difficultyPopupOpen) ||
+            this.screen === 'DISTRICT_DETAIL')
         ) {
           this.render();
         } else {
@@ -444,11 +579,47 @@ export class AppController implements UIControllerActions {
     return `${prefix}:${this.tabId}:${Date.now()}:${this.eventCounter}`;
   }
 
-  private async persistCitySnapshot(eventId: string): Promise<void> {
+  private cityAchievementSnapshot() {
+    return buildCityAchievementSnapshot(this.economy, this.paidEquipmentPurchaseCount, !this.onboardingUi.active);
+  }
+
+  private recordSessionRewards(ids: readonly string[]): void {
+    this.sessionUnlockedRewardIds = [...new Set([...this.sessionUnlockedRewardIds, ...rewardRevealIds(ids)])];
+  }
+
+  private queueReveals(ids: readonly string[]): void {
+    const next = ids.filter((id) => !this.cityRevealIds.includes(id));
+    if (next.length === 0) return;
+    const wasEmpty = this.cityRevealIds.length === 0;
+    this.cityRevealIds.push(...next);
+    if (wasEmpty && this.canShowQueuedReveals()) this.audio.playSe('audio_stamp_unlock');
+    this.render();
+  }
+
+  private canShowQueuedReveals(): boolean {
+    return this.cityRevealIds.length > 0 && this.screen !== 'PLAY' &&
+      (!this.onboardingUi.active || this.isOnboardingUpgrade && this.activeOnboardingStep !== 'S8') &&
+      (this.screen !== 'RESULT' || this.resultRevealDone) && !this.welcomeBack;
+  }
+
+  private async persistCitySnapshot(eventId: string, onboarding?: OnboardingStateRecord): Promise<boolean> {
     if (this.tabLockLost) {
-      return;
+      return false;
     }
     try {
+      const achievementSnapshot = this.cityAchievementSnapshot();
+      const timestamp = Date.now();
+      if (onboarding && this.isOnboardingUpgrade) {
+        const result = this.achievements.applyCitySnapshot(
+          achievementSnapshot, timestamp,
+        );
+        for (const id of result.newlyUnlockedAchievementIds) {
+          if (!this.sessionUnlockedAchievementIds.includes(id)) this.sessionUnlockedAchievementIds.push(id);
+        }
+        if (this.onboardingUi.receipt) {
+          this.onboardingUi.receipt.unlockedStampIds = [...this.sessionUnlockedAchievementIds];
+        }
+      }
       this.economy.persistent.records['paidEquipmentPurchaseCount'] = this.paidEquipmentPurchaseCount;
       const snap = this.economy.snapshot();
       const res = await this.repository.commitCityEconomy({
@@ -462,32 +633,36 @@ export class AppController implements UIControllerActions {
           revision: (snap.clock_ms || 0) + this.eventCounter,
           updatedAt: Date.now(),
         },
-        cityAchievementSnapshot: buildCityAchievementSnapshot(
-          this.economy,
-          this.paidEquipmentPurchaseCount,
-        ),
-        timestamp: Date.now(),
+        cityAchievementSnapshot: achievementSnapshot,
+        ...(onboarding ? {
+          onboarding: {
+            state: onboarding,
+            tutorialCompleted: onboarding.status === 'completed' || this.settings.tutorialCompleted,
+          },
+        } : {}),
+        timestamp,
       });
       this.lock = {
         tabId: res.metadata.ownerTabId,
         writeEpoch: res.metadata.writeEpoch,
         resetGeneration: res.metadata.resetGeneration,
       };
-      if (res.evaluation && res.evaluation.newlyUnlockedAchievementIds.length > 0) {
+      if (res.evaluation) this.achievements.applyCitySnapshot(achievementSnapshot, timestamp);
+      if (res.evaluation && (res.evaluation.newlyUnlockedAchievementIds.length > 0 || res.evaluation.newlyUnlockedRewardIds.length > 0)) {
         const loaded = await this.repository.loadAll();
         this.unlocks = loaded.unlocks;
         this.readState = loaded.readState;
-        this.achievements = new AchievementEngine({
-          progress: loaded.achievementProgress,
-          unlocks: loaded.unlocks,
-          rewards: loaded.rewards,
-          factCursors: loaded.factCursors,
-        });
+        const stamps = !this.onboardingUi.active && !eventId.startsWith('autosave-') &&
+          this.screen !== 'PLAY' && this.screen !== 'RESULT'
+          ? featuredStampIds(res.evaluation.newlyUnlockedAchievementIds) : [];
+        this.queueReveals([...stamps, ...rewardRevealIds(res.evaluation.newlyUnlockedRewardIds)]);
       }
+      return true;
     } catch (err) {
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
       }
+      return false;
     }
   }
 
@@ -499,15 +674,22 @@ export class AppController implements UIControllerActions {
   }
 
   // Navigation & Selection
+  private get activeOnboardingStep(): OnboardingStep | null {
+    return this.onboardingUi.active && !this.tabLockLost ? this.onboardingUi.step : null;
+  }
+
+  private get isOnboardingUpgrade(): boolean {
+    const step = this.activeOnboardingStep;
+    return this.screen === 'UPGRADES' && (step === 'S6' || step === 'S7' || step === 'S8');
+  }
+
   navigate(screen: AppScreen): void {
     if (this.screen === 'PLAY' && screen !== 'PLAY') {
       return;
     }
     if (
-      this.screen === 'HOME' &&
-      this.onboardingUi.active &&
-      this.onboardingUi.step === 'S2' &&
-      screen !== 'HOME'
+      (this.screen === 'HOME' && (this.activeOnboardingStep === 'S2' || this.activeOnboardingStep === 'S5')) ||
+      this.isOnboardingUpgrade
     ) {
       return;
     }
@@ -543,6 +725,24 @@ export class AppController implements UIControllerActions {
 
   private syncOnboardingStateFromProfile(hasPriorActivity: boolean): void {
     const saved = this.settings.onboarding;
+    if (saved?.status === 'in_progress') {
+      if (saved.step === 'S5' || saved.step === 'S6' || saved.step === 'S7') {
+        this.onboardingUi = createInitialOnboardingUiState(true, saved.step);
+        this.onboardingUi.receipt = saved.receipt ?? null;
+        this.onboardingUi.stampRevealIndex = Math.max(0, Math.min(
+          Math.floor(saved.stampRevealIndex ?? 0),
+          getTutorialRevealIds(this.achievements, saved.receipt).length,
+        ));
+        this.onboardingStampReadyAt = Date.now() + STAMP_REVEAL_DURATION_MS;
+        this.sessionUnlockedAchievementIds = [...(saved.receipt?.unlockedStampIds ?? [])];
+        if (saved.step !== 'S5') {
+          this.showOnboardingUpgrade(saved.step, saved.upgradeTargetSelected === true);
+        }
+      } else {
+        this.onboardingUi = createInitialOnboardingUiState(true, saved.step === 'S1' ? 'S1' : 'S2');
+      }
+      return;
+    }
     const isCompletedOrSkipped =
       hasPriorActivity ||
       this.settings.tutorialCompleted ||
@@ -551,7 +751,7 @@ export class AppController implements UIControllerActions {
 
     if (isCompletedOrSkipped) {
       const resolvedStatus = saved?.status === 'skipped' ? 'skipped' : 'completed';
-      this.onboardingUi = createInitialOnboardingUiState(false, 'S5');
+      this.onboardingUi = createInitialOnboardingUiState(false, 'S8');
       if (saved?.status !== resolvedStatus) {
         this.settings = {
           ...this.settings,
@@ -559,7 +759,7 @@ export class AppController implements UIControllerActions {
           onboarding: {
             version: 1,
             status: resolvedStatus,
-            step: saved?.step ?? 'S5',
+            step: saved?.step ?? 'S8',
             updatedAt: Date.now(),
           },
         };
@@ -567,17 +767,23 @@ export class AppController implements UIControllerActions {
       return;
     }
 
-    const resumeStep: OnboardingStep =
-      saved?.status === 'in_progress' && saved.step === 'S2' ? 'S2' : 'S1';
-    this.onboardingUi = createInitialOnboardingUiState(true, resumeStep);
+    this.onboardingUi = createInitialOnboardingUiState(true, 'S1');
     this.settings = {
       ...this.settings,
       onboarding: {
         version: 1,
         status: 'in_progress',
-        step: resumeStep,
+        step: 'S1',
         updatedAt: Date.now(),
       },
+    };
+  }
+
+  private setOnboardingProfile(state: OnboardingStateRecord): void {
+    this.settings = {
+      ...this.settings,
+      tutorialCompleted: state.status === 'completed' || this.settings.tutorialCompleted,
+      onboarding: state,
     };
   }
 
@@ -585,17 +791,11 @@ export class AppController implements UIControllerActions {
     if (this.tabLockLost) {
       return;
     }
-    const nextTutorialCompleted =
-      state.status === 'completed' ? true : this.settings.tutorialCompleted;
-    this.settings = {
-      ...this.settings,
-      tutorialCompleted: nextTutorialCompleted,
-      onboarding: state,
-    };
+    this.setOnboardingProfile(state);
     void this.repository
       .saveProfile(
         {
-          tutorialCompleted: nextTutorialCompleted,
+          tutorialCompleted: this.settings.tutorialCompleted,
           onboarding: state,
         },
         this.lock,
@@ -609,16 +809,19 @@ export class AppController implements UIControllerActions {
 
   selectDistrict(districtId: DistrictId): void {
     this.audio.playSe('audio_ui_click');
-    if (this.onboardingUi.active && this.onboardingUi.step === 'S2') {
-      if (!this.economy.districts[districtId].open) {
-        this.onboardingUi.lockedDistrictNotice = `「${DISTRICT_NAME_MAP[districtId]}」は未開通です。光っている「住宅地」を選んでください。`;
-        this.render();
-        return;
+    if (this.isOnboardingUpgrade) {
+      if (this.activeOnboardingStep === 'S6' && districtId === 'residential') {
+        this.selectOnboardingUpgradeTarget();
       }
-      this.onboardingUi.lockedDistrictNotice = null;
-      this.selectedDistrictId = districtId;
-      this.selectedCourseId = 'relaxed';
-      this.startTutorial();
+      return;
+    }
+    if (this.activeOnboardingStep === 'S2') {
+      if (districtId === 'residential') {
+        this.startTutorial();
+      } else {
+        this.onboardingUi.lockedDistrictNotice = '最初の配達先は「住宅地」です。光っている住宅地を選びましょう。';
+        this.render();
+      }
       return;
     }
     this.selectedDistrictId = districtId;
@@ -626,19 +829,11 @@ export class AppController implements UIControllerActions {
   }
 
   selectAndOpenDifficultyPopup(districtId: DistrictId): void {
-    this.audio.playSe('audio_ui_click');
-    if (this.onboardingUi.active && this.onboardingUi.step === 'S2') {
-      if (!this.economy.districts[districtId].open) {
-        this.onboardingUi.lockedDistrictNotice = `「${DISTRICT_NAME_MAP[districtId]}」は未開通です。光っている「住宅地」を選んでください。`;
-        this.render();
-        return;
-      }
-      this.onboardingUi.lockedDistrictNotice = null;
-      this.selectedDistrictId = districtId;
-      this.selectedCourseId = 'relaxed';
-      this.startTutorial();
+    if (this.activeOnboardingStep === 'S2') {
+      this.selectDistrict(districtId);
       return;
     }
+    this.audio.playSe('audio_ui_click');
     this.selectedDistrictId = districtId;
     if (this.economy.districts[districtId].open) {
       this.difficultyPopupOpen = true;
@@ -692,24 +887,20 @@ export class AppController implements UIControllerActions {
   }
 
   startTutorial(): void {
+    this.clearTutorialDraft();
     this.clearOnboardingArrivalTimer();
     this.audio.playSe('audio_ui_click');
     this.advanceEconomyToNow();
-    this.selectedDistrictId = this.economy.districts[this.selectedDistrictId].open
-      ? this.selectedDistrictId
-      : 'residential';
+    this.selectedDistrictId = 'residential';
     this.selectedCourseId = 'relaxed';
     this.onboardingUi = createInitialOnboardingUiState(true, 'S3');
     this.onboardingKeyMistakeStreak = 0;
-    const savedStatus = this.settings.onboarding?.status;
-    if (savedStatus !== 'completed' && savedStatus !== 'skipped') {
-      this.persistOnboardingState({
-        version: 1,
-        status: 'in_progress',
-        step: 'S3',
-        updatedAt: Date.now(),
-      });
-    }
+    this.persistOnboardingState({
+      version: 1,
+      status: 'in_progress',
+      step: 'S3',
+      updatedAt: Date.now(),
+    });
     this.currentSeed = 1;
     this.launchSession('TUTORIAL', 'TUTORIAL', 1, null);
   }
@@ -732,6 +923,7 @@ export class AppController implements UIControllerActions {
   }
 
   skipOnboarding(): void {
+    this.clearTutorialDraft();
     this.clearOnboardingArrivalTimer();
     this.audio.playSe('audio_ui_click');
     this.stopPlayTimer();
@@ -750,46 +942,103 @@ export class AppController implements UIControllerActions {
     const alreadyCompleted = Boolean(
       this.settings.tutorialCompleted || this.settings.onboarding?.status === 'completed',
     );
-    this.onboardingUi = createInitialOnboardingUiState(false, 'S5');
+    this.onboardingUi = createInitialOnboardingUiState(false, 'S8');
     this.persistOnboardingState({
       version: 1,
       status: alreadyCompleted ? 'completed' : 'skipped',
-      step: 'S5',
+      step: 'S8',
       updatedAt: Date.now(),
     });
     this.screen = 'HOME';
     this.render();
   }
 
-  finishOnboardingToHome(): void {
-    this.clearOnboardingArrivalTimer();
-    this.audio.playSe('audio_ui_click');
-    this.stopPlayTimer();
-    this.inputAdapter?.detach();
-    if (this.session) {
-      this.session.abort('completed');
-      this.session = null;
-    }
-    if (this.economy.activeSession) {
-      this.advanceEconomyToNow();
-      this.economy.endSession({ atMs: this.economy.clockMs });
-    }
-    const waitMs = this.economy.waitMs(this.selectedDistrictId);
-    if (waitMs > 0) {
-      const nowWall = Date.now();
-      this.economy.advanceTime(waitMs, nowWall);
-      this.lastEconomyWallMs = nowWall;
-    }
-    const citySnap = buildCityAchievementSnapshot(this.economy, this.paidEquipmentPurchaseCount);
-    this.achievements.applyCitySnapshot(citySnap, Date.now());
-    void this.commitSessionAndCity(undefined);
-    this.onboardingUi = createInitialOnboardingUiState(false, 'S5');
+  private showOnboardingUpgrade(step: 'S6' | 'S7' | 'S8', targetSelected = false): void {
+    this.onboardingUi.step = step;
+    this.onboardingUi.upgradeTargetSelected = targetSelected;
+    this.selectedDistrictId = 'residential';
+    this.selectedUpgradeCategory = step === 'S6' ? 'architecture' : 'packaging';
+    this.purchaseQuantity = 1;
+    this.screen = 'UPGRADES';
+  }
+
+  private selectOnboardingUpgradeTarget(): void {
+    const step = this.activeOnboardingStep;
+    if ((step !== 'S6' && step !== 'S7') || this.onboardingUi.upgradeTargetSelected) return;
+    this.onboardingUi.upgradeTargetSelected = true;
     this.persistOnboardingState({
-      version: 1,
-      status: 'completed',
-      step: 'S5',
-      updatedAt: Date.now(),
+      version: 1, status: 'in_progress', step, updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt ?? undefined,
+      upgradeTargetSelected: true,
     });
+    this.render();
+  }
+
+  advanceOnboardingStampReveal(): void {
+    if (this.screen !== 'HOME' || this.activeOnboardingStep !== 'S5' || Date.now() < this.onboardingStampReadyAt) return;
+    const stamps = getTutorialRevealIds(this.achievements, this.onboardingUi.receipt);
+    if (this.onboardingUi.stampRevealIndex >= stamps.length) return;
+    this.onboardingUi.stampRevealIndex += 1;
+    this.onboardingStampReadyAt = Date.now() + STAMP_REVEAL_DURATION_MS;
+    this.persistOnboardingState({
+      version: 1, status: 'in_progress', step: 'S5', updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt ?? undefined,
+      stampRevealIndex: this.onboardingUi.stampRevealIndex,
+    });
+    this.audio.playSe(this.onboardingUi.stampRevealIndex < stamps.length ? 'audio_stamp_unlock' : 'audio_result_reveal');
+    this.render();
+  }
+
+  beginOnboardingConstruction(): void {
+    if (this.screen !== 'HOME' || this.activeOnboardingStep !== 'S5' ||
+      this.onboardingUi.stampRevealIndex < getTutorialRevealIds(this.achievements, this.onboardingUi.receipt).length) {
+      return;
+    }
+    this.audio.playSe('audio_ui_click');
+    this.economy.endSession({ atMs: this.economy.clockMs });
+    this.economy.grantTutorialSupplies();
+    const checkpoint: OnboardingStateRecord = {
+      version: 1, status: 'in_progress', step: 'S6', updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt ?? undefined,
+    };
+    this.showOnboardingUpgrade('S6');
+    this.setOnboardingProfile(checkpoint);
+    void this.persistCitySnapshot(this.nextEconomyEventId('tutorial-construction'), checkpoint);
+    this.render();
+  }
+
+  advanceOnboardingToEquipment(): void {
+    if (this.activeOnboardingStep !== 'S6' || !this.onboardingUi.upgradeTargetSelected || this.economy.districts.residential.stage === 0) {
+      return;
+    }
+    this.audio.playSe('audio_ui_click');
+    this.showOnboardingUpgrade('S7');
+    this.persistOnboardingState({
+      version: 1, status: 'in_progress', step: 'S7', updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt ?? undefined,
+    });
+    this.render();
+  }
+
+  finishOnboardingEquipment(): void {
+    if (this.activeOnboardingStep !== 'S7' || !this.onboardingUi.upgradeTargetSelected || this.economy.packagingLevel === 0) {
+      return;
+    }
+    this.audio.playSe('audio_round_finish');
+    this.showOnboardingUpgrade('S8');
+    this.persistOnboardingState({
+      version: 1, status: 'completed', step: 'S8', updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt ?? undefined,
+    });
+    this.render();
+  }
+
+  finishOnboardingToHome(): void {
+    if (this.activeOnboardingStep !== 'S8') {
+      return;
+    }
+    this.audio.playSe('audio_ui_click');
+    this.onboardingUi = createInitialOnboardingUiState(false, 'S8');
     this.screen = 'HOME';
     this.render();
   }
@@ -798,6 +1047,7 @@ export class AppController implements UIControllerActions {
     if (this.screen === 'PLAY') {
       return;
     }
+    this.clearTutorialDraft();
     this.audio.playSe('audio_ui_click');
     this.selectedDistrictId = 'residential';
     this.difficultyPopupOpen = false;
@@ -819,8 +1069,10 @@ export class AppController implements UIControllerActions {
     seed: number,
     preferredWordId: string | null,
   ): void {
+    this.clearInputCountdown();
     this.stopPlayTimer();
     this.inputAdapter?.detach();
+    this.inputAdapter = null;
 
     if (this.economy.activeSession !== null) {
       this.economy.endSession({ atMs: this.economy.clockMs });
@@ -856,6 +1108,7 @@ export class AppController implements UIControllerActions {
     this.initialStageSnapshot = this.economy.districts[districtId].stage;
     this.sessionBeforeIncomePerSecMicro = this.economy.totalIncomePerSecondMicro();
     this.sessionUnlockedAchievementIds = [];
+    this.sessionUnlockedRewardIds = [];
 
     if (this.economy.activeSession !== null) {
       this.economy.endSession({ atMs: this.economy.clockMs });
@@ -870,17 +1123,7 @@ export class AppController implements UIControllerActions {
 
     let wordProvider: (idx: number) => Word;
     if (mode === 'TUTORIAL') {
-      const tutorialWords = getTutorialWords();
-      const fallbackGenerator = new CourseGenerator({
-        courseId: 'relaxed',
-        seed: 1,
-        preferredWordId: null,
-      });
-      this.currentGenerator = fallbackGenerator;
-      wordProvider = (idx: number) =>
-        idx < tutorialWords.length
-          ? tutorialWords[idx]
-          : fallbackGenerator.getWordAt(idx - tutorialWords.length);
+      wordProvider = createTutorialWordProvider();
       this.currentComparisonKey = `tutorial:${WORDS_DATA.contentVersion}`;
       this.currentPlanId = 'tutorial';
     } else {
@@ -924,28 +1167,26 @@ export class AppController implements UIControllerActions {
     const bestSpeed =
       matchingBest.length > 0 ? Math.max(...matchingBest.map((r) => r.canonicalKpm)) : null;
 
-    this.achievements.startSession(sessionId, mode, {
+    this.currentSessionContext = {
       orderKey: this.currentPlanId,
       comparisonBestScore: bestScore,
       comparisonBestSpeed: bestSpeed,
       practiceQualifiedWordIds: this.dictionary.getMasteredWordIds(),
-    });
+    };
+    this.achievements.startSession(sessionId, mode, this.currentSessionContext);
 
     this.session = new GameSession({
       sessionId,
+      comparisonKey: this.currentComparisonKey,
       courseId: this.selectedCourseId,
       districtId,
       mode,
       wordProvider,
-      guideEnabled: this.settings.guideDefault,
+      guideEnabled: mode === 'TUTORIAL' || this.settings.guideDefault,
       onFact: (fact) => this.handleSessionFact(fact),
     });
 
     this.session.enterInputCheck(launchTarget);
-    this.inputAdapter?.detach();
-    if (mode === 'PRACTICE') {
-      this.session.completeInputCheck();
-    }
     this.screen = 'PLAY';
     this.playHostEl = null;
     this.render();
@@ -1028,6 +1269,10 @@ export class AppController implements UIControllerActions {
         if (this.session) {
           this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
         }
+        this.saveTutorialDraft();
+        if (res.wordCompleted && this.session?.currentMode === 'TUTORIAL' && !this.onboardingUi.deliveryInTransit) {
+          void this.commitSessionAndCity(undefined);
+        }
         this.renderPlayInPlace();
       },
       onDeliveryAttempt: (res) => {
@@ -1055,6 +1300,7 @@ export class AppController implements UIControllerActions {
         if (this.session) {
           this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
         }
+        this.saveTutorialDraft();
         this.renderPlayInPlace();
       },
       onNotice: (msg) => {
@@ -1227,6 +1473,7 @@ export class AppController implements UIControllerActions {
 
     const wallNow = Date.now();
     const evalRes = this.achievements.applyFact(fact, wallNow);
+    this.recordSessionRewards(evalRes.newlyUnlockedRewardIds);
     if (evalRes.newlyUnlockedAchievementIds.length > 0) {
       for (const id of evalRes.newlyUnlockedAchievementIds) {
         if (!this.sessionUnlockedAchievementIds.includes(id)) {
@@ -1253,12 +1500,13 @@ export class AppController implements UIControllerActions {
     if (fact.type === 'RoundFinished') {
       this.advanceEconomyToNow();
       const economySummary = this.economy.endSession({ atMs: this.economy.clockMs });
-      const citySnap = buildCityAchievementSnapshot(this.economy, this.paidEquipmentPurchaseCount);
+      const citySnap = this.cityAchievementSnapshot();
       const cityEval = this.achievements.applyCitySnapshot(citySnap, wallNow);
+      this.recordSessionRewards(cityEval.newlyUnlockedRewardIds);
       if (
         evalRes.newlyUnlockedAchievementIds.length > 0 ||
         cityEval.newlyUnlockedAchievementIds.length > 0 ||
-        (fact.completed && this.sessionUnlockedAchievementIds.length > 0)
+        (fact.completed && (this.sessionUnlockedAchievementIds.length > 0 || this.sessionUnlockedRewardIds.length > 0))
       ) {
         this.audio.playSe('audio_stamp_unlock');
       } else {
@@ -1297,12 +1545,14 @@ export class AppController implements UIControllerActions {
           ]),
         );
         this.resultRevealIndex = 0;
-        this.resultRevealDone = mergedNewIds.length === 0;
+        this.resultRevealDone = mergedNewIds.length === 0 && this.sessionUnlockedRewardIds.length === 0;
         this.lastResult = {
           snapshot: snap,
           evaluation: {
             ...cityEval,
+            recordUpdates: evalRes.recordUpdates,
             newlyUnlockedAchievementIds: mergedNewIds,
+            newlyUnlockedRewardIds: [...this.sessionUnlockedRewardIds],
           },
           economySummary,
           districtBeforeStage: this.initialStageSnapshot,
@@ -1325,8 +1575,9 @@ export class AppController implements UIControllerActions {
       this.economy.advanceTime(waitMs, wallNow);
       this.lastEconomyWallMs = wallNow;
     }
-    const citySnap = buildCityAchievementSnapshot(this.economy, this.paidEquipmentPurchaseCount);
+    const citySnap = this.cityAchievementSnapshot();
     const cityEval = this.achievements.applyCitySnapshot(citySnap, wallNow);
+    this.recordSessionRewards(cityEval.newlyUnlockedRewardIds);
     for (const id of cityEval.newlyUnlockedAchievementIds) {
       if (!this.sessionUnlockedAchievementIds.includes(id)) {
         this.sessionUnlockedAchievementIds.push(id);
@@ -1359,30 +1610,84 @@ export class AppController implements UIControllerActions {
       if (!this.onboardingUi.active || this.screen !== 'PLAY') {
         return;
       }
-      this.completeOnboardingDeliveryArrival();
+      void this.completeOnboardingDeliveryArrival();
     }, arrivalHoldMs);
   }
 
-  private completeOnboardingDeliveryArrival(): void {
+  private async completeOnboardingDeliveryArrival(): Promise<void> {
+    const session = this.session;
+    if (!session) return;
+
+    this.onboardingUi.saveFailed = false;
+    this.economy.endSession({ atMs: this.economy.clockMs });
+    if (!this.onboardingUi.receipt) {
+      const support = this.economy.grantTutorialSupplies();
+      this.onboardingUi.receipt = {
+        unlockedStampIds: [...this.sessionUnlockedAchievementIds],
+        unlockedRewardIds: [...this.sessionUnlockedRewardIds],
+        generatedMaterialsMicro: this.onboardingUi.generatedMaterialsMicro.toString(),
+        supportMaterialsMicro: support.materialsMicro.toString(),
+        supportCoinsMicro: support.coinsMicro.toString(),
+      };
+    }
+    const checkpoint: OnboardingStateRecord = {
+      version: 1,
+      status: 'in_progress',
+      step: 'S5',
+      updatedAt: Date.now(),
+      receipt: this.onboardingUi.receipt,
+    };
+    const saved = await this.commitSessionAndCity(undefined, checkpoint);
+    if (this.session !== session) return;
+    if (!saved) {
+      this.onboardingUi.saveFailed = true;
+      if (!this.tabLockLost) this.renderPlayInPlace();
+      return;
+    }
+
+    this.inputAdapter?.detach();
+    session.abort('completed');
+    this.session = null;
     this.onboardingUi.deliveryInTransit = false;
     this.onboardingUi.deliveryArrived = false;
     this.onboardingUi.step = 'S5';
-    this.flushOnboardingDeliveryArrivalToCity();
-    this.onboardingUi.unlockedStampIds = [...this.sessionUnlockedAchievementIds];
-    this.renderPlayInPlace();
+    this.onboardingUi.stampRevealIndex = 0;
+    this.onboardingStampReadyAt = Date.now() + STAMP_REVEAL_DURATION_MS;
+    this.onboardingUi.receipt = checkpoint.receipt ?? null;
+    this.setOnboardingProfile(checkpoint);
+    this.clearTutorialDraft();
+    this.screen = 'HOME';
+    this.audio.playSe('audio_stamp_unlock');
+    this.render();
   }
 
-  private async commitSessionAndCity(roundResult: RoundResultRecord | undefined): Promise<void> {
-    if (this.tabLockLost) {
-      return;
+  retryOnboardingArrival(): void {
+    if (this.onboardingUi.saveFailed && !this.tabLockLost) {
+      void this.completeOnboardingDeliveryArrival();
+      this.renderPlayInPlace();
     }
+  }
+
+  private async commitSessionAndCity(
+    roundResult: RoundResultRecord | undefined,
+    onboardingCheckpoint?: OnboardingStateRecord,
+  ): Promise<boolean> {
+    if (this.tabLockLost) {
+      return false;
+    }
+    const guide = this.onboardingUi;
     const factsToCommit = [...this.pendingFacts];
+    const finalRewards = factsToCommit.some((fact) => fact.type === 'PracticeSessionEnded' ||
+      fact.type === 'RoundFinished' && !fact.completed) ? [...this.sessionUnlockedRewardIds] : [];
     this.pendingFacts = [];
     try {
       const res = await this.repository.commitTypingFacts({
         lock: this.lock,
         facts: factsToCommit,
-        citySnapshot: buildCityAchievementSnapshot(this.economy, this.paidEquipmentPurchaseCount),
+        citySnapshot: this.cityAchievementSnapshot(),
+        sessionContext: this.session && this.currentSessionContext && this.session.sessionId === factsToCommit[0]?.sessionId
+          ? { sessionId: this.session.sessionId, context: this.currentSessionContext }
+          : undefined,
         roundResult,
       });
       this.lock = {
@@ -1394,36 +1699,75 @@ export class AppController implements UIControllerActions {
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
       this.recentResults = loaded.results;
-      await this.persistCitySnapshot(this.nextEconomyEventId('round-city'));
-      this.render();
+      const saved = await this.persistCitySnapshot(
+        this.nextEconomyEventId('round-city'),
+        this.onboardingUi === guide ? onboardingCheckpoint : undefined,
+      );
+      if (!saved) {
+        this.pendingFacts.unshift(...factsToCommit);
+        return false;
+      }
+      if (!onboardingCheckpoint && !roundResult?.completed && (finalRewards.length > 0 ||
+        factsToCommit.some((fact) => fact.mode !== 'TUTORIAL'))) {
+        this.queueReveals(rewardRevealIds([...finalRewards, ...res.evaluation.newlyUnlockedRewardIds]));
+      }
+      if (!onboardingCheckpoint && this.session?.currentMode !== 'TUTORIAL') this.render();
+      return true;
     } catch (err) {
+      this.pendingFacts.unshift(...factsToCommit);
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
       }
+      return false;
     }
   }
 
   completeInputCheck(): void {
-    if (!this.session) {
-      return;
-    }
+    const session = this.session;
+    if (!session || session.currentState !== 'INPUT_CHECK' || this.inputCountdownValue !== null) return;
     this.inputAdapter?.detach();
     this.playInputEl.value = '';
     this.playFeedback.mistakeFlash = false;
     this.playFeedback.mistakeLabel = null;
     this.onboardingUi.mistakeZeroCargoNoticeShown = false;
-    this.session.completeInputCheck();
     this.playFeedback.imePauseReason = false;
-    this.audio.playSe('audio_round_start');
-    this.render();
-    this.attachInputAdapter();
-    this.focusPlayInput();
+    this.inputCountdownValue = 3;
+    this.audio.playSe('audio_countdown_tick');
+    this.renderPlayInPlace();
+    this.inputCountdownTimer = window.setInterval(() => {
+      if (this.session !== session) {
+        this.clearInputCountdown();
+        return;
+      }
+      this.inputCountdownValue = (this.inputCountdownValue ?? 1) - 1;
+      if (this.inputCountdownValue > 0) {
+        this.audio.playSe('audio_countdown_tick');
+        this.renderPlayInPlace();
+        return;
+      }
+      this.clearInputCountdown();
+      session.completeInputCheck();
+      if (session.currentState === 'PAUSED') session.resume();
+      session.startRound();
+      this.audio.playSe('audio_round_start');
+      this.render();
+      this.attachInputAdapter();
+      this.focusPlayInput();
+      if (session.currentState === 'PLAYING') this.ensurePlayTimerRunning();
+    }, 1000);
+  }
+
+  private clearInputCountdown(): void {
+    if (this.inputCountdownTimer !== null) window.clearInterval(this.inputCountdownTimer);
+    this.inputCountdownTimer = null;
+    this.inputCountdownValue = null;
   }
 
   cancelInputCheck(): void {
     if (!this.session) {
       return;
     }
+    this.clearInputCountdown();
     this.audio.playSe('audio_ui_click');
     this.session.cancelInputCheck();
     if (this.session.currentState === 'HOME') {
@@ -1441,7 +1785,7 @@ export class AppController implements UIControllerActions {
           updatedAt: Date.now(),
         });
       } else {
-        this.onboardingUi = createInitialOnboardingUiState(false, 'S5');
+        this.onboardingUi = createInitialOnboardingUiState(false, 'S8');
       }
       this.screen = 'HOME';
       this.syncBgmTrack();
@@ -1450,23 +1794,15 @@ export class AppController implements UIControllerActions {
   }
 
   focusPlayInput(): void {
-    if (
-      this.session?.currentMode === 'TUTORIAL' &&
-      this.onboardingUi.active &&
-      this.onboardingUi.step === 'S5'
-    ) {
+    if (this.onboardingUi.deliveryInTransit) {
       return;
     }
     this.playInputEl.focus({ preventScroll: true });
     window.requestAnimationFrame(() => {
       const state = this.session?.currentState;
-      const isS5 =
-        this.session?.currentMode === 'TUTORIAL' &&
-        this.onboardingUi.active &&
-        this.onboardingUi.step === 'S5';
       if (
         this.screen === 'PLAY' &&
-        !isS5 &&
+        !this.onboardingUi.deliveryInTransit &&
         (state === 'PLAYING' || state === 'READY' || state === 'TUTORIAL' || state === 'PRACTICE')
       ) {
         this.playInputEl.focus({ preventScroll: true });
@@ -1512,11 +1848,13 @@ export class AppController implements UIControllerActions {
       return;
     }
     this.session.skipWord();
+    this.saveTutorialDraft();
     this.achievements.markSessionSkip(this.session.sessionId);
     this.resumePlay();
   }
 
   quitPlayToHome(): void {
+    this.clearInputCountdown();
     this.clearOnboardingArrivalTimer();
     this.audio.playSe('audio_ui_click');
     this.stopPlayTimer();
@@ -1567,7 +1905,6 @@ export class AppController implements UIControllerActions {
     }
     if (this.settings.onboarding?.status === 'in_progress') {
       this.startTutorial();
-      this.completeInputCheck();
       return;
     }
     this.startMainRound();
@@ -1632,24 +1969,37 @@ export class AppController implements UIControllerActions {
       this.applyDeliveredFeedback(res.bonus, res.cargoCount);
       this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
     }
+    this.saveTutorialDraft();
     this.renderPlayInPlace();
     this.focusPlayInput();
   }
 
   // Economy Actions
   setUpgradeCategory(category: UpgradeCategory): void {
+    if (this.isOnboardingUpgrade) {
+      if (this.activeOnboardingStep === 'S7' && category === 'packaging') {
+        this.audio.playSe('audio_ui_click');
+        this.selectOnboardingUpgradeTarget();
+      }
+      return;
+    }
     this.audio.playSe('audio_ui_click');
     this.selectedUpgradeCategory = category;
     this.render();
   }
 
   setPurchaseQuantity(qty: PurchaseQuantity): void {
+    if (this.isOnboardingUpgrade) return;
     this.audio.playSe('audio_ui_click');
     this.purchaseQuantity = qty;
     this.render();
   }
 
   buyEquipment(kind: EquipmentKind): void {
+    const guided = this.isOnboardingUpgrade;
+    if (guided && (this.activeOnboardingStep !== 'S7' || !this.onboardingUi.upgradeTargetSelected || kind !== 'packaging' || this.economy.packagingLevel > 0)) {
+      return;
+    }
     this.advanceEconomyToNow();
     try {
       const res = this.economy.purchase(
@@ -1661,10 +2011,20 @@ export class AppController implements UIControllerActions {
           economyEventId: this.nextEconomyEventId(`buy-${kind}`),
         },
       );
-      if (res.applied) {
+      if (res.applied && res.count > 0) {
         this.paidEquipmentPurchaseCount += res.count;
         this.audio.playSe('audio_upgrade_buy');
-        void this.persistCitySnapshot(this.nextEconomyEventId(`persist-${kind}`));
+        const checkpoint: OnboardingStateRecord | undefined = guided
+          ? {
+            version: 1, status: 'completed', step: 'S8', updatedAt: Date.now(),
+            receipt: this.onboardingUi.receipt ?? undefined,
+          }
+          : undefined;
+        if (checkpoint) {
+          this.showOnboardingUpgrade('S8');
+          this.setOnboardingProfile(checkpoint);
+        }
+        void this.persistCitySnapshot(this.nextEconomyEventId(`persist-${kind}`), checkpoint);
       }
     } catch {
       // Guarded in UI
@@ -1741,6 +2101,10 @@ export class AppController implements UIControllerActions {
   }
 
   upgradeDistrict(districtId: DistrictId): void {
+    const guided = this.isOnboardingUpgrade;
+    if (guided && (this.activeOnboardingStep !== 'S6' || !this.onboardingUi.upgradeTargetSelected || districtId !== 'residential' || this.economy.districts.residential.stage > 0)) {
+      return;
+    }
     this.advanceEconomyToNow();
     try {
       const nextStage = this.economy.districts[districtId].stage + 1;
@@ -1750,7 +2114,17 @@ export class AppController implements UIControllerActions {
       });
       if (res.applied !== false) {
         this.audio.playSe(res.openedDistricts.length > 0 ? 'audio_district_open' : 'audio_upgrade_buy');
-        void this.persistCitySnapshot(this.nextEconomyEventId(`persist-upgrade-${districtId}-${nextStage}`));
+        const checkpoint: OnboardingStateRecord | undefined = guided
+          ? {
+            version: 1, status: 'in_progress', step: 'S7', updatedAt: Date.now(),
+            receipt: this.onboardingUi.receipt ?? undefined,
+          }
+          : undefined;
+        if (checkpoint) {
+          this.showOnboardingUpgrade('S7');
+          this.setOnboardingProfile(checkpoint);
+        }
+        void this.persistCitySnapshot(this.nextEconomyEventId(`persist-upgrade-${districtId}-${nextStage}`), checkpoint);
       }
     } catch {
       // Guarded in UI
@@ -1814,7 +2188,12 @@ export class AppController implements UIControllerActions {
   }
 
   equipFrame(frameId: string | null): void {
+    if (frameId && (!getEquippedStampFrameAsset(frameId) || !this.achievements.getUnlockedRewardIds().includes(frameId))) return;
+    const focusId = frameId ?? this.settings.equippedFrameId;
     this.updateSettings({ equippedFrameId: frameId });
+    if (focusId) {
+      this.mountEl.querySelector<HTMLElement>(`[data-equip-frame="${focusId}"]`)?.focus({ preventScroll: true });
+    }
   }
 
   // Settings & Data
@@ -1855,7 +2234,7 @@ export class AppController implements UIControllerActions {
   }
 
   private advanceResultReveal(): void {
-    const total = this.lastResult?.evaluation.newlyUnlockedAchievementIds.length ?? 0;
+    const total = getResultRevealIds(this.lastResult?.evaluation).length;
     if (this.resultRevealIndex < total - 1) {
       this.resultRevealIndex += 1;
       this.audio.playSe('audio_stamp_unlock');
@@ -1957,6 +2336,7 @@ export class AppController implements UIControllerActions {
     if (this.tabLockLost) {
       return;
     }
+    if (scope === 'city_and_achievements') this.clearTutorialDraft();
     this.pendingResetConfirm = null;
     this.audio.playSe('audio_ui_click');
     const prevTutorialCompleted = this.settings.tutorialCompleted;
@@ -2053,7 +2433,7 @@ export class AppController implements UIControllerActions {
 
   private getUnreadAchievementCount(): number {
     let count = 0;
-    for (const id of Object.keys(this.unlocks)) {
+    for (const id of this.achievements.getUnlockedIds()) {
       if (this.readState[`achievement:${id}`]?.read !== true) {
         count += 1;
       }
@@ -2076,7 +2456,7 @@ export class AppController implements UIControllerActions {
     const snap: SessionSnapshot = this.session.getSnapshot();
     const deliveryKey: DeliveryKeyOption =
       this.settings.deliveryKey === 'Space' ? 'Space' : 'Enter';
-    if (snap.mode === 'TUTORIAL' && this.onboardingUi.active && this.onboardingUi.step === 'S5') {
+    if (this.onboardingUi.deliveryInTransit) {
       this.inputAdapter?.detach();
     }
     syncPlayScreen(
@@ -2091,6 +2471,7 @@ export class AppController implements UIControllerActions {
         onboarding: this.onboardingUi,
         onboardingInProgress: this.settings.onboarding?.status === 'in_progress',
         inputEl: this.playInputEl,
+        countdownRemaining: this.inputCountdownValue,
         actions: this,
       },
       this.initialStageSnapshot,
@@ -2101,6 +2482,7 @@ export class AppController implements UIControllerActions {
     this.syncBgmTrack();
     this.inputAdapter?.detach();
     const shell = el('div', { className: 'kb-shell' });
+    const onboardingStep = this.activeOnboardingStep;
 
     // Warnings (memory-only / tab-lock lost)
     if (this.repository.backend === 'memory') {
@@ -2178,9 +2560,8 @@ export class AppController implements UIControllerActions {
           unreadCount: this.getUnreadAchievementCount(),
           equippedTitleName: this.getEquippedTitleName(),
           navLocked:
-            this.screen === 'HOME' &&
-            this.onboardingUi.active &&
-            (this.onboardingUi.step === 'S1' || this.onboardingUi.step === 'S2'),
+            this.isOnboardingUpgrade ||
+            (this.screen === 'HOME' && (onboardingStep === 'S1' || onboardingStep === 'S2' || onboardingStep === 'S5')),
           onNavigate: (s) => this.navigate(s),
         }),
       );
@@ -2206,7 +2587,7 @@ export class AppController implements UIControllerActions {
               difficultyPopupOpen: this.difficultyPopupOpen,
               pinnedAchievementId: this.settings.pinnedGoalAchievementId,
               reducedMotion: this.settings.reduceMotion,
-              onboarding: this.onboardingUi,
+              onboarding: onboardingStep ? this.onboardingUi : undefined,
               actions: this,
             }),
           );
@@ -2244,6 +2625,10 @@ export class AppController implements UIControllerActions {
               selectedDistrictId: this.selectedDistrictId,
               selectedCategory: this.selectedUpgradeCategory,
               quantity: this.purchaseQuantity,
+              onboardingStep: this.isOnboardingUpgrade ? onboardingStep : null,
+              onboardingTargetSelected: this.onboardingUi.upgradeTargetSelected,
+              reducedMotion: this.settings.reduceMotion,
+              onboardingStampIds: this.sessionUnlockedAchievementIds,
               actions: this,
             }),
           );
@@ -2280,31 +2665,62 @@ export class AppController implements UIControllerActions {
               pinnedAchievementId: this.settings.pinnedGoalAchievementId,
               equippedTitleId: this.settings.equippedTitleId,
               equippedFrameId: this.settings.equippedFrameId,
-              selectedFamily: this.handbookFamily,
+              group: this.handbookGroup,
+              page: this.handbookPage,
+              sheetId: this.handbookSheetId,
               selectedAchievementId: this.handbookSelectedId,
               filter: this.handbookFilter,
               tab: this.handbookTab,
-              revealedHiddenIds: this.revealedHiddenIds,
-              onSelectFamily: (f) => {
+              frameGroup: this.handbookFrameGroup,
+              onSelectGroup: (group) => {
                 this.audio.playSe('audio_ui_click');
-                this.handbookFamily = f;
-                this.handbookSelectedId = null;
+                this.handbookGroup = group;
+                this.handbookPage = 0;
+                this.handbookSheetId = null;
                 this.render();
+                this.mountEl.querySelector<HTMLElement>('[data-testid="handbook-group"]')?.focus();
               },
+              onSelectSheet: (id) => {
+                this.audio.playSe('audio_ui_click');
+                this.handbookSheetId = id;
+                this.render();
+                this.mountEl.querySelector<HTMLElement>(`[data-sheet-id="${id}"]`)?.focus();
+              },
+              onSetPage: (page, control) => {
+                this.audio.playSe('audio_ui_click');
+                this.handbookPage = page;
+                this.render();
+                const restored = this.mountEl.querySelector<HTMLElement>(`[data-testid="${control}"]:not(:disabled)`);
+                (restored ?? this.mountEl.querySelector<HTMLElement>('[data-testid="handbook-page"]'))?.focus();
+              },
+              revealedHiddenIds: this.revealedHiddenIds,
               onSelectAchievement: (id) => {
                 this.audio.playSe('audio_ui_click');
+                if (id && !this.handbookSelectedId) this.handbookDetailAnchor = id;
                 this.handbookSelectedId = id;
                 this.render();
+                if (!id && this.handbookDetailAnchor) {
+                  const origin = this.mountEl.querySelector<HTMLElement>(`[data-stamp-id="${this.handbookDetailAnchor}"]`);
+                  origin?.focus({ preventScroll: true });
+                  this.handbookDetailAnchor = null;
+                }
               },
               onSetFilter: (f) => {
                 this.audio.playSe('audio_ui_click');
                 this.handbookFilter = f;
                 this.render();
+                this.mountEl.querySelector<HTMLElement>('[data-testid="handbook-filter"]')?.focus();
               },
               onSetTab: (t) => {
                 this.audio.playSe('audio_ui_click');
                 this.handbookTab = t;
                 this.render();
+              },
+              onSelectFrameGroup: (group) => {
+                this.handbookFrameGroup = group;
+                this.audio.playSe('audio_ui_click');
+                this.render();
+                this.mountEl.querySelector<HTMLElement>('[data-testid="handbook-frame-group"]')?.focus({ preventScroll: true });
               },
               onRevealHidden: (id) => {
                 this.audio.playSe('audio_ui_click');
@@ -2319,6 +2735,7 @@ export class AppController implements UIControllerActions {
           mainEl.appendChild(
             renderDictionaryScreen({
               tracker: this.dictionary,
+              getMastery: (id) => this.achievements.getWordMastery(id),
               state: this.dictionaryState,
               onUpdateState: (patch) => {
                 this.audio.playSe('audio_ui_click');
@@ -2383,19 +2800,40 @@ export class AppController implements UIControllerActions {
       shell.appendChild(modal);
     }
 
+    if (this.canShowQueuedReveals()) {
+      const isLast = this.cityRevealIndex === this.cityRevealIds.length - 1;
+      const closeCityReveals = () => {
+        this.cityRevealIds = [];
+        this.cityRevealIndex = 0;
+        this.render();
+      };
+      const dialog = renderStampReveal({
+        achievementId: this.cityRevealIds[this.cityRevealIndex],
+        index: this.cityRevealIndex, total: this.cityRevealIds.length,
+        reducedMotion: this.settings.reduceMotion,
+        advanceLabel: isLast ? '閉じる' : `次へ（あと${this.cityRevealIds.length - this.cityRevealIndex - 1}件）`,
+        onAdvance: () => {
+          if (this.cityRevealIndex === this.cityRevealIds.length - 1) closeCityReveals();
+          else {
+            this.cityRevealIndex += 1;
+            this.audio.playSe('audio_stamp_unlock');
+            this.render();
+          }
+        },
+        onSkip: closeCityReveals,
+      });
+      dialog.dataset.testid = 'city-stamp-reveal';
+      shell.appendChild(dialog);
+    }
+
     const prevMainScroll = this.mountEl.querySelector<HTMLElement>('.kb-main > *')?.scrollTop ?? 0;
     const prevLeftScroll = this.mountEl.querySelector<HTMLElement>('.kb-home-left')?.scrollTop ?? 0;
 
     this.mountEl.replaceChildren(shell);
-    if (
-      this.screen === 'PLAY' &&
-      this.inputAdapter &&
-      !(
-        this.session?.currentMode === 'TUTORIAL' &&
-        this.onboardingUi.active &&
-        this.onboardingUi.step === 'S5'
-      )
-    ) {
+    if (this.isOnboardingUpgrade) {
+      shell.querySelector<HTMLElement>('[data-onboarding-heading]')?.focus({ preventScroll: true });
+    }
+    if (this.screen === 'PLAY' && this.inputAdapter && this.session?.currentState !== 'INPUT_CHECK' && !this.onboardingUi.deliveryInTransit) {
       this.inputAdapter.attach();
     }
 
@@ -2415,6 +2853,8 @@ export class AppController implements UIControllerActions {
       return;
     }
 
+    if (this.canShowQueuedReveals()) return;
+
     if (this.welcomeBack && this.screen !== 'PLAY') {
       if (e.key === 'Escape' || e.key === 'Enter') {
         e.preventDefault();
@@ -2426,7 +2866,7 @@ export class AppController implements UIControllerActions {
     if (this.screen === 'PLAY' && this.session) {
       const state = this.session.currentState;
       if (state === 'INPUT_CHECK') {
-        if (e.key === 'a' || e.key === 'A') {
+        if ((e.key === 'f' || e.key === 'F') && !e.repeat && this.inputCountdownValue === null) {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
@@ -2439,6 +2879,8 @@ export class AppController implements UIControllerActions {
           this.cancelInputCheck();
           return;
         }
+        if (e.key === 'Tab' || ((e.key === 'Enter' || e.key === ' ') && document.activeElement instanceof HTMLButtonElement)) return;
+        e.preventDefault();
         return;
       }
       if (state === 'PAUSED') {
@@ -2458,15 +2900,6 @@ export class AppController implements UIControllerActions {
         return;
       }
       if (this.session.currentMode === 'TUTORIAL') {
-        if (
-          this.onboardingUi.active &&
-          this.onboardingUi.step === 'S5' &&
-          (e.key === 'Enter' || e.key === 'Escape')
-        ) {
-          e.preventDefault();
-          this.finishOnboardingToHome();
-          return;
-        }
         if (e.shiftKey && e.key === 'Enter') {
           e.preventDefault();
           this.skipOnboarding();
@@ -2490,6 +2923,11 @@ export class AppController implements UIControllerActions {
       return;
     }
 
+    if (this.isOnboardingUpgrade || (this.screen === 'HOME' && this.activeOnboardingStep === 'S5')) {
+      if (e.key === 'Escape') e.preventDefault();
+      return;
+    }
+
     const active = document.activeElement;
     const isFormField =
       active instanceof HTMLInputElement ||
@@ -2506,7 +2944,7 @@ export class AppController implements UIControllerActions {
       if (e.key === 'Tab') {
         const selector =
           this.onboardingUi.step === 'S1'
-            ? '.kb-coach-mark.is-step-s1 button:not(:disabled)'
+            ? '.kb-onboarding-intro button:not(:disabled)'
             : '.kb-map-district-btn.is-onboard-target:not(:disabled), .kb-coach-mark.is-step-s2 button:not(:disabled)';
         const focusables = Array.from(this.mountEl.querySelectorAll<HTMLElement>(selector));
         if (focusables.length > 0) {
@@ -2524,57 +2962,24 @@ export class AppController implements UIControllerActions {
         }
         return;
       }
-      if (e.key === 'Enter') {
-        if (
-          active instanceof HTMLButtonElement &&
-          (active.closest('.kb-coach-mark') || active.closest('.kb-map-district-btn'))
-        ) {
-          return;
-        }
-        e.preventDefault();
-        if (this.onboardingUi.step === 'S1') {
-          this.advanceOnboardingToDistrictSelect();
-        }
-        return;
-      }
-      if (e.key === ' ') {
-        if (
-          active instanceof HTMLButtonElement &&
-          (active.closest('.kb-coach-mark') || active.closest('.kb-map-district-btn'))
-        ) {
-          return;
-        }
-        e.preventDefault();
+      if (
+        (e.key === 'Enter' || e.key === ' ') &&
+        active instanceof HTMLButtonElement &&
+        active.closest('.kb-onboarding-intro, .kb-coach-mark, .kb-map-district-btn')
+      ) {
         return;
       }
       e.preventDefault();
+      if (e.key === 'Enter' && this.onboardingUi.step === 'S1') {
+        this.advanceOnboardingToDistrictSelect();
+      }
       return;
     }
 
-    // Global screen navigation (1-5, Esc)
-    if (e.code === 'Digit1') {
+    const navShortcut = NAV_ITEMS.find((item) => e.code === item.code || e.key.toUpperCase() === item.key);
+    if (navShortcut) {
       e.preventDefault();
-      this.navigate('HOME');
-      return;
-    }
-    if (e.code === 'Digit2') {
-      e.preventDefault();
-      this.navigate('UPGRADES');
-      return;
-    }
-    if (e.code === 'Digit3') {
-      e.preventDefault();
-      this.navigate('HANDBOOK');
-      return;
-    }
-    if (e.code === 'Digit4') {
-      e.preventDefault();
-      this.navigate('DICTIONARY');
-      return;
-    }
-    if (e.code === 'Digit5') {
-      e.preventDefault();
-      this.navigate('SETTINGS');
+      this.navigate(navShortcut.screen);
       return;
     }
     if (e.key === 'Escape') {
@@ -2642,7 +3047,7 @@ export class AppController implements UIControllerActions {
         this.selectDistrict(activeDistricts[nextIdx]);
       }
     } else if (this.screen === 'RESULT') {
-      const revealCount = this.lastResult?.evaluation.newlyUnlockedAchievementIds.length ?? 0;
+      const revealCount = getResultRevealIds(this.lastResult?.evaluation).length;
       if (!this.resultRevealDone && revealCount > 0) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();

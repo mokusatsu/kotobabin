@@ -1,3 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="時間">
-  <rect x="18" y="28" width="28" height="22" rx="4" fill="none" stroke="#203D36" stroke-width="3.5"/><path d="M23 28 V20 A9 9 0 0 1 41 20 V28" fill="none" stroke="#203D36" stroke-width="3.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="時間">
+<circle cx="16" cy="16" r="11.5" fill="#FFFDF7" stroke="#203D36" stroke-width="2.2"/><path d="M16 9 V16 L21 19" fill="none" stroke="#B34E39" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

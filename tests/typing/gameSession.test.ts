@@ -44,6 +44,36 @@ function typeWordClean(session: GameSession, reading: string, timeMs: number) {
 }
 
 describe('CourseGenerator', () => {
+  it('records time spent entering a practice word without the pause', () => {
+    const facts: ConfirmedFact[] = [];
+    const session = new GameSession({
+      words: [makeWord('cat', 'ねこ')], mode: 'PRACTICE', onFact: (fact) => facts.push(fact),
+    });
+    session.handleKey('n', 100);
+    session.pause(200);
+    session.resume(1200);
+    session.handleKey('e', 1300);
+    session.handleKey('k', 1400);
+    session.handleKey('o', 1500);
+    expect(facts[0]).toMatchObject({ type: 'WordCompleted', inputElapsedMs: 400 });
+  });
+
+  it('starts the round clock after preparation without consuming a typing key', () => {
+    let now = 0;
+    const session = new GameSession({ words: [makeWord('start', 'ねこ')], now: () => now });
+    session.enterInputCheck();
+    session.handleKey('f');
+    now = 3000;
+    session.completeInputCheck();
+    session.startRound();
+    expect(session.currentState).toBe('PLAYING');
+    expect(session.getSnapshot().typed).toBe('');
+    expect(session.getSnapshot().mistakeCount).toBe(0);
+    expect(session.getRemainingMs()).toBe(90000);
+    now = 4000;
+    expect(session.getRemainingMs()).toBe(89000);
+  });
+
   it('generates deterministic 5-word waves [easy, medium, medium, hard, easy]', () => {
     const genA = new CourseGenerator({ courseId: 'standard', seed: 42 });
     const genB = new CourseGenerator({ courseId: 'standard', seed: 42 });
@@ -100,6 +130,23 @@ describe('CourseGenerator', () => {
 });
 
 describe('GameSession', () => {
+  it('restores tutorial actions without re-emitting their facts or changing cargo, score, or partial input', () => {
+    const words = [makeWord('cat', 'ねこ'), makeWord('flower', 'はな')];
+    const original = new GameSession({ mode: 'TUTORIAL', words });
+    typeWordClean(original, 'ねこ', 1);
+    original.handleKey('h');
+    original.handleKey('x');
+    const onFact = vi.fn();
+    const restored = new GameSession({ mode: 'TUTORIAL', words, tutorialCheckpoint: original.getTutorialCheckpoint(), onFact });
+    expect(restored.getSnapshot()).toEqual(original.getSnapshot());
+    expect(onFact).not.toHaveBeenCalled();
+    restored.handleKey('a');
+    restored.handleKey('n');
+    restored.handleKey('a');
+    expect(onFact).toHaveBeenCalledOnce();
+    expect(restored.facts[1]?.factSequence).toBe(2);
+  });
+
   it('handles manual delivery, 4th word clean vs mistake, and 5th word auto delivery', () => {
     const w5 = makeWord('w5', 'あいうえお'); // canonicalLength 5 -> base 50
     const nowMs = 1000;

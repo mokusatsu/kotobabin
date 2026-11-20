@@ -1,4 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="共通切手枠">
-  <rect x="6" y="6" width="228" height="228" rx="4" fill="none" stroke="#C9D0C3" stroke-width="4" stroke-dasharray="8 6"/>
-  <rect x="14" y="14" width="212" height="212" rx="2" fill="none" stroke="#24594F" stroke-width="1.5" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="共通切手枠">
+  <defs>
+    <mask id="stamp-perf-mask">
+      <rect width="640" height="640" fill="white"/>
+      <circle cx="40" cy="0" r="10" fill="black"/><circle cx="40" cy="640" r="10" fill="black"/><circle cx="0" cy="40" r="10" fill="black"/><circle cx="640" cy="40" r="10" fill="black"/><circle cx="80" cy="0" r="10" fill="black"/><circle cx="80" cy="640" r="10" fill="black"/><circle cx="0" cy="80" r="10" fill="black"/><circle cx="640" cy="80" r="10" fill="black"/><circle cx="120" cy="0" r="10" fill="black"/><circle cx="120" cy="640" r="10" fill="black"/><circle cx="0" cy="120" r="10" fill="black"/><circle cx="640" cy="120" r="10" fill="black"/><circle cx="160" cy="0" r="10" fill="black"/><circle cx="160" cy="640" r="10" fill="black"/><circle cx="0" cy="160" r="10" fill="black"/><circle cx="640" cy="160" r="10" fill="black"/><circle cx="200" cy="0" r="10" fill="black"/><circle cx="200" cy="640" r="10" fill="black"/><circle cx="0" cy="200" r="10" fill="black"/><circle cx="640" cy="200" r="10" fill="black"/><circle cx="240" cy="0" r="10" fill="black"/><circle cx="240" cy="640" r="10" fill="black"/><circle cx="0" cy="240" r="10" fill="black"/><circle cx="640" cy="240" r="10" fill="black"/><circle cx="280" cy="0" r="10" fill="black"/><circle cx="280" cy="640" r="10" fill="black"/><circle cx="0" cy="280" r="10" fill="black"/><circle cx="640" cy="280" r="10" fill="black"/><circle cx="320" cy="0" r="10" fill="black"/><circle cx="320" cy="640" r="10" fill="black"/><circle cx="0" cy="320" r="10" fill="black"/><circle cx="640" cy="320" r="10" fill="black"/><circle cx="360" cy="0" r="10" fill="black"/><circle cx="360" cy="640" r="10" fill="black"/><circle cx="0" cy="360" r="10" fill="black"/><circle cx="640" cy="360" r="10" fill="black"/><circle cx="400" cy="0" r="10" fill="black"/><circle cx="400" cy="640" r="10" fill="black"/><circle cx="0" cy="400" r="10" fill="black"/><circle cx="640" cy="400" r="10" fill="black"/><circle cx="440" cy="0" r="10" fill="black"/><circle cx="440" cy="640" r="10" fill="black"/><circle cx="0" cy="440" r="10" fill="black"/><circle cx="640" cy="440" r="10" fill="black"/><circle cx="480" cy="0" r="10" fill="black"/><circle cx="480" cy="640" r="10" fill="black"/><circle cx="0" cy="480" r="10" fill="black"/><circle cx="640" cy="480" r="10" fill="black"/><circle cx="520" cy="0" r="10" fill="black"/><circle cx="520" cy="640" r="10" fill="black"/><circle cx="0" cy="520" r="10" fill="black"/><circle cx="640" cy="520" r="10" fill="black"/><circle cx="560" cy="0" r="10" fill="black"/><circle cx="560" cy="640" r="10" fill="black"/><circle cx="0" cy="560" r="10" fill="black"/><circle cx="640" cy="560" r="10" fill="black"/><circle cx="600" cy="0" r="10" fill="black"/><circle cx="600" cy="640" r="10" fill="black"/><circle cx="0" cy="600" r="10" fill="black"/><circle cx="640" cy="600" r="10" fill="black"/>
+      <rect x="64" y="64" width="512" height="512" rx="4" fill="black"/>
+    </mask>
+  </defs>
+  <rect width="640" height="640" fill="#FFFDF7" mask="url(#stamp-perf-mask)"/>
+  <rect x="44" y="44" width="552" height="552" rx="6" fill="none" stroke="#B58A3C" stroke-width="4"/>
+  <rect x="58" y="58" width="524" height="524" rx="4" fill="none" stroke="#24594F" stroke-width="3" stroke-dasharray="12 8"/>
+  <circle cx="44" cy="44" r="6" fill="#B58A3C"/>
+  <circle cx="596" cy="44" r="6" fill="#B58A3C"/>
+  <circle cx="44" cy="596" r="6" fill="#B58A3C"/>
+  <circle cx="596" cy="596" r="6" fill="#B58A3C"/>
 </svg>
