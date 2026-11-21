@@ -152,9 +152,11 @@ async function scenario(scale) {
     await start();
     await inspect('typing', '.kb-play-paper');
     assert.equal(await page.locator('.kb-play-world-bg').evaluate((el) => getComputedStyle(el, '::after').content), 'none');
-    await page.keyboard.type('nekohana');
-    await page.keyboard.press('Enter');
-    for (const id of ['A01', 'A02', 'A03', 'reward_family_a_postcard']) {
+    await typeWords(1);
+    await inspect('tutorial-loading-rule', '.kb-play-tutorial-banner');
+    await inspect('tutorial-dispatch-progress', '.kb-play-paper');
+    await typeWords(4);
+    for (const id of ['A01', 'A02', 'A04', 'reward_family_a_postcard']) {
       await page.waitForFunction((stampId) => document.querySelector('[data-testid="gacha-reveal-card"]')?.getAttribute('data-reveal-id') === stampId, id);
       await page.waitForTimeout(450);
       if (id === 'reward_family_a_postcard') {
@@ -185,6 +187,8 @@ async function scenario(scale) {
       assert((await page.locator('.kb-nav-btn[aria-current="page"]').innerText()).includes(title));
       await inspect(`navigation-${key}`, '.kb-header', true);
     }
+    assert(!(await page.locator('.kb-settings-screen').innerText()).includes('手動配達キー'));
+    await inspect('settings-delivery-controls', '.kb-settings-screen', true);
     await page.keyboard.press('k');
     assert.match(await page.getByTestId('handbook-stamps-tab').innerText(), /\/500/);
     const sheetTitle = page.getByTestId('handbook-sheet-title');
@@ -330,8 +334,10 @@ async function scenario(scale) {
     await page.locator('dialog:modal .kb-stamp-flavor').waitFor();
     await inspect('series-secret-revealed', 'dialog:modal', true);
     await page.locator('.kb-stamp-dialog-close').tap();
+    await page.locator('dialog:modal').waitFor({ state: 'hidden' });
     await page.getByTestId('handbook-filter').selectOption('unlocked');
     await page.getByText('この条件の切手はありません。').waitFor();
+    await page.getByTestId('handbook-group').tap({ trial: true });
     await inspect('handbook-empty-filter', '.kb-grid-handbook', true);
     {
       await page.evaluate((seedOtherFrames) => new Promise((resolve, reject) => {
@@ -507,7 +513,45 @@ async function scenario(scale) {
     assert(initialRemaining >= 88.5 && initialRemaining <= 90, `Countdown consumed round time: ${initialRemaining}`);
     await page.clock.runFor(1100);
     assert((await readRemaining()) < initialRemaining - 0.5, 'The round clock did not start after the countdown.');
-    const firstWord = await typeWords(10);
+    const firstWord = await typeWords(4);
+    const dispatchHint = page.getByTestId('play-deliver-hint');
+    const extraProgress = page.getByTestId('extra-delivery-progress');
+    const assertDeliveryProgressLayout = async () => {
+      assert(await extraProgress.evaluate((meter, fontScale) => {
+        const row = meter.parentElement;
+        const progress = meter.getBoundingClientRect();
+        const cargo = row.querySelector('.kb-deliver-cargo-count').getBoundingClientRect();
+        const group = row.getBoundingClientRect();
+        const paper = meter.closest('.kb-play-paper').getBoundingClientRect();
+        const aligned = Math.abs(cargo.top + cargo.height / 2 - progress.top - progress.height / 2) < 1;
+        const centered = Math.abs(group.left + group.width / 2 - paper.left - paper.width / 2) < 1;
+        const marks = [...meter.querySelectorAll('.kb-extra-mark')];
+        return cargo.right < progress.left && aligned && centered && marks.length === 5
+          && marks.every((mark) => Math.abs(mark.clientWidth - 36 * Number(fontScale)) < 1);
+      }, scale), 'Cargo and extra delivery should share a centered row with large envelope marks.');
+    };
+    assert.match(await dispatchHint.innerText(), /積載 4\/5/);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 4);
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Space');
+    assert.match(await dispatchHint.innerText(), /積載 4\/5/);
+    await assertDeliveryProgressLayout();
+    await inspect('main-dispatch-waiting', '.kb-play-paper');
+    await typeWords(1);
+    assert.match(await dispatchHint.innerText(), /通常便と追加便が出発/);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 5);
+    await assertDeliveryProgressLayout();
+    await inspect('main-double-dispatch', '.kb-play-paper');
+    await typeWords(4);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 4);
+    await page.keyboard.press("'");
+    assert.equal(await extraProgress.locator('.is-lit').count(), 0);
+    assert.match(await dispatchHint.innerText(), /積載 4\/5/);
+    await inspect('main-dispatch-streak-reset', '.kb-play-paper');
+    await typeWords(1);
+    assert.match(await dispatchHint.innerText(), /通常便が出発/);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 0);
+    await inspect('main-regular-dispatch', '.kb-play-paper');
     await page.clock.fastForward(90_000);
     await page.getByTestId('gacha-reveal-card').waitFor();
     await inspect('series-result-animation', 'dialog:modal', true);

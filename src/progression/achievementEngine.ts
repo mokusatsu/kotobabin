@@ -144,8 +144,7 @@ export interface RewardRecord {
 export interface AchievementProgressState {
   series?: SeriesProgressState;
   lifetimeCompletedWords: number;
-  manualDeliveryCount: number;
-  groupedDeliveryCount: number;
+  extraDeliveryCount: number;
   fullDeliveryCount: number;
   lifetimeDeliveredCargo: number;
   completedRounds: number;
@@ -159,6 +158,7 @@ export interface AchievementProgressState {
   normalMaxCleanStreak: number;
   normalCompletedCoursesWith5Words: CourseId[];
   normalMasteredCourses20Words95Acc: CourseId[];
+  normalPairedDeliveryCourses: CourseId[];
 }
 
 export interface CityAchievementSnapshot {
@@ -193,16 +193,12 @@ export interface ActiveSessionTracker {
   completedWordsCount: number;
   currentCleanStreak: number;
   maxCleanStreakInSession: number;
-  manualDeliveriesInRound: number;
-  smallManualDeliveriesInRound: number;
-  largeManualDeliveriesInRound: number;
-  fullDeliveriesInRound: number;
-  manualTwoCountInRound: number;
-  manualFourCountInRound: number;
-  manualTwoSeenInRound: boolean;
-  fullAfterManualTwoInRound: boolean;
-  pendingManualFourWordPosition: number | null;
-  immediateNextWordCleanAfterManualFour: boolean;
+  fullDeliveryPositions: number[];
+  extraDeliveriesInRound: number;
+  fullInFirstHalf: boolean;
+  pairedDeliveryInRound: boolean;
+  fiveCleanAfterFull: boolean;
+  immediateCleanAfterFull: boolean;
   qualifiedWordCleanInRound: boolean;
   skipsObserved: number;
   guideUsed: boolean;
@@ -274,8 +270,7 @@ export function meetsSpeedImprovement(
 export function createInitialAchievementProgress(): AchievementProgressState {
   return {
     lifetimeCompletedWords: 0,
-    manualDeliveryCount: 0,
-    groupedDeliveryCount: 0,
+    extraDeliveryCount: 0,
     fullDeliveryCount: 0,
     lifetimeDeliveredCargo: 0,
     completedRounds: 0,
@@ -289,6 +284,7 @@ export function createInitialAchievementProgress(): AchievementProgressState {
     normalMaxCleanStreak: 0,
     normalCompletedCoursesWith5Words: [],
     normalMasteredCourses20Words95Acc: [],
+    normalPairedDeliveryCourses: [],
   };
 }
 
@@ -309,16 +305,12 @@ function createEmptySessionTracker(
     completedWordsCount: 0,
     currentCleanStreak: 0,
     maxCleanStreakInSession: 0,
-    manualDeliveriesInRound: 0,
-    smallManualDeliveriesInRound: 0,
-    largeManualDeliveriesInRound: 0,
-    fullDeliveriesInRound: 0,
-    manualTwoCountInRound: 0,
-    manualFourCountInRound: 0,
-    manualTwoSeenInRound: false,
-    fullAfterManualTwoInRound: false,
-    pendingManualFourWordPosition: null,
-    immediateNextWordCleanAfterManualFour: false,
+    fullDeliveryPositions: [],
+    extraDeliveriesInRound: 0,
+    fullInFirstHalf: false,
+    pairedDeliveryInRound: false,
+    fiveCleanAfterFull: false,
+    immediateCleanAfterFull: false,
     qualifiedWordCleanInRound: false,
     skipsObserved: 0,
     guideUsed: false,
@@ -354,6 +346,7 @@ export class AchievementEngine {
           practiceCleanTags: [...incoming.practiceCleanTags],
           normalCompletedCoursesWith5Words: [...incoming.normalCompletedCoursesWith5Words],
           normalMasteredCourses20Words95Acc: [...incoming.normalMasteredCourses20Words95Acc],
+          normalPairedDeliveryCourses: [...(incoming.normalPairedDeliveryCourses ?? [])],
         }
       : base;
 
@@ -430,6 +423,7 @@ export class AchievementEngine {
         normalCompletedCoursesWith5Words: [
           ...this.progress.normalCompletedCoursesWith5Words,
         ],
+        normalPairedDeliveryCourses: [...this.progress.normalPairedDeliveryCourses],
         normalMasteredCourses20Words95Acc: [
           ...this.progress.normalMasteredCourses20Words95Acc,
         ],
@@ -465,7 +459,6 @@ export class AchievementEngine {
     }
     session.skipsObserved += 1;
     session.currentCleanStreak = 0;
-    session.pendingManualFourWordPosition = null;
   }
 
   markSessionGuideShown(sessionId: string): void {
@@ -699,12 +692,11 @@ export class AchievementEngine {
       session.currentCleanStreak = 0;
     }
 
-    // Check B06 adjacency: manual 4-cargo delivery immediately followed by next clean word
-    if (session.pendingManualFourWordPosition !== null) {
-      if (clean && fact.wordPosition === session.pendingManualFourWordPosition + 1) {
-        session.immediateNextWordCleanAfterManualFour = true;
-      }
-      session.pendingManualFourWordPosition = null;
+    if (clean && session.fullDeliveryPositions.includes(fact.wordPosition - 1)) {
+      session.immediateCleanAfterFull = true;
+    }
+    if (session.currentCleanStreak >= 5 && session.fullDeliveryPositions.includes(fact.wordPosition - 5)) {
+      session.fiveCleanAfterFull = true;
     }
 
     // Check F06 qualification captured at session start
@@ -747,50 +739,21 @@ export class AchievementEngine {
     session: ActiveSessionTracker,
     newlyUnlocked: string[],
   ): void {
-    // Only manual and full count toward delivery achievements; deadline and skip do not.
-    if (fact.reason !== 'manual' && fact.reason !== 'full') {
+    if (fact.reason === 'full') {
+      this.progress.fullDeliveryCount += 1;
+      this.progress.lifetimeDeliveredCargo += fact.cargoCount;
+      session.fullDeliveryPositions.push(fact.precedingWordPosition);
+      session.fullInFirstHalf ||= (fact.elapsedMs ?? Infinity) <= 45_000;
+    } else if (fact.reason === 'extra') {
+      this.progress.extraDeliveryCount += 1;
+      session.extraDeliveriesInRound += 1;
+      session.pairedDeliveryInRound ||= session.fullDeliveryPositions.includes(fact.precedingWordPosition);
+    } else {
       if (fact.reason === 'skip') {
         session.skipsObserved += 1;
         session.currentCleanStreak = 0;
-        session.pendingManualFourWordPosition = null;
       }
       return;
-    }
-
-    // Scope: 全
-    this.progress.lifetimeDeliveredCargo += fact.cargoCount;
-    if (fact.reason === 'manual') {
-      this.progress.manualDeliveryCount += 1;
-      if (fact.cargoCount >= 2) {
-        this.progress.groupedDeliveryCount += 1;
-      }
-    } else if (fact.reason === 'full') {
-      this.progress.fullDeliveryCount += 1;
-      this.progress.groupedDeliveryCount += 1;
-    }
-
-    // Session tracking for B / H families
-    if (fact.reason === 'manual') {
-      session.manualDeliveriesInRound += 1;
-      if (fact.cargoCount >= 1 && fact.cargoCount <= 2) {
-        session.smallManualDeliveriesInRound += 1;
-      }
-      if (fact.cargoCount >= 3 && fact.cargoCount <= 4) {
-        session.largeManualDeliveriesInRound += 1;
-      }
-      if (fact.cargoCount === 2) {
-        session.manualTwoCountInRound += 1;
-        session.manualTwoSeenInRound = true;
-      }
-      if (fact.cargoCount === 4) {
-        session.manualFourCountInRound += 1;
-        session.pendingManualFourWordPosition = fact.precedingWordPosition;
-      }
-    } else if (fact.reason === 'full') {
-      session.fullDeliveriesInRound += 1;
-      if (session.manualTwoSeenInRound) {
-        session.fullAfterManualTwoInRound = true;
-      }
     }
 
     this.evaluateAllScopeDeliveryAchievements(fact.timestamp, newlyUnlocked);
@@ -883,27 +846,10 @@ export class AchievementEngine {
       this.unlockAchievement(id, 'normal', fact.timestamp, evidence, newlyUnlocked);
     };
 
-    // Family B
-    if (session.smallManualDeliveriesInRound >= 1) {
-      unlockNormal('B01', `small_manual=${session.smallManualDeliveriesInRound}`);
-    }
-    if (session.largeManualDeliveriesInRound >= 1) {
-      unlockNormal('B02', `large_manual=${session.largeManualDeliveriesInRound}`);
-    }
-    if (session.fullDeliveriesInRound >= 2) {
-      unlockNormal('B03', `full_deliveries=${session.fullDeliveriesInRound}`);
-    }
-    if (session.manualDeliveriesInRound >= 1 && session.fullDeliveriesInRound >= 1) {
-      unlockNormal(
-        'B04',
-        `manual=${session.manualDeliveriesInRound},full=${session.fullDeliveriesInRound}`,
-      );
-    }
-    if (session.manualTwoSeenInRound && session.fullAfterManualTwoInRound) {
-      unlockNormal('B05', 'manual_two_then_full');
-    }
-    if (session.immediateNextWordCleanAfterManualFour) {
-      unlockNormal('B06', 'manual_four_then_clean_next');
+    for (const id of ['B01', 'B02', 'B03', 'B04', 'B05', 'B06']) {
+      if (this.evaluateNormalProvisional(id, session) === 'provisional_held') {
+        unlockNormal(id, 'delivery_condition_met');
+      }
     }
 
     // Family C
@@ -997,15 +943,13 @@ export class AchievementEngine {
     if (maxCleanStreak >= 30) {
       unlockNormal('H02', `streak=${maxCleanStreak}`);
     }
-    if (session.fullDeliveriesInRound >= 4) {
-      unlockNormal('H03', `full=${session.fullDeliveriesInRound}`);
+    if (session.fullDeliveryPositions.length >= 4) {
+      unlockNormal('H03', `full=${session.fullDeliveryPositions.length}`);
     }
-    if (
-      session.manualTwoCountInRound >= 1 &&
-      session.manualFourCountInRound >= 1 &&
-      session.fullDeliveriesInRound >= 1
-    ) {
-      unlockNormal('H04', 'manual2+manual4+full5');
+    if (session.pairedDeliveryInRound) {
+      const courses = this.progress.normalPairedDeliveryCourses;
+      if (!courses.includes(fact.courseId)) courses.push(fact.courseId);
+      if (courses.length === 3) unlockNormal('H04', 'paired_delivery_all_3_courses');
     }
     if (fact.completedWordCount >= 20 && acc95 && !session.guideUsed) {
       unlockNormal('H05', `words=${fact.completedWordCount},acc>=95,no_guide`);
@@ -1113,14 +1057,14 @@ export class AchievementEngine {
       this.unlockAchievement(id, 'all', timestamp, evidence, newlyUnlocked);
     };
 
-    if (this.progress.manualDeliveryCount >= 1) {
-      unlockAll('A02', `manual=${this.progress.manualDeliveryCount}`);
-    }
-    if (this.progress.groupedDeliveryCount >= 1) {
-      unlockAll('A03', `grouped=${this.progress.groupedDeliveryCount}`);
-    }
     if (this.progress.fullDeliveryCount >= 1) {
-      unlockAll('A04', `full=${this.progress.fullDeliveryCount}`);
+      unlockAll('A02', 'first_full_delivery');
+    }
+    if (this.progress.fullDeliveryCount >= 2) {
+      unlockAll('A03', 'two_full_deliveries');
+    }
+    if (this.progress.extraDeliveryCount >= 1) {
+      unlockAll('A04', 'first_extra_delivery');
     }
     if (this.progress.lifetimeDeliveredCargo >= 50) {
       unlockAll('G04', `cargo=${this.progress.lifetimeDeliveredCargo}`);
@@ -1168,23 +1112,17 @@ export class AchievementEngine {
     // Latch-style in-round conditions (stay held even after later mistakes)
     switch (id) {
       case 'B01':
-        return session.smallManualDeliveriesInRound >= 1 ? 'provisional_held' : 'locked';
+        return session.fullInFirstHalf ? 'provisional_held' : 'locked';
       case 'B02':
-        return session.largeManualDeliveriesInRound >= 1 ? 'provisional_held' : 'locked';
+        return session.extraDeliveriesInRound >= 2 ? 'provisional_held' : 'locked';
       case 'B03':
-        return session.fullDeliveriesInRound >= 2 ? 'provisional_held' : 'locked';
+        return session.fullDeliveryPositions.length >= 2 ? 'provisional_held' : 'locked';
       case 'B04':
-        return session.manualDeliveriesInRound >= 1 && session.fullDeliveriesInRound >= 1
-          ? 'provisional_held'
-          : 'locked';
+        return session.pairedDeliveryInRound ? 'provisional_held' : 'locked';
       case 'B05':
-        return session.manualTwoSeenInRound && session.fullAfterManualTwoInRound
-          ? 'provisional_held'
-          : 'locked';
+        return session.fiveCleanAfterFull ? 'provisional_held' : 'locked';
       case 'B06':
-        return session.immediateNextWordCleanAfterManualFour
-          ? 'provisional_held'
-          : 'locked';
+        return session.immediateCleanAfterFull ? 'provisional_held' : 'locked';
       case 'C04':
         return session.maxCleanStreakInSession >= 5 ? 'provisional_held' : 'locked';
       case 'C05':
@@ -1194,13 +1132,7 @@ export class AchievementEngine {
       case 'H02':
         return session.maxCleanStreakInSession >= 30 ? 'provisional_held' : 'locked';
       case 'H03':
-        return session.fullDeliveriesInRound >= 4 ? 'provisional_held' : 'locked';
-      case 'H04':
-        return session.manualTwoCountInRound >= 1 &&
-          session.manualFourCountInRound >= 1 &&
-          session.fullDeliveriesInRound >= 1
-          ? 'provisional_held'
-          : 'locked';
+        return session.fullDeliveryPositions.length >= 4 ? 'provisional_held' : 'locked';
       case 'F06':
         return session.qualifiedWordCleanInRound ? 'provisional_held' : 'locked';
       // Dynamic conditions that depend on final accuracy / round end

@@ -38,7 +38,7 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     const first = { ...makeFact(1), inputElapsedMs: 700 };
     await repo.commitTypingFacts({ lock, facts: [first, {
       ...first, type: 'DeliveryCommitted', factSequence: 2,
-      reason: 'manual', cargoCount: 1, bonus: 10, precedingWordPosition: 1,
+      reason: 'extra', cargoCount: 0, bonus: 10, precedingWordPosition: 1,
     }] });
     await repo.commitTypingFacts({ lock, facts: [first, {
       ...first, factSequence: 3, wordPosition: 2, inputElapsedMs: 600,
@@ -56,7 +56,7 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     const snapshot = await reopened.loadAll();
     const achievement = new AchievementEngine({ progress: snapshot.achievementProgress, unlocks: snapshot.unlocks });
     expect(achievement.getWordMastery('daily_r01')).toEqual({ cleanSessions: 2, bestMs: 600 });
-    expect(achievement.getSeriesMetric('cargo_residential')).toBe(1);
+    expect(achievement.getSeriesMetric('cargo_residential')).toBe(0);
     expect(snapshot.unlocks['series-manual_1-1']).toBeDefined();
     expect(snapshot.readState['achievement:series-manual_1-1']?.read).toBe(false);
     reopened.close();

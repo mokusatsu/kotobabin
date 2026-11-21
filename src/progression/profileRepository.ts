@@ -81,7 +81,6 @@ export interface ProfileSettingsRecord {
   volume: number;
   fontSize: 'normal' | 'large';
   reduceMotion: boolean;
-  deliveryKey: string;
   guideDefault: boolean;
   achievementToastEnabled: boolean;
   equippedTitleId: string | null;
@@ -231,7 +230,6 @@ export function createDefaultProfileSettings(now = Date.now()): ProfileSettingsR
     volume: 0.7,
     fontSize: 'normal',
     reduceMotion: false,
-    deliveryKey: 'Enter',
     guideDefault: true,
     achievementToastEnabled: true,
     equippedTitleId: null,

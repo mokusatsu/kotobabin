@@ -82,7 +82,7 @@ const RELATED_SERIES = [
   { prefix: 'crews', keys: SERIES_DISTRICTS },
   { prefix: 'research', keys: SERIES_RESEARCH },
   { prefix: 'cargo', keys: SERIES_DISTRICTS },
-  { prefix: 'manual', title: '手動配達', keys: ['1', '2', '3', '4'] },
+  { prefix: 'manual', title: '追加便', keys: ['1', '2', '3', '4'] },
   { prefix: 'rounds', keys: SERIES_COURSES },
 ].map(({ prefix, title, keys }) => ({
   prefix, title, ids: keys.map((key) => `${prefix}_${key}`),

@@ -31,7 +31,7 @@ export function calculateDeliveryBonus(
   return Math.floor((cargoBase * cargoCount) / MAX_CARGO_COUNT);
 }
 
-export type TutorialAction = { type: 'key'; key: string } | { type: 'deliver' } | { type: 'skip' };
+export type TutorialAction = { type: 'key'; key: string } | { type: 'skip' };
 
 export interface TutorialSessionCheckpoint {
   sessionId: string;
@@ -58,16 +58,12 @@ export interface KeyHandleResult {
   ignored: boolean;
   wordCompleted: boolean;
   autoDelivered: boolean;
+  extraDelivered?: boolean;
+  cargoLoaded?: boolean;
+  dispatchBonus?: number;
   deadlineReached: boolean;
   guide: string;
   typed: string;
-}
-
-export interface DeliveryAttemptResult {
-  delivered: boolean;
-  reason: 'delivered' | 'mid_word' | 'empty_cargo' | 'invalid_state' | 'deadline';
-  bonus: number;
-  cargoCount: number;
 }
 
 export interface SessionSnapshot {
@@ -93,6 +89,7 @@ export interface SessionSnapshot {
   cargoBase: number;
   pendingBonus: number;
   currentCleanStreak: number;
+  wordMistakePositions: number;
   longestCleanStreak: number;
   skips: number;
   rescueUsed: boolean;
@@ -132,6 +129,8 @@ export class GameSession {
   private engine: RomajiEngine;
   private atWordBoundary = true;
   private wordMistakes = 0;
+  private wordMistakePositions = 0;
+  private lastMistakePosition = -1;
   private wordInputStartedAt: number | null = null;
   private wordPauseStartedAt: number | null = null;
 
@@ -146,6 +145,7 @@ export class GameSession {
   private cargoCount = 0;
   private cargoBase = 0;
   private currentCleanStreak = 0;
+  private cleanDeliveryBase = 0;
   private longestCleanStreak = 0;
 
   private skips = 0;
@@ -195,7 +195,6 @@ export class GameSession {
       this.replayingTutorial = true;
       for (const action of options.tutorialCheckpoint.actions) {
         if (action.type === 'key') this.handleKey(action.key);
-        else if (action.type === 'deliver') this.commitDelivery();
         else if (action.type === 'skip') this.skipWord();
       }
       this.replayingTutorial = false;
@@ -355,9 +354,13 @@ export class GameSession {
     if (!stepResult.accepted) {
       this.mistakeCount += 1;
       this.wordMistakes += 1;
+      const position = stepResult.typed.length;
+      if (position !== this.lastMistakePosition) {
+        this.lastMistakePosition = position;
+        this.wordMistakePositions += 1;
+      }
       this.currentCleanStreak = 0;
-      this.cargoCount = 0;
-      this.cargoBase = 0;
+      this.cleanDeliveryBase = 0;
 
       return {
         accepted: false,
@@ -392,6 +395,7 @@ export class GameSession {
     this.baseScore += wordBase;
     this.score += wordBase;
 
+    const cargoLoaded = this.wordMistakePositions < 2;
     const wordFact: WordCompletedFact = {
       type: 'WordCompleted',
       sessionId: this.sessionId,
@@ -404,23 +408,31 @@ export class GameSession {
       tags: [...completedWord.tags],
       canonicalLength: completedWord.canonicalLength,
       mistakes: this.wordMistakes,
+      cargoLoaded,
       wordPosition: this.completedWordCount,
       inputElapsedMs: currentNow - this.wordInputStartedAt,
     };
     this.emitFact(wordFact);
 
-    let autoDelivered = false;
+    const previousBonus = this.deliveryBonus;
+    if (cargoLoaded) {
+      this.cargoCount += 1;
+      this.cargoBase += wordBase;
+    }
+    const autoDelivered = this.cargoCount === MAX_CARGO_COUNT;
+    if (autoDelivered) this.commitCargo('full', currentNow);
+
+    let extraDelivered = false;
     if (this.wordMistakes === 0) {
       this.currentCleanStreak += 1;
       if (this.currentCleanStreak > this.longestCleanStreak) {
         this.longestCleanStreak = this.currentCleanStreak;
       }
-      this.cargoCount += 1;
-      this.cargoBase += wordBase;
-
-      if (this.cargoCount >= MAX_CARGO_COUNT) {
-        this.commitCargo('full', currentNow);
-        autoDelivered = true;
+      this.cleanDeliveryBase += wordBase;
+      if (this.currentCleanStreak % MAX_CARGO_COUNT === 0) {
+        this.emitDelivery('extra', 0, this.cleanDeliveryBase, currentNow);
+        this.cleanDeliveryBase = 0;
+        extraDelivered = true;
       }
     }
 
@@ -431,69 +443,12 @@ export class GameSession {
       ignored: false,
       wordCompleted: true,
       autoDelivered,
+      extraDelivered,
+      cargoLoaded,
+      dispatchBonus: this.deliveryBonus - previousBonus,
       deadlineReached: false,
       guide: this.engine.guide,
       typed: this.engine.typedText,
-    };
-  }
-
-  commitDelivery(timestamp?: number): DeliveryAttemptResult {
-    const currentNow = timestamp ?? this.now();
-
-    if (
-      this.state !== 'PLAYING' &&
-      this.state !== 'TUTORIAL' &&
-      this.state !== 'PRACTICE'
-    ) {
-      return {
-        delivered: false,
-        reason: 'invalid_state',
-        bonus: 0,
-        cargoCount: this.cargoCount,
-      };
-    }
-
-    if (this.mode === 'MAIN' && this.state === 'PLAYING') {
-      const elapsed = this.getElapsedMs(currentNow);
-      if (elapsed >= ROUND_DURATION_MS) {
-        this.completeRoundByDeadline(currentNow);
-        return {
-          delivered: false,
-          reason: 'deadline',
-          bonus: 0,
-          cargoCount: 0,
-        };
-      }
-    }
-
-    if (!this.atWordBoundary) {
-      return {
-        delivered: false,
-        reason: 'mid_word',
-        bonus: 0,
-        cargoCount: this.cargoCount,
-      };
-    }
-
-    if (this.cargoCount <= 0) {
-      return {
-        delivered: false,
-        reason: 'empty_cargo',
-        bonus: 0,
-        cargoCount: 0,
-      };
-    }
-
-    const deliveredCount = this.cargoCount;
-    if (this.mode === 'TUTORIAL' && !this.replayingTutorial) {
-      this.tutorialActions.push({ type: 'deliver' });
-    }
-    const bonus = this.commitCargo('manual', currentNow);
-    return {
-      delivered: true,
-      reason: 'delivered',
-      bonus,
-      cargoCount: deliveredCount,
     };
   }
 
@@ -561,6 +516,7 @@ export class GameSession {
     this.skips += 1;
     this.rescueUsed = true;
     this.currentCleanStreak = 0;
+    this.cleanDeliveryBase = 0;
     this.advanceToNextWord();
     return true;
   }
@@ -640,6 +596,7 @@ export class GameSession {
       cargoBase: this.cargoBase,
       pendingBonus: calculateDeliveryBonus(this.cargoBase, this.cargoCount),
       currentCleanStreak: this.currentCleanStreak,
+      wordMistakePositions: this.wordMistakePositions,
       longestCleanStreak: this.longestCleanStreak,
       skips: this.skips,
       rescueUsed: this.rescueUsed,
@@ -662,13 +619,19 @@ export class GameSession {
     this.currentWord = this.getWord(this.currentWordIndex);
     this.engine = new RomajiEngine(this.currentWord.reading);
     this.wordMistakes = 0;
+    this.wordMistakePositions = 0;
+    this.lastMistakePosition = -1;
     this.wordInputStartedAt = null;
     this.atWordBoundary = true;
   }
 
-  private commitCargo(reason: DeliveryReason, timestamp: number): number {
-    const bonus = calculateDeliveryBonus(this.cargoBase, this.cargoCount);
-    const count = this.cargoCount;
+  private commitCargo(reason: Exclude<DeliveryReason, 'extra'>, timestamp: number): void {
+    this.emitDelivery(reason, this.cargoCount, calculateDeliveryBonus(this.cargoBase, this.cargoCount), timestamp);
+    this.cargoCount = 0;
+    this.cargoBase = 0;
+  }
+
+  private emitDelivery(reason: DeliveryReason, cargoCount: number, bonus: number, timestamp: number): void {
     this.deliveryBonus += bonus;
     this.score += bonus;
 
@@ -680,15 +643,13 @@ export class GameSession {
       ruleVersion: this.ruleVersion,
       timestamp,
       reason,
-      cargoCount: count,
+      cargoCount,
       bonus,
       precedingWordPosition: this.completedWordCount,
+      elapsedMs: this.getElapsedMs(timestamp),
     };
     this.emitFact(fact);
 
-    this.cargoCount = 0;
-    this.cargoBase = 0;
-    return bonus;
   }
 
   private completeRoundByDeadline(timestamp: number): void {

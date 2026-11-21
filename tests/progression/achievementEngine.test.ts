@@ -3,6 +3,7 @@ import screenFixtures from '@spec-data/screen_fixtures.json';
 import { WORDS_DATA } from '@/contracts/data';
 import type {
   ConfirmedFact,
+  DeliveryCommittedFact,
   DistrictId,
   RoundFinishedFact,
   WordCompletedFact,
@@ -42,6 +43,17 @@ function makeWordFact(
     mistakes: 0,
     wordPosition: 1,
     ...overrides,
+  };
+}
+
+function makeDeliveryFact(
+  sessionId: string, factSequence: number, reason: DeliveryCommittedFact['reason'],
+  precedingWordPosition: number, elapsedMs = 0,
+): DeliveryCommittedFact {
+  return {
+    type: 'DeliveryCommitted', sessionId, factSequence, mode: 'MAIN',
+    ruleVersion: '1.0.0', timestamp: 1000 + elapsedMs, elapsedMs,
+    reason, cargoCount: reason === 'full' ? 5 : 0, bonus: 200, precedingWordPosition,
   };
 }
 
@@ -158,7 +170,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     expect(previousSave.applyCitySnapshot(makeEmptyCitySnapshot()).newlyUnlockedRewardIds).toEqual([]);
   });
 
-  it('reproduces screen_fixtures.json 20-word trace: 21 -> 22 (K02) -> 25 (B03, C01, C04) and milestone:24:album', () => {
+  it('awards the revised delivery achievements for the representative 20-word round', () => {
     const initialUnlocks: Record<string, UnlockRecord> = {};
     for (const id of screenFixtures.initialAchievementIds) {
       initialUnlocks[id] = {
@@ -189,8 +201,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
       unlocks: initialUnlocks,
       progress: {
         lifetimeCompletedWords: screenFixtures.initialProfile.totalCompleted,
-        manualDeliveryCount: 5,
-        groupedDeliveryCount: 3,
+        extraDeliveryCount: 2,
         fullDeliveryCount: 2,
         lifetimeDeliveredCargo: screenFixtures.initialProfile.totalDeliveredCargo,
         completedRounds: 6,
@@ -205,6 +216,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
         normalMaxCleanStreak: screenFixtures.initialProfile.normalMaxStreak,
         normalCompletedCoursesWith5Words: ['standard'],
         normalMasteredCourses20Words95Acc: [],
+        normalPairedDeliveryCourses: [],
       },
     });
 
@@ -230,15 +242,14 @@ describe('AchievementEngine & DictionaryTracker', () => {
     const sessionId = 'fixture-round-1';
     engine.startSession(sessionId, 'MAIN', {
       orderKey: 'fixture-order-1',
-      comparisonBestScore: 2500, // higher than 2070 so D04 already unlocked anyway
+      comparisonBestScore: 4000,
       comparisonBestSpeed: screenFixtures.initialProfile.bestCanonicalKpmSameConditions,
       practiceQualifiedWordIds: screenFixtures.initialProfile.practiceQualifiedWordIds,
     });
 
     let seq = 1;
-    const shipmentAfter = new Map(
-      screenFixtures.shipments.map((s) => [s.afterWord, s]),
-    );
+    const fullPositions = [5, 10, 15, 20];
+    const extraPositions = [6, 16];
     const wordById = new Map(WORDS_DATA.words.map((w) => [w.id, w]));
 
     for (const w of screenFixtures.round) {
@@ -259,20 +270,11 @@ describe('AchievementEngine & DictionaryTracker', () => {
       );
       expect(res.applied).toBe(true);
 
-      const shipment = shipmentAfter.get(w.position);
-      if (shipment) {
-        engine.applyFact({
-          type: 'DeliveryCommitted',
-          sessionId,
-          factSequence: seq++,
-          mode: 'MAIN',
-          ruleVersion: '1.0.0',
-          timestamp: w.completedAtMs,
-          reason: 'full',
-          cargoCount: 5,
-          bonus: shipment.bonus,
-          precedingWordPosition: w.position,
-        });
+      if (fullPositions.includes(w.position)) {
+        engine.applyFact(makeDeliveryFact(sessionId, seq++, 'full', w.position, w.completedAtMs));
+      }
+      if (extraPositions.includes(w.position)) {
+        engine.applyFact(makeDeliveryFact(sessionId, seq++, 'extra', w.position, w.completedAtMs));
       }
     }
 
@@ -286,9 +288,9 @@ describe('AchievementEngine & DictionaryTracker', () => {
         correctKeyCount: screenFixtures.expected.correctKeys,
         mistakeCount: screenFixtures.expected.mistakes,
         totalCanonicalLength: screenFixtures.expected.correctKeys,
-        score: screenFixtures.expected.score,
+        score: 3470,
         baseScore: screenFixtures.expected.baseScore,
-        deliveryBonus: screenFixtures.expected.deliveryBonus,
+        deliveryBonus: 2070,
         longestCleanStreak: screenFixtures.expected.longestCleanStreak,
         skips: screenFixtures.skips,
         rescueUsed: false,
@@ -296,12 +298,11 @@ describe('AchievementEngine & DictionaryTracker', () => {
       }),
     );
 
+    expect(engine.isUnlocked('B04')).toBe(false);
     expect(legacyOnly(roundFinishRes.newlyUnlockedAchievementIds)).toEqual(
-      screenFixtures.expected.newAchievementIds,
+      ['B01', 'B02', 'B03', 'B06', 'C01', 'C04', 'H03'],
     );
-    expect(engine.getLegacyUnlockedCount()).toBe(
-      screenFixtures.expected.achievementTotalAfter,
-    );
+    expect(engine.getLegacyUnlockedCount()).toBe(30);
     expect(roundFinishRes.newMilestoneRewardKeys).toEqual(
       screenFixtures.expected.newMilestoneRewardKeys,
     );
@@ -321,7 +322,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     expect(replay.newlyUnlockedAchievementIds).toEqual([]);
     expect(engine.getSnapshot().progress.lifetimeCompletedWords).toBe(1);
 
-    // Deliveries: 2 manual (1+1), 1 full (5), 1 deadline (3), 1 skip (2)
+    // Only the regular shipment adds cargo; the extra shipment is tracked separately.
     const facts: ConfirmedFact[] = [
       {
         type: 'DeliveryCommitted',
@@ -330,8 +331,8 @@ describe('AchievementEngine & DictionaryTracker', () => {
         mode: 'MAIN',
         ruleVersion: '1.0.0',
         timestamp: 2000,
-        reason: 'manual',
-        cargoCount: 1,
+        reason: 'extra',
+        cargoCount: 0,
         bonus: 20,
         precedingWordPosition: 1,
       },
@@ -377,9 +378,9 @@ describe('AchievementEngine & DictionaryTracker', () => {
     }
 
     const progress = engine.getSnapshot().progress;
-    expect(progress.manualDeliveryCount).toBe(1);
+    expect(progress.extraDeliveryCount).toBe(1);
     expect(progress.fullDeliveryCount).toBe(1);
-    expect(progress.lifetimeDeliveredCargo).toBe(6);
+    expect(progress.lifetimeDeliveredCargo).toBe(5);
   });
 
   it('uses exact integer cross-multiplication for accuracy and speed thresholds', () => {
@@ -445,64 +446,17 @@ describe('AchievementEngine & DictionaryTracker', () => {
     }
     expect(engine.isUnlocked('F02')).toBe(true);
 
-    // Main round with B05 (2-manual -> 5-full), B06 (4-manual -> clean next word), F06
     engine.startSession('m1', 'MAIN');
-    engine.applyFact(
-      makeWordFact({
-        sessionId: 'm1',
-        factSequence: 1,
-        mode: 'MAIN',
-        wordId: 'daily_r01', // qualified before round start
-        wordPosition: 1,
-        mistakes: 0,
-      }),
-    );
-    engine.applyFact({
-      type: 'DeliveryCommitted',
-      sessionId: 'm1',
-      factSequence: 2,
-      mode: 'MAIN',
-      ruleVersion: '1.0.0',
-      timestamp: 2000,
-      reason: 'manual',
-      cargoCount: 2,
-      bonus: 50,
-      precedingWordPosition: 1,
-    });
-    engine.applyFact({
-      type: 'DeliveryCommitted',
-      sessionId: 'm1',
-      factSequence: 3,
-      mode: 'MAIN',
-      ruleVersion: '1.0.0',
-      timestamp: 3000,
-      reason: 'full',
-      cargoCount: 5,
-      bonus: 200,
-      precedingWordPosition: 6,
-    });
-    engine.applyFact({
-      type: 'DeliveryCommitted',
-      sessionId: 'm1',
-      factSequence: 4,
-      mode: 'MAIN',
-      ruleVersion: '1.0.0',
-      timestamp: 4000,
-      reason: 'manual',
-      cargoCount: 4,
-      bonus: 150,
-      precedingWordPosition: 10,
-    });
-    engine.applyFact(
-      makeWordFact({
-        sessionId: 'm1',
-        factSequence: 5,
-        mode: 'MAIN',
-        wordId: 'daily_r02',
-        wordPosition: 11,
-        mistakes: 0,
-      }),
-    );
+    let mainSequence = 1;
+    for (let position = 1; position <= 10; position += 1) {
+      engine.applyFact(makeWordFact({
+        sessionId: 'm1', factSequence: mainSequence++, wordPosition: position, mistakes: 0,
+      }));
+      if (position % 5 === 0) {
+        engine.applyFact(makeDeliveryFact('m1', mainSequence++, 'full', position));
+        engine.applyFact(makeDeliveryFact('m1', mainSequence++, 'extra', position));
+      }
+    }
 
     // Provisional check before RoundFinished
     const prov = engine.getProvisionalStatuses('m1');
@@ -517,7 +471,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     engine.applyFact(
       makeRoundFact({
         sessionId: 'm1',
-        factSequence: 6,
+        factSequence: mainSequence++,
         completedWordCount: 20,
         correctKeyCount: 150,
         mistakeCount: 0,
@@ -602,6 +556,8 @@ describe('AchievementEngine & DictionaryTracker', () => {
       });
     }
 
+    engine.applyFact(makeDeliveryFact('all-words', seq++, 'extra', 5));
+
     // City achievements I01..I06, J01..J06, K01..K06
     const maxCity = makeEmptyCitySnapshot();
     for (const d of Object.keys(maxCity.districts) as DistrictId[]) {
@@ -622,7 +578,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     maxCity.researchRanks = { materials: 1, logistics: 0, commerce: 0 };
     engine.applyCitySnapshot(maxCity);
 
-    // At this point, E01..E05, F01..F05, G01..G05, I01..I06, J01..J06, K01..K06, L01..L06, A01, A03, A04 are unlocked.
+    // At this point, E01..E05, F01..F05, G01..G05, I01..I06, J01..J06, K01..K06, L01..L06, A01–A04 are unlocked.
     // Total >= 48? Let's verify first collection board is NOT unlocked yet because B/C/D/H are incomplete!
     expect(engine.getUnlockedRewardIds()).not.toContain(
       'reward_first_collection_board',
@@ -638,63 +594,15 @@ describe('AchievementEngine & DictionaryTracker', () => {
         practiceQualifiedWordIds: ['daily_r01'],
       });
       let rSeq = 1;
-      engine.applyFact(
-        makeWordFact({
-          sessionId: sid,
-          factSequence: rSeq++,
-          mode: 'MAIN',
-          wordId: 'daily_r01',
-          wordPosition: 1,
-          mistakes: 0,
-        }),
-      );
-      engine.applyFact({
-        type: 'DeliveryCommitted',
-        sessionId: sid,
-        factSequence: rSeq++,
-        mode: 'MAIN',
-        ruleVersion: '1.0.0',
-        timestamp: 2000,
-        reason: 'manual',
-        cargoCount: 2,
-        bonus: 50,
-        precedingWordPosition: 1,
-      });
-      engine.applyFact({
-        type: 'DeliveryCommitted',
-        sessionId: sid,
-        factSequence: rSeq++,
-        mode: 'MAIN',
-        ruleVersion: '1.0.0',
-        timestamp: 3000,
-        reason: 'manual',
-        cargoCount: 4,
-        bonus: 100,
-        precedingWordPosition: 2,
-      });
-      engine.applyFact(
-        makeWordFact({
-          sessionId: sid,
-          factSequence: rSeq++,
-          mode: 'MAIN',
-          wordId: 'daily_r02',
-          wordPosition: 3,
-          mistakes: 0,
-        }),
-      );
-      for (let f = 0; f < 4; f++) {
-        engine.applyFact({
-          type: 'DeliveryCommitted',
-          sessionId: sid,
-          factSequence: rSeq++,
-          mode: 'MAIN',
-          ruleVersion: '1.0.0',
-          timestamp: 4000 + f,
-          reason: 'full',
-          cargoCount: 5,
-          bonus: 200,
-          precedingWordPosition: 5 + f,
-        });
+      for (let position = 1; position <= 20; position += 1) {
+        engine.applyFact(makeWordFact({
+          sessionId: sid, factSequence: rSeq++, wordPosition: position, mistakes: 0,
+        }));
+        if (position % 5 === 0) {
+          const elapsedMs = position * 3_000;
+          engine.applyFact(makeDeliveryFact(sid, rSeq++, 'full', position, elapsedMs));
+          engine.applyFact(makeDeliveryFact(sid, rSeq++, 'extra', position, elapsedMs));
+        }
       }
       engine.applyFact(
         makeRoundFact({
@@ -712,6 +620,12 @@ describe('AchievementEngine & DictionaryTracker', () => {
       );
     }
 
+    for (const id of ['all_sizes', 'small_steps', 'back_steps', 'two_baskets', 'between_full', 'first_twenty_by_four']) {
+      expect(engine.isUnlocked('series-' + id + '-1')).toBe(true);
+    }
+    for (const [series, count] of [['manual_1', 40], ['manual_2', 16], ['manual_3', 12], ['manual_4', 12]] as const) {
+      expect(engine.getSeriesMetric(series)).toBe(count);
+    }
     expect(engine.getLegacyUnlockedCount()).toBe(72);
     const countFrameIds = new Set(STAMP_COUNT_FRAMES.map(({ rewardId }) => rewardId));
     expect(engine.getUnlockedRewardIds().filter((id) => !countFrameIds.has(id))).toHaveLength(40);

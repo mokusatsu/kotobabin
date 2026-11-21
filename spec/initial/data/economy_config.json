@@ -39,7 +39,7 @@
       "denominator": 1
     },
     "completion_points_per_length": 10,
-    "bonus_formula": "floor(score_sum * cargo_count / 5)",
+    "bonus_formula": "extra: score_sum; otherwise: floor(score_sum * cargo_count / 5)",
     "bonus_divisor": 5,
     "bonus_material_per_point": {
       "numerator": 1,
@@ -61,13 +61,12 @@
     "session_fixed_destination": true,
     "existing_material_revaluation": false,
     "shipment_reasons": [
-      "manual",
+      "extra",
       "full",
       "deadline",
       "skip"
     ],
     "legacy_achievement_shipment_reasons": [
-      "manual",
       "full"
     ],
     "early_exit_emits_shipment_fact": false

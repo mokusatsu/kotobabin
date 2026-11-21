@@ -38,7 +38,7 @@ export type SessionState =
   | 'RESULT'
   | 'PRACTICE';
 
-export type DeliveryReason = 'manual' | 'full' | 'deadline' | 'skip';
+export type DeliveryReason = 'full' | 'extra' | 'deadline' | 'skip';
 
 export interface ConfirmedFactBase {
   sessionId: string;
@@ -55,6 +55,7 @@ export interface WordCompletedFact extends ConfirmedFactBase {
   tags: WordTag[];
   canonicalLength: number;
   mistakes: number;
+  cargoLoaded?: boolean;
   wordPosition: number;
   inputElapsedMs?: number;
 }
@@ -65,6 +66,7 @@ export interface DeliveryCommittedFact extends ConfirmedFactBase {
   cargoCount: number;
   bonus: number;
   precedingWordPosition: number;
+  elapsedMs?: number;
 }
 
 export interface PracticeSessionEndedFact extends ConfirmedFactBase {

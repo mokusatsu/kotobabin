@@ -2,7 +2,7 @@ import { WORDS_DATA } from '@/contracts/data';
 import type { ConfirmedFact, DeliveryCommittedFact, RoundFinishedFact, WordCompletedFact } from '@/contracts/types';
 import type { CityAchievementSnapshot } from './achievementEngine';
 import {
-  SECRET_DELIVERIES, SERIES_BY_ID, SERIES_DISTRICTS, SERIES_RESEARCH, SERIES_TOPICS, WORD_RANKS,
+  EXTRA_DELIVERY_SERIES, SERIES_BY_ID, SERIES_DISTRICTS, SERIES_RESEARCH, SERIES_TOPICS, WORD_RANKS,
   type SeriesStamp,
 } from './stampSeries';
 
@@ -45,6 +45,11 @@ type Unlock = (stamp: SeriesStamp, value: number) => void;
 const wordById = new Map(WORDS_DATA.words.map((word) => [word.id, word]));
 const ZERO_RECORD_UPDATES: RecordUpdates = { speed: false, score: false };
 
+function seriesMetricKey(id: string): string {
+  // The stamp IDs retain their artwork and unlock records; the new counts start at zero.
+  return id.startsWith('manual_') ? id.replace('manual_', 'extra_') : id;
+}
+
 export class SeriesProgress {
   private readonly state: SeriesProgressState;
 
@@ -61,7 +66,7 @@ export class SeriesProgress {
   }
 
   metric(id: string): number {
-    return this.state.metrics[id] ?? 0;
+    return this.state.metrics[seriesMetricKey(id)] ?? 0;
   }
 
   applyFact(
@@ -105,7 +110,7 @@ export class SeriesProgress {
 
   private recordMetric(id: string, value: number, unlock: Unlock): void {
     const previous = this.metric(id);
-    this.state.metrics[id] = value;
+    this.state.metrics[seriesMetricKey(id)] = value;
     if (value <= previous) return;
     for (const stamp of SERIES_BY_ID.get(id)!.stamps) {
       if (previous < stamp.target && stamp.target <= value) unlock(stamp, value);
@@ -201,45 +206,39 @@ export class SeriesProgress {
   }
 
   private recordDeliveries(fact: RoundFinishedFact, deliveries: DeliveryCommittedFact[], unlock: Unlock): void {
-    const sizes: number[] = [];
-    let cargo = 0;
-    let fullCount = 0;
+    const full = deliveries.filter((delivery) => delivery.reason === 'full');
+    const extra = deliveries.filter((delivery) => delivery.reason === 'extra');
+    const extraPositions = new Set(extra.map((delivery) => delivery.precedingWordPosition));
+    const paired = full.filter((delivery) => extraPositions.has(delivery.precedingWordPosition));
+    const cargo = deliveries.reduce((sum, delivery) => sum + delivery.cargoCount, 0);
+
     let streak = 0;
-    let previousFullPosition = -1;
-    for (const delivery of deliveries) {
-      cargo += delivery.cargoCount;
-      if (delivery.reason === 'full' && delivery.cargoCount === 5) {
-        fullCount += 1;
-        streak = delivery.precedingWordPosition === previousFullPosition + 5 && streak > 0 ? streak + 1 : 1;
-        previousFullPosition = delivery.precedingWordPosition;
-        sizes.push(5);
-        this.peak('full_streak', streak, unlock);
-      } else {
-        previousFullPosition = -1;
-        streak = 0;
-        if (delivery.reason === 'manual' && delivery.cargoCount >= 1 && delivery.cargoCount <= 4) {
-          sizes.push(delivery.cargoCount);
-          this.add(`manual_${delivery.cargoCount}`, 1, unlock);
-        }
-      }
+    let previousFullPosition = -Infinity;
+    for (const { precedingWordPosition } of full) {
+      streak = precedingWordPosition === previousFullPosition + 5 ? streak + 1 : 1;
+      previousFullPosition = precedingWordPosition;
+      this.peak('full_streak', streak, unlock);
     }
-    this.add('full_deliveries', fullCount, unlock);
+    this.add('full_deliveries', full.length, unlock);
+    this.add(EXTRA_DELIVERY_SERIES.all, extra.length, unlock);
+    this.add(EXTRA_DELIVERY_SERIES[fact.courseId], extra.length, unlock);
     this.add('cargo_total', cargo, unlock);
-    this.add(`cargo_${fact.districtId}`, cargo, unlock);
-    if (new Set(sizes).size === 5) this.peak('all_sizes', 1, unlock);
-    if (fact.mistakeCount === 0) this.peak('perfect_full', fullCount, unlock);
-    for (const [id, , pattern] of SECRET_DELIVERIES) {
-      if (sizes.some((_, start) => pattern.every((size, index) => size === sizes[start + index]))) {
-        this.peak(id, 1, unlock);
-      }
+    this.add('cargo_' + fact.districtId, cargo, unlock);
+    if (full.length >= 2 && extra.length >= 2) this.peak('all_sizes', 1, unlock);
+    if (fact.mistakeCount === 0) this.peak('perfect_full', full.length, unlock);
+    if ((extra[0]?.elapsedMs ?? Infinity) <= 30_000 &&
+        (extra[1]?.elapsedMs ?? Infinity) <= 60_000 && extra.length >= 3) {
+      this.peak('small_steps', 1, unlock);
     }
-    const initial = deliveries.slice(0, 5);
-    if (initial.length === 5 && initial.every(
-      (delivery, index) => delivery.reason === 'manual' && delivery.cargoCount === 4
-        && delivery.precedingWordPosition === (index + 1) * 4,
-    )) {
-      this.peak('first_twenty_by_four', 1, unlock);
+    const shippedInBothHalves = (shipments: DeliveryCommittedFact[]) =>
+      shipments.some(({ elapsedMs }) => elapsedMs !== undefined && elapsedMs <= 45_000) &&
+      shipments.some(({ elapsedMs }) => elapsedMs !== undefined && elapsedMs > 45_000);
+    if (shippedInBothHalves(full) && shippedInBothHalves(extra)) this.peak('back_steps', 1, unlock);
+    if (paired.length >= 2) this.peak('two_baskets', 1, unlock);
+    if (full.length >= 3 && extraPositions.has(full[1].precedingWordPosition)) {
+      this.peak('between_full', 1, unlock);
     }
+    if (extra[3]?.precedingWordPosition === 20) this.peak('first_twenty_by_four', 1, unlock);
   }
 
   private updateBest(fact: RoundFinishedFact, orderKey: string, unlock: Unlock): RecordUpdates {

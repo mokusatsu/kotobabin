@@ -40,7 +40,7 @@ import {
   getTutorialWords,
 } from '@/typing/courseGenerator';
 import { GameSession, type SessionSnapshot, type TutorialSessionCheckpoint } from '@/typing/gameSession';
-import { InputAdapter, type DeliveryKeyOption } from '@/typing/inputAdapter';
+import { InputAdapter } from '@/typing/inputAdapter';
 import { WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
 import { NAV_ITEMS, renderNormalHeader, renderPlayHeader } from './components/header';
@@ -88,16 +88,9 @@ function createInitialOnboardingUiState(
     active,
     step,
     lockedDistrictNotice: null,
-    collapseLessonShown: false,
-    collapseSampleSeq: 0,
-    mistakeZeroCargoNoticeShown: false,
-    actualCollapseNoticeShown: false,
-    singleDeliveryNoticeShown: false,
     consecutiveFailedWords: 0,
     rescueOffered: false,
     generatedMaterialsMicro: 0n,
-    lastDeliveredCargoCount: 0,
-    lastDeliveredBonus: 0,
     deliveryInTransit: false,
     deliveryArrived: false,
     saveFailed: false,
@@ -107,7 +100,7 @@ function createInitialOnboardingUiState(
   };
 }
 
-const TUTORIAL_DRAFT_KEY = 'kotobabin:tutorialDraft';
+const TUTORIAL_DRAFT_KEY = 'kotobabin:tutorialDraft:v2';
 
 interface TutorialDraft {
   contentVersion: string;
@@ -202,20 +195,17 @@ export class AppController implements UIControllerActions {
   private playFeedback: PlayUiFeedback = {
     mistakeFlash: false,
     mistakeLabel: null,
-    mistakeSeq: 0,
     wordPopSeq: 0,
     deliveryPopSeq: 0,
     fullDeliveryFlash: false,
-    midWordDeliveryAttempt: false,
+    extraDeliveryFlash: false,
     notice: null,
     imePauseReason: false,
-    lastDeliveredCargoCount: 0,
     lastDeliveryBonus: null,
     lastUnlockedStampNames: [],
     lastUnlockedStampAssetIds: [],
     tutorialStampUnlocked: false,
   };
-  private lastObservedCargoCount = 0;
   private lastCountdownSec: number | null = null;
   private readonly handlePointerUnlockBound = (): void => {
     this.audio.unlock();
@@ -428,9 +418,6 @@ export class AppController implements UIControllerActions {
       this.recordSessionRewards(evaluated.newlyUnlockedRewardIds);
       if (fact.type === 'WordCompleted') this.dictionary.markCompleted(fact.wordId);
     }
-    const restored = this.session.getSnapshot();
-    this.lastObservedCargoCount = restored.cargoCount;
-    this.onboardingUi.collapseLessonShown = restored.cargoCount >= 2 || restored.mistakeCount > 0;
     this.initialStageSnapshot = this.economy.districts.residential.stage;
     if (!draft.deliveryInTransit) this.session.enterInputCheck('TUTORIAL');
     this.screen = 'PLAY';
@@ -1084,20 +1071,17 @@ export class AppController implements UIControllerActions {
     this.pendingFacts = [];
     this.sessionWordIds = [];
     this.mistakeWordIds.clear();
-    this.lastObservedCargoCount = 0;
     this.onboardingKeyMistakeStreak = 0;
     this.lastCountdownSec = null;
     this.playFeedback = {
       mistakeFlash: false,
       mistakeLabel: null,
-      mistakeSeq: 0,
       wordPopSeq: 0,
       deliveryPopSeq: 0,
       fullDeliveryFlash: false,
-      midWordDeliveryAttempt: false,
+      extraDeliveryFlash: false,
       notice: null,
       imePauseReason: false,
-      lastDeliveredCargoCount: 0,
       lastDeliveryBonus: null,
       lastUnlockedStampNames: [],
       lastUnlockedStampAssetIds: [],
@@ -1200,19 +1184,9 @@ export class AppController implements UIControllerActions {
     if (!this.session) {
       return;
     }
-    const deliveryKey: DeliveryKeyOption =
-      this.settings.deliveryKey === 'Space' ? 'Space' : 'Enter';
     this.inputAdapter = new InputAdapter({
       inputElement: this.playInputEl,
       session: this.session,
-      deliveryKeys: [deliveryKey],
-      canCommitDelivery: () =>
-        !(
-          this.session?.currentMode === 'TUTORIAL' &&
-          this.onboardingUi.active &&
-          this.onboardingUi.step === 'S4' &&
-          this.session.getSnapshot().cargoCount === 1
-        ),
       onKeyProcessed: (res) => {
         if (res.deadlineReached) {
           this.render();
@@ -1222,85 +1196,41 @@ export class AppController implements UIControllerActions {
           this.onboardingKeyMistakeStreak = 0;
           this.playFeedback.mistakeFlash = false;
           this.playFeedback.mistakeLabel = null;
-          this.playFeedback.midWordDeliveryAttempt = false;
           this.playFeedback.notice = null;
-          if (res.autoDelivered) {
+          if (res.autoDelivered || res.extraDelivered) {
             this.playFeedback.deliveryPopSeq += 1;
-            this.playFeedback.lastDeliveredCargoCount = 5;
-            this.playFeedback.fullDeliveryFlash = true;
-            this.audio.playSe('audio_dispatch_full');
+            this.playFeedback.fullDeliveryFlash = res.autoDelivered;
+            this.playFeedback.extraDeliveryFlash = Boolean(res.extraDelivered);
+            this.playFeedback.lastDeliveryBonus = res.dispatchBonus ?? 0;
+            this.audio.playSe(res.autoDelivered ? 'audio_dispatch_full' : 'audio_dispatch_medium');
             this.scheduleFeedbackClear();
           } else if (res.wordCompleted) {
-            this.playFeedback.wordPopSeq += 1;
-            this.playFeedback.fullDeliveryFlash = false;
+            if (res.cargoLoaded) this.playFeedback.wordPopSeq += 1;
+            else {
+              this.playFeedback.notice = 'この問題は積載なし';
+              this.scheduleFeedbackClear();
+            }
             this.audio.playSe('audio_word');
           } else {
-            this.playFeedback.fullDeliveryFlash = false;
             this.audio.playSe('audio_key');
           }
-          if (this.session?.currentState === 'PLAYING') {
-            this.ensurePlayTimerRunning();
-          }
-        } else if (!res.ignored) {
-          const prevCargo = this.lastObservedCargoCount;
+          if (this.session?.currentState === 'PLAYING') this.ensurePlayTimerRunning();
+        } else if (!res.ignored && this.session) {
+          const excluded = this.session.getSnapshot().wordMistakePositions >= 2;
           this.playFeedback.mistakeFlash = true;
-          this.playFeedback.mistakeSeq += 1;
-          this.playFeedback.mistakeLabel =
-            prevCargo > 0 ? `荷崩れ！ (-${prevCargo}個)` : 'ミス！';
+          this.playFeedback.mistakeLabel = excluded ? 'この問題は積載なし' : 'ミス！';
           this.audio.playSe('audio_mistake');
-          if (this.session) {
-            this.achievements.recordMidWordMistake(this.session.sessionId);
-            if (this.session.currentMode === 'TUTORIAL' && this.onboardingUi.active) {
-              if (prevCargo === 0) {
-                this.onboardingUi.mistakeZeroCargoNoticeShown = true;
-              } else {
-                this.onboardingUi.collapseLessonShown = true;
-                this.onboardingUi.actualCollapseNoticeShown = true;
-                this.onboardingUi.singleDeliveryNoticeShown = false;
-              }
-              this.onboardingKeyMistakeStreak += 1;
-              if (this.onboardingKeyMistakeStreak >= 4) {
-                this.onboardingUi.rescueOffered = true;
-              }
-            }
+          this.achievements.recordMidWordMistake(this.session.sessionId);
+          if (this.session.currentMode === 'TUTORIAL' && this.onboardingUi.active) {
+            this.onboardingKeyMistakeStreak += 1;
+            if (this.onboardingKeyMistakeStreak >= 4) this.onboardingUi.rescueOffered = true;
           }
           this.scheduleFeedbackClear();
-        }
-        if (this.session) {
-          this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
         }
         this.saveTutorialDraft();
         if (res.wordCompleted && this.session?.currentMode === 'TUTORIAL' && !this.onboardingUi.deliveryInTransit) {
           void this.commitSessionAndCity(undefined);
         }
-        this.renderPlayInPlace();
-      },
-      onDeliveryAttempt: (res) => {
-        if (res.delivered) {
-          this.applyDeliveredFeedback(res.bonus, res.cargoCount);
-        } else if (res.reason === 'mid_word') {
-          this.playFeedback.midWordDeliveryAttempt = true;
-          this.playFeedback.notice = 'まずこのことばを打ち切ってから配達しましょう';
-          this.audio.playSe('audio_ui_click');
-          this.scheduleFeedbackClear();
-        } else if (res.reason === 'empty_cargo') {
-          this.playFeedback.notice = '積んでいる荷物がありません';
-          this.audio.playSe('audio_ui_click');
-          this.scheduleFeedbackClear();
-        } else if (
-          res.reason === 'invalid_state' &&
-          this.session?.currentMode === 'TUTORIAL' &&
-          this.onboardingUi.active &&
-          this.onboardingUi.step === 'S4' &&
-          res.cargoCount === 1
-        ) {
-          this.onboardingUi.singleDeliveryNoticeShown = true;
-          this.audio.playSe('audio_ui_click');
-        }
-        if (this.session) {
-          this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
-        }
-        this.saveTutorialDraft();
         this.renderPlayInPlace();
       },
       onNotice: (msg) => {
@@ -1327,9 +1257,8 @@ export class AppController implements UIControllerActions {
       this.playFeedback.mistakeFlash = false;
       this.playFeedback.mistakeLabel = null;
       this.playFeedback.fullDeliveryFlash = false;
-      this.playFeedback.midWordDeliveryAttempt = false;
+      this.playFeedback.extraDeliveryFlash = false;
       this.playFeedback.notice = null;
-      this.playFeedback.lastDeliveredCargoCount = 0;
       this.playFeedback.lastDeliveryBonus = null;
       this.playFeedback.lastUnlockedStampNames = [];
       this.playFeedback.lastUnlockedStampAssetIds = [];
@@ -1399,10 +1328,6 @@ export class AppController implements UIControllerActions {
       if (fact.mode === 'TUTORIAL' && econRes.applied) {
         this.onboardingUi.generatedMaterialsMicro += BigInt(econRes.generatedMicro);
       }
-      if (fact.type === 'DeliveryCommitted') {
-        this.playFeedback.lastDeliveryBonus = fact.bonus;
-        this.playFeedback.lastDeliveredCargoCount = fact.cargoCount;
-      }
     }
 
     if (fact.type === 'WordCompleted') {
@@ -1418,56 +1343,24 @@ export class AppController implements UIControllerActions {
 
     if (fact.mode === 'TUTORIAL' && this.onboardingUi.active) {
       if (fact.type === 'WordCompleted') {
-        this.onboardingUi.mistakeZeroCargoNoticeShown = false;
-        if (fact.mistakes === 0) {
+        if (fact.cargoLoaded) {
           this.onboardingUi.consecutiveFailedWords = 0;
           this.onboardingUi.rescueOffered = false;
-          this.onboardingKeyMistakeStreak = 0;
-          const resultingCargo = (this.session?.getSnapshot().cargoCount ?? 0) + 1;
-          if (this.onboardingUi.step === 'S3' && resultingCargo >= 1) {
-            this.onboardingUi.step = 'S4';
-            this.onboardingUi.singleDeliveryNoticeShown = false;
-          } else if (this.onboardingUi.step === 'S4' && resultingCargo >= 2) {
-            this.onboardingUi.singleDeliveryNoticeShown = false;
-            if (!this.onboardingUi.collapseLessonShown) {
-              this.onboardingUi.collapseLessonShown = true;
-              this.onboardingUi.collapseSampleSeq += 1;
-            }
-          }
+          if (this.onboardingUi.step === 'S3') this.onboardingUi.step = 'S4';
         } else {
           this.onboardingUi.consecutiveFailedWords += 1;
-          if (this.onboardingUi.consecutiveFailedWords >= 3) {
-            this.onboardingUi.rescueOffered = true;
-          }
+          if (this.onboardingUi.consecutiveFailedWords >= 3) this.onboardingUi.rescueOffered = true;
         }
-      } else if (
-        fact.type === 'DeliveryCommitted' &&
-        (fact.reason === 'manual' || fact.reason === 'full')
-      ) {
-        this.onboardingUi.lastDeliveredCargoCount = fact.cargoCount;
-        this.onboardingUi.lastDeliveredBonus = fact.bonus;
-        if (this.onboardingUi.step === 'S4') {
-          if (fact.cargoCount === 1) {
-            this.onboardingUi.singleDeliveryNoticeShown = true;
-          } else if (fact.cargoCount >= 2) {
-            if (!this.onboardingUi.collapseLessonShown) {
-              this.onboardingUi.collapseLessonShown = true;
-              this.onboardingUi.collapseSampleSeq += 1;
-            }
-            this.onboardingUi.deliveryInTransit = true;
-            this.onboardingUi.deliveryArrived = false;
-            this.inputAdapter?.detach();
-            this.clearOnboardingArrivalTimer();
-            const transitMs = this.settings.reduceMotion ? 150 : 760;
-            this.onboardingArrivalTimer = window.setTimeout(() => {
-              this.onboardingArrivalTimer = null;
-              if (!this.onboardingUi.active || this.screen !== 'PLAY') {
-                return;
-              }
-              this.handleOnboardingWagonLanded();
-            }, transitMs);
-          }
-        }
+      } else if (fact.type === 'DeliveryCommitted' && fact.reason === 'full') {
+        this.onboardingUi.deliveryInTransit = true;
+        this.onboardingUi.deliveryArrived = false;
+        this.inputAdapter?.detach();
+        this.clearOnboardingArrivalTimer();
+        const transitMs = this.settings.reduceMotion ? 150 : 760;
+        this.onboardingArrivalTimer = window.setTimeout(() => {
+          this.onboardingArrivalTimer = null;
+          if (this.onboardingUi.active && this.screen === 'PLAY') this.handleOnboardingWagonLanded();
+        }, transitMs);
       }
     }
 
@@ -1729,7 +1622,6 @@ export class AppController implements UIControllerActions {
     this.playInputEl.value = '';
     this.playFeedback.mistakeFlash = false;
     this.playFeedback.mistakeLabel = null;
-    this.onboardingUi.mistakeZeroCargoNoticeShown = false;
     this.playFeedback.imePauseReason = false;
     this.inputCountdownValue = 3;
     this.audio.playSe('audio_countdown_tick');
@@ -1929,49 +1821,6 @@ export class AppController implements UIControllerActions {
     }
     this.screen = 'HOME';
     this.render();
-  }
-
-  private applyDeliveredFeedback(bonus: number, cargoCount: number): void {
-    this.playFeedback.lastDeliveredCargoCount = cargoCount;
-    this.playFeedback.lastDeliveryBonus = bonus;
-    this.playFeedback.deliveryPopSeq += 1;
-    this.playFeedback.fullDeliveryFlash = cargoCount >= 5;
-    this.playFeedback.midWordDeliveryAttempt = false;
-    this.playFeedback.notice = null;
-    if (cargoCount >= 5) {
-      this.audio.playSe('audio_dispatch_full');
-    } else if (cargoCount >= 3) {
-      this.audio.playSe('audio_dispatch_medium');
-    } else {
-      this.audio.playSe('audio_dispatch_small');
-    }
-    this.scheduleFeedbackClear();
-  }
-
-  commitManualDelivery(): void {
-    if (!this.session) {
-      return;
-    }
-    if (
-      this.session.currentMode === 'TUTORIAL' &&
-      this.onboardingUi.active &&
-      this.onboardingUi.step === 'S4' &&
-      this.session.getSnapshot().cargoCount === 1
-    ) {
-      this.onboardingUi.singleDeliveryNoticeShown = true;
-      this.audio.playSe('audio_ui_click');
-      this.renderPlayInPlace();
-      this.focusPlayInput();
-      return;
-    }
-    const res = this.session.commitDelivery();
-    if (res.delivered) {
-      this.applyDeliveredFeedback(res.bonus, res.cargoCount);
-      this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
-    }
-    this.saveTutorialDraft();
-    this.renderPlayInPlace();
-    this.focusPlayInput();
   }
 
   // Economy Actions
@@ -2454,8 +2303,6 @@ export class AppController implements UIControllerActions {
       return;
     }
     const snap: SessionSnapshot = this.session.getSnapshot();
-    const deliveryKey: DeliveryKeyOption =
-      this.settings.deliveryKey === 'Space' ? 'Space' : 'Enter';
     if (this.onboardingUi.deliveryInTransit) {
       this.inputAdapter?.detach();
     }
@@ -2466,7 +2313,6 @@ export class AppController implements UIControllerActions {
         economy: this.economy,
         achievements: this.achievements,
         pinnedAchievementId: this.settings.pinnedGoalAchievementId,
-        deliveryKey,
         feedback: this.playFeedback,
         onboarding: this.onboardingUi,
         onboardingInProgress: this.settings.onboarding?.status === 'in_progress',

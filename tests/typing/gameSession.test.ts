@@ -147,51 +147,27 @@ describe('GameSession', () => {
     expect(restored.facts[1]?.factSequence).toBe(2);
   });
 
-  it('handles manual delivery, 4th word clean vs mistake, and 5th word auto delivery', () => {
-    const w5 = makeWord('w5', 'あいうえお'); // canonicalLength 5 -> base 50
-    const nowMs = 1000;
-    const session = new GameSession({
-      words: [w5, w5, w5, w5, w5, w5],
-      now: () => nowMs,
+  it('loads burst mistakes at one position and ships regular and extra deliveries independently', () => {
+    const word = makeWord('w5', 'あいうえお');
+    const session = new GameSession({ words: [word], now: () => 0 });
+    for (let i = 0; i < 4; i++) typeWordClean(session, word.reading, 0);
+    for (const key of ['z', 'x', 'q']) session.handleKey(key, 0);
+    expect(session.getSnapshot()).toMatchObject({ wordMistakePositions: 1, cargoCount: 4, currentCleanStreak: 0 });
+    expect(typeWordClean(session, word.reading, 0)).toMatchObject({
+      autoDelivered: true, extraDelivered: false, cargoLoaded: true,
     });
 
-    // Complete 3 words cleanly -> S=150, cargo=3
-    typeWordClean(session, w5.reading, nowMs);
-    typeWordClean(session, w5.reading, nowMs);
-    typeWordClean(session, w5.reading, nowMs);
-    expect(session.getSnapshot().score).toBe(150);
-    expect(session.getSnapshot().cargoCount).toBe(3);
+    for (let i = 0; i < 4; i++) typeWordClean(session, word.reading, 0);
+    expect(typeWordClean(session, word.reading, 0)).toMatchObject({
+      autoDelivered: true, extraDelivered: true, cargoLoaded: true, dispatchBonus: 500,
+    });
 
-    // Manual delivery -> bonus 90, S=240, cargo=0
-    const del = session.commitDelivery(nowMs);
-    expect(del.delivered).toBe(true);
-    expect(del.bonus).toBe(90);
-    expect(session.getSnapshot().score).toBe(240);
-    expect(session.getSnapshot().cargoCount).toBe(0);
-
-    // 5 consecutive clean words -> 250 + 250 auto delivery = 500 added (total 740)
-    for (let i = 0; i < 4; i++) {
-      typeWordClean(session, w5.reading, nowMs);
-    }
-    expect(session.getSnapshot().cargoCount).toBe(4);
-    expect(session.getSnapshot().pendingBonus).toBe(160);
-
-    const fifth = typeWordClean(session, w5.reading, nowMs);
-    expect(fifth?.autoDelivered).toBe(true);
-    expect(session.getSnapshot().cargoCount).toBe(0);
-    expect(session.getSnapshot().score).toBe(740);
-
-    // Build 3 clean words, then make mistake on 4th word
-    for (let i = 0; i < 3; i++) {
-      typeWordClean(session, w5.reading, nowMs);
-    }
-    expect(session.getSnapshot().cargoCount).toBe(3);
-    session.handleKey('z', nowMs); // mistake clears cargo
-    expect(session.getSnapshot().cargoCount).toBe(0);
-    typeWordClean(session, w5.reading, nowMs); // finish 4th word
-    // Base score for 4th word (+50) still awarded, cargo remains 0
-    expect(session.getSnapshot().score).toBe(740 + 200);
-    expect(session.getSnapshot().cargoCount).toBe(0);
+    typeWordClean(session, word.reading, 0);
+    for (const key of ['z', 'a', 'z', 'i', 'u', 'e', 'o']) session.handleKey(key, 0);
+    expect(session.getSnapshot()).toMatchObject({ cargoCount: 1, completedWordCount: 12, mistakeCount: 5, baseScore: 600 });
+    const shipments = session.facts.filter((fact) => fact.type === 'DeliveryCommitted');
+    expect(shipments.map(({ reason, cargoCount, precedingWordPosition }) => [reason, cargoCount, precedingWordPosition]))
+      .toEqual([['full', 5, 5], ['full', 5, 10], ['extra', 0, 10]]);
   });
 
   it('gives identical score and cargo value for shi vs si', () => {
@@ -320,7 +296,7 @@ describe('GameSession', () => {
     expect(session.getSnapshot().guideUsed).toBe(true);
   });
 
-  it('reproduces the full 20-word representative-round-v2 fixture from screen_fixtures.json', () => {
+  it('calculates the new regular and extra shipments for the representative 20-word input', () => {
     const wordById = new Map(WORDS_DATA.words.map((w) => [w.id, w]));
     const roundWords = screenFixtures.round.map((entry) => {
       const w = wordById.get(entry.wordId);
@@ -356,43 +332,19 @@ describe('GameSession', () => {
       nowMs = entry.completedAtMs;
       typeWordClean(session, word.reading, nowMs);
 
-      // Check playBoundary after word 4 (position 4)
       if (entry.position === screenFixtures.playBoundary.afterWord) {
-        const boundarySnap = session.getSnapshot(nowMs);
-        expect(boundarySnap.score).toBe(
-          screenFixtures.playBoundary.confirmedScore,
-        );
-        expect(boundarySnap.cargoCount).toBe(
-          screenFixtures.playBoundary.cargoCount,
-        );
-        expect(boundarySnap.cargoBase).toBe(
-          screenFixtures.playBoundary.cargoBase,
-        );
-        expect(boundarySnap.pendingBonus).toBe(
-          screenFixtures.playBoundary.manualBonus,
-        );
-        expect(boundarySnap.currentCleanStreak).toBe(
-          screenFixtures.playBoundary.currentStreak,
-        );
-      }
-
-      // Check auto-shipments matching fixture (5th consecutive clean word)
-      const shipment = screenFixtures.shipments.find(
-        (s) => s.afterWord === entry.position,
-      );
-      if (shipment) {
-        const deliveryFact = facts.find(
-          (f) =>
-            f.type === 'DeliveryCommitted' &&
-            f.precedingWordPosition === shipment.afterWord,
-        );
-        expect(deliveryFact).toBeDefined();
-        if (deliveryFact?.type === 'DeliveryCommitted') {
-          expect(deliveryFact.reason).toBe('full');
-          expect(deliveryFact.bonus).toBe(shipment.bonus);
-        }
+        expect(session.getSnapshot(nowMs)).toMatchObject({
+          score: 300, cargoCount: 4, cargoBase: 300, pendingBonus: 240, currentCleanStreak: 3,
+        });
       }
     }
+
+    expect(facts.filter((fact) => fact.type === 'DeliveryCommitted').map(
+      ({ reason, precedingWordPosition, bonus }) => [reason, precedingWordPosition, bonus],
+    )).toEqual([
+      ['full', 5, 350], ['extra', 6, 340], ['full', 10, 360],
+      ['full', 15, 330], ['extra', 16, 330], ['full', 20, 360],
+    ]);
 
     // Reach 90,000ms deadline
     nowMs = 90_000;
@@ -404,8 +356,8 @@ describe('GameSession', () => {
       screenFixtures.expected.completedWords,
     );
     expect(finalSnap.baseScore).toBe(screenFixtures.expected.baseScore);
-    expect(finalSnap.deliveryBonus).toBe(screenFixtures.expected.deliveryBonus);
-    expect(finalSnap.score).toBe(screenFixtures.expected.score);
+    expect(finalSnap.deliveryBonus).toBe(2070);
+    expect(finalSnap.score).toBe(3470);
     expect(finalSnap.correctKeyCount).toBe(screenFixtures.expected.correctKeys);
     expect(finalSnap.mistakeCount).toBe(screenFixtures.expected.mistakes);
     expect(finalSnap.accuracyDisplayed).toBe(
@@ -426,9 +378,9 @@ describe('GameSession', () => {
     expect(roundFinished.type).toBe('RoundFinished');
     if (roundFinished.type === 'RoundFinished') {
       expect(roundFinished.completed).toBe(true);
-      expect(roundFinished.score).toBe(2070);
+      expect(roundFinished.score).toBe(3470);
       expect(roundFinished.baseScore).toBe(1400);
-      expect(roundFinished.deliveryBonus).toBe(670);
+      expect(roundFinished.deliveryBonus).toBe(2070);
       expect(roundFinished.longestCleanStreak).toBe(5);
     }
   });

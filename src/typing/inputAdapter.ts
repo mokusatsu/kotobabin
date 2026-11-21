@@ -1,19 +1,14 @@
 import {
   GameSession,
   isScorableKey,
-  type DeliveryAttemptResult,
   type KeyHandleResult,
 } from './gameSession';
 
-export type DeliveryKeyOption = 'Space' | 'Enter';
 
 export interface InputAdapterOptions {
   inputElement: HTMLInputElement;
   session: GameSession;
-  deliveryKeys?: readonly DeliveryKeyOption[];
-  canCommitDelivery?: () => boolean;
   onKeyProcessed?: (result: KeyHandleResult) => void;
-  onDeliveryAttempt?: (result: DeliveryAttemptResult) => void;
   onNotice?: (message: string) => void;
   onImePause?: () => void;
   onPause?: () => void;
@@ -22,10 +17,7 @@ export interface InputAdapterOptions {
 export class InputAdapter {
   private readonly inputElement: HTMLInputElement;
   private readonly session: GameSession;
-  private deliveryKeys: Set<DeliveryKeyOption>;
-  private readonly canCommitDelivery?: () => boolean;
   private readonly onKeyProcessed?: (result: KeyHandleResult) => void;
-  private readonly onDeliveryAttempt?: (result: DeliveryAttemptResult) => void;
   private readonly onNotice?: (message: string) => void;
   private readonly onImePause?: () => void;
   private readonly onPause?: () => void;
@@ -43,10 +35,7 @@ export class InputAdapter {
   constructor(options: InputAdapterOptions) {
     this.inputElement = options.inputElement;
     this.session = options.session;
-    this.deliveryKeys = new Set(options.deliveryKeys ?? ['Space']);
-    this.canCommitDelivery = options.canCommitDelivery;
     this.onKeyProcessed = options.onKeyProcessed;
-    this.onDeliveryAttempt = options.onDeliveryAttempt;
     this.onNotice = options.onNotice;
     this.onImePause = options.onImePause;
     this.onPause = options.onPause;
@@ -61,10 +50,6 @@ export class InputAdapter {
         this.triggerPause();
       }
     };
-  }
-
-  setDeliveryKeys(keys: readonly DeliveryKeyOption[]): void {
-    this.deliveryKeys = new Set(keys);
   }
 
   attach(): void {
@@ -160,26 +145,6 @@ export class InputAdapter {
     if (e.key === 'Backspace' || e.key === 'Delete') {
       e.preventDefault();
       this.onNotice?.('訂正は不要です');
-      return;
-    }
-
-    if (
-      (e.key === ' ' && this.deliveryKeys.has('Space')) ||
-      (e.key === 'Enter' && this.deliveryKeys.has('Enter'))
-    ) {
-      e.preventDefault();
-      const snap = this.session.getSnapshot();
-      if (snap.atWordBoundary && snap.cargoCount > 0 && this.canCommitDelivery && !this.canCommitDelivery()) {
-        this.onDeliveryAttempt?.({
-          delivered: false,
-          reason: 'invalid_state',
-          bonus: 0,
-          cargoCount: snap.cargoCount,
-        });
-        return;
-      }
-      const result = this.session.commitDelivery();
-      this.onDeliveryAttempt?.(result);
       return;
     }
 

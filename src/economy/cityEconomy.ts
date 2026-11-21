@@ -767,10 +767,7 @@ export class CityEconomy {
       if (fact.cargoCount > cfg.maximum_cargo_count) {
         throw new EconomyError('too many cargo items');
       }
-      if (fact.reason === 'manual' && (fact.cargoCount < 1 || fact.cargoCount > 4)) {
-        throw new EconomyError('manual shipment requires 1 to 4 items');
-      }
-      if (fact.reason === 'full' && fact.cargoCount !== 5) {
+      if (fact.reason === 'full' && fact.cargoCount !== cfg.maximum_cargo_count) {
         throw new EconomyError('full shipment requires 5 items');
       }
       if (
@@ -779,8 +776,8 @@ export class CityEconomy {
       ) {
         throw new EconomyError('deadline or skip shipment requires completed cargo');
       }
-      if (fact.cargoCount === 0 && fact.bonus > 0) {
-        throw new EconomyError('empty cargo cannot carry a bonus');
+      if (fact.reason === 'extra' && fact.cargoCount !== 0) {
+        throw new EconomyError('extra shipment cannot count cargo again');
       }
       const bonusFactor = cfg.bonus_material_per_point;
       const base: Rational = {
@@ -795,9 +792,7 @@ export class CityEconomy {
       );
       this.districts[districtId].queueMicro += amount;
       this.lifetime.generatedMicro += amount;
-      if (fact.cargoCount > 0) {
-        this.lifetime.economicShipments += 1;
-      }
+      this.lifetime.economicShipments += 1;
       const legacy = cfg.legacy_achievement_shipment_reasons.includes(fact.reason);
       if (legacy) {
         this.lifetime.legacyShipments += 1;

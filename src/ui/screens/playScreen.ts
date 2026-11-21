@@ -4,8 +4,7 @@ import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
 } from '@/progression/achievementEngine';
-import type { SessionSnapshot } from '@/typing/gameSession';
-import type { DeliveryKeyOption } from '@/typing/inputAdapter';
+import { MAX_CARGO_COUNT, type SessionSnapshot } from '@/typing/gameSession';
 import { renderCoachMark } from '../components/coachMark';
 import type { OnboardingUiState, PlayUiFeedback, UIControllerActions } from '../types';
 import { assetImg, assetUrl, el } from '../utils/dom';
@@ -21,7 +20,6 @@ export interface PlayScreenProps {
   economy: CityEconomy;
   achievements: AchievementEngine;
   pinnedAchievementId: string | null;
-  deliveryKey: DeliveryKeyOption;
   feedback: PlayUiFeedback;
   onboarding?: OnboardingUiState;
   onboardingInProgress?: boolean;
@@ -72,6 +70,9 @@ function renderRomajiGuide(guide: string, typed: string): HTMLElement {
   return container;
 }
 
+const EXTRA_MARK_EMPTY_SRC = './assets/ui_icon/extra_delivery_mark_empty.webp';
+const EXTRA_MARK_LIT_SRC = './assets/ui_icon/extra_delivery_mark_lit.webp';
+
 const preloadedUrls = new Set<string>();
 
 function preloadImageUrl(url: string): void {
@@ -97,9 +98,10 @@ function preloadPlayAssets(
     getDestinationRasterSprite(districtId, stageSnapshot),
     `./assets/sprites/anim_courier_${tier}.png`,
     './assets/sprites/anim_central_hub.png',
-    './assets/sprites/anim_cargo_collapse.png',
     './assets/sprites/anim_delivery_arrive.png',
     './assets/sprites/cargo.png',
+    EXTRA_MARK_EMPTY_SRC,
+    EXTRA_MARK_LIT_SRC,
     './assets/sprites/cargo_wagon_stage0.png',
     './assets/sprites/cargo_wagon_stage1.png',
     './assets/sprites/cargo_wagon_stage2.png',
@@ -313,36 +315,6 @@ function syncPlayWorldBackdrop(
     }
   }
 
-  // 2) Mistake with cargo collapse -> match collapse visual to dropped count
-  const prevMistakeSeq = Number(worldBg.getAttribute('data-last-mistake-seq') ?? '0');
-  if (feedback.mistakeSeq > prevMistakeSeq) {
-    worldBg.setAttribute('data-last-mistake-seq', String(feedback.mistakeSeq));
-    const collapseMatch = feedback.mistakeLabel?.match(/荷崩れ！ \(-(\d+)個\)/);
-    if (loadingFxEl && collapseMatch) {
-      const droppedCount = Number(collapseMatch[1]);
-      if (droppedCount >= 3) {
-        loadingFxEl.appendChild(
-          createSpriteAnimEl(
-            'kb-world-collapse-anim',
-            './assets/sprites/anim_cargo_collapse.png',
-            8,
-            true,
-          ),
-        );
-      } else {
-        for (let i = 0; i < droppedCount; i += 1) {
-          const parcel = assetImg('./assets/sprites/cargo.png', '', {
-            decorative: true,
-            className: `kb-dropped-parcel${i === 1 ? ' is-second' : ''}`,
-          });
-          parcel.addEventListener('animationend', () => parcel.remove());
-          loadingFxEl.appendChild(parcel);
-        }
-      }
-    }
-  }
-
-  // 3) Delivery dispatched -> animated right-facing courier pulls the loaded cargo wagon across the road
   const loadingBayEl = worldBg.querySelector<HTMLElement>('[data-loading-bay]');
   if (loadingBayEl) {
     loadingBayEl.classList.toggle('is-hidden-bay', Boolean(onboarding?.deliveryInTransit));
@@ -354,54 +326,47 @@ function syncPlayWorldBackdrop(
   if (feedback.deliveryPopSeq > prevDeliverySeq && courierLayer) {
     worldBg.setAttribute('data-last-delivery-seq', String(feedback.deliveryPopSeq));
     worldBg.removeAttribute('data-arrival-fx-played');
-    loadingFxEl?.replaceChildren();
-    const dispatchedCargo = Math.max(
-      1,
-      Math.min(
-        5,
-        feedback.lastDeliveredCargoCount > 0
-          ? feedback.lastDeliveredCargoCount
-          : Number(worldBg.getAttribute('data-last-cargo-count') ?? '1'),
-      ),
-    );
-    if (waitingVehicleEl) {
-      waitingVehicleEl.classList.remove('is-departing');
-      void waitingVehicleEl.offsetWidth;
-      waitingVehicleEl.classList.add('is-departing');
+    if (feedback.fullDeliveryFlash) {
+      loadingFxEl?.replaceChildren();
+      for (const departing of [waitingVehicleEl, stackWrapEl]) {
+        if (!departing) continue;
+        departing.classList.remove('is-departing');
+        void departing.offsetWidth;
+        departing.classList.add('is-departing');
+      }
     }
-    if (stackWrapEl) {
-      stackWrapEl.classList.remove('is-departing');
-      void stackWrapEl.offsetWidth;
-      stackWrapEl.classList.add('is-departing');
-    }
-    const bonusText =
-      feedback.lastDeliveryBonus !== null ? `+${feedback.lastDeliveryBonus}点` : '配達！';
-    const courier = el(
-      'div',
-      { className: 'kb-world-courier' },
-      el('span', { className: 'kb-world-courier-tag' }, bonusText),
-      el(
+
+    const dispatches = [
+      ...(feedback.fullDeliveryFlash ? ['通常便'] : []),
+      ...(feedback.extraDeliveryFlash ? ['追加便'] : []),
+    ];
+    for (const [index, name] of dispatches.entries()) {
+      const courier = el(
         'div',
-        { className: 'kb-world-courier-train' },
-        createSpriteAnimEl(
-          'kb-world-courier-wagon',
-          `./assets/sprites/anim_wagon_stage${dispatchedCargo}.png`,
-          8,
+        { className: 'kb-world-courier', 'aria-hidden': 'true' },
+        el('span', { className: 'kb-world-courier-tag' }, name),
+        el(
+          'div',
+          { className: 'kb-world-courier-train' },
+          name === '通常便'
+            ? createSpriteAnimEl('kb-world-courier-wagon', './assets/sprites/anim_wagon_stage5.png', 8)
+            : null,
+          createSpriteAnimEl('kb-world-courier-sprite', courierSpriteSrc, 8),
         ),
-        createSpriteAnimEl('kb-world-courier-sprite', courierSpriteSrc, 8),
-      ),
-    );
-    courier.addEventListener('animationend', () => {
-      courier.remove();
-      triggerDestinationArrivalFx(worldBg, destEl, arriveLayer);
-    });
-    courierLayer.appendChild(courier);
+      );
+      if (index > 0) courier.style.animationDelay = '160ms';
+      courier.addEventListener('animationend', (event) => {
+        if (event.target !== courier) return;
+        courier.remove();
+        triggerDestinationArrivalFx(worldBg, destEl, arriveLayer);
+      });
+      courierLayer.appendChild(courier);
+    }
   }
   if (onboarding?.deliveryArrived) {
     courierLayer?.querySelectorAll('.kb-world-courier').forEach((node) => node.remove());
     triggerDestinationArrivalFx(worldBg, destEl, arriveLayer);
   }
-  worldBg.setAttribute('data-last-cargo-count', String(clampedCargo));
 }
 
 function renderInputCheckCard(actions: UIControllerActions, isTutorial = false, snapshot?: SessionSnapshot, countdown: number | null = null): HTMLElement {
@@ -495,172 +460,73 @@ function renderPausedCard(feedback: PlayUiFeedback, actions: UIControllerActions
   );
 }
 
-function renderPaperFooterLine(
-  snapshot: SessionSnapshot,
-  deliveryKey: DeliveryKeyOption,
-  feedback: PlayUiFeedback,
-  actions: UIControllerActions,
-  onboarding?: OnboardingUiState,
+function renderExtraProgress(
+  snapshot: SessionSnapshot, feedback: PlayUiFeedback, previous: HTMLElement | null,
 ): HTMLElement {
-  const line = el('div', { className: 'kb-play-paper-foot', role: 'status' });
-
-  if (feedback.mistakeFlash && feedback.mistakeLabel) {
-    line.appendChild(
-      el(
-        'span',
-        { className: 'kb-play-deliver-hint', 'data-testid': 'play-deliver-hint' },
-        el(
-          'span',
-          { className: snapshot.cargoCount > 0 ? 'kb-deliver-cargo-count' : 'kb-secondary' },
-          `積載 ${snapshot.cargoCount}/5`,
-        ),
-        el('span', { className: 'kb-mistake-pop' }, feedback.mistakeLabel),
-      ),
-    );
-    return line;
-  }
-
-  if (feedback.fullDeliveryFlash && feedback.lastDeliveryBonus === null) {
-    line.appendChild(el('span', { className: 'kb-delivery-burst' }, '5個満載！ 自動配達出発！'));
-    return line;
-  }
-
-  if (feedback.lastDeliveryBonus !== null) {
-    line.appendChild(
-      el(
-        'span',
-        { className: 'kb-delivery-burst' },
-        `${feedback.fullDeliveryFlash ? '5個満載！ ' : ''}配達出発！ +${feedback.lastDeliveryBonus}点`,
-      ),
-    );
-    return line;
-  }
-
-  if (feedback.notice) {
-    const noticeText =
-      snapshot.cargoCount > 0
-        ? `積載 ${snapshot.cargoCount}/5 ・ ${feedback.notice}`
-        : feedback.notice;
-    line.appendChild(
-      el(
-        'span',
-        {
-          className: feedback.midWordDeliveryAttempt ? 'kb-small kb-secondary' : 'kb-accent kb-small',
-          'data-testid': 'play-deliver-hint',
-        },
-        noticeText,
-      ),
-    );
-    return line;
-  }
-
-  if (
-    snapshot.mode === 'TUTORIAL' &&
-    onboarding?.active &&
-    onboarding.step === 'S4' &&
-    snapshot.cargoCount === 1
-  ) {
-    line.appendChild(
-      el(
-        'span',
-        {
-          className: `kb-play-deliver-hint${feedback.midWordDeliveryAttempt ? ' is-mid-word-nudge' : ''}`,
-          'data-testid': 'play-deliver-hint',
-        },
-        el('span', {}, `積載 1/5（+${snapshot.pendingBonus}点）・ あと1語ノーミスで2個（+40%）にしてから `),
-        el('kbd', { className: 'kb-kbd' }, deliveryKey),
-        el('span', {}, ' で運ぶ！'),
-      ),
-    );
-    return line;
-  }
-
-  const canDeliver = snapshot.atWordBoundary && snapshot.cargoCount > 0;
-  if (canDeliver) {
-    const isOnboardDeliverReady =
-      snapshot.mode === 'TUTORIAL' &&
-      Boolean(onboarding?.active) &&
-      onboarding?.step === 'S4' &&
-      snapshot.cargoCount >= 2;
-    const trigger = el(
-      'button',
-      {
-        type: 'button',
-        className: `kb-play-deliver-hint is-ready${isOnboardDeliverReady ? ' is-onboard-deliver-ready' : ''}${feedback.midWordDeliveryAttempt ? ' is-mid-word-nudge' : ''}`,
-        'data-testid': 'play-deliver-hint',
-      },
-      el('span', { className: 'kb-deliver-cargo-count' }, `積載 ${snapshot.cargoCount}/5（+${snapshot.pendingBonus}点）`),
-      el(
-        'span',
-        { className: 'kb-deliver-cta-chip' },
-        el('span', { className: 'kb-deliver-action-text' }, '今すぐ運ぶ'),
-        el('kbd', { className: 'kb-kbd' }, deliveryKey),
-      ),
-    );
-    trigger.addEventListener('mousedown', (e) => e.preventDefault());
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      actions.commitManualDelivery();
+  const progress = previous ?? el('span', {
+    className: 'kb-extra-progress', role: 'meter',
+    'aria-label': '追加便', 'aria-valuemin': 0, 'aria-valuemax': MAX_CARGO_COUNT,
+    'data-testid': 'extra-delivery-progress',
+  }, el('span', {}, '追加便'), ...Array.from({ length: MAX_CARGO_COUNT }, () => {
+    const mark = assetImg(EXTRA_MARK_EMPTY_SRC, '', {
+      className: 'kb-extra-mark',
+      decorative: true,
     });
-    line.appendChild(trigger);
-    return line;
-  }
-
-  if (snapshot.cargoCount > 0) {
-    line.appendChild(
-      el(
-        'span',
-        {
-          className: `kb-play-deliver-hint${feedback.midWordDeliveryAttempt ? ' is-mid-word-nudge' : ''}`,
-          'data-testid': 'play-deliver-hint',
-        },
-        el('span', {}, `積載 ${snapshot.cargoCount}/5（+${snapshot.pendingBonus}点） ・ 打ち終えて `),
-        el('kbd', { className: 'kb-kbd' }, deliveryKey),
-        el('span', {}, ' で運ぶ'),
-      ),
-    );
-    return line;
-  }
-
-  line.appendChild(
-    el(
-      'span',
-      { className: 'kb-play-deliver-hint kb-secondary', 'data-testid': 'play-deliver-hint' },
-      '積載 0/5 ・ 1語ノーミスで荷物+1（5個で自動配達）',
-    ),
-  );
-  return line;
+    mark.addEventListener('animationend', () => mark.classList.remove('is-new'));
+    return mark;
+  }));
+  const current = snapshot.currentCleanStreak % MAX_CARGO_COUNT;
+  const complete = feedback.extraDeliveryFlash && snapshot.currentCleanStreak > 0 && current === 0;
+  const filled = complete ? MAX_CARGO_COUNT : current;
+  const before = Number(progress.getAttribute('aria-valuenow') ?? 0);
+  progress.setAttribute('aria-valuenow', String(filled));
+  progress.setAttribute('aria-valuetext', complete
+    ? '5問連続成功。追加便が出発'
+    : `ノーミス ${filled}/${MAX_CARGO_COUNT}問。追加便まであと${MAX_CARGO_COUNT - filled}問`);
+  progress.classList.toggle('is-complete', complete);
+  const emptySrc = assetUrl(EXTRA_MARK_EMPTY_SRC);
+  const litSrc = assetUrl(EXTRA_MARK_LIT_SRC);
+  progress.querySelectorAll<HTMLImageElement>('.kb-extra-mark').forEach((mark, index) => {
+    const lit = index < filled;
+    const nextSrc = lit ? litSrc : emptySrc;
+    if (mark.getAttribute('src') !== nextSrc) {
+      mark.setAttribute('src', nextSrc);
+    }
+    mark.classList.toggle('is-lit', lit);
+    if (!lit) mark.classList.remove('is-new');
+    else if (index >= before) mark.classList.add('is-new');
+  });
+  return progress;
 }
 
-function renderEfficiencyTable(cargoCount: number): HTMLElement {
-  const tiers: readonly { count: number; pct: string; suffix?: string }[] = [
-    { count: 1, pct: '+20%' },
-    { count: 2, pct: '+40%' },
-    { count: 3, pct: '+60%' },
-    { count: 4, pct: '+80%' },
-    { count: 5, pct: '+100%', suffix: '自動' },
-  ];
-
+function renderPaperFooterLine(
+  snapshot: SessionSnapshot, feedback: PlayUiFeedback, previousProgress: HTMLElement | null,
+): HTMLElement {
+  const dispatch = feedback.fullDeliveryFlash
+    ? feedback.extraDeliveryFlash ? '通常便と追加便が出発！' : '通常便が出発！'
+    : '追加便が出発！';
+  const message = feedback.mistakeLabel ?? feedback.notice ??
+    (feedback.lastDeliveryBonus === null ? null : dispatch + ' +' + feedback.lastDeliveryBonus + '点');
   return el(
     'div',
-    {
-      className: 'kb-onboard-efficiency-bar',
-      'data-testid': 'onboarding-efficiency-table',
-      'aria-label': 'まとめ積みの上乗せ率',
-    },
-    el('span', { className: 'kb-onboard-eff-label' }, '上乗せ率'),
-    ...tiers.map((t) => {
-      const isCurrent = cargoCount === t.count;
-      return el(
-        'div',
-        {
-          className: `kb-onboard-eff-pill${isCurrent ? ' is-current' : ''}${t.count >= 2 ? ' is-recommended' : ''}`,
-          'data-cargo-tier': String(t.count),
-        },
-        el('strong', {}, `${t.count}個`),
-        el('span', {}, t.suffix ? `${t.pct} ${t.suffix}` : t.pct),
-      );
-    }),
+    { className: 'kb-play-paper-foot', role: 'status', 'aria-atomic': 'true' },
+    el(
+      'span',
+      { className: 'kb-play-deliver-hint', 'data-testid': 'play-deliver-hint' },
+      el(
+        'span',
+        { className: 'kb-delivery-progress-row' },
+        el('span', { className: 'kb-deliver-cargo-count' }, '積載 ' + snapshot.cargoCount + '/5'),
+        renderExtraProgress(snapshot, feedback, previousProgress),
+      ),
+      el(
+        'span',
+        { className: 'kb-dispatch-status' },
+        message
+          ? el('span', { className: feedback.mistakeLabel ? 'kb-mistake-pop' : 'kb-delivery-burst' }, message)
+          : null,
+      ),
+    ),
   );
 }
 
@@ -674,7 +540,6 @@ export function syncPlayScreen(
     economy,
     achievements,
     pinnedAchievementId,
-    deliveryKey,
     feedback,
     onboarding,
     onboardingInProgress = false,
@@ -698,6 +563,7 @@ export function syncPlayScreen(
     container.appendChild(contentHost);
   }
 
+  const previousProgress = contentHost.querySelector<HTMLElement>('[data-testid="extra-delivery-progress"]');
   contentHost.replaceChildren();
 
   preloadPlayAssets(economy, snapshot.districtId, initialStageSnapshot);
@@ -858,23 +724,10 @@ export function syncPlayScreen(
 
     let guideCard: HTMLElement;
     if (step === 'S4') {
-      const showSingleDeliveryWarning = Boolean(
-        onboarding?.singleDeliveryNoticeShown && snapshot.cargoCount < 2,
-      );
-      const guideText = showSingleDeliveryWarning
-        ? `2個以上まとめて運んでみましょう！いまの1個は残るので、あと1語ノーミスで2個にして ${deliveryKey} で運びましょう。`
-        : snapshot.cargoCount >= 2
-          ? snapshot.atWordBoundary
-            ? `いま ${snapshot.cargoCount} 個積んでいます！ ${deliveryKey} キーまたは「今すぐ運ぶ (${deliveryKey})」で一気に運べます。`
-            : `いま ${snapshot.cargoCount} 個積んでいます！ このことばを打ち終えてから ${deliveryKey} キーで一気に運べます。`
-          : snapshot.cargoCount === 1
-            ? `いま 1 個積んでいます。あと1語ノーミスで積み、2個以上にして ${deliveryKey} で運びましょう。`
-            : `続けて2語ノーミスで積み、2個以上まとめて ${deliveryKey} キーで運びましょう（5個で自動）。`;
       guideCard = renderCoachMark({
         stepBadge: 'ステップ 4 / 9',
-        title: '荷物をたくさん積み込むと効率が上がる！',
-        body: guideText,
-        bodyAccent: showSingleDeliveryWarning,
+        title: '荷物が5個そろうと通常便が出発！',
+        body: 'ミスなしで5問続けると追加便も出ます。',
         pointerDirection: 'down',
         compactHeader: true,
         secondaryLabel: showSkipInCoach ? 'スキップしてホームへ' : undefined,
@@ -886,17 +739,13 @@ export function syncPlayScreen(
       });
     } else {
       const targetGuide = snapshot.guide;
-      const showZeroCargoMistake = Boolean(onboarding?.mistakeZeroCargoNoticeShown);
-      const guideInstruction = showZeroCargoMistake
-        ? '打ち間違えても大丈夫！入力済みの文字は残るので最後まで打ち切りましょう（誤打した語は積まれません）。'
-        : targetGuide
-          ? `表示のローマ字（${targetGuide}）をそのまま打ちましょう。1語ノーミスで荷物+1！`
-          : 'お題のローマ字をそのまま打ちましょう。1語ノーミスで荷物+1！';
+      const guideInstruction = targetGuide
+        ? '表示のローマ字（' + targetGuide + '）をそのまま打ちましょう。'
+        : 'お題のローマ字をそのまま打ちましょう。';
       guideCard = renderCoachMark({
         stepBadge: 'ステップ 3 / 9',
         title: 'タイピングで荷物を積み込もう',
         body: guideInstruction,
-        bodyAccent: showZeroCargoMistake,
         pointerDirection: 'down',
         compactHeader: true,
         secondaryLabel: showSkipInCoach ? 'スキップしてホームへ' : undefined,
@@ -947,12 +796,8 @@ export function syncPlayScreen(
 
   paper.appendChild(el('div', { className: 'kb-prompt-ja', 'data-testid': 'play-word-ja' }, snapshot.currentWord.display));
   paper.appendChild(el('div', { className: 'kb-prompt-reading' }, snapshot.currentWord.reading));
-  const romajiEl = renderRomajiGuide(snapshot.guide, snapshot.typed);
-  if (feedback.midWordDeliveryAttempt) {
-    romajiEl.classList.add('is-highlight-next');
-  }
-  paper.appendChild(romajiEl);
-  paper.appendChild(renderPaperFooterLine(snapshot, deliveryKey, feedback, actions, onboarding));
+  paper.appendChild(renderRomajiGuide(snapshot.guide, snapshot.typed));
+  paper.appendChild(renderPaperFooterLine(snapshot, feedback, previousProgress));
 
   contentHost.appendChild(paper);
 
@@ -981,9 +826,8 @@ export function syncPlayScreen(
     }
   }
 
-  // S4 Efficiency table, collapse lesson, rescue, and skip controls
+  // Tutorial loading explanation and recovery actions
   if (snapshot.mode === 'TUTORIAL') {
-    const step = onboarding?.step ?? 'S3';
     if (onboarding?.rescueOffered) {
       const rescuePracticeBtn = el(
         'button',
@@ -1025,43 +869,12 @@ export function syncPlayScreen(
       );
     }
 
-    if (step === 'S4') {
-      contentHost.appendChild(renderEfficiencyTable(snapshot.cargoCount));
-    }
-
-    if (onboarding?.collapseLessonShown) {
-      const actualCollapsed = onboarding.actualCollapseNoticeShown && snapshot.cargoCount === 0;
-      const collapseIcon = createSpriteAnimEl(
-        'kb-onboard-collapse-sample',
-        './assets/sprites/anim_cargo_collapse.png',
-        8,
-      );
-      contentHost.appendChild(
-        el(
-          'div',
-          {
-            className: 'kb-banner-warning kb-onboard-collapse-banner',
-            role: 'status',
-            'data-testid': 'onboarding-collapse-lesson',
-          },
-          collapseIcon,
-          el(
-            'div',
-            { className: 'kb-small' },
-            el(
-              'strong',
-              {},
-              actualCollapsed
-                ? '荷物が崩れました！'
-                : '注意：誤打で積んだ荷物が崩れます！',
-            ),
-            ' ',
-            actualCollapsed
-              ? `打ち終えた語（完了 ${snapshot.completedWordCount}語分）の資材は減りません。またここから2個積みましょう。`
-              : `崩れるのは積載中の上乗せ分だけで、打ち終えた語（完了 ${snapshot.completedWordCount}語分）の資材はそのまま残ります。`,
-          ),
-        ),
-      );
+    if (!onboarding?.rescueOffered) {
+      contentHost.appendChild(el(
+        'p',
+        { className: 'kb-play-tutorial-banner kb-small', 'data-testid': 'onboarding-loading-rule' },
+        '同じ問題で2か所以上打ち間違えたときだけ、その問題の荷物は積まれません。',
+      ));
     }
   }
 

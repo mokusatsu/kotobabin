@@ -37,14 +37,12 @@ export type UpgradeCategory =
 export interface PlayUiFeedback {
   mistakeFlash: boolean;
   mistakeLabel: string | null;
-  mistakeSeq: number;
   wordPopSeq: number;
   deliveryPopSeq: number;
   fullDeliveryFlash: boolean;
-  midWordDeliveryAttempt: boolean;
+  extraDeliveryFlash: boolean;
   notice: string | null;
   imePauseReason: boolean;
-  lastDeliveredCargoCount: number;
   lastDeliveryBonus: number | null;
   lastUnlockedStampNames: string[];
   lastUnlockedStampAssetIds: string[];
@@ -55,16 +53,9 @@ export interface OnboardingUiState {
   active: boolean;
   step: OnboardingStep;
   lockedDistrictNotice: string | null;
-  collapseLessonShown: boolean;
-  collapseSampleSeq: number;
-  mistakeZeroCargoNoticeShown: boolean;
-  actualCollapseNoticeShown: boolean;
-  singleDeliveryNoticeShown: boolean;
   consecutiveFailedWords: number;
   rescueOffered: boolean;
   generatedMaterialsMicro: bigint;
-  lastDeliveredCargoCount: number;
-  lastDeliveredBonus: number;
   deliveryInTransit: boolean;
   deliveryArrived: boolean;
   saveFailed: boolean;
@@ -115,7 +106,6 @@ export interface UIControllerActions {
   nextPracticeWord(): void;
   tryMainFromPractice(): void;
   endPracticeToHome(): void;
-  commitManualDelivery(): void;
   focusPlayInput(): void;
   completeInputCheck(): void;
   cancelInputCheck(): void;

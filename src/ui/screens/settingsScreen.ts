@@ -29,7 +29,7 @@ const RESET_CONFIRM_COPY: Record<
   },
   settings: {
     title: '設定を初期化しますか？',
-    body: '文字サイズ・コントラスト・ローマ字ガイド・手動配達キー・BGM/効果音設定を初期値に戻します。街と手帳のデータは残ります。',
+    body: '文字サイズ・コントラスト・ローマ字ガイド・BGM/効果音設定を初期値に戻します。街と手帳のデータは残ります。',
     confirmLabel: '設定を初期化する',
   },
 };
@@ -58,23 +58,6 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
         s === '1.0' ? '標準 (1.0)' : s === '1.15' ? '少し大きめ (1.15)' : '大きめ (1.3)',
       );
       btn.addEventListener('click', () => actions.setFontScale(s));
-      return btn;
-    }),
-  );
-
-  const deliveryKeyGroup = el(
-    'div',
-    { className: 'kb-row-gap', role: 'group', 'aria-label': '配達キー' },
-    ...(['Space', 'Enter'] as const).map((k) => {
-      const btn = el(
-        'button',
-        {
-          type: 'button',
-          className: `kb-pill-btn${settings.deliveryKey === k ? ' is-selected' : ''}`,
-        },
-        el('kbd', { className: 'kb-kbd' }, k),
-      );
-      btn.addEventListener('click', () => actions.updateSettings({ deliveryKey: k }));
       return btn;
     }),
   );
@@ -142,7 +125,6 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
         actions.updateSettings({ reduceMotion: v }),
       ),
       el('div', { className: 'kb-stack-xs' }, el('strong', {}, '文字サイズ倍率'), fontScaleGroup),
-      el('div', { className: 'kb-stack-xs' }, el('strong', {}, '手動配達キー'), deliveryKeyGroup),
       el(
         'div',
         { className: 'kb-play-paper kb-settings-preview' },

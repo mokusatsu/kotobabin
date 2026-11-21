@@ -38,7 +38,7 @@ function getPromptRomaji(mount: HTMLElement): string {
   return mount.querySelector('.kb-prompt-roman')?.textContent?.trim() ?? '';
 }
 
-async function watchStampReveals(mount: HTMLElement, ids = ['A01', 'A02', 'A03', 'reward_family_a_postcard']): Promise<void> {
+async function watchStampReveals(mount: HTMLElement, ids = ['A01', 'A02', 'A04', 'reward_family_a_postcard']): Promise<void> {
   for (const id of ids) {
     const card = mount.querySelector('[data-testid="gacha-reveal-card"]');
     expect(card?.getAttribute('data-reveal-id')).toBe(id);
@@ -180,48 +180,17 @@ describe('Onboarding / Tutorial Integration', () => {
     // Pass INPUT_CHECK with 'a' -> S3
     await passStartGate(mount);
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S3');
-    expect(mount.querySelector('[data-testid="onboarding-efficiency-table"]')).toBeNull();
+    expect(mount.querySelector('[data-testid="onboarding-loading-rule"]')?.textContent).toContain('2か所以上');
 
-    // Mistake at 0 cargo shows reassurance without blocking progress; resets on next word after completion
-    pressKey(mount, 'z');
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('打ち間違えても大丈夫');
-    expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 0/5');
-    typeKeys(mount, getPromptRomaji(mount));
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S3');
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).not.toContain('打ち間違えても大丈夫');
-
-    // Complete next tutorial word cleanly -> S4 + 1 cargo
     typeKeys(mount, getPromptRomaji(mount));
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S4');
-    expect(mount.querySelector('[data-testid="onboarding-efficiency-table"]')).not.toBeNull();
-    expect(mount.querySelector('[data-cargo-tier="1"]')?.classList.contains('is-current')).toBe(true);
     expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 1/5');
-
-    // Manual 1-cargo delivery is guarded in S4: keeps 1 cargo and prompts for 2+ cargo summary delivery
     pressKey(mount, 'Enter');
-    expect(mount.querySelector('[data-testid="onboarding-complete-card"]')).toBeNull();
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-onboarding-step')).toBe('S4');
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('2個以上まとめて');
-    expect(mount.querySelector('[data-cargo-tier="1"]')?.classList.contains('is-current')).toBe(true);
+    pressKey(mount, ' ');
+    expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 1/5');
+    expect(mount.querySelector('button[data-testid="play-deliver-hint"]')).toBeNull();
 
-    // Complete 1 more clean word -> cargo becomes 2 -> collapse lesson shown
-    typeKeys(mount, getPromptRomaji(mount));
-    expect(mount.querySelector('[data-cargo-tier="2"]')?.classList.contains('is-current')).toBe(true);
-    const collapseLesson = mount.querySelector('[data-testid="onboarding-collapse-lesson"]');
-    expect(collapseLesson).not.toBeNull();
-    expect(collapseLesson?.textContent).toContain('積んだ荷物が崩れます');
-
-    // Mid-word in S4 updates coach text and mid-word Enter keeps cargo count + avoids red error highlight
-    const midWordRomaji = getPromptRomaji(mount);
-    pressKey(mount, midWordRomaji[0]);
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('打ち終えてから');
-    pressKey(mount, 'Enter');
-    expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('積載 2/5');
-    expect(mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent).toContain('打ち切ってから');
-    typeKeys(mount, midWordRomaji.slice(1));
-
-    // Deliver cargo, watch it arrive, and show the earned stamp with support supplies.
-    pressKey(mount, 'Enter');
+    for (let count = 0; count < 4; count += 1) typeKeys(mount, getPromptRomaji(mount));
     expect(mount.querySelector('[data-testid="onboarding-complete-card"]')).toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('荷馬車が出発しました');
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-pointer')).toBe('none');
@@ -239,7 +208,7 @@ describe('Onboarding / Tutorial Integration', () => {
     const receipt = mount.querySelector('dialog[open][data-testid="onboarding-receipt"]');
     expect(receipt?.textContent).toContain('実績を獲得');
     expect(receipt?.textContent).toContain('はじめのことば');
-    expect(receipt?.textContent).toContain('街づくり支援');
+    expect(receipt?.textContent).toContain('住宅地に 63 資材を届けました');
     expect(controller.getSettings().onboarding?.status).toBe('in_progress');
     expect(controller.getSettings().tutorialCompleted).toBe(false);
     expect(controller.getUnlocks().A01).toBeDefined();
@@ -304,7 +273,7 @@ describe('Onboarding / Tutorial Integration', () => {
     // Verify dictionary counted completed words from tutorial, labels practice mastery clearly, and immediately prompts clicked practice word
     pressWindowKey('l', 'KeyL');
     expect(mount.textContent).toContain('ことば図鑑');
-    expect(mount.textContent).toContain('完了 4 / 960語');
+    expect(mount.textContent).toContain('完了 5 / 960語');
     const firstCard = mount.querySelector('.kb-word-card');
     expect(firstCard?.querySelector('.kb-badge')?.textContent).toBe('練習 0/3');
     const selectedWordText = firstCard?.querySelector('.kb-word-display')?.textContent ?? '';
@@ -356,9 +325,10 @@ describe('Onboarding / Tutorial Integration', () => {
     await passStartGate(mount);
     for (let count = 0; count < 5; count += 1) typeKeys(mount, getPromptRomaji(mount));
     await flushUi(600);
-    expect(controller.getUnlocks().A02).toBeUndefined();
+    expect(controller.getUnlocks().A02).toBeDefined();
+    expect(controller.getUnlocks().A03).toBeUndefined();
     expect(controller.getUnlocks().A04).toBeDefined();
-    await watchStampReveals(mount, ['A01', 'A03', 'A04', 'reward_family_a_postcard']);
+    await watchStampReveals(mount, ['A01', 'A02', 'A04', 'reward_family_a_postcard']);
     expect(mount.querySelector('[data-testid="onboarding-receipt"]')).not.toBeNull();
   }, 20000);
 
@@ -397,12 +367,11 @@ describe('Onboarding / Tutorial Integration', () => {
     app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
     app.mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
     await passStartGate(app.mount);
-    typeKeys(app.mount, getPromptRomaji(app.mount));
-    typeKeys(app.mount, getPromptRomaji(app.mount));
+    for (let count = 0; count < 4; count += 1) typeKeys(app.mount, getPromptRomaji(app.mount));
     await flushUi();
     const saveFailure = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitCityEconomy')
       .mockRejectedValueOnce(new Error('Temporary storage failure'));
-    pressKey(app.mount, 'Enter');
+    typeKeys(app.mount, getPromptRomaji(app.mount));
     await flushUi(500);
     expect(app.mount.querySelector('[data-testid="onboarding-retry-save-btn"]')).not.toBeNull();
     app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-retry-save-btn"]')?.click();
@@ -410,9 +379,9 @@ describe('Onboarding / Tutorial Integration', () => {
     saveFailure.mockRestore();
     expect(app.mount.querySelector('dialog[open][data-testid="onboarding-stamp-reveal"]')).not.toBeNull();
     const receipt = app.controller.getSettings().onboarding?.receipt;
-    expect(receipt?.generatedMaterialsMicro).toBe('11200000');
-    expect(receipt?.supportMaterialsMicro).toBe('19000000');
-    expect(BigInt(receipt?.supportCoinsMicro ?? '0')).toBeGreaterThan(0n);
+    expect(BigInt(receipt?.generatedMaterialsMicro ?? '0')).toBeGreaterThanOrEqual(30_000_000n);
+    expect(receipt?.supportMaterialsMicro).toBe('0');
+    expect(receipt?.supportCoinsMicro).toBe('0');
     await watchStampReveals(app.mount, ['A01']);
 
     app.controller.destroy();
@@ -422,7 +391,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(app.controller.getSettings().onboarding?.receipt).toEqual(receipt);
     expect(app.controller.getUnlocks().A01).toBeDefined();
     expect(app.mount.querySelector('[data-testid="gacha-reveal-card"]')?.getAttribute('data-reveal-id')).toBe('A02');
-    await watchStampReveals(app.mount, ['A02', 'A03', 'reward_family_a_postcard']);
+    await watchStampReveals(app.mount, ['A02', 'A04', 'reward_family_a_postcard']);
     expect(app.mount.querySelector('dialog[open][data-testid="onboarding-receipt"]')).not.toBeNull();
     app.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-build-next-btn"]')?.click();
     await flushUi();
@@ -461,19 +430,21 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(app.mount.textContent).toContain('荷づくり台 Lv.1');
   }, 45000);
 
-  it('teaches cargo collapse while preserving base materials and triggers 3-fail rescue bar with practice roundtrip', async () => {
+  it('keeps previously loaded cargo and offers practice when errors continue', async () => {
     const { mount } = await mountFreshApp();
     mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
     mount.querySelector<HTMLButtonElement>('.kb-map-district-btn[data-district-id="residential"]')?.click();
     await passStartGate(mount);
     typeKeys(mount, getPromptRomaji(mount));
 
-    // Now in S4 with 1 cargo loaded; trigger mistake to collapse cargo back to 0
-    expect(mount.querySelector('[data-cargo-tier="1"]')?.classList.contains('is-current')).toBe(true);
-    pressKey(mount, 'x');
-    expect(mount.querySelector('[data-testid="onboarding-collapse-lesson"]')).not.toBeNull();
-    expect(mount.querySelector('[data-testid="onboarding-collapse-lesson"]')?.textContent).toContain('荷物が崩れました');
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('2語ノーミス');
+    const hint = () => mount.querySelector('[data-testid="play-deliver-hint"]')?.textContent;
+    const prompt = getPromptRomaji(mount);
+    for (const key of ['z', 'x', prompt[0], 'z']) pressKey(mount, key);
+    expect(hint()).toContain('この問題は積載なし');
+    expect(hint()).toContain('積載 1/5');
+    typeKeys(mount, prompt.slice(1));
+    expect(hint()).toContain('積載 1/5');
+    expect(mount.querySelector('[data-testid="onboarding-loading-rule"]')?.textContent).toContain('2か所以上');
 
     // Trigger 4 consecutive key mistakes on the current word to immediately surface the rescue bar while keeping Skip
     for (let i = 0; i < 4; i++) {
@@ -503,7 +474,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('.kb-home-screen')).not.toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-coach"]')?.getAttribute('data-onboarding-step')).toBe('S2');
 
-    // Completing 3 words with mistakes also triggers rescue bar in a fresh session, and a clean word clears it
+    // Three completed but ineligible words offer practice; the next loaded word clears the offer.
     const secondRun = await mountFreshApp();
     secondRun.mount.querySelector<HTMLButtonElement>('[data-testid="onboarding-next-btn"]')?.click();
     secondRun.mount
@@ -513,9 +484,9 @@ describe('Onboarding / Tutorial Integration', () => {
     for (let i = 0; i < 3; i++) {
       const target = getPromptRomaji(secondRun.mount);
       pressKey(secondRun.mount, 'z');
-      if (target) {
-        typeKeys(secondRun.mount, target);
-      }
+      pressKey(secondRun.mount, target[0]);
+      pressKey(secondRun.mount, 'z');
+      typeKeys(secondRun.mount, target.slice(1));
     }
     expect(secondRun.mount.querySelector('[data-testid="onboarding-rescue-bar"]')).not.toBeNull();
     typeKeys(secondRun.mount, getPromptRomaji(secondRun.mount));

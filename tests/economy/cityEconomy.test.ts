@@ -44,7 +44,7 @@ function makeWordFact(
 function makeDeliveryFact(
   sessionId: string,
   factSequence: number,
-  reason: 'manual' | 'full' | 'deadline' | 'skip',
+  reason: 'extra' | 'full' | 'deadline' | 'skip',
   cargoCount: number,
   bonus: number,
   precedingWordPosition = 1,
@@ -257,14 +257,14 @@ describe('CityEconomy invariants', () => {
 
     const b = new CityEconomy();
     b.beginSession('s2');
-    expect(b.applyTypingFact(makeDeliveryFact('s2', 1, 'manual', 3, 138)).generatedMicro).toBe(
+    expect(b.applyTypingFact(makeDeliveryFact('s2', 1, 'extra', 0, 138)).generatedMicro).toBe(
       '13800000',
     );
 
     const c = new CityEconomy();
     c.packagingLevel = 10;
     c.beginSession('s3');
-    expect(c.applyTypingFact(makeDeliveryFact('s3', 1, 'manual', 3, 138)).generatedMicro).toBe(
+    expect(c.applyTypingFact(makeDeliveryFact('s3', 1, 'extra', 0, 138)).generatedMicro).toBe(
       '96600000',
     );
 

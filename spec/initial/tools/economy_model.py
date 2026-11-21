@@ -444,28 +444,25 @@ class EconomyModel:
             raise EconomyError("unknown shipment reason")
         if cargo_count > cfg["maximum_cargo_count"]:
             raise EconomyError("too many cargo items")
-        if reason == "manual" and not 1 <= cargo_count <= 4:
-            raise EconomyError("manual shipment requires 1 to 4 items")
-        if reason == "full" and cargo_count != 5:
+        if reason == "full" and cargo_count != cfg["maximum_cargo_count"]:
             raise EconomyError("full shipment requires 5 items")
         if reason in {"deadline", "skip"} and not 1 <= cargo_count <= 5:
             raise EconomyError("deadline or skip shipment requires completed cargo")
-        if cargo_count == 0 and score_sum:
-            raise EconomyError("empty cargo cannot carry a score")
+        if reason == "extra" and cargo_count != 0:
+            raise EconomyError("extra shipment cannot count cargo again")
         payload = {"kind": "CargoShipped", "score_sum": score_sum,
                    "cargo_count": cargo_count, "reason": reason}
         key, fingerprint, session = self._fact(session_id, fact_sequence, city_id, payload)
         if key is None:
             return {"applied": False, "reason": fingerprint, "generated_micro": "0"}
-        bonus = score_sum * cargo_count // cfg["bonus_divisor"]
+        bonus = score_sum if reason == "extra" else score_sum * cargo_count // cfg["bonus_divisor"]
         factor = cfg["bonus_material_per_point"]
         amount = exact_integer(Fraction(bonus * factor["numerator"], factor["denominator"])
                                * session.multiplier * self.unit, "bonus material")
         self.districts[session.district_id].queue_micro += amount
         self.lifetime["generated_micro"] += amount
-        economic = cargo_count > 0
         legacy = reason in cfg["legacy_achievement_shipment_reasons"]
-        self.lifetime["economic_shipments"] += int(economic)
+        self.lifetime["economic_shipments"] += 1
         self.lifetime["legacy_shipments"] += int(legacy)
         self.fact_ledger[key] = fingerprint
         return {"applied": True, "bonus_points": bonus, "generated_micro": str(amount),
@@ -1137,10 +1134,10 @@ def run_validation(config_path=None) -> dict[str, Any]:
         a = fact_fixture(1)
         eq(a.complete_word("facts", 1, 3, city_id=a.city_id)["generated_micro"], "3750000")
         b = fact_fixture()
-        receipt = b.ship_cargo("facts", 1, 230, 3, "manual", city_id=b.city_id)
+        receipt = b.ship_cargo("facts", 1, 230, 3, "deadline", city_id=b.city_id)
         eq((receipt["bonus_points"], receipt["generated_micro"]), (138, "13800000"))
         c = fact_fixture(10)
-        eq(c.ship_cargo("facts", 1, 230, 3, "manual", city_id=c.city_id)["generated_micro"], "96600000")
+        eq(c.ship_cargo("facts", 1, 230, 3, "deadline", city_id=c.city_id)["generated_micro"], "96600000")
         return {"L3_packaging1": "3.75", "S230_k3_bonus_points": 138,
                 "bonus_materials": "13.8", "packaging10_bonus_materials": "96.6"}
     check("exact_fixed_point_material_examples", known_material_examples)
@@ -1175,11 +1172,11 @@ def run_validation(config_path=None) -> dict[str, Any]:
 
     def shipment_kinds():
         actual = {}
-        for reason, count in (("manual", 3), ("full", 5), ("deadline", 3), ("skip", 3)):
+        for reason, count in (("extra", 0), ("full", 5), ("deadline", 3), ("skip", 3)):
             m = fact_fixture()
             r = m.ship_cargo("facts", 1, 230, count, reason, city_id=m.city_id)
             actual[reason] = {"bonus_points": r["bonus_points"], "legacy": r["legacy_delivery_counted"]}
-        eq(actual, {"manual": {"bonus_points": 138, "legacy": True},
+        eq(actual, {"extra": {"bonus_points": 230, "legacy": False},
                     "full": {"bonus_points": 230, "legacy": True},
                     "deadline": {"bonus_points": 138, "legacy": False},
                     "skip": {"bonus_points": 138, "legacy": False}})
@@ -1188,14 +1185,14 @@ def run_validation(config_path=None) -> dict[str, Any]:
 
     def unsupported_shipment_reasons():
         rejected = []
-        for reason in ("early_exit", "automatic", "timeout"):
+        for reason in ("manual", "early_exit", "automatic", "timeout"):
             m = fact_fixture()
             before = m.snapshot()
             reject(lambda: m.ship_cargo("facts", 1, 230, 3, reason, city_id=m.city_id))
             eq(m.snapshot(), before)
             rejected.append(reason)
         return {"rejected_reasons": rejected, "resources_and_ledger_unchanged": True}
-    check("only_manual_full_deadline_skip_shipment_reasons_are_accepted", unsupported_shipment_reasons)
+    check("only_extra_full_deadline_skip_shipment_reasons_are_accepted", unsupported_shipment_reasons)
 
     def exit_keeps_base():
         m = fact_fixture()
@@ -1666,10 +1663,10 @@ def run_validation(config_path=None) -> dict[str, Any]:
         eq(m.complete_word("facts", 1, 5, city_id=m.city_id)["reason"], "duplicate")
         eq(m.snapshot(), before)
         reject(lambda: m.complete_word("facts", 1, 6, city_id=m.city_id))
-        m.ship_cargo("facts", 2, 50, 1, "manual", city_id=m.city_id)
+        m.ship_cargo("facts", 2, 10, 0, "extra", city_id=m.city_id)
         eq(m.districts["residential"].queue_micro, 6 * m.unit)
         restored = EconomyModel.from_snapshot(json.loads(json.dumps(m.snapshot())), config_path)
-        eq(restored.ship_cargo("facts", 2, 50, 1, "manual", city_id=restored.city_id)["reason"], "duplicate")
+        eq(restored.ship_cargo("facts", 2, 10, 0, "extra", city_id=restored.city_id)["reason"], "duplicate")
         eq(restored.snapshot(), m.snapshot())
         return "word base and shipment bonus use separate sequences; each survives save/reload without reapplication"
     check("input_fact_identity_prevents_duplicates_including_after_save", fact_idempotence)
