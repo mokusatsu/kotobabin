@@ -472,4 +472,37 @@ describe('CityEconomy invariants', () => {
     );
     expect(stale).toEqual({ applied: false, reason: 'stale_city', generatedMicro: '0' });
   });
+
+  it('preserves each city when travelling and grants blueprints only for a new city', () => {
+    const first = new CityEconomy();
+    for (const district of Object.values(first.districts)) {
+      Object.assign(district, { open: true, stage: 3, crews: 1 });
+    }
+    first.cityArrivedMicro = 100_000n * MICRO;
+    first.coinsMicro = 42n * MICRO;
+    first.districts.residential.queueMicro = 20n * MICRO;
+    expect(first.adjacentCity(-1)).toBeNull();
+    expect(first.startNewCity({ confirmed: true, landscape: 'seaside' }).earned_blueprints).toBe(3);
+    first.buyResearch('materials');
+    const second = CityEconomy.fromSnapshot(first.snapshot());
+    expect(second.adjacentCity(-1)).toBe('city-1');
+    expect(second.cityId).toBe('city-2');
+    second.coinsMicro = 7n * MICRO;
+
+    const visited = second.visitCity('city-1');
+    expect(visited.coinsMicro).toBe(42n * MICRO);
+    expect(visited.districts.residential.queueMicro).toBe(20n * MICRO);
+    expect(visited.cityArrivedMicro).toBe(100_000n * MICRO);
+    expect(visited.research.materials).toBe(1);
+    expect(visited.newCityPreview().eligible).toBe(false);
+    expect(() => visited.startNewCity({ confirmed: true })).toThrow();
+    visited.coinsMicro += MICRO;
+
+    const returned = visited.visitCity('city-2');
+    expect(returned.landscape).toBe('seaside');
+    expect(returned.coinsMicro).toBe(7n * MICRO);
+    expect(returned.blueprints).toBe(2);
+    expect(returned.lifetime.citiesRestarted).toBe(1);
+    expect(returned.visitCity('city-1').coinsMicro).toBe(43n * MICRO);
+  });
 });

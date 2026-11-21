@@ -1,5 +1,6 @@
 import type { ProfileSettingsRecord } from '@/progression/profileRepository';
 import type { UIControllerActions } from '../types';
+import { renderPlayerName } from '../components/playerName';
 import { el } from '../utils/dom';
 
 export interface SettingsScreenProps {
@@ -8,6 +9,7 @@ export interface SettingsScreenProps {
   highContrast: boolean;
   fontScale: '1.0' | '1.15' | '1.3';
   storageBackend: 'indexeddb' | 'memory';
+  player?: { name: string; titleName: string | null; choose: () => void };
   pendingResetScope: 'records' | 'city_and_achievements' | 'settings' | null;
   settingsNotice: string | null;
   actions: UIControllerActions;
@@ -19,7 +21,7 @@ const RESET_CONFIRM_COPY: Record<
 > = {
   records: {
     title: '直近記録を初期化しますか？',
-    body: '保存されている直近リザルト（履歴）を削除します。街のレベル・資材・手帳・各種設定は残ります。',
+    body: '直近のリザルトと、デバッグ画面で書き出せるプレイログを削除します。',
     confirmLabel: '記録を初期化する',
   },
   city_and_achievements: {
@@ -35,7 +37,7 @@ const RESET_CONFIRM_COPY: Record<
 };
 
 export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
-  const { settings, bgmEnabled, highContrast, fontScale, storageBackend, pendingResetScope, settingsNotice, actions } =
+  const { settings, bgmEnabled, highContrast, fontScale, storageBackend, player, pendingResetScope, settingsNotice, actions } =
     props;
 
   const toggleRow = (label: string, checked: boolean, onChange: (val: boolean) => void): HTMLElement => {
@@ -72,7 +74,7 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
   const resetRecordsBtn = el(
     'button',
     { type: 'button', className: 'kb-btn-secondary', 'data-testid': 'settings-reset-records-btn' },
-    '直近記録のみ初期化',
+    'プレイ記録を初期化',
   );
   resetRecordsBtn.addEventListener('click', () => actions.openResetConfirm('records'));
 
@@ -111,6 +113,13 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
     'チュートリアル（案内）を最初から見る',
   );
   restartOnboardingBtn.addEventListener('click', () => actions.restartOnboarding());
+
+  const playerBtn = player ? el(
+    'button',
+    { type: 'button', className: 'kb-btn-secondary', 'data-testid': 'settings-player-select', 'aria-haspopup': 'dialog' },
+    'プレイヤーを選ぶ',
+  ) : null;
+  if (player && playerBtn) playerBtn.addEventListener('click', player.choose);
 
   const grid = el(
     'div',
@@ -157,11 +166,15 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
         'section',
         { className: 'kb-card kb-stack-sm' },
         el('h3', { className: 'kb-h3' }, 'データ保存状態'),
+        player ? el(
+          'div', { className: 'kb-row-between' },
+          renderPlayerName(player.name, player.titleName), playerBtn,
+        ) : null,
         el(
           'p',
           { className: 'kb-small' },
           storageBackend === 'indexeddb'
-            ? 'IndexedDB (v4) に自動保存されています。'
+            ? 'このブラウザーに自動保存されています。'
             : '現在メモリ保存のみで動作中です（再読み込みするとデータは失われます）。',
         ),
         settingsNotice

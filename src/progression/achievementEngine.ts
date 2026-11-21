@@ -18,7 +18,7 @@ import {
   COURSE_WORD_COUNTS,
   LEGACY_240_WORD_IDS,
 } from './dictionaryTracker';
-import { SERIES_STAMPS, type SeriesStamp } from './stampSeries';
+import { SERIES_BY_ID, SERIES_STAMPS, type SeriesStamp } from './stampSeries';
 import { STAMP_COUNT_FRAMES } from './stampFrameCatalog';
 import { SeriesProgress, type RecordUpdates, type SeriesProgressState, type WordMastery } from './seriesProgress';
 
@@ -65,6 +65,12 @@ export const CATALOG_ACHIEVEMENTS: readonly (CatalogAchievementDefinition | Seri
   ...LEGACY_ACHIEVEMENTS, ...SERIES_STAMPS,
 ];
 const achievementById = new Map(CATALOG_ACHIEVEMENTS.map((stamp) => [stamp.id, stamp]));
+
+export const STAMP_TITLES: ReadonlyMap<string, { stampId: string; name: string }> = new Map(
+  CATALOG_ACHIEVEMENTS
+    .filter((stamp) => !('seriesId' in stamp && SERIES_BY_ID.get(stamp.seriesId)?.repeatable))
+    .map((stamp) => [stamp.title_id, { stampId: stamp.id, name: 'tierLabel' in stamp ? stamp.tierLabel : stamp.name }]),
+);
 
 export const CATALOG_REWARDS: readonly CatalogRewardDefinition[] = [
   ...ACHIEVEMENT_CATALOG.rewards as unknown as CatalogRewardDefinition[],

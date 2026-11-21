@@ -3,14 +3,17 @@ import type { CityEconomy } from '@/economy/cityEconomy';
 import type { AppScreen } from '../types';
 import { assetImg, el } from '../utils/dom';
 import { COURSE_LABELS, DISTRICT_NAME_MAP, formatCoins, formatRatePerSec } from '../utils/format';
+import { renderPlayerName } from './playerName';
 
 export interface NormalHeaderProps {
   currentScreen: AppScreen;
   economy: CityEconomy;
   unreadCount: number;
+  playerName: string;
   equippedTitleName: string | null;
   navLocked?: boolean;
   onNavigate: (screen: AppScreen) => void;
+  onChoosePlayer?: () => void;
 }
 
 export const NAV_ITEMS: readonly { screen: AppScreen; label: string; key: string; code: string }[] = [
@@ -20,9 +23,10 @@ export const NAV_ITEMS: readonly { screen: AppScreen; label: string; key: string
   { screen: 'DICTIONARY', label: 'ことば図鑑', key: 'L', code: 'KeyL' },
   { screen: 'SETTINGS', label: '設定', key: 'S', code: 'KeyS' },
 ];
+export const PLAYER_SHORTCUT = { key: 'M', code: 'KeyM' };
 
 export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
-  const { currentScreen, economy, unreadCount, equippedTitleName, navLocked = false, onNavigate } = props;
+  const { currentScreen, economy, unreadCount, playerName, equippedTitleName, navLocked = false, onNavigate, onChoosePlayer } = props;
   const activeTabScreen: AppScreen =
     currentScreen === 'DISTRICT_DETAIL' || currentScreen === 'NEW_CITY'
       ? 'UPGRADES'
@@ -52,6 +56,14 @@ export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
         badge,
       );
       btn.addEventListener('click', () => onNavigate(item.screen));
+      if (item.screen === 'SETTINGS' && onChoosePlayer) {
+        const player = el('button', {
+          type: 'button', className: 'kb-nav-btn', disabled: navLocked,
+          'aria-haspopup': 'dialog', 'aria-keyshortcuts': PLAYER_SHORTCUT.key, 'data-testid': 'header-player-select',
+        }, el('span', {}, 'プレイヤー'), el('kbd', { className: 'kb-kbd', 'aria-hidden': 'true' }, PLAYER_SHORTCUT.key));
+        player.addEventListener('click', onChoosePlayer);
+        return el('div', { className: 'kb-row-gap' }, player, btn);
+      }
       return btn;
     }),
   );
@@ -71,6 +83,7 @@ export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
       el('span', { className: 'kb-secondary' }, '店舗収益'),
       el('span', { 'data-testid': 'header-income-rate' }, `+${formatRatePerSec(economy.totalIncomePerSecondMicro())}`),
     ),
+    renderPlayerName(playerName, equippedTitleName),
   );
 
   return el(
@@ -81,9 +94,6 @@ export function renderNormalHeader(props: NormalHeaderProps): HTMLElement {
       { className: 'kb-brand' },
       assetImg('./assets/brand/brand_mark.svg', 'ことば便', { width: 36, height: 36 }),
       el('span', {}, 'ことば便'),
-      equippedTitleName
-        ? el('span', { className: 'kb-title-chip' }, equippedTitleName)
-        : null,
     ),
     nav,
     stats,

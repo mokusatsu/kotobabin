@@ -2,6 +2,7 @@ import type { ConfirmedFact, CourseId } from '@/contracts/types';
 import {
   AchievementEngine,
   createInitialAchievementProgress,
+  STAMP_TITLES,
   type AchievementEngineSnapshot,
   type AchievementProgressState,
   type CityAchievementSnapshot,
@@ -12,7 +13,7 @@ import {
 } from './achievementEngine';
 
 export const PROFILE_DB_NAME = 'kotobabin';
-export const PROFILE_DB_VERSION = 4;
+export const PROFILE_DB_VERSION = 5;
 export const MAX_RECENT_RESULTS = 30;
 
 export const STORE_NAMES = [
@@ -27,6 +28,8 @@ export const STORE_NAMES = [
   'economyProfile',
   'economyCursors',
   'metadata',
+  'playHistory',
+  'unlockHistory',
 ] as const;
 
 export type StoreName = (typeof STORE_NAMES)[number];
@@ -109,6 +112,24 @@ export interface RoundResultRecord {
   rescueUsed: boolean;
   guideUsed: boolean;
 }
+
+interface PlayHistoryRecord {
+  id: string;
+  occurredAt: number;
+  fact: ConfirmedFact;
+}
+
+type UnlockSource =
+  | { type: 'play'; sessionId: string; factSequence: number; factType: ConfirmedFact['type'] }
+  | { type: 'city'; cityId?: string; economyEventId?: string; sessionId?: string; progress: CityAchievementSnapshot };
+
+interface UnlockLogContext {
+  occurredAt: number;
+  totalUnlocked: number;
+  source: UnlockSource;
+}
+
+interface UnlockHistoryRecord extends UnlockRecord, UnlockLogContext {}
 
 export interface ReadStateRecord {
   key: string; // e.g. 'achievement:A01' or 'reward:reward_total_24_album'
@@ -277,6 +298,7 @@ function applyFactsAndCityToEngine(
   engine: AchievementEngine,
   params: CommitFactsParams,
   readStateMap: Map<string, ReadStateRecord>,
+  onEvaluated?: (fact: ConfirmedFact | null, result: EvaluationResult) => void,
 ): {
   evaluation: EvaluationResult;
   appliedFactCount: number;
@@ -305,6 +327,7 @@ function applyFactsAndCityToEngine(
       continue;
     }
     appliedFactCount += 1;
+    onEvaluated?.(fact, res);
     recordUpdates = res.recordUpdates ?? recordUpdates;
     newlyUnlockedAchievements.push(...res.newlyUnlockedAchievementIds);
     newlyUnlockedRewards.push(...res.newlyUnlockedRewardIds);
@@ -313,6 +336,7 @@ function applyFactsAndCityToEngine(
 
   if (params.citySnapshot) {
     const cityRes = engine.applyCitySnapshot(params.citySnapshot);
+    onEvaluated?.(null, cityRes);
     newlyUnlockedAchievements.push(...cityRes.newlyUnlockedAchievementIds);
     newlyUnlockedRewards.push(...cityRes.newlyUnlockedRewardIds);
     newMilestoneRewardKeys.push(...cityRes.newMilestoneRewardKeys);
@@ -662,7 +686,7 @@ export interface IndexedDbRepositoryOptions {
 }
 
 /**
- * IndexedDB v4 implementation with 11 stores, atomic readwrite transactions,
+ * IndexedDB implementation with atomic readwrite transactions,
  * single-tab ownerTabId + writeEpoch lock, and tx.oncomplete confirmation.
  */
 export class IndexedDbProfileRepository implements ProfileRepository {
@@ -678,6 +702,51 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     }
     this.dbName = options.dbName ?? PROFILE_DB_NAME;
     this.idbFactory = factory;
+  }
+
+  async readPlayerSummary(): Promise<{ stampCount: number; titleName: string | null }> {
+    const db = await this.openDatabase();
+    try {
+      const tx = db.transaction(['profile', 'unlocks'], 'readonly');
+      const unlocks = tx.objectStore('unlocks');
+      const [profile, stampCount] = await Promise.all([
+        idbRequestToPromise<ProfileSettingsRecord | undefined>(tx.objectStore('profile').get('singleton')),
+        idbRequestToPromise(unlocks.count()),
+      ]);
+      const title = profile?.equippedTitleId ? STAMP_TITLES.get(profile.equippedTitleId) : undefined;
+      const titleName = title && await idbRequestToPromise(unlocks.getKey(title.stampId)) ? title.name : null;
+      return { stampCount, titleName };
+    } finally {
+      db.close();
+    }
+  }
+
+  async exportActivityLog() {
+    const db = await this.openDatabase();
+    try {
+      const tx = db.transaction(['playHistory', 'unlockHistory', 'unlocks', 'results'], 'readonly');
+      const [plays, history, unlocks, recent] = await Promise.all([
+        idbRequestToPromise<PlayHistoryRecord[]>(tx.objectStore('playHistory').getAll()),
+        idbRequestToPromise<UnlockHistoryRecord[]>(tx.objectStore('unlockHistory').getAll()),
+        idbRequestToPromise<UnlockRecord[]>(tx.objectStore('unlocks').getAll()),
+        idbRequestToPromise<RoundResultRecord[]>(tx.objectStore('results').getAll()),
+      ]);
+      const detailed = new Set(history.map(({ achievementId }) => achievementId));
+      const recordedSessions = new Set(plays.map(({ fact }) => fact.sessionId));
+      return {
+        playHistory: plays.sort((a, b) => a.occurredAt - b.occurredAt || a.fact.factSequence - b.fact.factSequence),
+        unlockHistory: [
+          ...history,
+          ...unlocks.filter(({ achievementId }) => !detailed.has(achievementId)).map((entry) => ({
+            ...entry, occurredAt: entry.unlockedAt, source: { type: 'legacy' as const },
+          })),
+        ].sort((a, b) => a.occurredAt - b.occurredAt ||
+          ('totalUnlocked' in a ? a.totalUnlocked : 0) - ('totalUnlocked' in b ? b.totalUnlocked : 0)),
+        legacyRecentResults: recent.filter(({ sessionId }) => !recordedSessions.has(sessionId)),
+      };
+    } finally {
+      db.close();
+    }
   }
 
   async init(tabId?: string): Promise<MetadataRecord> {
@@ -805,6 +874,8 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       'readState',
       'factCursors',
       'results',
+      'playHistory',
+      'unlockHistory',
     ];
     const tx = db.transaction(stores, 'readwrite');
 
@@ -855,10 +926,27 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       factCursors: existingFactCursors,
     });
 
+    const playHistory = tx.objectStore('playHistory');
+    const sources = new Map<string, UnlockLogContext>();
+    const committedAt = Date.now();
+    const lastFact = params.facts.at(-1);
     const { evaluation, appliedFactCount, skippedFactCount } = applyFactsAndCityToEngine(
       engine,
       params,
       readStateMap,
+      (fact, evaluated) => {
+        const occurredAt = fact?.logContext?.occurredAt ??
+          (fact && fact.timestamp >= 1_000_000_000_000 ? fact.timestamp : committedAt);
+        if (fact) {
+          playHistory.put({ id: `${fact.sessionId}:${fact.factSequence}`, occurredAt, fact } satisfies PlayHistoryRecord);
+        }
+        const source: UnlockSource = fact
+          ? { type: 'play', sessionId: fact.sessionId, factSequence: fact.factSequence, factType: fact.type }
+          : { type: 'city', sessionId: lastFact?.sessionId, cityId: lastFact?.logContext?.cityId, progress: params.citySnapshot! };
+        evaluated.newlyUnlockedAchievementIds.forEach((id, index, ids) => {
+          sources.set(id, { occurredAt, source, totalUnlocked: evaluated.totalUnlockedCount - ids.length + index + 1 });
+        });
+      },
     );
 
     const nextSnap: AchievementEngineSnapshot = engine.getSnapshot();
@@ -869,10 +957,13 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     });
 
     const unlockStore = tx.objectStore('unlocks');
+    const unlockHistory = tx.objectStore('unlockHistory');
     for (const id of evaluation.newlyUnlockedAchievementIds) {
       const rec = nextSnap.unlocks[id];
       if (rec) {
         unlockStore.put(rec);
+        const context = sources.get(id);
+        if (context) unlockHistory.put({ ...rec, ...context } satisfies UnlockHistoryRecord);
       }
     }
 
@@ -940,6 +1031,7 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       'unlocks',
       'rewards',
       'readState',
+      'unlockHistory',
     ];
     if (params.onboarding) {
       stores.push('profile');
@@ -1031,12 +1123,20 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       const nextSnap = engine.getSnapshot();
 
       const unlockStore = tx.objectStore('unlocks');
+      const unlockHistory = tx.objectStore('unlockHistory');
       const rewardStore = tx.objectStore('rewards');
       const readStore = tx.objectStore('readState');
 
-      for (const id of evaluation.newlyUnlockedAchievementIds) {
+      for (const [index, id] of evaluation.newlyUnlockedAchievementIds.entries()) {
         const rec = nextSnap.unlocks[id];
-        if (rec) unlockStore.put(rec);
+        if (rec) {
+          unlockStore.put(rec);
+          unlockHistory.put({
+            ...rec, occurredAt: now,
+            totalUnlocked: evaluation.totalUnlockedCount - evaluation.newlyUnlockedAchievementIds.length + index + 1,
+            source: { type: 'city', cityId: params.cityId, economyEventId: params.economyEventId, progress: params.cityAchievementSnapshot },
+          } satisfies UnlockHistoryRecord);
+        }
         const key = `achievement:${id}`;
         if (!readStateMap.has(key)) {
           readStore.put({
@@ -1166,12 +1266,14 @@ export class IndexedDbProfileRepository implements ProfileRepository {
 
     if (scope === 'records') {
       tx.objectStore('results').clear();
+      tx.objectStore('playHistory').clear();
     } else if (scope === 'city_and_achievements') {
       tx.objectStore('achievementProgress').put({
         id: 'singleton',
         state: createInitialAchievementProgress(),
       });
       tx.objectStore('unlocks').clear();
+      tx.objectStore('unlockHistory').clear();
       tx.objectStore('rewards').clear();
       tx.objectStore('readState').clear();
       tx.objectStore('factCursors').clear();
@@ -1229,6 +1331,8 @@ export class IndexedDbProfileRepository implements ProfileRepository {
           economyProfile: 'id',
           economyCursors: 'cursorKey',
           metadata: 'id',
+          playHistory: 'id',
+          unlockHistory: 'achievementId',
         };
         for (const storeName of STORE_NAMES) {
           if (!db.objectStoreNames.contains(storeName)) {
@@ -1265,6 +1369,8 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     }
     if (!metadata) {
       metaStore.put(createDefaultMetadata());
+    } else if ((metadata as MetadataRecord).schemaVersion !== PROFILE_DB_VERSION) {
+      metaStore.put({ ...(metadata as MetadataRecord), schemaVersion: PROFILE_DB_VERSION });
     }
 
     await idbTransactionDone(tx);

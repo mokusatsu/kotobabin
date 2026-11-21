@@ -147,6 +147,7 @@ export interface CityEconomySnapshot {
   clock_ms: number;
   saved_wall_ms: number;
   city_sequence: number;
+  archived_cities?: ArchivedCity[];
   city_id: string;
   landscape: LandscapeId;
   coins_micro: string;
@@ -204,6 +205,23 @@ export interface CityEconomySnapshot {
   };
 }
 
+type ArchivedCity = Pick<CityEconomySnapshot,
+  'city_id' | 'landscape' | 'coins_micro' | 'city_arrived_micro' | 'packaging_level' |
+  'synergies' | 'districts' | 'active_session' | 'last_session_summary' | 'used_session_ids' |
+  'fact_ledger' | 'economy_event_ledger' | 'construction_history'
+>;
+
+function archiveCity(state: CityEconomySnapshot): ArchivedCity {
+  const {
+    city_id, landscape, coins_micro, city_arrived_micro, packaging_level, synergies, districts,
+    active_session, last_session_summary, used_session_ids, fact_ledger, economy_event_ledger, construction_history,
+  } = state;
+  return {
+    city_id, landscape, coins_micro, city_arrived_micro, packaging_level, synergies, districts,
+    active_session, last_session_summary, used_session_ids, fact_ledger, economy_event_ledger, construction_history,
+  };
+}
+
 function canonicalStringify(value: unknown): string {
   if (value === null || typeof value !== 'object') {
     return JSON.stringify(value);
@@ -233,6 +251,7 @@ export class CityEconomy {
   clockMs = 0;
   savedWallMs = 0;
   citySequence = 1;
+  private archivedCities = new Map<string, ArchivedCity>();
   cityId = 'city-1';
   landscape: LandscapeId = ECONOMY_CONFIG.initial.landscape as LandscapeId;
   coinsMicro = 0n;
@@ -1193,6 +1212,20 @@ export class CityEconomy {
     };
   }
 
+  adjacentCity(direction: -1 | 1): string | null {
+    const city = `city-${Number(this.cityId.slice('city-'.length)) + direction}`;
+    return this.archivedCities.has(city) ? city : null;
+  }
+
+  visitCity(cityId: string): CityEconomy {
+    this.requireIdle();
+    const destination = this.archivedCities.get(cityId);
+    if (!destination) throw new EconomyError('city is not unlocked');
+    const state = this.snapshot();
+    const otherCities = [...this.archivedCities.values()].filter((city) => city.city_id !== cityId);
+    return CityEconomy.fromSnapshot({ ...state, ...destination, archived_cities: [...otherCities, archiveCity(state)] });
+  }
+
   newCityPreview(researchKind?: ResearchId): {
     eligible: boolean;
     stage_requirement_met: boolean;
@@ -1225,7 +1258,7 @@ export class CityEconomy {
     const firstBuilding = reduceRational(baseFirst * matMult.denominator, matMult.numerator);
 
     const result: ReturnType<CityEconomy['newCityPreview']> = {
-      eligible: readyStages && this.cityArrivedMicro >= threshold,
+      eligible: this.adjacentCity(1) === null && readyStages && this.cityArrivedMicro >= threshold,
       stage_requirement_met: readyStages,
       reward_blueprints: reward,
       arrived_micro: this.cityArrivedMicro.toString(),
@@ -1319,6 +1352,7 @@ export class CityEconomy {
     }
     const reward = preview.reward_blueprints;
     const oldCity = this.cityId;
+    this.archivedCities.set(oldCity, archiveCity(this.snapshot()));
     this.blueprints += reward;
     this.lifetime.citiesRestarted += 1;
     this.citySequence += 1;
@@ -1358,6 +1392,7 @@ export class CityEconomy {
       clock_ms: this.clockMs,
       saved_wall_ms: this.savedWallMs,
       city_sequence: this.citySequence,
+      ...(this.archivedCities.size > 0 ? { archived_cities: [...this.archivedCities.values()] } : {}),
       city_id: this.cityId,
       landscape: this.landscape,
       coins_micro: this.coinsMicro.toString(),
@@ -1417,6 +1452,7 @@ export class CityEconomy {
     model.clockMs = requireInt(state.clock_ms, 'clock_ms', 0);
     model.savedWallMs = requireInt(state.saved_wall_ms, 'saved_wall_ms', 0);
     model.citySequence = requireInt(state.city_sequence, 'city_sequence', 1);
+    model.archivedCities = new Map((state.archived_cities ?? []).map((city) => [city.city_id, city]));
     model.packagingLevel = requireInt(state.packaging_level, 'packaging_level', 0);
     model.blueprints = requireInt(state.blueprints, 'blueprints', 0);
     model.cityId = state.city_id;

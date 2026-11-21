@@ -1,3 +1,4 @@
+import { ECONOMY_CONFIG } from '@/contracts/data';
 import type { LandscapeId } from '@/contracts/types';
 import type { CityEconomy } from '@/economy/cityEconomy';
 import type { UIControllerActions } from '../types';
@@ -16,17 +17,19 @@ const LANDSCAPES: readonly LandscapeId[] = ['riverside', 'seaside', 'highland'];
 export function renderNewCityScreen(props: NewCityScreenProps): HTMLElement {
   const { economy, selectedLandscape, onSelectLandscape, actions } = props;
   const preview = economy.newCityPreview();
+  const { minimum_arrived_micro, minimum_stage_each_district } = ECONOMY_CONFIG.new_city;
 
   const backBtn = el(
     'button',
     { type: 'button', className: 'kb-btn-secondary' },
-    el('span', {}, '← 戻る'),
+    el('span', { 'aria-hidden': 'true' }, '←'),
+    el('span', {}, '戻る'),
   );
   backBtn.addEventListener('click', () => actions.navigate('HOME'));
 
   const landscapeCards = el(
     'div',
-    { className: 'kb-row-wrap', role: 'radiogroup', 'aria-label': '新しい街の地形' },
+    { className: 'kb-new-city-landscapes', role: 'radiogroup', 'aria-labelledby': 'kb-new-city-landscape-title' },
     ...LANDSCAPES.map((ls) => {
       const selected = selectedLandscape === ls;
       const btn = el(
@@ -37,8 +40,9 @@ export function renderNewCityScreen(props: NewCityScreenProps): HTMLElement {
           role: 'radio',
           'aria-checked': selected ? 'true' : 'false',
         },
-        assetImg(`./assets/raster/terrain_${ls}.jpg`, LANDSCAPE_LABELS[ls], {
+        assetImg(`./assets/raster/terrain_${ls}.jpg`, '', {
           className: 'kb-landscape-thumb',
+          decorative: true,
           fallbackSrc: './assets/raster/terrain_riverside.jpg',
         }),
         el('strong', {}, LANDSCAPE_LABELS[ls]),
@@ -53,49 +57,48 @@ export function renderNewCityScreen(props: NewCityScreenProps): HTMLElement {
     {
       type: 'button',
       className: 'kb-btn-primary',
+      'data-testid': 'new-city-depart',
       disabled: !preview.eligible,
     },
-    el('span', {}, preview.eligible ? `青写真 +${preview.reward_blueprints}枚 を受け取って新しい街へ` : 'まだ出発条件を満たしていません'),
+    preview.eligible ? '新しい街へ出発する' : 'まだ出発条件を満たしていません',
   );
   confirmBtn.addEventListener('click', () => actions.confirmNewCity(selectedLandscape));
 
   return el(
     'div',
-    { className: 'kb-stack-md' },
-    backBtn,
+    { className: 'kb-new-city-screen kb-stack-md' },
+    el('div', { className: 'kb-row-wrap kb-new-city-header' }, backBtn, el('h2', { className: 'kb-h2' }, '新しい街へ出発')),
     el(
       'section',
-      { className: 'kb-card kb-stack-md' },
-      el('h2', { className: 'kb-h2' }, '新しい街へ出発'),
+      { className: 'kb-card kb-stack-md', 'aria-label': '出発の確認' },
       el(
         'dl',
-        { className: 'kb-stat-list' },
-        el('dt', {}, '全6地区 Lv.3以上'),
-        el('dd', {}, preview.stage_requirement_met ? '達成' : '未達成'),
-        el('dt', {}, '街の累計到着資材'),
-        el('dd', {}, `${formatMaterials(preview.arrived_micro)} / 100,000 以上`),
-        el('dt', {}, '獲得予定の青写真'),
-        el('dd', {}, `+${preview.reward_blueprints}枚（次の増額まであと ${formatMaterials(preview.remaining_to_next_reward_micro)} 資材）`),
+        { className: 'kb-new-city-conditions', 'aria-label': '出発条件' },
+        el(
+          'div',
+          {},
+          el('dt', {}, `全${Object.keys(economy.districts).length}地区がLv.${minimum_stage_each_district}以上`),
+          el('dd', {}, preview.stage_requirement_met ? '達成' : '未達成'),
+        ),
+        el(
+          'div',
+          {},
+          el('dt', {}, 'この街に届いた資材'),
+          el('dd', {}, `${formatMaterials(preview.arrived_micro)} / ${formatMaterials(minimum_arrived_micro)} 資材`),
+        ),
       ),
+      el('div', { className: 'kb-stack-xs' }, el('h3', { className: 'kb-h3', id: 'kb-new-city-landscape-title' }, '地形を選ぶ'), landscapeCards),
       el(
         'div',
-        { className: 'kb-grid-2' },
-        el(
+        { className: 'kb-row-between kb-new-city-actions' },
+        preview.eligible ? el(
           'div',
-          { className: 'kb-stamp-card kb-stack-xs' },
-          el('strong', {}, 'リセットされるもの'),
-          el('ul', {}, el('li', {}, '所持コイン・荷づくり台'), el('li', {}, '6地区のLv・店舗・配送班・鉄道・資材'), el('li', {}, '連携')),
-        ),
-        el(
-          'div',
-          { className: 'kb-stamp-card kb-stack-xs' },
-          el('strong', {}, '引き継がれるもの'),
-          el('ul', {}, el('li', {}, '青写真と研究ランク'), el('li', {}, '切手・実績・ことば図鑑'), el('li', {}, '記録・設定・生涯統計')),
-        ),
+          {},
+          el('strong', {}, `出発の報酬　設計図 ${preview.reward_blueprints}枚`),
+          el('div', { className: 'kb-small kb-secondary' }, '街の設備の「研究」で使えます。'),
+        ) : null,
+        confirmBtn,
       ),
-      el('h3', { className: 'kb-h3' }, '地形を選ぶ'),
-      landscapeCards,
-      confirmBtn,
     ),
   );
 }

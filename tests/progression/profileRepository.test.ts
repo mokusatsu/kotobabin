@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
 import type { WordCompletedFact } from '@/contracts/types';
-import { AchievementEngine } from '@/progression/achievementEngine';
+import { AchievementEngine, type CityAchievementSnapshot, type UnlockRecord } from '@/progression/achievementEngine';
 import {
   IndexedDbProfileRepository,
   MemoryProfileRepository,
@@ -29,7 +29,7 @@ function makeFact(seq: number, sessionId = 'session-1'): WordCompletedFact {
   };
 }
 
-describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
+describe('ProfileRepository (IndexedDB & Memory fallback)', () => {
   it('keeps mastery and round delivery observations through partial commits and retry', async () => {
     const idb = new IDBFactory();
     const repo = new IndexedDbProfileRepository({ dbName: 'series-progress', indexedDB: idb });
@@ -62,7 +62,7 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     reopened.close();
   });
 
-  it('creates IndexedDB v4 with all 11 stores and persists round-trip data', async () => {
+  it('creates the current IndexedDB schema and persists round-trip data', async () => {
     const idb = new IDBFactory();
     const dbName = 'kotobabin-test-roundtrip';
 
@@ -72,7 +72,6 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     expect(meta1.ownerTabId).toBe('tab-1');
     expect(meta1.writeEpoch).toBe(1);
 
-    // Verify all 11 stores exist
     const checkDb = await new Promise<IDBDatabase>((resolve, reject) => {
       const req = idb.open(dbName, PROFILE_DB_VERSION);
       req.onsuccess = () => resolve(req.result);
@@ -81,7 +80,7 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     for (const storeName of STORE_NAMES) {
       expect(checkDb.objectStoreNames.contains(storeName)).toBe(true);
     }
-    expect(checkDb.objectStoreNames.length).toBe(11);
+    expect(checkDb.objectStoreNames.length).toBe(13);
     checkDb.close();
 
     // Commit fact and profile update
@@ -98,7 +97,7 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     expect(commitRes.appliedFactCount).toBe(1);
     expect(commitRes.evaluation.newlyUnlockedAchievementIds).toContain('A01');
 
-    await repo1.saveProfile({ volume: 0.4, fontSize: 'large' }, lock);
+    await repo1.saveProfile({ volume: 0.4, fontSize: 'large', equippedTitleId: 'title_a01' }, lock);
     await repo1.markAsRead({ achievementIds: ['A01'] }, lock, 5000);
     repo1.close();
 
@@ -113,7 +112,75 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
     expect(snapshot.unlocks.A01).toBeDefined();
     expect(snapshot.readState['achievement:A01']?.read).toBe(true);
     expect(snapshot.factCursors['session-1']).toBe(1);
+    expect(await repo2.readPlayerSummary()).toEqual({ stampCount: Object.keys(snapshot.unlocks).length, titleName: 'はじめのことば' });
+    expect((await repo2.loadAll()).metadata.ownerTabId).toBe('tab-1');
     repo2.close();
+  });
+
+  it('exports play and city unlock triggers once, keeps old unlocks, and respects resets', async () => {
+    const indexedDB = new IDBFactory();
+    const dbName = 'activity-schema-upgrade';
+    const legacyTime = 1_800_000_000_000;
+    const legacy = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open(dbName, 4);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore('unlocks', { keyPath: 'achievementId' }).put({
+          achievementId: 'A02', unlockedAt: legacyTime, conditionRevision: '1', scope: 'all', evidenceSummary: '20',
+        } satisfies UnlockRecord);
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    legacy.close();
+
+    const repo = new IndexedDbProfileRepository({ dbName, indexedDB });
+    const meta = await repo.init('game');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch, resetGeneration: meta.resetGeneration };
+    const first = { ...makeFact(1), logContext: {
+      occurredAt: legacyTime + 100, cityId: 'city-1', courseId: 'relaxed', districtId: 'residential',
+    } } satisfies WordCompletedFact;
+    await repo.commitTypingFacts({ lock, facts: [first] });
+    await repo.commitTypingFacts({ lock, facts: [first] });
+    const progress = {
+      districts: {
+        residential: { stage: 2, shops: 0 }, market: { stage: 0, shops: 0 }, workshop: { stage: 0, shops: 0 },
+        park: { stage: 0, shops: 0 }, station: { stage: 0, shops: 0 }, harbor: { stage: 0, shops: 0 },
+      },
+      openedRoutesCount: 1, railRoutesCount: 0, currentCityArrivedMaterials: 150, lifetimeArrivedMaterials: 150,
+      paidEquipmentPurchaseCount: 0, packagingLevel: 0, purchasedSynergies: [], cityRestartCount: 0,
+      researchRanks: { commerce: 0, logistics: 0, materials: 0 },
+    } satisfies CityAchievementSnapshot;
+    const cityCommit = {
+      lock, cityId: 'city-1', economyEventId: 'upgrade-residential-2', timestamp: legacyTime + 200,
+      cityRecord: { id: 'current' as const, cityId: 'city-1', state: {}, revision: 1, updatedAt: legacyTime + 200 },
+      cityAchievementSnapshot: progress,
+    };
+    await repo.commitCityEconomy(cityCommit);
+    await repo.commitCityEconomy(cityCommit);
+
+    const reader = new IndexedDbProfileRepository({ dbName, indexedDB });
+    const log = await reader.exportActivityLog();
+    expect(log.playHistory).toEqual([{ id: 'session-1:1', occurredAt: legacyTime + 100, fact: first }]);
+    expect(log.unlockHistory.filter(({ achievementId }) => achievementId === 'A02')).toEqual([
+      expect.objectContaining({ occurredAt: legacyTime, source: { type: 'legacy' } }),
+    ]);
+    expect(log.unlockHistory.filter(({ achievementId }) => achievementId === 'A01')).toEqual([
+      expect.objectContaining({
+        occurredAt: legacyTime + 100, totalUnlocked: 2,
+        source: { type: 'play', sessionId: 'session-1', factSequence: 1, factType: 'WordCompleted' },
+      }),
+    ]);
+    expect(log.unlockHistory.filter(({ achievementId }) => achievementId === 'I01')).toEqual([
+      expect.objectContaining({
+        occurredAt: legacyTime + 200, source: { type: 'city', cityId: 'city-1', economyEventId: 'upgrade-residential-2', progress },
+      }),
+    ]);
+    await repo.resetData('records', lock);
+    expect((await reader.exportActivityLog()).playHistory).toEqual([]);
+    expect((await reader.exportActivityLog()).unlockHistory).toEqual(log.unlockHistory);
+    await repo.resetData('city_and_achievements', lock);
+    expect((await reader.exportActivityLog()).unlockHistory).toEqual([]);
+    repo.close();
   });
 
   it('enforces atomic factCursors & economyCursors idempotency', async () => {

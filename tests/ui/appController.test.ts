@@ -129,7 +129,7 @@ describe('AppController UI integration', () => {
     expect([...titles, ...stampNames].filter((name) => /第[\d一二三四五六七八九十]+段階/.test(name))).toEqual([]);
   });
 
-  it('removes district icons and stage wording, selects locked district, and opens difficulty popup on open district click', async () => {
+  it('selects locked districts and opens the difficulty popup from the map without a district summary', async () => {
     const mount = document.createElement('div');
     document.body.appendChild(mount);
 
@@ -150,18 +150,15 @@ describe('AppController UI integration', () => {
     expect(stockEl).not.toBeNull();
     expect(stockEl?.textContent).toContain('資材');
 
-    const nextMatEl = mount.querySelector('[data-testid="home-next-level-materials"]');
-    expect(nextMatEl).not.toBeNull();
-    expect(nextMatEl?.textContent).toContain('次のLv.1に必要な資材');
-    expect(nextMatEl?.textContent).toContain('30 資材');
+    expect(stockEl?.textContent).toContain('/ 30');
+    expect(mount.querySelector('.kb-district-summary')).toBeNull();
 
-    // Clicking a locked district on the map selects it and shows unlock info without opening popup or coin cost
+    // A locked district can be selected without opening the departure popup.
     const marketBtn = mount.querySelector('.kb-map-district-btn[data-district-id="market"]') as HTMLButtonElement | null;
     expect(marketBtn).not.toBeNull();
     marketBtn?.click();
     expect(mount.querySelector('[data-testid="difficulty-popup"]')).toBeNull();
-    expect(mount.querySelector('.kb-district-summary')?.textContent).toContain('商店街');
-    expect(mount.querySelector('.kb-district-summary')?.textContent).not.toContain('コイン');
+    expect(mount.querySelector('[data-district-id="market"]')?.getAttribute('aria-pressed')).toBe('true');
 
     // Clicking an open district on the map opens the difficulty popup directly
     const resBtn = mount.querySelector('.kb-map-district-btn[data-district-id="residential"]') as HTMLButtonElement | null;
@@ -188,13 +185,10 @@ describe('AppController UI integration', () => {
     expect(mount.querySelector('.kb-play-deliver-hint')).not.toBeNull();
     expect(mount.querySelector('.kb-play-deliver-btn')).toBeNull();
 
-    // Quit to home, check UPGRADES uses Lv. wording, and verify home-upgrade-district-btn is disabled initially
+    // District upgrades are available on the equipment screen.
     controller.quitPlayToHome();
-    const upgradeBtn = mount.querySelector('[data-testid="home-upgrade-district-btn"]') as HTMLButtonElement | null;
-    expect(upgradeBtn).not.toBeNull();
-    expect(upgradeBtn?.disabled).toBe(true);
-
     controller.navigate('UPGRADES');
+    expect(mount.querySelector<HTMLButtonElement>('[data-testid="upgrade-district-btn"]')?.disabled).toBe(true);
     expect(mount.textContent).toContain('建築 (Lv.0/5)');
     expect(mount.textContent).not.toContain('段0');
   }, 12000);
@@ -236,11 +230,7 @@ describe('AppController UI integration', () => {
     await controller.init();
     controller.navigate('HANDBOOK');
 
-    const collectionTabBtn = Array.from(mount.querySelectorAll('.kb-pill-btn')).find((btn) =>
-      btn.textContent?.includes('絵葉書・称号・額縁'),
-    ) as HTMLButtonElement | undefined;
-    expect(collectionTabBtn).toBeDefined();
-    collectionTabBtn?.click();
+    mount.querySelector<HTMLButtonElement>('[data-testid="handbook-frames-tab"]')!.click();
 
     const seenFrames: string[] = [];
     for (let group = 0; group < 5; group += 1) {
@@ -253,11 +243,12 @@ describe('AppController UI integration', () => {
     }
     expect(seenFrames).toEqual(STAMP_FRAMES.map(({ rewardId }) => rewardId));
 
+    mount.querySelector<HTMLButtonElement>('[data-testid="handbook-postcards-tab"]')!.click();
     const postcard = mount.querySelector<HTMLButtonElement>('[data-postcard-id="reward_family_a_postcard"]')!;
     postcard.click();
     const preview = mount.querySelector<HTMLDialogElement>('[data-testid="postcard-preview"]')!;
     expect(preview.open).toBe(true);
-    expect(preview.querySelector('.kb-postcard-preview-art')?.getAttribute('src')).toBe(
+    expect(preview.querySelector('.kb-reward-preview-art')?.getAttribute('src')).toBe(
       postcard.querySelector('.kb-postcard-thumbnail')?.getAttribute('src'),
     );
     preview.querySelector<HTMLButtonElement>('[aria-label="絵葉書を閉じる"]')!.click();

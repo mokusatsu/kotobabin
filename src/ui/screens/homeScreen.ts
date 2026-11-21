@@ -1,4 +1,4 @@
-import { CITY_CATALOG } from '@/contracts/data';
+import { ECONOMY_CONFIG } from '@/contracts/data';
 import type { CourseId, DistrictId } from '@/contracts/types';
 import type { CityEconomy } from '@/economy/cityEconomy';
 import {
@@ -17,7 +17,6 @@ import {
   formatMaterials,
   formatMaterialsRemaining,
   formatCoins,
-  getAffordableUpgradeFlags,
 } from '../utils/format';
 
 export interface HomeScreenProps {
@@ -207,6 +206,89 @@ function renderOnboardingStampReveal(
   return dialog;
 }
 
+function renderNextCityProgress(economy: CityEconomy, actions: UIControllerActions): HTMLElement {
+  const { minimum_arrived_micro, minimum_stage_each_district: minStage } = ECONOMY_CONFIG.new_city;
+  const target = BigInt(minimum_arrived_micro);
+  const arrived = economy.cityArrivedMicro;
+  const districts = Object.values(economy.districts);
+  const readyDistricts = districts.filter((district) => district.stage >= minStage).length;
+
+  const goal = (label: string, value: number, max: number, text: string) => el(
+    'div',
+    { className: 'kb-stack-xs' },
+    el(
+      'div',
+      { className: 'kb-row-between kb-small' },
+      el('strong', {}, label),
+      el('span', { className: 'kb-nowrap' }, text),
+    ),
+    el(
+      'div',
+      {
+        className: 'kb-progress-track',
+        role: 'progressbar',
+        'aria-label': label,
+        'aria-valuemin': '0',
+        'aria-valuemax': max,
+        'aria-valuenow': value,
+        'aria-valuetext': text,
+      },
+      el('div', { className: 'kb-progress-fill', style: `width: ${(value / max) * 100}%` }),
+    ),
+  );
+
+  const canVisitNext = economy.adjacentCity(1) !== null;
+  const canDepart = economy.newCityPreview().eligible;
+  const details = el(
+    'button',
+    { type: 'button', className: canDepart ? 'kb-btn-primary' : 'kb-btn-secondary', 'data-testid': 'home-next-city-details' },
+    canVisitNext ? '次の街へ' : canDepart ? '新しい街へ出発' : '新しい街の詳細',
+  );
+  details.addEventListener('click', () => {
+    if (canVisitNext) actions.moveCity(1);
+    else actions.navigate('NEW_CITY');
+  });
+
+  return el(
+    'section',
+    {
+      className: 'kb-card kb-map-next-city',
+      'aria-labelledby': 'kb-next-city-progress-title',
+      'data-testid': 'map-next-city',
+    },
+    el(
+      'div',
+      { className: 'kb-stack-xs kb-nowrap' },
+      el('strong', { id: 'kb-next-city-progress-title' }, '次の街まで'),
+      economy.citySequence > 1 ? el('span', { className: 'kb-small kb-secondary', 'data-testid': 'home-city-number' }, `第${economy.cityId.slice('city-'.length)}の街`) : null,
+    ),
+    goal(
+      'この街に届いた資材',
+      Number(arrived < target ? arrived : target) / Number(economy.unit),
+      Number(target) / Number(economy.unit),
+      `${formatMaterials(arrived)} / ${formatMaterials(target)} 資材`,
+    ),
+    goal(`Lv.${minStage}以上の地区`, readyDistricts, districts.length, `${readyDistricts} / ${districts.length} 地区`),
+    details,
+  );
+}
+
+function cityNavigationButton(direction: -1 | 1, label: string, actions: UIControllerActions): HTMLButtonElement {
+  const button = el(
+    'button',
+    {
+      type: 'button',
+      className: `kb-btn-secondary kb-city-nav-btn${direction === -1 ? ' is-previous' : ''}`,
+      'data-testid': direction === -1 ? 'home-city-prev' : 'home-city-next',
+      'aria-label': label,
+      title: label,
+    },
+    assetImg('./assets/ui_icon/ui_chevron.svg', '', { decorative: true, width: 24, height: 24 }),
+  );
+  button.addEventListener('click', () => actions.moveCity(direction));
+  return button;
+}
+
 export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
   const {
     economy,
@@ -228,7 +310,6 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
   const isHomeOnboarding = isS1Onboarding || isS2Onboarding || isS5Onboarding;
 
   const selectedDistrict = economy.districts[selectedDistrictId];
-  const districtCatalog = CITY_CATALOG.districts.find((d) => d.id === selectedDistrictId);
   const canDeliverToSelected = selectedDistrict.open;
 
   let s2CoachEl: HTMLElement | null = null;
@@ -255,6 +336,7 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
     economy,
     selectedDistrictId,
     reducedMotion,
+    separateDistrictLabels: !isS2Onboarding,
     highlightDistrictId: isS2Onboarding ? 'residential' : null,
     overlayContent: s2CoachEl,
     onSelectDistrict: (dId) => {
@@ -274,143 +356,24 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
     mapEl,
   );
 
-  const nextStage = selectedDistrict.stage < 5 ? selectedDistrict.stage + 1 : null;
-  const nextRequiredMicro =
-    selectedDistrict.open && nextStage !== null
-      ? economy.developmentCost(selectedDistrictId, nextStage).materialsMicro
-      : 0n;
-  const upgradePct =
-    nextRequiredMicro > 0n
-      ? Math.min(100, Number((selectedDistrict.stockMicro * 100n) / nextRequiredMicro))
-      : 0;
-  const canUpgrade =
-    selectedDistrict.open && nextStage !== null && selectedDistrict.stockMicro >= nextRequiredMicro;
-
-  const upgradeBtn =
-    selectedDistrict.open && nextStage !== null
-      ? el(
-          'button',
-          {
-            type: 'button',
-            className: `${canUpgrade ? 'kb-btn-primary' : 'kb-btn-secondary'} kb-small`,
-            disabled: !canUpgrade,
-            'data-testid': 'home-upgrade-district-btn',
-          },
-          canUpgrade
-            ? `Lv.${nextStage} へアップグレード`
-            : `Lv.${nextStage}（あと ${formatMaterialsRemaining(nextRequiredMicro - selectedDistrict.stockMicro)}）`,
-        )
-      : null;
-  if (upgradeBtn) {
-    upgradeBtn.addEventListener('click', () => actions.upgradeDistrict(selectedDistrictId));
-  }
-
-  const affordable = getAffordableUpgradeFlags(economy, selectedDistrictId);
-  const toUpgradesBtn = el(
-    'button',
-    { type: 'button', className: 'kb-btn-secondary kb-row-gap', disabled: isHomeOnboarding },
-    el('span', {}, '街の設備へ'),
-    affordable.any ? el('span', { className: 'kb-affordable-dot' }, '強化可') : null,
-  );
-  toUpgradesBtn.addEventListener('click', () => actions.navigate('UPGRADES'));
-
-  const toDetailBtn = el(
-    'button',
-    { type: 'button', className: 'kb-btn-secondary', disabled: isHomeOnboarding },
-    el('span', {}, '地区の詳細'),
-  );
-  toDetailBtn.addEventListener('click', () => actions.navigate('DISTRICT_DETAIL'));
-
-  const totalStageSum = Object.values(economy.districts).reduce((sum, d) => sum + d.stage, 0);
-  const requiredStageSum = districtCatalog?.opening_stage_sum ?? 0;
-  const openPct =
-    requiredStageSum > 0 ? Math.min(100, Math.round((totalStageSum / requiredStageSum) * 100)) : 0;
-
-  const stockWhole = selectedDistrict.stockMicro / 1_000_000n;
-  const totalWhole = (selectedDistrict.stockMicro + selectedDistrict.queueMicro) / 1_000_000n;
-  const queuedWhole = totalWhole > stockWhole ? totalWhole - stockWhole : 0n;
-
-  const districtInfoCard = el(
+  const previousCity = !isHomeOnboarding && economy.adjacentCity(-1) !== null;
+  const nextCity = !isHomeOnboarding && economy.adjacentCity(1) !== null;
+  const canUnlockNext = !isHomeOnboarding && economy.newCityPreview().eligible;
+  const mapFrame = el(
     'div',
-    { className: 'kb-card kb-district-summary' },
-    el(
-      'div',
-      { className: 'kb-row-between' },
-      el(
-        'div',
-        {},
-        el('strong', {}, `${DISTRICT_NAME_MAP[selectedDistrictId]}（Lv.${selectedDistrict.stage} / 5）`),
-        el(
-          'div',
-          { className: 'kb-secondary kb-small' },
-          selectedDistrict.open
-            ? `店舗 ${selectedDistrict.shops}軒・配送班 ${selectedDistrict.crews}班・到着済み在庫 ${formatMaterials(selectedDistrict.stockMicro)}`
-            : '未開通（他地区を強化して条件を満たすと自動で開通します）',
-        ),
-      ),
-      el('div', { className: 'kb-row-gap' }, upgradeBtn, toUpgradesBtn, toDetailBtn),
-    ),
-    selectedDistrict.open && nextStage !== null
-      ? el(
-          'div',
-          {
-            className: 'kb-stack-xs',
-            'data-testid': 'home-next-level-materials',
-          },
-          el(
-            'div',
-            { className: 'kb-row-between kb-small' },
-            el(
-              'span',
-              {},
-              `次のLv.${nextStage}に必要な資材${queuedWhole > 0n ? `（輸送待ち +${queuedWhole.toLocaleString('ja-JP')}）` : ''}`,
-            ),
-            el('span', {}, `${formatMaterials(selectedDistrict.stockMicro)} / ${formatMaterials(nextRequiredMicro)} 資材`),
-          ),
-          el(
-            'div',
-            { className: 'kb-progress-track' },
-            el('div', { className: 'kb-progress-fill', style: `width: ${upgradePct}%` }),
-          ),
-        )
-      : selectedDistrict.open
-        ? el(
-            'div',
-            { className: 'kb-stack-xs', 'data-testid': 'home-next-level-materials' },
-            el(
-              'div',
-              { className: 'kb-row-between kb-small' },
-              el('span', {}, '最高レベル（Lv.5）到達済み'),
-              el('span', {}, '配送すると到着報酬コインを獲得できます'),
-            ),
-            el(
-              'div',
-              { className: 'kb-progress-track' },
-              el('div', { className: 'kb-progress-fill', style: 'width: 100%' }),
-            ),
-          )
-        : el(
-            'div',
-            { className: 'kb-stack-xs', 'data-testid': 'home-next-level-materials' },
-            el(
-              'div',
-              { className: 'kb-row-between kb-small' },
-              el('span', {}, `開通条件: 全地区のLv合計 ${requiredStageSum} 以上`),
-              el('span', {}, `現在 Lv合計 ${totalStageSum} / ${requiredStageSum}`),
-            ),
-            el(
-              'div',
-              { className: 'kb-progress-track' },
-              el('div', { className: 'kb-progress-fill', style: `width: ${openPct}%` }),
-            ),
-          ),
+    { className: `kb-home-map-frame${previousCity || nextCity || canUnlockNext ? ' has-navigation' : ''}` },
+    previousCity ? cityNavigationButton(-1, '前の街へ', actions) : nextCity || canUnlockNext ? el('span') : null,
+    mapViewport,
+    nextCity || canUnlockNext
+      ? cityNavigationButton(1, nextCity ? '次の街へ' : '新しい街へ出発', actions)
+      : previousCity ? el('span') : null,
   );
 
   const mainMapArea = el(
     'section',
     { className: 'kb-home-right', 'aria-label': '街のようす' },
-    mapViewport,
-    districtInfoCard,
+    mapFrame,
+    isHomeOnboarding ? null : renderNextCityProgress(economy, actions),
   );
 
   // Bottom strip: Pinned Handbook Goal + Practice/Tutorial + Stamp count

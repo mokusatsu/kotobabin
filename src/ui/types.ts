@@ -117,6 +117,7 @@ export interface UIControllerActions {
   buyResearch(kind: ResearchId): void;
   openDistrict(districtId: DistrictId): void;
   upgradeDistrict(districtId: DistrictId): void;
+  moveCity(direction: -1 | 1): void;
   confirmNewCity(landscape: LandscapeId): void;
   pinAchievement(achievementId: string | null): void;
   markAchievementRead(achievementId: string): void;

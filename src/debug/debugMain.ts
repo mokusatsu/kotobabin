@@ -3,8 +3,11 @@ import '../ui/styles/main.css';
 import { CITY_CATALOG } from '@/contracts/data';
 import type { DistrictId } from '@/contracts/types';
 import { CityEconomy, type CityEconomySnapshot } from '@/economy/cityEconomy';
+import { CATALOG_ACHIEVEMENTS } from '@/progression/achievementEngine';
+import { DEFAULT_PLAYER, listPlayers, playerStorageKey, type LocalPlayer } from '@/progression/playerRegistry';
 import {
   createProfileRepository,
+  IndexedDbProfileRepository,
   PROFILE_DB_NAME,
   type ProfileRepository,
 } from '@/progression/profileRepository';
@@ -55,6 +58,7 @@ class DebugPageController {
   private shellMounted = false;
   private headerHost = el('div');
   private statusHost = el('div');
+  private logSectionHost = el('div');
   private stateSectionHost = el('div');
   private visualSectionHost = el('div');
 
@@ -63,13 +67,17 @@ class DebugPageController {
   }
 
   async init(): Promise<void> {
-    await this.loadFromStorage();
+    const [, players] = await Promise.all([
+      this.loadFromStorage(),
+      listPlayers().catch(() => [DEFAULT_PLAYER]),
+    ]);
     this.render();
+    this.renderLogExport(players);
   }
 
   private async loadFromStorage(): Promise<void> {
     try {
-      const { repository } = await createProfileRepository({ tabId: `debug-${Date.now()}` });
+      const { repository } = await createProfileRepository();
       const snap = await repository.loadAll();
       this.repo = repository;
       if (snap.city?.state) {
@@ -88,6 +96,56 @@ class DebugPageController {
       this.statusMessage = `読み込み時に初期状態へフォールバックしました: ${String(err)}`;
       this.statusTone = 'danger';
     }
+  }
+
+  private renderLogExport(players: LocalPlayer[]): void {
+    const picker = el('select', { className: 'kb-input kb-debug-log-player', id: 'debug-log-player' }, ...players.map(
+      (player) => el('option', { value: String(player.id) }, player.name),
+    ));
+    const save = el('button', {
+      type: 'button', className: 'kb-btn-secondary', 'data-testid': 'debug-export-activity',
+    }, 'プレイ・獲得ログを書き出す（JSON）');
+    save.addEventListener('click', () => {
+      const player = players[picker.selectedIndex];
+      if (player) void this.exportActivity(player);
+    });
+    this.logSectionHost.replaceChildren(el('section', { className: 'kb-card kb-debug-section', 'data-testid': 'debug-activity' },
+      el('h2', { className: 'kb-debug-h2' }, 'プレイ・切手獲得ログ'),
+      el('div', { className: 'kb-row-wrap' },
+        el('label', { for: 'debug-log-player' }, 'プレイヤー'), picker, save,
+      ),
+    ));
+  }
+
+  private async exportActivity(player: LocalPlayer): Promise<void> {
+    try {
+      const repo = new IndexedDbProfileRepository({ dbName: playerStorageKey(PROFILE_DB_NAME, player.id) });
+      const activity = await repo.exportActivityLog();
+      const catalog = new Map(CATALOG_ACHIEVEMENTS.map((entry) => [entry.id, entry]));
+      const now = new Date();
+      const data = {
+        version: 1,
+        exportedAt: now.toISOString(),
+        player,
+        ...activity,
+        unlockHistory: activity.unlockHistory.map((entry) => {
+          const stamp = catalog.get(entry.achievementId);
+          return { ...entry, name: stamp?.name, condition: stamp?.condition };
+        }),
+      };
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+      const link = el('a', { href: url, download: `kotobabin-activity-player-${player.id}-${now.getTime()}.json` });
+      this.logSectionHost.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      this.statusMessage = `${player.name}のプレイ記録 ${activity.playHistory.length}件、切手獲得記録 ${activity.unlockHistory.length}件を書き出しました。`;
+      this.statusTone = 'success';
+    } catch (err) {
+      this.statusMessage = `ログの書き出しに失敗しました。${String(err)}`;
+      this.statusTone = 'danger';
+    }
+    this.renderStatus();
   }
 
   private mutateSnapshot(mutator: (snap: CityEconomySnapshot) => void): void {
@@ -194,6 +252,7 @@ class DebugPageController {
         { className: 'kb-debug-shell' },
         this.headerHost,
         this.statusHost,
+        this.logSectionHost,
         this.stateSectionHost,
         this.visualSectionHost,
       ),
@@ -204,6 +263,12 @@ class DebugPageController {
     this.ensureShell();
     this.renderHeaderAndState();
     this.renderVisualSection();
+  }
+
+  private renderStatus(): void {
+    this.statusHost.replaceChildren(el('div', {
+      className: `kb-debug-status is-${this.statusTone}`, 'data-debug-status': 'true', role: 'status',
+    }, this.statusMessage));
   }
 
   private renderHeaderAndState(): void {
@@ -250,12 +315,6 @@ class DebugPageController {
           return wipeBtn;
         })(),
       ),
-    );
-
-    const statusBar = el(
-      'div',
-      { className: `kb-debug-status is-${this.statusTone}`, 'data-debug-status': 'true' },
-      this.statusMessage,
     );
 
     // Section 1: Stage & Development State Switcher + Live CityMap
@@ -420,7 +479,7 @@ class DebugPageController {
     );
 
     this.headerHost.replaceChildren(header);
-    this.statusHost.replaceChildren(statusBar);
+    this.renderStatus();
     this.stateSectionHost.replaceChildren(stateSection);
   }
 

@@ -109,12 +109,12 @@ export function renderDistrictDetailScreen(props: DistrictDetailScreenProps): HT
 
   // New City Prestige check
   const newCityPreview = economy.newCityPreview();
-  const newCityBtn = el(
+  const newCityBtn = economy.adjacentCity(1) === null ? el(
     'button',
     { type: 'button', className: newCityPreview.eligible ? 'kb-btn-primary' : 'kb-btn-secondary' },
-    el('span', {}, newCityPreview.eligible ? `新しい街へ出発（青写真 +${newCityPreview.reward_blueprints}枚）` : '新しい街（条件確認）'),
-  );
-  newCityBtn.addEventListener('click', () => actions.navigate('NEW_CITY'));
+    el('span', {}, newCityPreview.eligible ? `新しい街へ出発（設計図 +${newCityPreview.reward_blueprints}枚）` : '新しい街（条件確認）'),
+  ) : null;
+  newCityBtn?.addEventListener('click', () => actions.navigate('NEW_CITY'));
 
   return el(
     'div',

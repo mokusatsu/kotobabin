@@ -257,9 +257,8 @@ describe('Onboarding / Tutorial Integration', () => {
     // Returned to normal Home without onboarding overlay and with generated materials retained
     expect(mount.querySelector('.kb-home-screen')).not.toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-coach"]')).toBeNull();
-    const homeMaterials = mount.querySelector('[data-testid="home-next-level-materials"]')?.textContent ?? '';
-    expect(homeMaterials).toContain('/ 150 資材');
-    expect(mount.textContent).toContain('住宅地（Lv.1 / 5）');
+    expect(mount.querySelector('[data-testid="map-district-stock-residential"]')?.textContent).toContain('/ 150');
+    expect(mount.querySelector('[data-district-id="residential"]')?.textContent).toContain('Lv.1');
 
     // Verify UPGRADES displays consistent integer arrived vs remaining materials (arrived + remaining === 30)
     pressWindowKey('j', 'KeyJ');

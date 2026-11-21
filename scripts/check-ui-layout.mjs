@@ -49,7 +49,11 @@ const report = { detectorChecks: [], scenarios: [] };
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.wav': 'audio/wav', '.woff2': 'font/woff2' };
 await fs.mkdir(output, { recursive: true });
 const executablePath = resolveChromiumExecutable();
-const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+const browser = await chromium.launch({
+  headless: true,
+  downloadsPath: output,
+  ...(executablePath ? { executablePath } : {}),
+});
 
 async function verifyDetector() {
   const page = await browser.newPage({ viewport: { width: 1180, height: 820 } });
@@ -120,6 +124,55 @@ async function scenario(scale) {
       result.issues.push(...(await page.evaluate(auditUiBounds, selector)).map((issue) => ({ phase, ...issue })));
       await page.screenshot({ path: path.join(output, `${scale}-${phase}.png`) });
     };
+    const inspectNewCity = async (phase) => {
+      const screen = page.locator('.kb-new-city-screen');
+      await screen.getByRole('heading', { name: '新しい街へ出発' }).waitFor();
+      await screen.locator('.kb-landscape-thumb').evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+      const frame = await screen.boundingBox();
+      const back = await screen.getByRole('button', { name: '戻る', exact: true }).boundingBox();
+      assert(back.x - frame.x <= 16 && back.y - frame.y <= 16 && back.width < frame.width / 4);
+      assert(await screen.evaluate((el) => el.scrollHeight <= el.clientHeight));
+      await inspect(phase, '.kb-new-city-screen', true);
+    };
+    const assertPlayerTitle = async (scope, name, title) => {
+      const identity = scope.locator('.kb-player-identity');
+      assert.equal(await identity.locator('.kb-player-name').innerText(), name);
+      await identity.getByText(title, { exact: true }).waitFor();
+      assert(await identity.evaluate((element) => {
+        const [title, name] = element.children;
+        return title.matches('.kb-title-chip') && name.matches('.kb-player-name') &&
+          title.getBoundingClientRect().right <= name.getBoundingClientRect().left;
+      }));
+    };
+    const inspectEquipmentMap = async (phase) => {
+      const selector = '.kb-town-panoramic-wrap .kb-city-map';
+      const map = page.locator(selector);
+      const overlaps = await map.evaluate(async (element) => {
+        const bounds = element.getBoundingClientRect();
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(bounds.width);
+        canvas.height = Math.ceil(bounds.height);
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        for (const art of element.querySelectorAll('.kb-map-patch-img')) {
+          await art.decode();
+          const rect = art.getBoundingClientRect();
+          const fit = Math.min(rect.width / art.naturalWidth, rect.height / art.naturalHeight);
+          const width = art.naturalWidth * fit;
+          const height = art.naturalHeight * fit;
+          ctx.drawImage(art, rect.left - bounds.left + (rect.width - width) / 2, rect.bottom - bounds.top - height, width, height);
+        }
+        return [...element.querySelectorAll('.kb-map-district-btn, .kb-map-scaffold-badge, .kb-map-hub-label, .kb-map-facility-label')].flatMap((label) => {
+          const rect = label.getBoundingClientRect();
+          const pixels = ctx.getImageData(Math.ceil(rect.left - bounds.left), Math.ceil(rect.top - bounds.top),
+            Math.floor(rect.width), Math.floor(rect.height)).data;
+          let covered = 0;
+          for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 96) covered += 1;
+          return covered > 8 ? [{ label: label.textContent, covered }] : [];
+        });
+      });
+      assert.deepEqual(overlaps, [], `${phase} labels overlap building artwork`);
+      await inspect(phase, selector, true);
+    };
     const start = async (name = 'tutorial') => {
       assert.equal(await page.locator('.kb-input-check-box').count(), 0);
       await inspect(`${name}-start-F`, '.kb-play-paper', true);
@@ -181,11 +234,25 @@ async function scenario(scale) {
     assert.match(await page.getByTestId('onboarding-complete-dialog').evaluate((el) => getComputedStyle(el, '::backdrop').backgroundColor), /0\.6/);
     await page.getByTestId('onboarding-finish-home-btn').tap();
     assert.equal((await page.locator('.kb-unread-pill').innerText()).trim(), '3');
+    const nextCity = page.getByRole('region', { name: '次の街まで', exact: true });
+    assert.equal(await nextCity.locator('strong').first().innerText(), '次の街まで');
+    const nextCityBar = nextCity.getByRole('progressbar', { name: 'この街に届いた資材' });
+    assert.equal(await nextCityBar.getAttribute('aria-valuemax'), '100000');
+    assert(Number(await nextCityBar.getAttribute('aria-valuenow')) > 0);
+    const nextCityDistricts = nextCity.getByRole('progressbar', { name: 'Lv.3以上の地区' });
+    assert.equal(await nextCityDistricts.getAttribute('aria-valuenow'), '0');
+    assert.equal(await nextCityDistricts.getAttribute('aria-valuemax'), '6');
+    await inspect('map-next-city', '.kb-home-right', true);
+    await nextCity.getByRole('button', { name: '新しい街の詳細' }).tap();
+    assert(await page.getByTestId('new-city-depart').isDisabled());
+    await inspectNewCity('new-city-locked');
+    await page.getByRole('button', { name: '戻る', exact: true }).tap();
     for (const [key, title] of [['h', 'ホーム'], ['j', '街の設備'], ['k', '配達手帳'], ['l', 'ことば図鑑'], ['s', '設定']]) {
       await page.locator('.kb-nav-btn').first().focus();
       await page.keyboard.press(key);
       assert((await page.locator('.kb-nav-btn[aria-current="page"]').innerText()).includes(title));
       await inspect(`navigation-${key}`, '.kb-header', true);
+      if (key === 'j') await inspectEquipmentMap('equipment-map');
     }
     assert(!(await page.locator('.kb-settings-screen').innerText()).includes('手動配達キー'));
     await inspect('settings-delivery-controls', '.kb-settings-screen', true);
@@ -208,28 +275,53 @@ async function scenario(scale) {
     assert.equal(await page.locator('dialog:modal').getByText('獲得報酬', { exact: true }).count(), 0);
     await inspect('handbook', 'dialog:modal', true);
     await page.locator('.kb-stamp-dialog-close').tap();
-    await page.getByTestId('handbook-collection-tab').tap();
-    await page.waitForFunction(() => {
-      const imgs = [...document.querySelectorAll('.kb-reward-art')];
-      return imgs.length === 46 && imgs.every((img) => img.complete);
-    });
-    const rewardArtCheck = await page.evaluate(() => {
-      const imgs = [...document.querySelectorAll('.kb-reward-art')];
-      const broken = imgs
-        .filter((img) => img.naturalWidth === 0 || getComputedStyle(img).display === 'none')
-        .map((img) => img.getAttribute('src'));
-      return { total: imgs.length, broken };
-    });
-    assert.equal(rewardArtCheck.total, 46, 'Expected 36 other rewards and 10 frames in the selected group');
-    assert.deepEqual(rewardArtCheck.broken, [], `Hidden or broken reward images: ${JSON.stringify(rewardArtCheck.broken)}`);
+    const framesTab = page.getByTestId('handbook-frames-tab');
+    const postcardsTab = page.getByTestId('handbook-postcards-tab');
+    const keepsakesTab = page.getByTestId('handbook-keepsakes-tab');
+    const titlesTab = page.getByTestId('handbook-titles-tab');
+    const assertRewardArt = async (count) => {
+      const art = page.locator('.kb-reward-art');
+      assert.equal(await art.count(), count);
+      await art.evaluateAll((images) => Promise.all(images.map((image) => image.decode())));
+    };
+    await inspect('handbook-tabs', '[role="tablist"][aria-label="配達手帳"]', true);
+    await framesTab.tap();
+    await assertRewardArt(10);
     const frameSection = page.getByTestId('handbook-frames');
     const framePicker = page.getByTestId('handbook-frame-group');
+    const frameList = frameSection.getByRole('region', { name: '額縁一覧' });
+    const categories = frameSection.getByRole('complementary', { name: '額縁の分類' });
+    assert(await categories.evaluate((aside) => {
+      const left = aside.getBoundingClientRect();
+      const right = aside.nextElementSibling.getBoundingClientRect();
+      return left.right < right.left && left.top === right.top;
+    }));
     await framePicker.selectOption('4');
+    assert(await framePicker.evaluate((picker) => picker === document.activeElement));
+    await frameList.getByRole('heading', { name: '手仕事と夜の灯り' }).waitFor();
     assert.equal(await frameSection.locator('[data-frame-reward]').count(), 10);
-    await frameSection.locator('[data-frame-reward="reward_frame_mother_of_pearl"] img.kb-reward-art').evaluate((img) => img.decode());
+    const frameCard = frameSection.locator('[data-frame-reward="reward_frame_mother_of_pearl"]');
+    const frameThumbnail = frameCard.locator('img.kb-reward-art');
+    await frameThumbnail.evaluate((img) => img.decode());
     await frameSection.scrollIntoViewIfNeeded();
     await inspect('handbook-frame-catalog', '[data-testid="handbook-frames"]', true);
+    const framePreviewButton = frameCard.getByRole('button', { name: /を拡大$/ });
+    const thumbnailHeight = (await frameThumbnail.boundingBox()).height;
+    await framePreviewButton.press('Enter');
+    const framePreview = page.getByTestId('frame-preview');
+    const frameArt = framePreview.locator('.kb-reward-preview-art');
+    await frameArt.evaluate((img) => img.decode());
+    assert((await frameArt.boundingBox()).height > 2 * thumbnailHeight);
+    for (const item of [framePreview, frameCard]) {
+      assert.equal(await item.locator('.kb-handbook-status').innerText(), '未獲得');
+    }
+    await inspect('handbook-frame-preview', 'dialog:modal', true);
+    await page.keyboard.press('Escape');
+    await framePreview.waitFor({ state: 'hidden' });
+    assert(await framePreviewButton.evaluate((button) => button === document.activeElement));
     await framePicker.selectOption('0');
+    await postcardsTab.tap();
+    await assertRewardArt(13);
     const ownedPostcard = page.locator('[data-postcard-id="reward_family_a_postcard"]');
     const lockedPostcard = page.locator('[data-postcard-id="reward_family_b_postcard"]');
     await page.keyboard.press('Tab');
@@ -242,7 +334,7 @@ async function scenario(scale) {
     await page.keyboard.press('Enter');
     const postcardPreview = page.getByTestId('postcard-preview');
     await postcardPreview.getByRole('heading', { name: '郵便局の絵葉書' }).waitFor();
-    const postcardArt = postcardPreview.locator('.kb-postcard-preview-art');
+    const postcardArt = postcardPreview.locator('.kb-reward-preview-art');
     await postcardArt.evaluate((img) => img.decode());
     assert((await postcardArt.boundingBox()).width >= cover.width * 2);
     assert.equal(await postcardArt.evaluate((img) => getComputedStyle(img).objectFit), 'contain');
@@ -259,8 +351,31 @@ async function scenario(scale) {
     await postcardPreview.getByRole('button', { name: '絵葉書を閉じる' }).tap();
     await postcardPreview.waitFor({ state: 'hidden' });
     await page.waitForFunction(() => document.activeElement?.getAttribute('data-postcard-id') === 'reward_family_b_postcard');
-    await page.locator('.kb-reward-card').first().scrollIntoViewIfNeeded();
-    await inspect('handbook-collection', '.kb-reward-card', false);
+    await postcardsTab.press('ArrowRight');
+    assert.equal(await keepsakesTab.getAttribute('aria-selected'), 'true');
+    assert(await keepsakesTab.evaluate((button) => button === document.activeElement));
+    await assertRewardArt(23);
+    const keepsake = page.locator('[data-keepsake-id="reward_family_a_foil_board"]');
+    await inspect('handbook-keepsake-tile', '[data-keepsake-id="reward_family_a_foil_board"]', true);
+    await keepsake.press('Enter');
+    const keepsakePreview = page.getByTestId('keepsake-preview');
+    await keepsakePreview.getByText('未獲得', { exact: true }).waitFor();
+    const keepsakeArt = keepsakePreview.locator('.kb-reward-preview-art');
+    await keepsakeArt.evaluate((image) => image.decode());
+    assert((await keepsakeArt.boundingBox()).height >= 2 * (await keepsake.locator('img').boundingBox()).height);
+    await inspect('handbook-keepsake-preview', 'dialog:modal', true);
+    await page.keyboard.press('Escape');
+    await keepsakePreview.waitFor({ state: 'hidden' });
+    await page.waitForFunction(() => document.activeElement?.getAttribute('data-keepsake-id') === 'reward_family_a_foil_board');
+    await titlesTab.tap();
+    const firstTitle = page.getByRole('tabpanel').getByRole('button', { name: /^はじめのことば/ });
+    await firstTitle.tap();
+    await firstTitle.getByText('装着中', { exact: true }).waitFor();
+    assert.equal(await firstTitle.getAttribute('aria-pressed'), 'true');
+    await assertPlayerTitle(page.locator('.kb-header'), 'プレイヤー1', 'はじめのことば');
+    await inspect('handbook-titles', '[role="tabpanel"]', true);
+    await firstTitle.tap();
+    assert.equal(await page.locator('.kb-header .kb-title-chip').count(), 0);
     await page.getByTestId('handbook-stamps-tab').tap();
     const listPage = page.getByTestId('handbook-page');
     await listPage.selectOption({ index: await listPage.locator('option').count() - 1 });
@@ -406,7 +521,6 @@ async function scenario(scale) {
       await page.getByTestId('city-stamp-reveal').getByTestId('gacha-skip-btn').tap();
 
       await page.keyboard.press('k');
-      const collectionTab = page.getByTestId('handbook-collection-tab');
       const stampsTab = page.getByTestId('handbook-stamps-tab');
       const equippedFrame = page.locator('dialog:modal [data-stamp-frame]');
       const closeStamp = page.locator('dialog:modal .kb-stamp-dialog-close');
@@ -461,18 +575,31 @@ async function scenario(scale) {
         ? [['leaf', '2', 'reward_total_08_frame'], ['plaza', '1', 'reward_total_16_frame'],
           ['sunset', '3', 'reward_total_36_frame'], ['journey', '0', 'reward_total_60_frame'], ['red_postbox', '0', 'reward_frame_red_postbox']]
         : [['leaf', '2', 'reward_total_08_frame'], ['red_postbox', '0', 'reward_frame_red_postbox']];
+      const assertSingleLineAction = async (button, label) => {
+        assert.equal(await button.innerText(), label);
+        assert(await button.evaluate((element) => {
+          const text = document.createRange();
+          text.selectNodeContents(element);
+          return text.getClientRects().length === 1;
+        }));
+      };
       for (const [id, group, rewardId] of frames) {
-        await collectionTab.tap();
+        await framesTab.tap();
         await framePicker.selectOption(group);
-        await frameSection.locator(`[data-equip-frame="${rewardId}"]`).tap();
+        const equip = frameSection.locator(`[data-equip-frame="${rewardId}"]`);
+        await assertSingleLineAction(equip, '装着');
+        await equip.tap();
+        await assertSingleLineAction(equip, '外す');
         if (scale === '1.3' && id === 'red_postbox') {
+          const equippedFrameCard = frameSection.locator(`[data-frame-reward="${rewardId}"]`);
+          assert.equal(await equippedFrameCard.locator('.kb-handbook-status').innerText(), '装着中');
           await inspect('handbook-frame-catalog-equipped', '[data-testid="handbook-frames"]', true);
         }
         await stampsTab.tap();
         await inspectFrame(id);
       }
 
-      await collectionTab.tap();
+      await postcardsTab.tap();
       await ownedPostcard.tap();
       await postcardArt.evaluate(async (image) => {
         await image.decode();
@@ -482,6 +609,13 @@ async function scenario(scale) {
       assert.equal(await equippedFrame.count(), 0);
       await inspect('handbook-postcard-with-frame-equipped', 'dialog:modal', true);
       await postcardPreview.getByRole('button', { name: '絵葉書を閉じる' }).tap();
+
+      await keepsakesTab.tap();
+      await page.locator('[data-keepsake-id="reward_total_08_ornament"]').tap();
+      await keepsakePreview.getByText('獲得済み', { exact: true }).waitFor();
+      await keepsakeArt.evaluate((image) => image.decode());
+      await inspect('handbook-earned-keepsake-preview', 'dialog:modal', true);
+      await keepsakePreview.getByRole('button', { name: '記念品を閉じる' }).tap();
 
       if (scale === '1.3') {
         const beforeFrameReload = await page.evaluate(() => ({ frames: window.__layoutFrames ?? 0, issues: [...(window.__layoutIssues?.values() ?? [])] }));
@@ -493,9 +627,9 @@ async function scenario(scale) {
         await page.locator('[data-stamp-id="A06"]').tap();
         assert.equal(await equippedFrame.count(), 0);
         await closeStamp.tap();
-        await collectionTab.tap();
       }
-      await page.getByRole('button', { name: '装着中（外す）', exact: true }).tap();
+      await framesTab.tap();
+      await page.getByRole('button', { name: '額縁を外す', exact: true }).tap();
       await stampsTab.tap();
       await page.locator('[data-stamp-id="A01"]').tap();
       assert.equal(await equippedFrame.count(), 0);
@@ -601,7 +735,7 @@ async function scenario(scale) {
       await page.getByTestId('handbook-next').tap();
       await page.locator('[data-sheet-id="speed_pb-tier-1"]').tap();
       const speedRecord = page.locator('[data-stamp-id="series-speed_pb_relaxed-1"]');
-      await speedRecord.getByText('✓ 獲得', { exact: true }).waitFor();
+      await speedRecord.getByText('獲得済み', { exact: true }).waitFor();
     }
     if (scale === '1.3') await page.locator('.kb-nav-btn').first().focus();
     await page.keyboard.press('l');
@@ -616,6 +750,226 @@ async function scenario(scale) {
     const sampled = await page.evaluate(() => ({ frames: window.__layoutFrames ?? 0, issues: window.__layoutIssues ? [...window.__layoutIssues.values()] : [] }));
     result.frames += sampled.frames;
     result.issues.push(...sampled.issues);
+    if (scale === '1.3') {
+      for (const landscape of ['riverside', 'highland', 'seaside']) {
+        await page.evaluate((terrain) => new Promise((resolve, reject) => {
+          const request = indexedDB.open('kotobabin');
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            const db = request.result;
+            const tx = db.transaction('city', 'readwrite');
+            const store = tx.objectStore('city');
+            const get = store.get('current');
+            get.onsuccess = () => {
+              const city = get.result;
+              city.state.landscape = terrain;
+              city.state.city_arrived_micro = '100000000000';
+              city.state.packaging_level = 15;
+              city.state.research = { materials: 5, logistics: 5, commerce: 5 };
+              city.state.synergies = ['sorting_network', 'joint_delivery', 'tourism_service'];
+              for (const district of Object.values(city.state.districts)) {
+                Object.assign(district, { open: true, stage: 4, crews: 1, queue_micro: '0', stock_micro: '0' });
+              }
+              city.state.districts.residential.stock_micro = '9000000000';
+              store.put(city);
+            };
+            tx.oncomplete = () => { db.close(); resolve(); };
+            tx.onerror = () => { db.close(); reject(tx.error); };
+          };
+        }), landscape);
+        await page.reload({ waitUntil: 'networkidle' });
+        await nextCity.getByRole('button', { name: '新しい街へ出発' }).waitFor();
+        const overlaps = await page.locator('.kb-home-right [data-map-building]').evaluateAll((buildings) => buildings.flatMap((building) => {
+          const id = building.dataset.mapBuilding;
+          const art = building.getBoundingClientRect();
+          const label = document.querySelector(`.kb-home-right [data-district-id="${id}"]`).getBoundingClientRect();
+          return label.left < art.right && label.right > art.left && label.top < art.bottom && label.bottom > art.top ? [id] : [];
+        }));
+        assert.deepEqual(overlaps, [], `${landscape} district labels overlap their buildings`);
+        await inspect(`map-developed-${landscape}`, '.kb-home-right', true);
+        await page.locator('.kb-nav-btn').filter({ hasText: '街の設備' }).tap();
+        await page.locator('.kb-town-cat-tab').filter({ hasText: '荷づくり台' }).tap();
+        await page.clock.runFor(40);
+        await inspectEquipmentMap(`equipment-developed-${landscape}`);
+        await page.locator('.kb-nav-btn').filter({ hasText: 'ホーム' }).tap();
+      }
+
+      const nextTown = page.getByTestId('home-city-next');
+      const previousTown = page.getByTestId('home-city-prev');
+      const townNumber = page.getByTestId('home-city-number');
+      const assertOutsideMap = async (button, side) => {
+        const testId = await button.getAttribute('data-testid');
+        await page.waitForFunction(({ id, direction }) => {
+          const el = document.querySelector(`[data-testid="${id}"]`);
+          const cityMap = el?.parentElement?.querySelector('.kb-city-map');
+          if (!cityMap) return false;
+          const arrow = el.getBoundingClientRect();
+          const map = cityMap.getBoundingClientRect();
+          return direction === 'left' ? arrow.right < map.left : arrow.left > map.right;
+        }, { id: testId, direction: side }, { timeout: 2000 });
+      };
+      await nextTown.tap();
+      const highland = page.getByRole('radio', { name: /高原/ });
+      await highland.press('Enter');
+      assert.equal(await highland.getAttribute('aria-checked'), 'true');
+      assert(await highland.evaluate((button) => document.activeElement === button));
+      assert.match(await page.locator('.kb-new-city-screen').innerText(), /出発の報酬\s*設計図 3枚/);
+      await inspectNewCity('new-city-ready');
+      await page.getByTestId('new-city-depart').tap();
+      await page.getByTestId('city-stamp-reveal').getByTestId('gacha-skip-btn').tap();
+      assert.equal(await townNumber.innerText(), '第2の街');
+      assert.equal(await nextTown.count(), 0);
+      await assertOutsideMap(previousTown, 'left');
+      await inspect('map-city-previous', '.kb-home-right', true);
+      await previousTown.tap();
+      assert.equal(await townNumber.innerText(), '第1の街');
+      assert.equal(await page.locator('.kb-home-right [data-map-building]').count(), 6);
+      await assertOutsideMap(nextTown, 'right');
+      await page.clock.runFor(1100);
+      const visitReveal = page.getByTestId('city-stamp-reveal');
+      if (await visitReveal.isVisible()) await visitReveal.getByTestId('gacha-skip-btn').tap();
+      await page.clock.pauseAt(await page.evaluate(() => Date.now() + 200));
+      await page.keyboard.press('Tab');
+      await nextTown.focus();
+      await page.clock.runFor(1100);
+      if (await visitReveal.isVisible()) {
+        await visitReveal.getByTestId('gacha-skip-btn').tap();
+        await nextTown.focus();
+      }
+      const focused = await page.evaluate(() => document.activeElement?.outerHTML.split('>')[0]);
+      assert.match(focused ?? '', /data-testid="home-city-next"/);
+      await page.keyboard.press('Enter');
+      await page.getByText('第2の街', { exact: true }).waitFor();
+      assert.equal(await townNumber.innerText(), '第2の街');
+      assert.equal(await page.locator('.kb-home-right [data-map-building]').count(), 0);
+    }
+
+    if (scale === '1.3') {
+      await page.clock.resume();
+      await page.evaluate(() => new Promise((resolve, reject) => {
+        const request = indexedDB.open('kotobabin');
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          const db = request.result;
+          const tx = db.transaction(['profile', 'unlocks'], 'readwrite');
+          const profile = tx.objectStore('profile');
+          const settings = profile.get('singleton');
+          settings.onsuccess = () => profile.put({ ...settings.result, equippedTitleId: 'title_series-perfect_rounds-1' });
+          for (const achievementId of ['series-course_words_standard-10', 'series-course_words_relaxed-10', 'series-perfect_rounds-1']) {
+            tx.objectStore('unlocks').put({ achievementId, unlockedAt: Date.now(), conditionRevision: 'layout-check', scope: 'all', evidenceSummary: '' });
+          }
+          tx.oncomplete = () => { db.close(); resolve(); };
+          tx.onerror = () => { db.close(); reject(tx.error); };
+        };
+      }));
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.equal(await page.locator('.kb-header .kb-title-chip').count(), 0);
+    }
+    const playerTitle = scale === '1.3' ? '出発のベル' : 'はじめのことば';
+    await page.locator('.kb-nav-btn').filter({ hasText: '配達手帳' }).tap();
+    await titlesTab.tap();
+    const playerTitleOption = page.getByRole('tabpanel').getByRole('button', { name: new RegExp(`^${playerTitle}`) });
+    await playerTitleOption.tap();
+    assert.equal(await page.getByRole('tabpanel').getByText(/ふつうのことば便|まっすぐ届く便/).count(), 0);
+    await assertPlayerTitle(page.locator('.kb-header'), 'プレイヤー1', playerTitle);
+    await page.locator('.kb-nav-btn').filter({ hasText: '設定' }).tap();
+    await assertPlayerTitle(page.locator('.kb-settings-screen'), 'プレイヤー1', playerTitle);
+    const settingsPlayerSelect = page.getByTestId('settings-player-select');
+    const headerPlayer = page.getByTestId('header-player-select');
+    assert.equal(await headerPlayer.count(), 0);
+    const playerDialog = page.locator('dialog.kb-player-dialog:modal');
+    const selector = page.getByTestId('player-selector');
+    const assertBackToSettings = async () => {
+      await playerDialog.waitFor({ state: 'hidden' });
+      await settingsPlayerSelect.waitFor();
+      await page.waitForFunction(() => document.activeElement?.getAttribute('data-testid') === 'settings-player-select');
+    };
+    await settingsPlayerSelect.tap();
+    await playerDialog.waitFor();
+    await page.keyboard.press('h');
+    assert.equal(await page.locator('.kb-settings-screen').count(), 1);
+    await inspect('settings-player-modal', 'dialog.kb-player-dialog:modal', true);
+    await playerDialog.getByRole('button', { name: '戻る', exact: true }).tap();
+    await assertBackToSettings();
+    await settingsPlayerSelect.press('Enter');
+    await playerDialog.waitFor();
+    await page.keyboard.press('Escape');
+    await assertBackToSettings();
+
+    await settingsPlayerSelect.tap();
+    await playerDialog.getByLabel('新しいプレイヤーの名前').fill('プレイヤーB');
+    await playerDialog.getByRole('button', { name: '追加する' }).tap();
+    const secondPlayer = playerDialog.getByRole('button', { name: 'プレイヤーB', exact: true });
+    await secondPlayer.getByText('切手 0枚', { exact: true }).waitFor();
+    assert.equal(await headerPlayer.count(), 1);
+    const firstPlayer = playerDialog.getByRole('button', { name: 'プレイヤー1', exact: true });
+    await firstPlayer.getByText(/切手 [1-9]\d*枚/).waitFor();
+    await assertPlayerTitle(firstPlayer, 'プレイヤー1', playerTitle);
+    assert.equal(await secondPlayer.locator('.kb-title-chip').count(), 0);
+    assert(await firstPlayer.evaluate((button) => {
+      const [name, achievements] = button.children;
+      return name.getBoundingClientRect().right < achievements.getBoundingClientRect().left;
+    }));
+    await inspect('settings-player-modal-with-achievements', 'dialog.kb-player-dialog:modal', true);
+    await playerDialog.getByRole('button', { name: '戻る', exact: true }).tap();
+    await assertBackToSettings();
+
+    assert(await headerPlayer.evaluate((button) => {
+      const settings = button.nextElementSibling;
+      return settings?.textContent.includes('設定') && button.getBoundingClientRect().right <= settings.getBoundingClientRect().left;
+    }));
+    await inspect('header-player-button', '.kb-header', true);
+    await page.locator('.kb-nav-btn').filter({ hasText: 'ホーム' }).tap();
+    assert.equal(await headerPlayer.getAttribute('aria-keyshortcuts'), 'M');
+    assert.equal(await headerPlayer.locator('kbd').innerText(), 'M');
+    await page.keyboard.press('m');
+    await playerDialog.waitFor();
+    await playerDialog.getByRole('button', { name: '戻る', exact: true }).tap();
+    await playerDialog.waitFor({ state: 'hidden' });
+    await page.waitForFunction(() => document.activeElement?.getAttribute('data-testid') === 'header-player-select');
+    await page.clock.runFor(1100);
+    assert(await headerPlayer.evaluate((button) => button === document.activeElement));
+    assert.equal(await page.locator('.kb-home-screen').count(), 1);
+    await headerPlayer.tap();
+    await playerDialog.getByRole('button', { name: 'プレイヤーB', exact: true }).tap();
+    await page.getByTestId('onboarding-next-btn').waitFor();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await selector.getByRole('button', { name: 'プレイヤーB', exact: true }).waitFor();
+    assert.equal(await page.locator('.kb-home-screen').count(), 0);
+    await assertPlayerTitle(selector.getByRole('button', { name: 'プレイヤー1', exact: true }), 'プレイヤー1', playerTitle);
+    await page.evaluate((value) => document.documentElement.style.setProperty('--kb-font-scale', value), scale);
+    await inspect('player-selector-reopened', '.kb-player-selector', true);
+    await selector.getByRole('button', { name: 'プレイヤー1', exact: true }).press('Enter');
+    await page.getByTestId('map-next-city').waitFor();
+    assert.equal(await page.getByTestId('onboarding-next-btn').count(), 0);
+
+    await page.goto('http://ui-check.local/debug/index.html');
+    await page.evaluate((value) => document.documentElement.style.setProperty('--kb-font-scale', value), scale);
+    const debugActivity = page.getByTestId('debug-activity');
+    const logPlayer = debugActivity.getByLabel('プレイヤー', { exact: true });
+    const exportLog = page.getByTestId('debug-export-activity');
+    await debugActivity.waitFor();
+    await inspect('debug-activity', '[data-testid="debug-activity"]', true);
+    const downloadActivity = async () => {
+      const [download] = await Promise.all([page.waitForEvent('download'), exportLog.press('Enter')]);
+      assert.match(download.suggestedFilename(), /kotobabin-activity-player-\d+-\d+\.json/);
+      // Read the exact download payload without depending on browser filesystem permissions.
+      return page.evaluate(async (url) => (await fetch(url)).json(), download.url());
+    };
+    const activity = await downloadActivity();
+    assert.equal(activity.player.id, 0);
+    const round = activity.playHistory.find(({ fact }) => fact.type === 'RoundFinished' && fact.mode === 'MAIN');
+    assert(round?.fact.logContext?.cityId && round.occurredAt > 1_000_000_000_000);
+    const firstStamp = activity.unlockHistory.find(({ achievementId }) => achievementId === 'A01');
+    assert(firstStamp?.source.type === 'play' && firstStamp.condition && firstStamp.totalUnlocked > 0);
+    assert(activity.playHistory.some(({ fact, occurredAt }) => fact.sessionId === firstStamp.source.sessionId &&
+      fact.factSequence === firstStamp.source.factSequence && occurredAt === firstStamp.occurredAt));
+    await logPlayer.selectOption({ label: 'プレイヤーB' });
+    const secondActivity = await downloadActivity();
+    assert.equal(secondActivity.player.name, 'プレイヤーB');
+    assert.deepEqual(secondActivity.playHistory, []);
+    assert.deepEqual(secondActivity.unlockHistory, []);
+
     assert.equal(result.browserErrors.length, 0, JSON.stringify(result.browserErrors));
   } finally { await context.close(); }
 }

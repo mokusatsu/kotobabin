@@ -17,14 +17,17 @@ import { WorldClock } from '@/economy/worldClock';
 import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
+  STAMP_TITLES,
   type SessionStartContext,
   type UnlockRecord,
 } from '@/progression/achievementEngine';
 import { DictionaryTracker } from '@/progression/dictionaryTracker';
+import { DEFAULT_PLAYER, playerStorageKey, type LocalPlayer } from '@/progression/playerRegistry';
 import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
   createDefaultProfileSettings,
   createProfileRepository,
+  PROFILE_DB_NAME,
   TabLockError,
   type OnboardingStateRecord,
   type OnboardingStep,
@@ -43,13 +46,14 @@ import { GameSession, type SessionSnapshot, type TutorialSessionCheckpoint } fro
 import { InputAdapter } from '@/typing/inputAdapter';
 import { WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
-import { NAV_ITEMS, renderNormalHeader, renderPlayHeader } from './components/header';
+import { NAV_ITEMS, PLAYER_SHORTCUT, renderNormalHeader, renderPlayHeader } from './components/header';
 import {
   featuredStampIds, getResultRevealIds, getTutorialRevealIds, renderStampReveal, rewardRevealIds, STAMP_REVEAL_DURATION_MS,
 } from './components/stampReveal';
 import { renderDictionaryScreen, type DictionaryScreenState } from './screens/dictionaryScreen';
 import { renderDistrictDetailScreen } from './screens/districtDetailScreen';
 import {
+  HANDBOOK_TABS,
   renderHandbookScreen,
   type HandbookFilter,
   type HandbookGroup,
@@ -107,12 +111,20 @@ interface TutorialDraft {
   savedAt: number;
   step: 'S3' | 'S4';
   session: TutorialSessionCheckpoint;
+  factLogContexts?: Record<number, ConfirmedFact['logContext']>;
   city: CityEconomySnapshot;
   generatedMaterialsMicro: string;
   unlockedStampIds: string[];
   unlockedRewardIds?: string[];
   deliveryInTransit: boolean;
   rescueOffered: boolean;
+}
+
+interface PlayerContext {
+  player: LocalPlayer;
+  hasMultiplePlayers: () => boolean;
+  openSelector: (save: () => Promise<void>, close: () => void, playersChanged: () => void) => void;
+  requirePersistent: boolean;
 }
 
 function createTutorialWordProvider(): (index: number) => Word {
@@ -181,6 +193,7 @@ export class AppController implements UIControllerActions {
   private currentSessionContext?: SessionStartContext;
   private currentPlanId = '';
   private pendingFacts: ConfirmedFact[] = [];
+  private readonly sessionSaves = new Set<Promise<boolean>>();
   private sessionWordIds: string[] = [];
   private mistakeWordIds = new Set<string>();
   private lastMistakeWordIds: string[] = [];
@@ -231,17 +244,28 @@ export class AppController implements UIControllerActions {
   private cityRevealIndex = 0;
   private pendingResetConfirm: 'records' | 'city_and_achievements' | 'settings' | null = null;
   private settingsNotice: string | null = null;
+  private switchingPlayer = false;
 
-  constructor(mountEl: HTMLElement) {
+  constructor(mountEl: HTMLElement, private readonly playerContext?: PlayerContext) {
     this.mountEl = mountEl;
     this.tabId = `tab-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     this.playInputEl = document.createElement('input');
     this.playInputEl.type = 'text';
   }
 
+  private playerKey(key: string): string {
+    return playerStorageKey(key, this.playerContext?.player.id);
+  }
+
   async init(): Promise<void> {
-    const { repository, metadata } = await createProfileRepository({ tabId: this.tabId });
+    const { repository, metadata } = await createProfileRepository({
+      tabId: this.tabId,
+      dbName: this.playerKey(PROFILE_DB_NAME),
+    });
     this.repository = repository;
+    if (this.playerContext?.requirePersistent && repository.backend !== 'indexeddb') {
+      throw new Error('Player saves are unavailable');
+    }
     this.lock = {
       tabId: metadata.ownerTabId,
       writeEpoch: metadata.writeEpoch,
@@ -255,7 +279,7 @@ export class AppController implements UIControllerActions {
     this.recentResults = snapshot.results;
     let tutorialDraft: TutorialDraft | null = null;
     try {
-      const draft = JSON.parse(window.localStorage.getItem(TUTORIAL_DRAFT_KEY) ?? 'null') as TutorialDraft | null;
+      const draft = JSON.parse(window.localStorage.getItem(this.playerKey(TUTORIAL_DRAFT_KEY)) ?? 'null') as TutorialDraft | null;
       if (
         draft?.contentVersion === WORDS_DATA.contentVersion &&
         (draft.step === 'S3' || draft.step === 'S4') &&
@@ -323,17 +347,17 @@ export class AppController implements UIControllerActions {
     }
 
     try {
-      const savedFontScale = window.localStorage.getItem('kotobabin:fontScale');
+      const savedFontScale = window.localStorage.getItem(this.playerKey('kotobabin:fontScale'));
       if (savedFontScale === '1.0' || savedFontScale === '1.15' || savedFontScale === '1.3') {
         this.fontScale = savedFontScale;
       }
-      const savedHighContrast = window.localStorage.getItem('kotobabin:highContrast');
+      const savedHighContrast = window.localStorage.getItem(this.playerKey('kotobabin:highContrast'));
       if (savedHighContrast === 'true') {
         this.highContrast = true;
       } else if (savedHighContrast === 'false') {
         this.highContrast = false;
       }
-      const savedBgm = window.localStorage.getItem('kotobabin:bgmEnabled');
+      const savedBgm = window.localStorage.getItem(this.playerKey('kotobabin:bgmEnabled'));
       if (savedBgm === 'false') {
         this.bgmEnabled = false;
       } else if (savedBgm === 'true') {
@@ -369,6 +393,7 @@ export class AppController implements UIControllerActions {
       savedAt: Date.now(),
       step,
       session: this.session.getTutorialCheckpoint(),
+      factLogContexts: Object.fromEntries(this.pendingFacts.map(({ factSequence, logContext }) => [factSequence, logContext])),
       city: this.economy.snapshot(),
       generatedMaterialsMicro: this.onboardingUi.generatedMaterialsMicro.toString(),
       unlockedStampIds: [...this.sessionUnlockedAchievementIds],
@@ -377,7 +402,7 @@ export class AppController implements UIControllerActions {
       rescueOffered: this.onboardingUi.rescueOffered,
     };
     try {
-      window.localStorage.setItem(TUTORIAL_DRAFT_KEY, JSON.stringify(draft));
+      window.localStorage.setItem(this.playerKey(TUTORIAL_DRAFT_KEY), JSON.stringify(draft));
     } catch {
       // IndexedDB remains the persistent store when localStorage is restricted.
     }
@@ -385,7 +410,7 @@ export class AppController implements UIControllerActions {
 
   private clearTutorialDraft(): void {
     try {
-      window.localStorage.removeItem(TUTORIAL_DRAFT_KEY);
+      window.localStorage.removeItem(this.playerKey(TUTORIAL_DRAFT_KEY));
     } catch {
       // Ignore storage restrictions.
     }
@@ -412,7 +437,10 @@ export class AppController implements UIControllerActions {
     this.currentPlanId = 'tutorial';
     this.sessionUnlockedAchievementIds = draft.unlockedStampIds;
     this.sessionUnlockedRewardIds = draft.unlockedRewardIds ?? [];
-    this.pendingFacts = [...this.session.facts];
+    this.pendingFacts = this.session.facts.map((fact) => ({
+      ...fact,
+      logContext: draft.factLogContexts?.[fact.factSequence],
+    }));
     for (const fact of this.session.facts) {
       const evaluated = this.achievements.applyFact(fact, Date.now());
       this.recordSessionRewards(evaluated.newlyUnlockedRewardIds);
@@ -459,7 +487,7 @@ export class AppController implements UIControllerActions {
 
   private setupSingleTabLock(): void {
     if (typeof BroadcastChannel !== 'undefined') {
-      this.tabChannel = new BroadcastChannel('kotobabin-tab-lock');
+      this.tabChannel = new BroadcastChannel(this.playerKey('kotobabin-tab-lock'));
       this.tabChannel.postMessage({ type: 'claim', tabId: this.tabId });
       this.tabChannel.addEventListener('message', (ev) => {
         const data = ev.data as { type?: string; tabId?: string } | null;
@@ -469,12 +497,12 @@ export class AppController implements UIControllerActions {
       });
     }
     window.addEventListener('storage', (ev) => {
-      if (ev.key === 'kotobabin-active-tab' && ev.newValue && ev.newValue !== this.tabId) {
+      if (ev.key === this.playerKey('kotobabin-active-tab') && ev.newValue && ev.newValue !== this.tabId) {
         this.handleTabLockLost();
       }
     });
     try {
-      window.localStorage.setItem('kotobabin-active-tab', this.tabId);
+      window.localStorage.setItem(this.playerKey('kotobabin-active-tab'), this.tabId);
     } catch {
       // Ignore storage errors in restricted environments
     }
@@ -502,7 +530,7 @@ export class AppController implements UIControllerActions {
       this.tabLockLost = false;
       this.tabChannel?.postMessage({ type: 'claim', tabId: this.tabId });
       try {
-        window.localStorage.setItem('kotobabin-active-tab', this.tabId);
+        window.localStorage.setItem(this.playerKey('kotobabin-active-tab'), this.tabId);
       } catch {
         // Ignore
       }
@@ -532,8 +560,8 @@ export class AppController implements UIControllerActions {
     }, 1000);
 
     this.autoSaveTimer = window.setInterval(() => {
-      if (this.screen !== 'PLAY' && !this.tabLockLost && !this.economy.activeSession) {
-        void this.persistCitySnapshot(`autosave-${++this.eventCounter}`);
+      if (this.screen !== 'PLAY' && !this.tabLockLost && !this.economy.activeSession && !this.switchingPlayer) {
+        void this.persistCitySnapshot(this.nextEconomyEventId('autosave-tick'));
       }
     }, 15000);
   }
@@ -1305,7 +1333,15 @@ export class AppController implements UIControllerActions {
   }
 
   private handleSessionFact(fact: ConfirmedFact): void {
-    this.pendingFacts.push(fact);
+    this.pendingFacts.push({
+      ...fact,
+      logContext: {
+        occurredAt: Date.now(),
+        cityId: this.economy.cityId,
+        courseId: fact.type === 'RoundFinished' ? fact.courseId : this.selectedCourseId,
+        districtId: fact.type === 'RoundFinished' ? fact.districtId : this.selectedDistrictId,
+      },
+    });
 
     if (fact.mode === 'MAIN' || fact.mode === 'TUTORIAL') {
       if (
@@ -1561,7 +1597,17 @@ export class AppController implements UIControllerActions {
     }
   }
 
-  private async commitSessionAndCity(
+  private commitSessionAndCity(
+    roundResult: RoundResultRecord | undefined,
+    onboardingCheckpoint?: OnboardingStateRecord,
+  ): Promise<boolean> {
+    const save = this.saveSessionAndCity(roundResult, onboardingCheckpoint);
+    this.sessionSaves.add(save);
+    void save.finally(() => this.sessionSaves.delete(save));
+    return save;
+  }
+
+  private async saveSessionAndCity(
     roundResult: RoundResultRecord | undefined,
     onboardingCheckpoint?: OnboardingStateRecord,
   ): Promise<boolean> {
@@ -1981,6 +2027,23 @@ export class AppController implements UIControllerActions {
     this.render();
   }
 
+  moveCity(direction: -1 | 1): void {
+    if (this.screen !== 'HOME' || this.tabLockLost || this.onboardingUi.active || this.economy.activeSession) return;
+    this.advanceEconomyToNow();
+    const destination = this.economy.adjacentCity(direction);
+    if (!destination) {
+      if (direction === 1 && this.economy.newCityPreview().eligible) this.navigate('NEW_CITY');
+      return;
+    }
+
+    this.economy = this.economy.visitCity(destination);
+    this.selectedDistrictId = 'residential';
+    this.difficultyPopupOpen = false;
+    this.audio.playSe('audio_ui_click');
+    void this.persistCitySnapshot(this.nextEconomyEventId('persist-city-visit'));
+    this.render();
+  }
+
   confirmNewCity(landscape: LandscapeId): void {
     this.advanceEconomyToNow();
     try {
@@ -2032,7 +2095,15 @@ export class AppController implements UIControllerActions {
     this.render();
   }
 
+  private setHandbookTab(tab: HandbookTab): void {
+    this.audio.playSe('audio_ui_click');
+    this.handbookTab = tab;
+    this.render();
+    this.mountEl.querySelector<HTMLElement>(`[data-testid="handbook-${tab}-tab"]`)?.focus();
+  }
+
   equipTitle(titleId: string | null): void {
+    if (titleId !== null && !this.getUnlockedTitleName(titleId)) return;
     this.updateSettings({ equippedTitleId: titleId });
   }
 
@@ -2070,7 +2141,7 @@ export class AppController implements UIControllerActions {
     this.audio.playSe('audio_ui_click');
     this.highContrast = enabled;
     try {
-      window.localStorage.setItem('kotobabin:highContrast', String(enabled));
+      window.localStorage.setItem(this.playerKey('kotobabin:highContrast'), String(enabled));
     } catch {
       // Ignore storage restrictions
     }
@@ -2110,7 +2181,7 @@ export class AppController implements UIControllerActions {
   setBgmEnabled(enabled: boolean): void {
     this.bgmEnabled = enabled;
     try {
-      window.localStorage.setItem('kotobabin:bgmEnabled', String(enabled));
+      window.localStorage.setItem(this.playerKey('kotobabin:bgmEnabled'), String(enabled));
     } catch {
       // Ignore storage restrictions
     }
@@ -2128,12 +2199,33 @@ export class AppController implements UIControllerActions {
     this.audio.playSe('audio_ui_click');
     this.fontScale = scale;
     try {
-      window.localStorage.setItem('kotobabin:fontScale', scale);
+      window.localStorage.setItem(this.playerKey('kotobabin:fontScale'), scale);
     } catch {
       // Ignore storage restrictions
     }
     this.applyAccessibilitySettings();
     this.render();
+  }
+
+  private openPlayerSelection(triggerId: 'header-player-select' | 'settings-player-select'): void {
+    this.playerContext?.openSelector(async () => {
+      if (this.switchingPlayer || this.economy.activeSession || this.tabLockLost) {
+        throw new Error('Player switching is unavailable');
+      }
+      this.switchingPlayer = true;
+      try {
+        await Promise.all(this.sessionSaves);
+        this.advanceEconomyToNow();
+        const saved = this.pendingFacts.length > 0
+          ? await this.commitSessionAndCity(undefined)
+          : await this.persistCitySnapshot(this.nextEconomyEventId('persist-before-player-selection'));
+        if (!saved) throw new Error('Player save did not complete');
+      } finally {
+        this.switchingPlayer = false;
+      }
+    }, () => {
+      this.mountEl.querySelector<HTMLElement>(`[data-testid="${triggerId}"]`)?.focus({ preventScroll: true });
+    }, () => this.render());
   }
 
   exportSaveJson(): void {
@@ -2212,9 +2304,9 @@ export class AppController implements UIControllerActions {
         this.highContrast = false;
         this.bgmEnabled = true;
         try {
-          window.localStorage.removeItem('kotobabin:fontScale');
-          window.localStorage.removeItem('kotobabin:highContrast');
-          window.localStorage.removeItem('kotobabin:bgmEnabled');
+          window.localStorage.removeItem(this.playerKey('kotobabin:fontScale'));
+          window.localStorage.removeItem(this.playerKey('kotobabin:highContrast'));
+          window.localStorage.removeItem(this.playerKey('kotobabin:bgmEnabled'));
         } catch {
           // Ignore storage restrictions
         }
@@ -2290,12 +2382,9 @@ export class AppController implements UIControllerActions {
     return count;
   }
 
-  private getEquippedTitleName(): string | null {
-    if (!this.settings.equippedTitleId) {
-      return null;
-    }
-    const def = CATALOG_ACHIEVEMENTS.find((a) => a.title_id === this.settings.equippedTitleId);
-    return def?.name ?? null;
+  private getUnlockedTitleName(titleId: string | null): string | null {
+    const title = titleId ? STAMP_TITLES.get(titleId) : undefined;
+    return title && this.achievements.isUnlocked(title.stampId) ? title.name : null;
   }
 
   private renderPlayInPlace(): void {
@@ -2404,11 +2493,15 @@ export class AppController implements UIControllerActions {
           currentScreen: this.screen,
           economy: this.economy,
           unreadCount: this.getUnreadAchievementCount(),
-          equippedTitleName: this.getEquippedTitleName(),
+          playerName: this.playerContext?.player.name ?? DEFAULT_PLAYER.name,
+          equippedTitleName: this.getUnlockedTitleName(this.settings.equippedTitleId),
           navLocked:
             this.isOnboardingUpgrade ||
             (this.screen === 'HOME' && (onboardingStep === 'S1' || onboardingStep === 'S2' || onboardingStep === 'S5')),
           onNavigate: (s) => this.navigate(s),
+          onChoosePlayer: this.playerContext?.hasMultiplePlayers() && this.repository.backend === 'indexeddb'
+            ? () => this.openPlayerSelection('header-player-select')
+            : undefined,
         }),
       );
     }
@@ -2495,8 +2588,10 @@ export class AppController implements UIControllerActions {
               selectedLandscape: this.selectedNewCityLandscape,
               onSelectLandscape: (ls) => {
                 this.audio.playSe('audio_ui_click');
+                const keepFocus = document.activeElement?.classList.contains('kb-landscape-btn');
                 this.selectedNewCityLandscape = ls;
                 this.render();
+                if (keepFocus) this.mountEl.querySelector<HTMLElement>('.kb-landscape-btn[aria-checked="true"]')?.focus({ preventScroll: true });
               },
               actions: this,
             }),
@@ -2557,11 +2652,7 @@ export class AppController implements UIControllerActions {
                 this.render();
                 this.mountEl.querySelector<HTMLElement>('[data-testid="handbook-filter"]')?.focus();
               },
-              onSetTab: (t) => {
-                this.audio.playSe('audio_ui_click');
-                this.handbookTab = t;
-                this.render();
-              },
+              onSetTab: (t) => this.setHandbookTab(t),
               onSelectFrameGroup: (group) => {
                 this.handbookFrameGroup = group;
                 this.audio.playSe('audio_ui_click');
@@ -2600,6 +2691,11 @@ export class AppController implements UIControllerActions {
               highContrast: this.highContrast,
               fontScale: this.fontScale,
               storageBackend: this.repository.backend,
+              player: this.playerContext && this.repository.backend === 'indexeddb' ? {
+                name: this.playerContext.player.name,
+                titleName: this.getUnlockedTitleName(this.settings.equippedTitleId),
+                choose: () => this.openPlayerSelection('settings-player-select'),
+              } : undefined,
               pendingResetScope: this.pendingResetConfirm,
               settingsNotice: this.settingsNotice,
               actions: this,
@@ -2674,10 +2770,17 @@ export class AppController implements UIControllerActions {
 
     const prevMainScroll = this.mountEl.querySelector<HTMLElement>('.kb-main > *')?.scrollTop ?? 0;
     const prevLeftScroll = this.mountEl.querySelector<HTMLElement>('.kb-home-left')?.scrollTop ?? 0;
+    const navFocus = document.activeElement?.closest('.kb-city-nav-btn, [data-testid="header-player-select"]');
+    const navFocusId = navFocus?.getAttribute('data-testid');
 
     this.mountEl.replaceChildren(shell);
     if (this.isOnboardingUpgrade) {
       shell.querySelector<HTMLElement>('[data-onboarding-heading]')?.focus({ preventScroll: true });
+    }
+    if (this.screen === 'HOME' && navFocusId && !shell.querySelector('dialog[open]')) {
+      const target = shell.querySelector<HTMLElement>(`[data-testid="${navFocusId}"]`) ??
+        (navFocus?.matches('.kb-city-nav-btn') ? shell.querySelector<HTMLElement>('.kb-city-nav-btn') : null);
+      target?.focus({ preventScroll: true });
     }
     if (this.screen === 'PLAY' && this.inputAdapter && this.session?.currentState !== 'INPUT_CHECK' && !this.onboardingUi.deliveryInTransit) {
       this.inputAdapter.attach();
@@ -2694,6 +2797,7 @@ export class AppController implements UIControllerActions {
   }
 
   private handleGlobalKeyDown(e: KeyboardEvent): void {
+    if (document.querySelector('.kb-player-dialog[open]')) return;
     this.audio.unlock();
     if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
       return;
@@ -2822,6 +2926,15 @@ export class AppController implements UIControllerActions {
       return;
     }
 
+    if (e.code === PLAYER_SHORTCUT.code || e.key.toUpperCase() === PLAYER_SHORTCUT.key) {
+      const playerButton = this.mountEl.querySelector<HTMLButtonElement>('[data-testid="header-player-select"]:enabled');
+      if (playerButton) {
+        e.preventDefault();
+        playerButton.click();
+        return;
+      }
+    }
+
     const navShortcut = NAV_ITEMS.find((item) => e.code === item.code || e.key.toUpperCase() === item.key);
     if (navShortcut) {
       e.preventDefault();
@@ -2946,15 +3059,12 @@ export class AppController implements UIControllerActions {
     } else if (this.screen === 'HANDBOOK') {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
-        const tabs: readonly HandbookTab[] = ['stamps', 'collection'];
-        const idx = tabs.indexOf(this.handbookTab);
+        const idx = HANDBOOK_TABS.findIndex(({ id }) => id === this.handbookTab);
         const nextIdx =
           e.key === 'ArrowRight'
-            ? (idx + 1) % tabs.length
-            : (idx - 1 + tabs.length) % tabs.length;
-        this.audio.playSe('audio_ui_click');
-        this.handbookTab = tabs[nextIdx];
-        this.render();
+            ? (idx + 1) % HANDBOOK_TABS.length
+            : (idx - 1 + HANDBOOK_TABS.length) % HANDBOOK_TABS.length;
+        this.setHandbookTab(HANDBOOK_TABS[nextIdx].id);
       }
     } else if (this.screen === 'DICTIONARY') {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {

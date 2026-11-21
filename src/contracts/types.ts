@@ -46,6 +46,7 @@ export interface ConfirmedFactBase {
   mode: SessionMode;
   ruleVersion: string;
   timestamp: number;
+  logContext?: { occurredAt: number; cityId: string; courseId: CourseId; districtId: DistrictId };
 }
 
 export interface WordCompletedFact extends ConfirmedFactBase {

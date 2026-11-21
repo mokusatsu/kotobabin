@@ -3,6 +3,7 @@ import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
   CATALOG_REWARDS,
+  STAMP_TITLES,
   type AchievementFamilyId,
   type CatalogAchievementDefinition,
   type CatalogRewardDefinition,
@@ -22,7 +23,14 @@ import { getRewardPreviewAsset } from "../utils/rewardArt";
 export { getRewardPreviewAsset } from "../utils/rewardArt";
 
 export type HandbookFilter = 'all' | 'locked' | 'unlocked';
-export type HandbookTab = 'stamps' | 'collection';
+export const HANDBOOK_TABS = [
+  { id: 'stamps', label: '切手台紙' },
+  { id: 'postcards', label: '絵葉書' },
+  { id: 'keepsakes', label: '記念品' },
+  { id: 'frames', label: '額縁' },
+  { id: 'titles', label: '称号' },
+] as const;
+export type HandbookTab = (typeof HANDBOOK_TABS)[number]['id'];
 export type HandbookGroup = 'all' | 'classic' | SeriesCategory;
 export type HandbookPageControl = 'handbook-prev' | 'handbook-page' | 'handbook-next';
 
@@ -158,12 +166,26 @@ function attachLightDismissFallback(dialog: HTMLDialogElement): void {
   });
 }
 
-function renderPostcards(unlockedRewards: ReadonlySet<string>): HTMLElement {
+function panelAttributes(tab: HandbookTab) {
+  return { id: `kb-handbook-${tab}`, role: 'tabpanel', 'aria-labelledby': `kb-handbook-${tab}-tab` };
+}
+
+function handbookStatus(owned: boolean, equipped = false): string {
+  return equipped ? '装着中' : owned ? '獲得済み' : '未獲得';
+}
+
+function renderHandbookStatus(owned: boolean, equipped = false): HTMLElement {
+  return el('span', {
+    className: `kb-badge kb-handbook-status${equipped ? ' is-equipped' : owned ? ' is-earned' : ''}`,
+  }, handbookStatus(owned, equipped));
+}
+
+function createRewardPreview(category: 'postcard' | 'keepsake' | 'frame', categoryName: string) {
   const dialog = el('dialog', {
-    className: 'kb-stamp-dialog kb-postcard-dialog',
-    'aria-labelledby': 'kb-postcard-title',
+    className: `kb-stamp-dialog kb-${category}-dialog`,
+    'aria-labelledby': `kb-${category}-title`,
     closedby: 'any',
-    'data-testid': 'postcard-preview',
+    'data-testid': `${category}-preview`,
   });
   let opener: HTMLButtonElement | null = null;
   const dismiss = () => {
@@ -188,44 +210,26 @@ function renderPostcards(unlockedRewards: ReadonlySet<string>): HTMLElement {
   });
   attachLightDismissFallback(dialog);
 
-  const tiles = CATALOG_REWARDS.filter((reward) => reward.kind === 'postcard').map((reward) => {
-    const owned = unlockedRewards.has(reward.id);
-    const status = owned ? '獲得済み' : '未獲得';
-    const image = getRewardPreviewAsset(reward);
-    const tile = el('button', {
-      type: 'button',
-      className: `kb-postcard-tile${owned ? ' is-owned' : ''}`,
-      'aria-label': `${reward.name}（${status}）を拡大`,
-      'aria-haspopup': 'dialog',
-      'data-postcard-id': reward.id,
-    },
-      assetImg(image, '', {
-        decorative: true,
-        className: `kb-reward-art kb-postcard-thumbnail${owned ? '' : ' is-locked'}`,
-      }),
-      el('span', { className: 'kb-postcard-caption' },
-        el('strong', {}, reward.name),
-        el('span', { className: 'kb-row-between kb-small' }, el('span', {}, status), el('span', {}, '拡大')),
-      ),
-    );
-    tile.addEventListener('click', () => {
-      opener = tile;
+  return {
+    dialog,
+    open(reward: CatalogRewardDefinition, owned: boolean, trigger: HTMLButtonElement, equipped = false) {
+      opener = trigger;
       const closeButton = el('button', {
         type: 'button',
         className: 'kb-stamp-dialog-close',
-        'aria-label': '絵葉書を閉じる',
+        'aria-label': `${categoryName}を閉じる`,
       }, '✕');
       closeButton.addEventListener('click', dismiss);
       dialog.replaceChildren(
-        el('div', { className: 'kb-postcard-preview kb-stack-sm' },
+        el('div', { className: 'kb-reward-preview kb-stack-sm' },
           el('div', { className: 'kb-stamp-dialog-header' },
-            el('h2', { id: 'kb-postcard-title', className: 'kb-h2' }, reward.name), closeButton,
+            el('h2', { id: `kb-${category}-title`, className: 'kb-h2' }, reward.name), closeButton,
           ),
-          assetImg(image, `${reward.name}の絵柄`, {
-            className: `kb-postcard-preview-art${owned ? '' : ' is-locked'}`,
+          assetImg(getRewardPreviewAsset(reward), `${reward.name}の絵柄`, {
+            className: `kb-reward-preview-art${owned ? '' : ' is-locked'}`,
           }),
           el('div', { className: 'kb-row-wrap' },
-            el('span', { className: `kb-badge${owned ? ' is-earned' : ''}` }, status),
+            renderHandbookStatus(owned, equipped),
             el('span', { className: 'kb-secondary kb-small' }, reward.trigger),
           ),
         ),
@@ -233,14 +237,42 @@ function renderPostcards(unlockedRewards: ReadonlySet<string>): HTMLElement {
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.open = true;
       closeButton.focus();
-    });
+    },
+  };
+}
+
+function renderRewardGallery(tab: 'postcards' | 'keepsakes', unlockedRewards: ReadonlySet<string>): HTMLElement {
+  const isPostcard = tab === 'postcards';
+  const category = isPostcard ? 'postcard' : 'keepsake';
+  const preview = createRewardPreview(category, isPostcard ? '絵葉書' : '記念品');
+
+  const rewards = CATALOG_REWARDS.filter(({ kind }) => isPostcard ? kind === 'postcard' : kind !== 'postcard' && kind !== 'frame');
+  const tiles = rewards.map((reward) => {
+    const owned = unlockedRewards.has(reward.id);
+    const image = getRewardPreviewAsset(reward);
+    const tile = el('button', {
+      type: 'button',
+      className: `kb-${category}-tile${owned ? ' is-owned' : ''}`,
+      'aria-label': `${reward.name}（${handbookStatus(owned)}）を拡大`,
+      'aria-haspopup': 'dialog',
+      [`data-${category}-id`]: reward.id,
+    },
+      assetImg(image, '', {
+        decorative: true,
+        className: `kb-reward-art kb-${category}-thumbnail${owned ? '' : ' is-locked'}`,
+      }),
+      el('span', { className: `kb-${category}-caption` },
+        el('strong', {}, reward.name),
+        el('span', { className: 'kb-row-between kb-small' }, renderHandbookStatus(owned), el('span', {}, '拡大')),
+      ),
+    );
+    tile.addEventListener('click', () => preview.open(reward, owned, tile));
     return tile;
   });
 
-  return el('section', { className: 'kb-card kb-stack-sm', 'aria-label': '絵葉書' },
-    el('h3', { className: 'kb-h3' }, '絵葉書'),
-    el('div', { className: 'kb-postcard-grid' }, ...tiles),
-    dialog,
+  return el('section', { className: 'kb-card kb-stack-sm', ...panelAttributes(tab) },
+    el('div', { className: `kb-${category}-grid` }, ...tiles),
+    preview.dialog,
   );
 }
 
@@ -275,112 +307,120 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
 
   const unlockedCount = achievements.getUnlockedCount();
 
-  // Top mode switch (切手台紙 / コレクション・装飾)
-  const stampsTabBtn = el(
-    'button',
-    {
-      type: 'button',
-      className: `kb-pill-btn${tab === 'stamps' ? ' is-selected' : ''}`,
-      'aria-pressed': String(tab === 'stamps'),
-      'data-testid': 'handbook-stamps-tab',
-    },
-    `切手台紙 (${unlockedCount}/${CATALOG_ACHIEVEMENTS.length})`,
+  const topBar = el('div', { className: 'kb-row-wrap kb-handbook-tabs', role: 'tablist', 'aria-label': '配達手帳' },
+    ...HANDBOOK_TABS.map(({ id, label }) => {
+      const selected = id === tab;
+      const button = el('button', {
+        type: 'button', className: `kb-pill-btn${selected ? ' is-selected' : ''}`, role: 'tab',
+        id: `kb-handbook-${id}-tab`, 'data-testid': `handbook-${id}-tab`,
+        'aria-selected': String(selected), 'aria-controls': selected ? `kb-handbook-${id}` : undefined,
+        tabindex: selected ? 0 : -1,
+      }, id === 'stamps' ? `${label} (${unlockedCount}/${CATALOG_ACHIEVEMENTS.length})` : label);
+      button.addEventListener('click', () => onSetTab(id));
+      return button;
+    }),
   );
-  stampsTabBtn.addEventListener('click', () => onSetTab('stamps'));
 
-  const collectionTabBtn = el(
-    'button',
-    {
-      type: 'button',
-      className: `kb-pill-btn${tab === 'collection' ? ' is-selected' : ''}`,
-      'aria-pressed': String(tab === 'collection'),
-      'data-testid': 'handbook-collection-tab',
-    },
-    '絵葉書・称号・額縁',
-  );
-  collectionTabBtn.addEventListener('click', () => onSetTab('collection'));
+  if (tab === 'postcards' || tab === 'keepsakes') {
+    const gallery = renderRewardGallery(tab, new Set(achievements.getUnlockedRewardIds()));
+    return el('div', { className: 'kb-stack-md' }, topBar, gallery);
+  }
 
-  const topBar = el('div', { className: 'kb-row-wrap' }, stampsTabBtn, collectionTabBtn);
-
-  if (tab === 'collection') {
+  if (tab === 'frames') {
     const unlockedRewards = new Set(achievements.getUnlockedRewardIds());
-    const unlockedTitles = CATALOG_ACHIEVEMENTS.filter((a) => achievements.isUnlocked(a.id));
-    const equippedGroup = STAMP_FRAME_GROUPS.findIndex(({ frames }) => frames.some((frame) => frame.rewardId === equippedFrameId));
+    const equippedGroup = equippedFrameId && unlockedRewards.has(equippedFrameId)
+      ? STAMP_FRAME_GROUPS.findIndex(({ frames }) => frames.some((frame) => frame.rewardId === equippedFrameId))
+      : -1;
     const firstOwnedGroup = STAMP_FRAME_GROUPS.findIndex(({ frames }) => frames.some((frame) => unlockedRewards.has(frame.rewardId)));
     const selectedFrameGroup = frameGroup ?? (equippedGroup >= 0 ? equippedGroup : Math.max(0, firstOwnedGroup));
+    const group = STAMP_FRAME_GROUPS[selectedFrameGroup];
+    const preview = createRewardPreview('frame', '額縁');
     const framePicker = el('select', {
       className: 'kb-input kb-handbook-select', 'aria-label': '額縁の分野', 'data-testid': 'handbook-frame-group',
     }, ...STAMP_FRAME_GROUPS.map(({ name }, index) => el('option', { value: index, selected: index === selectedFrameGroup }, name)));
     framePicker.addEventListener('change', () => onSelectFrameGroup(Number(framePicker.value)));
 
-    const rewardCard = (reward: CatalogRewardDefinition): HTMLElement => {
+    const frameCard = (reward: CatalogRewardDefinition): HTMLElement => {
       const owned = unlockedRewards.has(reward.id);
-      const isFrame = reward.kind === 'frame';
-      const equipped = reward.id === equippedFrameId;
-      const button = isFrame && owned ? el('button', {
+      const equipped = owned && reward.id === equippedFrameId;
+      const button = owned ? el('button', {
         type: 'button', className: equipped ? 'kb-btn-primary' : 'kb-btn-secondary',
+        'aria-label': equipped ? '額縁を外す' : '額縁を装着',
         'data-equip-frame': reward.id,
-      }, equipped ? '装着中（外す）' : '額縁を装着') : null;
+      }, equipped ? '外す' : '装着') : null;
       button?.addEventListener('click', () => actions.equipFrame(equipped ? null : reward.id));
       const image = assetImg(getRewardPreviewAsset(reward), '', {
         decorative: true,
-        width: isFrame ? 68 : reward.kind === 'home_panel' ? 72 : 44,
-        height: isFrame ? 68 : reward.kind === 'home_panel' ? 45 : 44,
+        width: 56,
+        height: 56,
         className: `kb-reward-art${owned ? '' : ' is-locked'}`,
       });
-      if (isFrame) image.loading = 'lazy';
-      return el('div', { className: `kb-stamp-card kb-reward-card${owned ? ' is-owned' : ''}`, 'data-frame-reward': isFrame ? reward.id : undefined },
-        el('div', { className: 'kb-row-between' }, image,
-          assetImg(owned ? './assets/ui_icon/ui_check.svg' : './assets/ui_icon/ui_lock.svg', '', { decorative: true, width: 18, height: 18 })),
+      image.loading = 'lazy';
+      const enlarge = el('button', {
+        type: 'button', className: 'kb-frame-preview-button', 'aria-haspopup': 'dialog',
+        'aria-label': `${reward.name}（${handbookStatus(owned, equipped)}）を拡大`,
+      }, image, el('span', { className: 'kb-small' }, '拡大'));
+      enlarge.addEventListener('click', () => preview.open(reward, owned, enlarge, equipped));
+      return el('div', { className: `kb-stamp-card kb-reward-card${owned ? ' is-owned' : ''}`, 'data-frame-reward': reward.id },
+        enlarge,
         el('strong', {}, reward.name),
         el('div', { className: 'kb-secondary kb-small' }, reward.trigger),
-        button ?? (isFrame ? el('span', { className: 'kb-badge kb-frame-lock-status' }, '未獲得') : null),
+        el('div', { className: 'kb-row-wrap kb-frame-actions' }, renderHandbookStatus(owned, equipped), button),
       );
     };
 
+    const frameCategories = el('aside', { className: 'kb-card kb-stack-sm kb-handbook-sheet-list', 'aria-label': '額縁の分類' },
+      framePicker,
+      el('p', { className: 'kb-secondary kb-small kb-frame-hint' }, '装着した額縁は、獲得済みの切手を拡大したときに表示されます。'),
+    );
     const framesSection = el(
       'section',
-      { className: 'kb-card kb-stack-sm', 'aria-label': '額縁', 'data-testid': 'handbook-frames' },
+      { className: 'kb-card kb-stack-sm kb-handbook-main', 'aria-label': '額縁一覧' },
       el('div', { className: 'kb-row-between kb-handbook-toolbar' },
-        el('h3', { className: 'kb-h3' }, `額縁（${STAMP_FRAMES.filter((frame) => unlockedRewards.has(frame.rewardId)).length}/${STAMP_FRAMES.length}）`),
-        framePicker,
+        el('h2', { className: 'kb-h2' }, group.name),
+        el('span', { className: 'kb-secondary kb-small' }, `額縁（${STAMP_FRAMES.filter((frame) => unlockedRewards.has(frame.rewardId)).length}/${STAMP_FRAMES.length}）`),
       ),
-      el('p', { className: 'kb-secondary kb-small kb-frame-hint' }, '装着した額縁は、獲得済みの切手を拡大したときに表示されます。'),
       el('div', { className: 'kb-handbook-frame-grid' },
-        ...STAMP_FRAME_GROUPS[selectedFrameGroup].frames.map((frame) => rewardCard(rewardById.get(frame.rewardId)!))),
+        ...group.frames.map((frame) => frameCard(rewardById.get(frame.rewardId)!))),
     );
-    const keepsakesSection = el('section', { className: 'kb-card kb-stack-sm' },
-      el('h3', { className: 'kb-h3' }, '記念品'),
-      el('div', { className: 'kb-row-wrap' },
-        ...CATALOG_REWARDS.filter(({ kind }) => kind !== 'postcard' && kind !== 'frame').map(rewardCard)),
-    );
+    return el('div', { className: 'kb-stack-md kb-handbook-collection' }, topBar,
+      el('div', { className: 'kb-grid-handbook', 'data-testid': 'handbook-frames', ...panelAttributes(tab) }, frameCategories, framesSection, preview.dialog));
+  }
 
+  if (tab === 'titles') {
+    const unlockedTitles = new Map<string, string>();
+    for (const [id, title] of STAMP_TITLES) {
+      if (achievements.isUnlocked(title.stampId) && (!unlockedTitles.has(title.name) || id === equippedTitleId)) {
+        unlockedTitles.set(title.name, id);
+      }
+    }
     const titlesSection = el(
       'section',
-      { className: 'kb-card kb-stack-sm' },
+      { className: 'kb-card kb-stack-sm', ...panelAttributes(tab) },
       el('h3', { className: 'kb-h3' }, '称号（1件まで装着）'),
-      unlockedTitles.length === 0
+      unlockedTitles.size === 0
         ? el('p', { className: 'kb-secondary' }, '切手を獲得すると称号が解放されます。')
         : el(
             'div',
             { className: 'kb-row-wrap' },
-            ...unlockedTitles.map((a) => {
-              const isEquipped = equippedTitleId === a.title_id;
+            ...[...unlockedTitles].map(([name, id]) => {
+              const isEquipped = equippedTitleId === id;
               const btn = el(
                 'button',
                 {
                   type: 'button',
-                  className: `kb-pill-btn${isEquipped ? ' is-selected' : ''}`,
+                  className: `kb-pill-btn kb-row-wrap${isEquipped ? ' is-selected' : ''}`,
+                  'aria-pressed': String(isEquipped),
                 },
-                isEquipped ? `✓ ${a.name}（装着中）` : a.name,
+                name, renderHandbookStatus(true, isEquipped),
               );
-              btn.addEventListener('click', () => actions.equipTitle(isEquipped ? null : a.title_id));
+              btn.addEventListener('click', () => actions.equipTitle(isEquipped ? null : id));
               return btn;
             }),
           ),
     );
 
-    return el('div', { className: 'kb-stack-md kb-handbook-collection' }, topBar, framesSection, renderPostcards(unlockedRewards), keepsakesSection, titlesSection);
+    return el('div', { className: 'kb-stack-md' }, topBar, titlesSection);
   }
 
   const sheets = group === 'all' ? HANDBOOK_SHEETS : HANDBOOK_SHEETS.filter((sheet) => sheet.group === group);
@@ -462,8 +502,8 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
           className: `kb-stamp-tile${unlocked ? ' is-earned' : ' is-unearned'}${isSelected ? ' is-selected' : ''}`,
           'data-stamp-id': a.id,
           'aria-label': isHiddenUnrevealed
-            ? '秘密の切手（未解除）'
-            : `${a.name}（${unlocked ? '獲得済み' : '未解除'}）`,
+            ? '秘密の切手（未獲得）'
+            : `${a.name}（${handbookStatus(unlocked)}）`,
         },
         el(
           'div',
@@ -505,11 +545,7 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
             'div',
             { className: 'kb-stamp-tile-overlay' },
             el('strong', { className: 'kb-stamp-tile-title' }, isHiddenUnrevealed ? '？？？' : a.name),
-            el(
-              'span',
-              { className: `kb-stamp-tile-status${unlocked ? ' is-earned' : ''}` },
-              unlocked ? '✓ 獲得' : '未解除',
-            ),
+            renderHandbookStatus(unlocked),
           ),
         ),
       );
@@ -615,7 +651,7 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
       className: 'kb-input kb-handbook-select', 'aria-label': '切手の段階', 'data-testid': 'series-tier',
     }, ...series.stamps.map((stamp) => el('option', {
       value: stamp.id, selected: stamp.id === detailDef.id,
-    }, `${stamp.tierLabel}・${achievements.isUnlocked(stamp.id) ? '獲得済み' : '未獲得'}`))) : null;
+    }, `${stamp.tierLabel}・${handbookStatus(achievements.isUnlocked(stamp.id))}`))) : null;
     tierPicker?.addEventListener('change', () => {
       onSelectAchievement(tierPicker.value);
       if (achievements.isUnlocked(tierPicker.value)) actions.markAchievementRead(tierPicker.value);
@@ -641,11 +677,7 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
       el(
         'div',
         { className: 'kb-row-wrap' },
-        el(
-          'span',
-          { className: `kb-badge${detailUnlocked ? ' is-earned' : ''}` },
-          detailUnlocked ? '✓ 獲得済み' : '未解除',
-        ),
+        renderHandbookStatus(detailUnlocked),
         el('span', { className: 'kb-badge' }, `対象: ${series?.category === 'words'
           && !series.id.startsWith('topic_words_') && series.id !== 'every_topic'
           ? '本編・練習' : SCOPE_LABELS[detailDef.scope]}`),
@@ -698,7 +730,7 @@ export function renderHandbookScreen(props: HandbookScreenProps): HTMLElement {
     'div',
     { className: 'kb-stack-md' },
     topBar,
-    el('div', { className: 'kb-grid-handbook' }, sheetList, board),
+    el('div', { className: 'kb-grid-handbook', ...panelAttributes(tab) }, sheetList, board),
     detailDialog,
   );
 }
