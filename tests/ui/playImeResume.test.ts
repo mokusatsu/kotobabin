@@ -61,6 +61,16 @@ describe('IME interruption during timed play', () => {
       currentWordIndex: partial.currentWordIndex,
     });
 
+    const quit = Array.from(mount.querySelectorAll('button')).find((button) => button.textContent?.startsWith('ホームへ戻る'))!;
+    quit.focus();
+    expect(document.activeElement).toBe(quit);
+    const keyDown = (key: string, repeat = false) =>
+      quit.dispatchEvent(new KeyboardEvent('keydown', { key, repeat, bubbles: true, cancelable: true }));
+    expect(keyDown('Enter', true)).toBe(false);
+    expect(keyDown('Enter')).toBe(true);
+    expect(keyDown(' ')).toBe(true);
+    expect(session.currentState).toBe('PAUSED');
+
     const resume = Array.from(mount.querySelectorAll('button')).find((button) => button.textContent?.startsWith('再開する'));
     expect(resume).toBeDefined();
     resume!.click();

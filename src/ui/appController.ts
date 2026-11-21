@@ -21,12 +21,14 @@ import {
   type UnlockRecord,
 } from '@/progression/achievementEngine';
 import { DictionaryTracker } from '@/progression/dictionaryTracker';
+import { seriesRoundRecordKey, type SeriesProgressState } from '@/progression/seriesProgress';
 import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
   createDefaultProfileSettings,
   createProfileRepository,
   ResetGenerationError,
   TabLockError,
+  type AppProfileSnapshot,
   type CommitFactsParams,
   type OnboardingStateRecord,
   type OnboardingStep,
@@ -147,6 +149,7 @@ export class AppController implements UIControllerActions {
   private unlocks: Record<string, UnlockRecord> = {};
   private readState: Record<string, ReadStateRecord> = {};
   private recentResults: RoundResultRecord[] = [];
+  private savedGrowthRecords: SeriesProgressState['records'] = {};
   private roundRecordSaveFailed = false;
   private roundResultReady: Promise<boolean> | null = null;
   private replayRequest = 0;
@@ -270,7 +273,7 @@ export class AppController implements UIControllerActions {
     this.settings = snapshot.profile;
     this.unlocks = snapshot.unlocks;
     this.readState = snapshot.readState;
-    this.recentResults = snapshot.results;
+    this.refreshSavedGrowth(snapshot);
     let tutorialDraft: TutorialDraft | null = null;
     try {
       const draft = JSON.parse(window.localStorage.getItem(TUTORIAL_DRAFT_KEY) ?? 'null') as TutorialDraft | null;
@@ -1122,6 +1125,12 @@ export class AppController implements UIControllerActions {
     this.render();
   }
 
+  private refreshSavedGrowth(snapshot: Pick<AppProfileSnapshot, 'results' | 'achievementProgress'>): void {
+    this.recentResults = snapshot.results;
+    // Keep the saved aggregate separate from optimistic in-session stamp updates.
+    this.savedGrowthRecords = snapshot.achievementProgress.series?.records ?? {};
+  }
+
   private launchSession(
     mode: 'MAIN' | 'PRACTICE' | 'TUTORIAL',
     launchTarget: 'READY' | 'PRACTICE' | 'TUTORIAL',
@@ -1223,6 +1232,12 @@ export class AppController implements UIControllerActions {
     let bestScore: number | null = null;
     let bestCanonicalLength: number | null = null;
     if (mode === 'MAIN') {
+      const stored = this.savedGrowthRecords[seriesRoundRecordKey(
+        this.selectedCourseId, this.currentComparisonKey, ROMAJI_RULES.inputRuleVersion, guideEnabled,
+      )];
+      bestScore = stored?.score ?? null;
+      bestCanonicalLength = stored?.length ?? null;
+      // Older saves without an aggregate can still supply eligible recent rounds.
       for (const result of this.recentResults) {
         if (
           result.comparisonKey !== this.currentComparisonKey ||
@@ -1793,7 +1808,7 @@ export class AppController implements UIControllerActions {
       const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
-      this.recentResults = loaded.results;
+      this.refreshSavedGrowth(loaded);
       resultReady?.(true);
       const saved = await this.persistCitySnapshot(
         this.nextEconomyEventId('round-city'),
@@ -2465,8 +2480,6 @@ export class AppController implements UIControllerActions {
     }
     this.pendingResetConfirm = null;
     this.audio.playSe('audio_ui_click');
-    const prevTutorialCompleted = this.settings.tutorialCompleted;
-    const prevOnboarding = this.settings.onboarding ? { ...this.settings.onboarding } : undefined;
     void this.repository.resetData(scope, this.lock).then(async (meta) => {
       // Keep the resumable draft unless the reset transaction has committed.
       if (scope === 'city_and_achievements') this.clearTutorialDraft();
@@ -2479,7 +2492,7 @@ export class AppController implements UIControllerActions {
       this.settings = loaded.profile;
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
-      this.recentResults = loaded.results;
+      this.refreshSavedGrowth(loaded);
       if (scope === 'city_and_achievements') {
         this.economy = new CityEconomy(Date.now());
         this.paidEquipmentPurchaseCount = 0;
@@ -2504,14 +2517,6 @@ export class AppController implements UIControllerActions {
         });
         this.syncBgmTrack();
         this.applyAccessibilitySettings();
-        if (prevTutorialCompleted || prevOnboarding) {
-          const preserved: Partial<Omit<ProfileSettingsRecord, 'id'>> = {
-            tutorialCompleted: prevTutorialCompleted,
-            ...(prevOnboarding ? { onboarding: prevOnboarding } : {}),
-          };
-          await this.repository.saveProfile(preserved, this.lock);
-          this.settings = { ...this.settings, ...preserved };
-        }
         this.settingsNotice = '入力・表示・サウンドの設定を初期化しました。';
       } else {
         this.achievements = new AchievementEngine({
@@ -3040,6 +3045,10 @@ export class AppController implements UIControllerActions {
         return;
       }
       if (state === 'PAUSED') {
+        if (e.key === 'Enter' && e.target instanceof HTMLButtonElement && e.target.closest('[data-testid="play-paused"]')) {
+          if (e.repeat) e.preventDefault();
+          return;
+        }
         if (e.key === 'Escape' || e.key === 'Enter') {
           e.preventDefault();
           if (!e.repeat) this.resumePlay();

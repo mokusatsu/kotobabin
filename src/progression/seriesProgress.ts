@@ -37,6 +37,13 @@ export interface SeriesProgressState {
   sessions: Record<string, SessionProgress>;
 }
 
+// Stable existing save key; changing it would orphan durable comparison records.
+export function seriesRoundRecordKey(
+  courseId: RoundFinishedFact['courseId'], comparisonKey: string, ruleVersion: string, guideUsed: boolean,
+): string {
+  return JSON.stringify([courseId, comparisonKey, ruleVersion, guideUsed]);
+}
+
 export function createSeriesProgress(): SeriesProgressState {
   return { metrics: {}, words: {}, records: {}, orders: {}, sessions: {} };
 }
@@ -243,7 +250,7 @@ export class SeriesProgress {
   }
 
   private updateBest(fact: RoundFinishedFact, orderKey: string, unlock: Unlock): RecordUpdates {
-    const key = JSON.stringify([fact.courseId, orderKey, fact.ruleVersion, fact.guideUsed]);
+    const key = seriesRoundRecordKey(fact.courseId, orderKey, fact.ruleVersion, fact.guideUsed);
     const record = this.state.records[key];
     if (!record) {
       this.state.records[key] = {

@@ -649,7 +649,11 @@ export class MemoryProfileRepository implements ProfileRepository {
         resetGeneration: this.metadata.resetGeneration + 1,
       };
     } else if (scope === 'settings') {
-      this.profile = createDefaultProfileSettings(this.profile.catalogStartedAt);
+      this.profile = {
+        ...createDefaultProfileSettings(this.profile.catalogStartedAt),
+        tutorialCompleted: this.profile.tutorialCompleted,
+        onboarding: this.profile.onboarding,
+      };
     }
 
     return { ...this.metadata };
@@ -1222,7 +1226,11 @@ export class IndexedDbProfileRepository implements ProfileRepository {
           | ProfileSettingsRecord
           | undefined) ?? createDefaultProfileSettings();
       tx.objectStore('profile').put(
-        createDefaultProfileSettings(current.catalogStartedAt),
+        {
+          ...createDefaultProfileSettings(current.catalogStartedAt),
+          tutorialCompleted: current.tutorialCompleted,
+          onboarding: current.onboarding,
+        },
       );
     }
 

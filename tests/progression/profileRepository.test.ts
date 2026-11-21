@@ -30,6 +30,25 @@ function makeFact(seq: number, sessionId = 'session-1'): WordCompletedFact {
 }
 
 describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
+
+  it('preserves onboarding atomically when resetting settings and reopening', async () => {
+    const idb = new IDBFactory();
+    const repo = new IndexedDbProfileRepository({ dbName: 'settings-reset-atomic', indexedDB: idb });
+    const meta = await repo.init('tab');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch, resetGeneration: meta.resetGeneration };
+    const onboarding = { version: 1 as const, status: 'in_progress' as const, step: 'S4' as const, updatedAt: 123 };
+    await repo.saveProfile({ tutorialCompleted: true, onboarding, volume: 0.2 }, lock);
+    await repo.resetData('settings', lock);
+    repo.close(); // Simulate page termination immediately after the reset transaction commits.
+    const reopened = new IndexedDbProfileRepository({ dbName: 'settings-reset-atomic', indexedDB: idb });
+    await reopened.init('new-tab');
+    const { profile } = await reopened.loadAll();
+    expect(profile.tutorialCompleted).toBe(true);
+    expect(profile.onboarding).toEqual(onboarding);
+    expect(profile.volume).toBe(0.7);
+    reopened.close();
+  });
+
   it('keeps mastery and round delivery observations through partial commits and retry', async () => {
     const idb = new IDBFactory();
     const repo = new IndexedDbProfileRepository({ dbName: 'series-progress', indexedDB: idb });
