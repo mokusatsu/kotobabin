@@ -60,6 +60,8 @@ describe('save reset failure', () => {
     await controller.init();
     controller.navigate('SETTINGS');
     window.localStorage.setItem(draftKey, 'existing tutorial checkpoint');
+    const oldEconomy = controller['economy'];
+    const oldAchievements = controller['achievements'];
     const { repository } = controller as unknown as { repository: { loadAll: () => Promise<unknown> } };
     const loadAll = vi.spyOn(repository, 'loadAll').mockRejectedValueOnce(new Error('injected post-commit read error'));
 
@@ -71,5 +73,7 @@ describe('save reset failure', () => {
     ));
     expect(loadAll).toHaveBeenCalledTimes(1);
     expect(window.localStorage.getItem(draftKey)).toBeNull();
+    expect(controller['economy']).not.toBe(oldEconomy);
+    expect(controller['achievements']).not.toBe(oldAchievements);
   });
 });

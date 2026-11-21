@@ -77,4 +77,70 @@ describe('durable comparison records', () => {
       comparisonBestScore: null, comparisonBestCanonicalLength: null,
     });
   });
+  it('keeps city-reset records visible without comparing them, even when the old result has the same timestamp', async () => {
+    const now = Date.now();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+    const courseId = 'relaxed';
+    const seed = 123;
+    const comparisonKey = `${courseId}:${GENERATOR_VERSION}:${WORDS_DATA.contentVersion}:${seed}`;
+    const repo = new IndexedDbProfileRepository();
+    const meta = await repo.init('seed');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch, resetGeneration: meta.resetGeneration };
+    const oldResult: RoundResultRecord = {
+      sessionId: 'before-reset', timestamp: now, courseId, comparisonKey, planId: `${courseId}:${seed}`,
+      wordIds: [], ruleVersion: ROMAJI_RULES.inputRuleVersion,
+      completed: true, completedWordCount: 10, correctKeyCount: 73, mistakeCount: 0,
+      totalCanonicalLength: 73, score: 700, canonicalKpm: 73 * 2 / 3,
+      rescueUsed: false, guideUsed: true,
+    };
+    await repo.commitTypingFacts({ lock, facts: [], roundResult: oldResult });
+    repo.close();
+
+    const mount = document.body.appendChild(document.createElement('div'));
+    async function openApp() {
+      const controller = new AppController(mount);
+      await controller.init();
+      return controller;
+    }
+    app = await openApp();
+    // Pre-reset legacy fallback still works, including through a settings-only reset.
+    app.resetSave('settings');
+    await vi.waitFor(() => expect(app!['settingsNotice']).toContain('入力・表示・サウンド'));
+    app.startMainRound(seed);
+    expect(app['currentSessionContext']).toMatchObject({ comparisonBestScore: 700, comparisonBestCanonicalLength: 73 });
+    app.cancelInputCheck();
+
+    app.resetSave('city_and_achievements');
+    await vi.waitFor(() => expect(app!['settingsNotice']).toContain('街と手帳を初期化'));
+    expect(app.getRecentResults()).toEqual([oldResult]);
+    app.destroy();
+    app = await openApp();
+    app.startMainRound(seed);
+    expect(app.getRecentResults()).toEqual([oldResult]);
+    expect(app['currentSessionContext']).toMatchObject({ comparisonBestScore: null, comparisonBestCanonicalLength: null });
+
+    // A new completion in the new generation contributes its own PB, even
+    // with the same wall-clock time. The stronger retained row stays display-only.
+    const freshResult = { ...oldResult, sessionId: 'after-reset', score: 500, totalCanonicalLength: 51 };
+    const fact: RoundFinishedFact = {
+      ...freshResult, type: 'RoundFinished', mode: 'MAIN', factSequence: 1, districtId: 'residential',
+      elapsedMs: 90_000, baseScore: 500, deliveryBonus: 0, longestCleanStreak: 10, skips: 0,
+    };
+    app.destroy();
+    const writer = new IndexedDbProfileRepository();
+    const freshMeta = await writer.init('writer');
+    try {
+      await writer.commitTypingFacts({
+        lock: { tabId: freshMeta.ownerTabId, writeEpoch: freshMeta.writeEpoch, resetGeneration: freshMeta.resetGeneration },
+        facts: [fact],
+        roundResult: freshResult,
+      });
+    } finally {
+      writer.close();
+    }
+    app = await openApp();
+    expect(app.getRecentResults()).toHaveLength(2);
+    app.startMainRound(seed);
+    expect(app['currentSessionContext']).toMatchObject({ comparisonBestScore: 500, comparisonBestCanonicalLength: 51 });
+  });
 });

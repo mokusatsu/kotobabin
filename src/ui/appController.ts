@@ -24,8 +24,10 @@ import { DictionaryTracker } from '@/progression/dictionaryTracker';
 import { seriesRoundRecordKey, type SeriesProgressState } from '@/progression/seriesProgress';
 import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
+  clearGrowthHistory,
   createDefaultProfileSettings,
   createProfileRepository,
+  INITIAL_RESET_GENERATION,
   ResetGenerationError,
   TabLockError,
   type AppProfileSnapshot,
@@ -35,6 +37,7 @@ import {
   type ProfileRepository,
   type ProfileSettingsRecord,
   type ReadStateRecord,
+  type ResetScope,
   type RoundResultRecord,
   type TabLockToken,
 } from '@/progression/profileRepository';
@@ -250,6 +253,7 @@ export class AppController implements UIControllerActions {
   private onboardingStampReadyAt = 0;
   private cityRevealIds: string[] = [];
   private cityRevealIndex = 0;
+  private resetInProgress: ResetScope | null = null;
   private pendingResetConfirm: 'records' | 'city_and_achievements' | 'settings' | null = null;
   private settingsNotice: string | null = null;
 
@@ -621,10 +625,16 @@ export class AppController implements UIControllerActions {
       (this.screen !== 'RESULT' || this.resultRevealDone) && !this.welcomeBack;
   }
 
+  private isCurrentWrite(lock: TabLockToken): boolean {
+    return !this.tabLockLost && this.lock.tabId === lock.tabId &&
+      this.lock.writeEpoch === lock.writeEpoch && this.lock.resetGeneration === lock.resetGeneration;
+  }
+
   private async persistCitySnapshot(eventId: string, onboarding?: OnboardingStateRecord): Promise<boolean> {
-    if (this.tabLockLost) {
+    if (this.tabLockLost || this.resetInProgress === 'city_and_achievements') {
       return false;
     }
+    const writeLock = this.lock;
     try {
       const achievementSnapshot = this.cityAchievementSnapshot();
       const timestamp = Date.now();
@@ -642,7 +652,7 @@ export class AppController implements UIControllerActions {
       this.economy.persistent.records['paidEquipmentPurchaseCount'] = this.paidEquipmentPurchaseCount;
       const snap = this.economy.snapshot();
       const res = await this.repository.commitCityEconomy({
-        lock: this.lock,
+        lock: writeLock,
         cityId: snap.city_id,
         economyEventId: eventId,
         cityRecord: {
@@ -661,14 +671,11 @@ export class AppController implements UIControllerActions {
         } : {}),
         timestamp,
       });
-      this.lock = {
-        tabId: res.metadata.ownerTabId,
-        writeEpoch: res.metadata.writeEpoch,
-        resetGeneration: res.metadata.resetGeneration,
-      };
+      if (!this.isCurrentWrite(writeLock)) return false;
       if (res.evaluation) this.achievements.applyCitySnapshot(achievementSnapshot, timestamp);
       if (res.evaluation && (res.evaluation.newlyUnlockedAchievementIds.length > 0 || res.evaluation.newlyUnlockedRewardIds.length > 0)) {
         const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
+        if (!this.isCurrentWrite(writeLock) || loaded.metadata.resetGeneration !== writeLock.resetGeneration) return false;
         this.unlocks = loaded.unlocks;
         this.readState = loaded.readState;
         const stamps = !this.onboardingUi.active && !eventId.startsWith(`${AUTOSAVE_EVENT_PREFIX}:`) &&
@@ -678,7 +685,7 @@ export class AppController implements UIControllerActions {
       }
       return true;
     } catch (err) {
-      if (err instanceof TabLockError) {
+      if (err instanceof TabLockError && this.isCurrentWrite(writeLock)) {
         this.handleTabLockLost();
       }
       return false;
@@ -891,7 +898,7 @@ export class AppController implements UIControllerActions {
 
   // Typing Session Lifecycle
   startMainRound(customSeed?: number): void {
-    if (!this.economy.districts[this.selectedDistrictId].open) {
+    if (this.resetInProgress || !this.economy.districts[this.selectedDistrictId].open) {
       return;
     }
     this.audio.playSe('audio_ui_click');
@@ -939,6 +946,7 @@ export class AppController implements UIControllerActions {
   }
 
   startPractice(preferredWord?: Word): void {
+    if (this.resetInProgress) return;
     this.audio.playSe('audio_ui_click');
     this.onboardingUi.active = false;
     this.advanceEconomyToNow();
@@ -949,6 +957,7 @@ export class AppController implements UIControllerActions {
   }
 
   startTutorial(): void {
+    if (this.resetInProgress) return;
     this.clearTutorialDraft();
     this.clearOnboardingArrivalTimer();
     this.audio.playSe('audio_ui_click');
@@ -1237,8 +1246,10 @@ export class AppController implements UIControllerActions {
       )];
       bestScore = stored?.score ?? null;
       bestCanonicalLength = stored?.length ?? null;
-      // Older saves without an aggregate can still supply eligible recent rounds.
-      for (const result of this.recentResults) {
+      // Legacy display rows have no reset provenance. After either history reset,
+      // use only the durable aggregate, rebuilt by eligible new round commits.
+      const legacyResults = this.lock.resetGeneration === INITIAL_RESET_GENERATION ? this.recentResults : [];
+      for (const result of legacyResults) {
         if (
           result.comparisonKey !== this.currentComparisonKey ||
           result.ruleVersion !== ROMAJI_RULES.inputRuleVersion ||
@@ -1783,6 +1794,7 @@ export class AppController implements UIControllerActions {
       resultReady?.(false);
       return false;
     }
+    const writeLock = this.lock;
     const guide = this.onboardingUi;
     const factsToCommit = [...this.pendingFacts];
     const finalRewards = factsToCommit.some((fact) => fact.type === 'PracticeSessionEnded' ||
@@ -1791,7 +1803,7 @@ export class AppController implements UIControllerActions {
     let factsSaved = false;
     try {
       const res = await this.commitTypingBatch({
-        lock: this.lock,
+        lock: writeLock,
         facts: factsToCommit,
         citySnapshot: this.cityAchievementSnapshot(),
         sessionContext: this.session && this.currentSessionContext && this.session.sessionId === factsToCommit[0]?.sessionId
@@ -1800,12 +1812,15 @@ export class AppController implements UIControllerActions {
         roundResult,
       });
       factsSaved = true;
-      this.lock = {
-        tabId: res.metadata.ownerTabId,
-        writeEpoch: res.metadata.writeEpoch,
-        resetGeneration: res.metadata.resetGeneration,
-      };
+      if (!this.isCurrentWrite(writeLock)) {
+        resultReady?.(false);
+        return false;
+      }
       const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
+      if (!this.isCurrentWrite(writeLock) || loaded.metadata.resetGeneration !== writeLock.resetGeneration) {
+        resultReady?.(false);
+        return false;
+      }
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
       this.refreshSavedGrowth(loaded);
@@ -1814,6 +1829,7 @@ export class AppController implements UIControllerActions {
         this.nextEconomyEventId('round-city'),
         this.onboardingUi === guide ? onboardingCheckpoint : undefined,
       );
+      if (!this.isCurrentWrite(writeLock)) return false;
       if (!saved) {
         this.pendingFacts.unshift(...factsToCommit);
         return false;
@@ -1827,6 +1843,7 @@ export class AppController implements UIControllerActions {
     } catch (err) {
       resultReady?.(false);
       // Never resurrect results/facts invalidated by a deliberate data reset.
+      if (!this.isCurrentWrite(writeLock)) return false;
       if (!(err instanceof ResetGenerationError)) {
         this.pendingFacts.unshift(...factsToCommit);
       }
@@ -2474,15 +2491,33 @@ export class AppController implements UIControllerActions {
     this.resetSave(scope);
   }
 
-  resetSave(scope: 'records' | 'city_and_achievements' | 'settings'): void {
-    if (this.tabLockLost) {
+  resetSave(scope: ResetScope): void {
+    if (this.tabLockLost || this.resetInProgress) {
       return;
     }
     this.pendingResetConfirm = null;
     this.audio.playSe('audio_ui_click');
+    this.resetInProgress = scope;
     void this.repository.resetData(scope, this.lock).then(async (meta) => {
       // Keep the resumable draft unless the reset transaction has committed.
-      if (scope === 'city_and_achievements') this.clearTutorialDraft();
+      if (scope === 'city_and_achievements') {
+        this.clearTutorialDraft();
+        this.pendingFacts = [];
+        this.economy = new CityEconomy(Date.now());
+        this.paidEquipmentPurchaseCount = 0;
+        this.achievements = new AchievementEngine();
+        this.dictionary = new DictionaryTracker();
+        this.unlocks = {};
+        this.readState = {};
+      } else if (scope === 'records') {
+        // A twice-failed round may still be queued as facts without its result.
+        // Keep word/delivery progress, but never replay its PB-producing finish.
+        this.pendingFacts = this.pendingFacts.filter((fact) => fact.type !== 'RoundFinished');
+        this.recentResults = [];
+        const snapshot = this.achievements.getSnapshot();
+        this.achievements = new AchievementEngine({ ...snapshot, progress: clearGrowthHistory(snapshot.progress) });
+      }
+      if (scope !== 'settings') this.savedGrowthRecords = {};
       this.lock = {
         tabId: meta.ownerTabId,
         writeEpoch: meta.writeEpoch,
@@ -2494,10 +2529,6 @@ export class AppController implements UIControllerActions {
       this.readState = loaded.readState;
       this.refreshSavedGrowth(loaded);
       if (scope === 'city_and_achievements') {
-        this.economy = new CityEconomy(Date.now());
-        this.paidEquipmentPurchaseCount = 0;
-        this.achievements = new AchievementEngine();
-        this.dictionary = new DictionaryTracker();
         this.settingsNotice = '街と手帳を初期化しました。';
       } else if (scope === 'settings') {
         this.fontScale = '1.0';
@@ -2543,7 +2574,7 @@ export class AppController implements UIControllerActions {
         this.render();
         if (this.pendingResetConfirm === null) this.focusResetOpener(scope);
       }
-    });
+    }).finally(() => { this.resetInProgress = null; });
   }
 
   dismissWelcomeBack(): void {

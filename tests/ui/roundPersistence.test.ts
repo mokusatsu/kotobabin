@@ -181,6 +181,56 @@ describe('ordinary round persistence', () => {
     expect(app['currentSessionContext']?.comparisonBestScore).toBeNull();
   });
 
+  it('does not re-register a twice-failed finish as a best after resetting records', async () => {
+    const commit = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockRejectedValueOnce(new Error('first write failed'))
+      .mockRejectedValueOnce(new Error('retry failed'));
+    const { app, mount } = await finishRound(10);
+    await vi.waitFor(() => expect(mount.querySelector('[data-testid="round-save-warning"]')).not.toBeNull());
+    expect(commit).toHaveBeenCalledTimes(2);
+    expect(app.getRecentResults()).toHaveLength(0);
+
+    app.navigate('SETTINGS');
+    app.openResetConfirm('records');
+    app.confirmResetSave();
+    await vi.waitFor(() => expect(mount.textContent).toContain('直近記録と成長比較の履歴を初期化しました。'));
+    app.startMainRound(123);
+
+    observer = new IndexedDbProfileRepository();
+    await observer.init();
+    await vi.waitFor(async () => {
+      const saved = await observer!.loadAll();
+      expect(saved.achievementProgress.lifetimeCompletedWords).toBe(10);
+      expect(saved.results).toEqual([]);
+      expect(saved.achievementProgress.series?.records).toEqual({});
+      expect(app['savedGrowthRecords']).toEqual({});
+    });
+  });
+
+  it('does not requeue an old write that rejects after the reset has committed', async () => {
+    let rejectRetry!: (error: Error) => void;
+    const retry = new Promise<never>((_, reject) => { rejectRetry = reject; });
+    const commit = vi.spyOn(IndexedDbProfileRepository.prototype, 'commitTypingFacts')
+      .mockRejectedValueOnce(new Error('first write failed'))
+      .mockImplementationOnce(() => retry);
+    try {
+      const { app, mount } = await finishRound(10);
+      await vi.waitFor(() => expect(commit).toHaveBeenCalledTimes(2));
+      const priorResult = app['roundResultReady'];
+      app.navigate('SETTINGS');
+      app.resetSave('records');
+      await vi.waitFor(() => expect(mount.textContent).toContain('直近記録と成長比較の履歴を初期化しました。'));
+
+      rejectRetry(new Error('late write failure'));
+      expect(await priorResult).toBe(false);
+      app.startMainRound(123);
+      expect(commit).toHaveBeenCalledTimes(2);
+      expect(app['currentSessionContext']?.comparisonBestScore).toBeNull();
+    } finally {
+      rejectRetry(new Error('released test write'));
+    }
+  });
+
   it('offers an explicit replay after storage remains pending, without auto-launch', async () => {
     let release!: () => void;
     const gate = new Promise<void>((resolve) => { release = resolve; });

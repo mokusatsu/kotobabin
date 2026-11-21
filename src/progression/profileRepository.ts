@@ -14,6 +14,7 @@ import {
 export const PROFILE_DB_NAME = 'kotobabin';
 export const PROFILE_DB_VERSION = 4;
 export const MAX_RECENT_RESULTS = 30;
+export const INITIAL_RESET_GENERATION = 1;
 
 export const STORE_NAMES = [
   'profile',
@@ -170,7 +171,7 @@ export interface ProfileSnapshot {
 
 export type AppProfileSnapshot = Omit<ProfileSnapshot, 'economyCursors'>;
 
-function clearGrowthHistory(progress: AchievementProgressState): AchievementProgressState {
+export function clearGrowthHistory(progress: AchievementProgressState): AchievementProgressState {
   return progress.series
     ? { ...progress, series: { ...progress.series, records: {} } }
     : progress;
@@ -263,7 +264,7 @@ export function createDefaultMetadata(tabId = ''): MetadataRecord {
     id: 'singleton',
     schemaVersion: PROFILE_DB_VERSION,
     migratedFromLegacy: false,
-    resetGeneration: 1,
+    resetGeneration: INITIAL_RESET_GENERATION,
     ownerTabId: tabId,
     writeEpoch: tabId ? 1 : 0,
   };
