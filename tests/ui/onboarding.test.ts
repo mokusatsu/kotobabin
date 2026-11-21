@@ -226,11 +226,15 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('荷馬車が出発しました');
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-pointer')).toBe('none');
     expect(mount.querySelector('[data-world-dest-label]')?.textContent).toContain('在庫 0');
-    await flushUi(800);
+    await vi.waitFor(() => {
+      expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('住宅地に資材が到着しました');
+    }, { timeout: 5000, interval: 25 });
     expect(mount.querySelector('[data-testid="onboarding-complete-card"]')).toBeNull();
-    expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('住宅地に資材が到着しました');
     expect(mount.querySelector('[data-world-dest-label]')?.textContent).not.toContain('在庫 0');
-    await flushUi(900);
+    // The reveal follows the arrival hold and an asynchronous IndexedDB save.
+    await vi.waitFor(() => {
+      expect(mount.querySelector('[data-testid="onboarding-stamp-reveal"]')).not.toBeNull();
+    }, { timeout: 5000, interval: 25 });
 
     controller.beginOnboardingConstruction();
     expect(mount.querySelector('[data-testid="onboarding-stamp-reveal"]')).not.toBeNull();

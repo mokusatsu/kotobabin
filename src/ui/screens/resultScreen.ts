@@ -26,6 +26,7 @@ export interface ResultScreenProps {
   onAdvanceReveal: () => void;
   onSkipReveal: () => void;
   onReplayReveal: () => void;
+  replayWaitState?: 'idle' | 'waiting' | 'retry';
   onRetrySameSeed: () => void;
   onRetryNewSeed: () => void;
   onReviewMistakes: () => void;
@@ -49,6 +50,7 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
     onAdvanceReveal,
     onSkipReveal,
     onReplayReveal,
+    replayWaitState,
     onRetrySameSeed,
     onRetryNewSeed,
     onReviewMistakes,
@@ -289,8 +291,10 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   const affordable = getAffordableUpgradeFlags(economy, snapshot.districtId);
   const sameBtn = el(
     'button',
-    { type: 'button', className: 'kb-btn-primary' },
-    el('span', {}, '同じ問題でもう一度'),
+    { type: 'button', className: 'kb-btn-primary',
+      disabled: replayWaitState === 'waiting' },
+    el('span', {}, replayWaitState === 'waiting' ? '記録を確認中…'
+      : replayWaitState === 'retry' ? '保存済みの記録で同じ問題を始める' : '同じ問題でもう一度'),
     el('kbd', { className: 'kb-kbd' }, 'Enter'),
   );
   sameBtn.addEventListener('click', onRetrySameSeed);

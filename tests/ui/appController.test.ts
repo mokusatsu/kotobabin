@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
-import 'fake-indexeddb/auto';
-import { afterEach, describe, expect, it } from 'vitest';
+import { IDBFactory } from 'fake-indexeddb';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import visualResourceManifest from '@spec-data/visual_resource_manifest.json';
+import { ROMAJI_RULES } from '@/contracts/data';
+import type { RoundResultRecord } from '@/progression/profileRepository';
 import { CATALOG_ACHIEVEMENTS, CATALOG_REWARDS } from '@/progression/achievementEngine';
 import { getEquippedStampFrameAsset, STAMP_FRAMES } from '@/progression/stampFrameCatalog';
 import { AppController } from '@/ui/appController';
@@ -11,10 +13,16 @@ import { passStartGate } from './startHelpers';
 describe('AppController UI integration', () => {
   let controller: AppController | null = null;
 
+  beforeEach(() => {
+    vi.stubGlobal('indexedDB', new IDBFactory());
+    localStorage.clear();
+  });
+
   afterEach(() => {
     controller?.destroy();
     controller = null;
     document.body.innerHTML = '';
+    vi.unstubAllGlobals();
   });
 
   it('mounts home screen, navigates across all screens, and enters play without coin counters', async () => {
@@ -61,14 +69,150 @@ describe('AppController UI integration', () => {
     expect(mount.querySelector('[data-testid="header-coins"]')).toBeNull();
 
     // Pause -> hides prompt
-    controller.pausePlay();
+    const input = mount.querySelector<HTMLInputElement>('input.kb-hidden-input')!;
+    input.focus();
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
     expect(mount.textContent).toContain('一時停止中');
     expect(mount.querySelector('[data-testid="play-word-ja"]')).toBeNull();
 
     // Quit to home
     controller.quitPlayToHome();
     expect(mount.querySelector('[data-testid="home-practice-btn"]')).not.toBeNull();
+
+    // Practice intentionally uses Escape to quit rather than pause.
+    controller.startPractice();
+    await passStartGate(mount);
+    const practiceInput = mount.querySelector<HTMLInputElement>('input.kb-hidden-input')!;
+    practiceInput.focus();
+    practiceInput.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Escape', bubbles: true, cancelable: true,
+    }));
+    expect(mount.querySelector('[data-testid="home-practice-btn"]')).not.toBeNull();
+    expect(mount.querySelector('[data-testid="play-word-ja"]')).toBeNull();
   }, 12000);
+
+  it('freezes independent comparison bests from eligible normal rounds of the same conditions', async () => {
+    const mount = document.createElement('div');
+    document.body.appendChild(mount);
+    controller = new AppController(mount);
+    await controller.init();
+    controller.startMainRound(123);
+    const fixture: RoundResultRecord = {
+      sessionId: 'prior', timestamp: controller['settings'].catalogStartedAt,
+      courseId: controller['selectedCourseId'], planId: controller['currentPlanId'],
+      comparisonKey: controller['currentComparisonKey'], wordIds: [],
+      ruleVersion: ROMAJI_RULES.inputRuleVersion, completed: true, completedWordCount: 10,
+      correctKeyCount: 55, mistakeCount: 0, totalCanonicalLength: 55, score: 500,
+      canonicalKpm: 55 / 90 * 60, rescueUsed: false, guideUsed: true,
+    };
+
+    const ineligible: Partial<RoundResultRecord>[] = [
+      { completedWordCount: 9 },
+      { rescueUsed: true },
+      { guideUsed: false },
+      { timestamp: fixture.timestamp - 1 },
+      { ruleVersion: 'older' },
+      { completed: false },
+      { comparisonKey: 'different' },
+    ];
+
+    for (const overrides of ineligible) {
+      controller['recentResults'] = [{ ...fixture, ...overrides }];
+      controller.startMainRound(123);
+      expect(controller['currentSessionContext'], JSON.stringify(overrides)).toMatchObject({
+        comparisonBestScore: null,
+        comparisonBestCanonicalLength: null,
+      });
+    }
+
+    controller['recentResults'] = [fixture, {
+      ...fixture, sessionId: 'faster', score: 400, totalCanonicalLength: 70,
+      canonicalKpm: 70 / 90 * 60,
+    }];
+    controller.startMainRound(123);
+    expect(controller['currentSessionContext']).toMatchObject({
+      comparisonBestScore: 500,
+      comparisonBestCanonicalLength: 70,
+      comparisonGuideUsed: true,
+    });
+  });
+
+  it('keeps a paused round stopped until the player releases and presses a resume key again', async () => {
+    const mount = document.createElement('div');
+    document.body.appendChild(mount);
+    controller = new AppController(mount);
+    await controller.init();
+    controller.startMainRound(123);
+    await passStartGate(mount);
+
+    const press = (key: string, repeat = false) => {
+      document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', {
+        key, repeat, bubbles: true, cancelable: true,
+      }));
+    };
+    press('Escape');
+    expect(mount.textContent).toContain('一時停止中');
+
+    for (const key of ['Escape', 'Enter']) {
+      press(key, true);
+      expect(mount.textContent).toContain('一時停止中');
+    }
+    press('Escape');
+    expect(mount.textContent).not.toContain('一時停止中');
+    expect(mount.querySelector('[data-testid="play-word-ja"]')).not.toBeNull();
+  }, 12000);
+
+  it.each(['Escape', 'Enter', 'h', 'blur', 'IME', 'delivery button'])(
+    'renders results immediately when %s reaches the deadline between timer ticks',
+    async (action) => {
+      const mount = document.createElement('div');
+      document.body.appendChild(mount);
+      controller = new AppController(mount);
+      const clock = vi.spyOn(performance, 'now').mockReturnValue(0);
+      try {
+        await controller.init();
+        controller.startMainRound(123);
+        await passStartGate(mount);
+        const input = mount.querySelector<HTMLInputElement>('input.kb-hidden-input');
+        expect(input).not.toBeNull();
+        input!.focus();
+        expect(mount.querySelector('[data-testid="play-word-ja"]')).not.toBeNull();
+
+        let deliveryButton: HTMLButtonElement | null = null;
+        if (action === 'delivery button') {
+          const romaji = mount.querySelector('.kb-prompt-roman')!.textContent!.trim();
+          for (const key of romaji) {
+            input!.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+          }
+          deliveryButton = mount.querySelector<HTMLButtonElement>('button[data-testid="play-deliver-hint"]');
+          expect(deliveryButton).not.toBeNull();
+        }
+
+        // Advance only the session clock, not the periodic UI timer, then send
+        // a user action that sees the deadline before the next timer tick.
+        clock.mockReturnValue(90_000);
+        if (deliveryButton) {
+          deliveryButton.click();
+        } else if (action === 'blur') {
+          input!.blur();
+        } else if (action === 'IME') {
+          input!.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }));
+        } else {
+          input!.dispatchEvent(new KeyboardEvent('keydown', {
+            key: action,
+            bubbles: true,
+            cancelable: true,
+          }));
+        }
+        // A completed delivery may unlock a stamp before the score grid appears.
+        expect(mount.querySelector('.kb-grid-result, [data-testid="gacha-reveal-card"]')).not.toBeNull();
+        expect(mount.querySelector('[data-testid="play-word-ja"]')).toBeNull();
+      } finally {
+        clock.mockRestore();
+      }
+    },
+    12000,
+  );
 
   it('opens and closes stamp detail dialog without side preview in HANDBOOK', async () => {
     const mount = document.createElement('div');

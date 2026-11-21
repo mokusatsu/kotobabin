@@ -14,6 +14,7 @@ import {
 export const PROFILE_DB_NAME = 'kotobabin';
 export const PROFILE_DB_VERSION = 4;
 export const MAX_RECENT_RESULTS = 30;
+export const INITIAL_RESET_GENERATION = 1;
 
 export const STORE_NAMES = [
   'profile',
@@ -168,6 +169,14 @@ export interface ProfileSnapshot {
   metadata: MetadataRecord;
 }
 
+export type AppProfileSnapshot = Omit<ProfileSnapshot, 'economyCursors'>;
+
+export function clearGrowthHistory(progress: AchievementProgressState): AchievementProgressState {
+  return progress.series
+    ? { ...progress, series: { ...progress.series, records: {} } }
+    : progress;
+}
+
 export interface CommitFactsParams {
   lock: TabLockToken;
   facts: ConfirmedFact[];
@@ -210,6 +219,8 @@ export interface ProfileRepository {
   init(tabId?: string): Promise<MetadataRecord>;
   acquireTabLock(tabId: string): Promise<MetadataRecord>;
   loadAll(): Promise<ProfileSnapshot>;
+  /** Skip the write-only economy event ledger for runtime snapshots. */
+  loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
   commitTypingFacts(params: CommitFactsParams): Promise<CommitFactsResult>;
   commitCityEconomy(params: CommitCityEconomyParams): Promise<CommitCityEconomyResult>;
   saveProfile(
@@ -253,7 +264,7 @@ export function createDefaultMetadata(tabId = ''): MetadataRecord {
     id: 'singleton',
     schemaVersion: PROFILE_DB_VERSION,
     migratedFromLegacy: false,
-    resetGeneration: 1,
+    resetGeneration: INITIAL_RESET_GENERATION,
     ownerTabId: tabId,
     writeEpoch: tabId ? 1 : 0,
   };
@@ -420,7 +431,10 @@ export class MemoryProfileRepository implements ProfileRepository {
     return { ...this.metadata };
   }
 
-  async loadAll(): Promise<ProfileSnapshot> {
+  async loadAll(): Promise<ProfileSnapshot>;
+  async loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
+  async loadAll(options?: { includeEconomyCursors: false }): Promise<AppProfileSnapshot> {
+    const includeEconomyCursors = options?.includeEconomyCursors !== false;
     return {
       profile: { ...this.profile },
       results: this.results.map((r) => ({ ...r, wordIds: [...r.wordIds] })),
@@ -447,7 +461,9 @@ export class MemoryProfileRepository implements ProfileRepository {
       economyProfile: this.economyProfile
         ? { ...this.economyProfile, state: { ...this.economyProfile.state } }
         : null,
-      economyCursors: Object.fromEntries(this.economyCursors.entries()),
+      ...(includeEconomyCursors
+        ? { economyCursors: Object.fromEntries(this.economyCursors.entries()) }
+        : {}),
       metadata: { ...this.metadata },
     };
   }
@@ -618,6 +634,8 @@ export class MemoryProfileRepository implements ProfileRepository {
 
     if (scope === 'records') {
       this.results = [];
+      this.achievementProgress = clearGrowthHistory(this.achievementProgress);
+      this.metadata = { ...this.metadata, resetGeneration: this.metadata.resetGeneration + 1 };
     } else if (scope === 'city_and_achievements') {
       this.achievementProgress = createInitialAchievementProgress();
       this.unlocks.clear();
@@ -632,7 +650,11 @@ export class MemoryProfileRepository implements ProfileRepository {
         resetGeneration: this.metadata.resetGeneration + 1,
       };
     } else if (scope === 'settings') {
-      this.profile = createDefaultProfileSettings(this.profile.catalogStartedAt);
+      this.profile = {
+        ...createDefaultProfileSettings(this.profile.catalogStartedAt),
+        tutorialCompleted: this.profile.tutorialCompleted,
+        onboarding: this.profile.onboarding,
+      };
     }
 
     return { ...this.metadata };
@@ -717,7 +739,10 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     return updated;
   }
 
-  async loadAll(): Promise<ProfileSnapshot> {
+  async loadAll(): Promise<ProfileSnapshot>;
+  async loadAll(options: { includeEconomyCursors: false }): Promise<AppProfileSnapshot>;
+  async loadAll(options?: { includeEconomyCursors: false }): Promise<AppProfileSnapshot> {
+    const includeEconomyCursors = options?.includeEconomyCursors !== false;
     const db = this.requireDb();
     const tx = db.transaction([...STORE_NAMES], 'readonly');
 
@@ -743,7 +768,9 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       idbRequestToPromise(tx.objectStore('factCursors').getAll()),
       idbRequestToPromise(tx.objectStore('city').get('current')),
       idbRequestToPromise(tx.objectStore('economyProfile').get('singleton')),
-      idbRequestToPromise(tx.objectStore('economyCursors').getAll()),
+      includeEconomyCursors
+        ? idbRequestToPromise(tx.objectStore('economyCursors').getAll())
+        : undefined,
       idbRequestToPromise(tx.objectStore('metadata').get('singleton')),
     ]);
 
@@ -770,7 +797,7 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     }
 
     const economyCursors: Record<string, EconomyCursorRecord> = {};
-    for (const ec of economyCursorsRaw as EconomyCursorRecord[]) {
+    for (const ec of (economyCursorsRaw ?? []) as EconomyCursorRecord[]) {
       economyCursors[ec.cursorKey] = ec;
     }
 
@@ -792,7 +819,7 @@ export class IndexedDbProfileRepository implements ProfileRepository {
       factCursors,
       city: (cityRaw as CityStoreRecord | undefined) ?? null,
       economyProfile: (economyProfileRaw as EconomyProfileStoreRecord | undefined) ?? null,
-      economyCursors,
+      ...(includeEconomyCursors ? { economyCursors } : {}),
       metadata: (metadataRaw as MetadataRecord | undefined) ?? createDefaultMetadata(),
     };
   }
@@ -1167,7 +1194,15 @@ export class IndexedDbProfileRepository implements ProfileRepository {
     let updatedMetadata = metadata;
 
     if (scope === 'records') {
+      const progressStore = tx.objectStore('achievementProgress');
+      const progress = await idbRequestToPromise(progressStore.get('singleton')) as
+        { id: 'singleton'; state: AchievementProgressState } | undefined;
       tx.objectStore('results').clear();
+      if (progress?.state.series) {
+        progressStore.put({ id: 'singleton', state: clearGrowthHistory(progress.state) });
+      }
+      updatedMetadata = { ...metadata, resetGeneration: metadata.resetGeneration + 1 };
+      tx.objectStore('metadata').put(updatedMetadata);
     } else if (scope === 'city_and_achievements') {
       tx.objectStore('achievementProgress').put({
         id: 'singleton',
@@ -1192,7 +1227,11 @@ export class IndexedDbProfileRepository implements ProfileRepository {
           | ProfileSettingsRecord
           | undefined) ?? createDefaultProfileSettings();
       tx.objectStore('profile').put(
-        createDefaultProfileSettings(current.catalogStartedAt),
+        {
+          ...createDefaultProfileSettings(current.catalogStartedAt),
+          tutorialCompleted: current.tutorialCompleted,
+          onboarding: current.onboarding,
+        },
       );
     }
 

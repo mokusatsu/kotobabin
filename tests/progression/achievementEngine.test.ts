@@ -231,7 +231,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     engine.startSession(sessionId, 'MAIN', {
       orderKey: 'fixture-order-1',
       comparisonBestScore: 2500, // higher than 2070 so D04 already unlocked anyway
-      comparisonBestSpeed: screenFixtures.initialProfile.bestCanonicalKpmSameConditions,
+      comparisonBestCanonicalLength: screenFixtures.initialProfile.bestCanonicalKpmSameConditions * 1.5,
       practiceQualifiedWordIds: screenFixtures.initialProfile.practiceQualifiedWordIds,
     });
 
@@ -390,13 +390,37 @@ describe('AchievementEngine & DictionaryTracker', () => {
     // Zero denominator never passes
     expect(meetsAccuracyThreshold(0, 0, 90)).toBe(false);
 
-    // D05: comparisonBestSpeed = 100 (150 canonical chars in 90s)
-    // +14 chars = 164 -> +9.33 KPM -> false
-    expect(meetsSpeedImprovement(164, 100, 10)).toBe(false);
-    // +15 chars = 165 -> +10.00 KPM -> true
-    expect(meetsSpeedImprovement(165, 100, 10)).toBe(true);
+    // D05: select the +10 KPM boundary against a fractional prior displayed speed.
+    // 55 → 69 is 14 more canonical characters: below +10 KPM.
+    expect(meetsSpeedImprovement(69, 55, 10)).toBe(false);
+    // 55 → 70 is 15 more canonical characters: exactly +10 KPM.
+    expect(meetsSpeedImprovement(70, 55, 10)).toBe(true);
     expect(meetsSpeedThreshold(270, 180)).toBe(true);
     expect(meetsSpeedThreshold(269, 180)).toBe(false);
+  });
+
+  it('unlocks D04/D05 only for eligible relative records or their independent absolute alternatives', () => {
+    function growthUnlocks(
+      context: Parameters<AchievementEngine['startSession']>[2],
+      overrides: Partial<RoundFinishedFact> = {},
+    ): string[] {
+      const engine = new AchievementEngine();
+      engine.startSession('s1', 'MAIN', context);
+      return engine.applyFact(makeRoundFact(overrides)).newlyUnlockedAchievementIds
+        .filter((id) => id === 'D04' || id === 'D05');
+    }
+
+    const sameConditions = {
+      comparisonBestScore: 400,
+      comparisonBestCanonicalLength: 55,
+      comparisonGuideUsed: false,
+    };
+    expect(growthUnlocks(sameConditions)).toEqual(['D04', 'D05']);
+    expect(growthUnlocks(sameConditions, { totalCanonicalLength: 69 })).toEqual(['D04']);
+    expect(growthUnlocks(sameConditions, { completedWordCount: 9 })).toEqual([]);
+    expect(growthUnlocks(sameConditions, { guideUsed: true })).toEqual([]);
+    expect(growthUnlocks(undefined, { completedWordCount: 9, score: 1000 })).toEqual(['D04']);
+    expect(growthUnlocks(undefined, { score: 999, totalCanonicalLength: 270 })).toEqual(['D05']);
   });
 
   it('evaluates scope isolation, B05/B06 sequence rules, F03/F06, H05, and provisional status', () => {

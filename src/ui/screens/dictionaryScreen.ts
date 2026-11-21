@@ -21,6 +21,7 @@ export interface DictionaryScreenProps {
   tracker: DictionaryTracker;
   state: DictionaryScreenState;
   onUpdateState: (patch: Partial<DictionaryScreenState>) => void;
+  onUpdateSearch: (search: string) => void;
   onPracticeWord: (word: Word) => void;
   getMastery: (wordId: string) => Readonly<WordMastery> | undefined;
 }
@@ -45,8 +46,11 @@ const TOPIC_OPTIONS: readonly ('all' | TopicId)[] = [
   'people',
 ];
 
-export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElement {
-  const { tracker, state, onUpdateState, onPracticeWord, getMastery } = props;
+function renderDictionaryResults(
+  state: DictionaryScreenState,
+  props: DictionaryScreenProps,
+): { summaryBar: HTMLElement; results: Node[] } {
+  const { tracker, onUpdateState, onPracticeWord, getMastery } = props;
   const summary = tracker.getSummary();
   const filtered = tracker.filterWords({
     collection: state.collection,
@@ -58,68 +62,6 @@ export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElemen
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(Math.max(0, state.page), totalPages - 1);
   const pageItems = filtered.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
-
-  // Search input
-  const searchInput = el('input', {
-    type: 'search',
-    className: 'kb-input',
-    value: state.search,
-    placeholder: 'ことば・よみ・IDで検索...',
-    'aria-label': 'ことば検索',
-  }) as HTMLInputElement;
-  searchInput.addEventListener('input', () => {
-    onUpdateState({ search: searchInput.value, page: 0 });
-  });
-
-  const unfinishedBtn = el(
-    'button',
-    {
-      type: 'button',
-      className: `kb-pill-btn${state.status === 'unfinished' ? ' is-selected' : ''}`,
-    },
-    '未完成のみ',
-  );
-  unfinishedBtn.addEventListener('click', () => {
-    onUpdateState({
-      status: state.status === 'unfinished' ? 'all' : 'unfinished',
-      page: 0,
-    });
-  });
-
-  const collectionBar = el(
-    'div',
-    { className: 'kb-row-wrap', role: 'group', 'aria-label': 'コース・収録フィルタ' },
-    ...COLLECTION_OPTIONS.map((opt) => {
-      const btn = el(
-        'button',
-        {
-          type: 'button',
-          className: `kb-pill-btn${state.collection === opt.value ? ' is-selected' : ''}`,
-        },
-        opt.label,
-      );
-      btn.addEventListener('click', () => onUpdateState({ collection: opt.value, page: 0 }));
-      return btn;
-    }),
-    unfinishedBtn,
-  );
-
-  const topicBar = el(
-    'div',
-    { className: 'kb-row-wrap', role: 'group', 'aria-label': '分野フィルタ' },
-    ...TOPIC_OPTIONS.map((t) => {
-      const btn = el(
-        'button',
-        {
-          type: 'button',
-          className: `kb-pill-btn${state.topic === t ? ' is-selected' : ''}`,
-        },
-        t === 'all' ? '全分野' : TOPIC_LABELS[t],
-      );
-      btn.addEventListener('click', () => onUpdateState({ topic: t, page: 0 }));
-      return btn;
-    }),
-  );
 
   const summaryBar = el(
     'div',
@@ -200,6 +142,104 @@ export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElemen
     nextBtn,
   );
 
+  return {
+    summaryBar,
+    results: [
+      pageItems.length > 0 ? wordGrid : el('div', { className: 'kb-card' }, '条件に一致することばがありません。'),
+      ...(totalPages > 1 ? [pagination] : []),
+    ],
+  };
+}
+
+export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElement {
+  const { state, onUpdateState, onUpdateSearch } = props;
+  let committedSearch = state.search;
+  let composing = false;
+
+  const searchInput = el('input', {
+    type: 'search',
+    className: 'kb-input',
+    value: state.search,
+    placeholder: 'ことば・よみ・IDで検索...',
+    'aria-label': 'ことば検索',
+  });
+
+  const unfinishedBtn = el(
+    'button',
+    {
+      type: 'button',
+      className: `kb-pill-btn${state.status === 'unfinished' ? ' is-selected' : ''}`,
+    },
+    '未完成のみ',
+  );
+  unfinishedBtn.addEventListener('click', () => {
+    onUpdateState({
+      status: state.status === 'unfinished' ? 'all' : 'unfinished',
+      page: 0,
+    });
+  });
+
+  const collectionBar = el(
+    'div',
+    { className: 'kb-row-wrap', role: 'group', 'aria-label': 'コース・収録フィルタ' },
+    ...COLLECTION_OPTIONS.map((opt) => {
+      const btn = el(
+        'button',
+        {
+          type: 'button',
+          className: `kb-pill-btn${state.collection === opt.value ? ' is-selected' : ''}`,
+        },
+        opt.label,
+      );
+      btn.addEventListener('click', () => onUpdateState({ collection: opt.value, page: 0 }));
+      return btn;
+    }),
+    unfinishedBtn,
+  );
+
+  const topicBar = el(
+    'div',
+    { className: 'kb-row-wrap', role: 'group', 'aria-label': '分野フィルタ' },
+    ...TOPIC_OPTIONS.map((t) => {
+      const btn = el(
+        'button',
+        {
+          type: 'button',
+          className: `kb-pill-btn${state.topic === t ? ' is-selected' : ''}`,
+        },
+        t === 'all' ? '全分野' : TOPIC_LABELS[t],
+      );
+      btn.addEventListener('click', () => onUpdateState({ topic: t, page: 0 }));
+      return btn;
+    }),
+  );
+
+  const initial = renderDictionaryResults(state, props);
+  let summary = initial.summaryBar;
+  const resultsScroll = el('div', { className: 'kb-dict-scroll kb-stack-sm' }, ...initial.results);
+  const commitSearch = (): void => {
+    const search = searchInput.value;
+    if (search === committedSearch) return;
+    committedSearch = search;
+    onUpdateSearch(search);
+
+    // Keep the original input mounted so iPad Safari does not lose its
+    // keyboard, IME session, or caret while the results are replaced.
+    const next = renderDictionaryResults({ ...state, search, page: 0 }, props);
+    summary.replaceWith(next.summaryBar);
+    summary = next.summaryBar;
+    resultsScroll.replaceChildren(...next.results);
+    resultsScroll.scrollTop = 0;
+  };
+  searchInput.addEventListener('compositionstart', () => { composing = true; });
+  searchInput.addEventListener('compositionend', () => {
+    composing = false;
+    commitSearch();
+  });
+  searchInput.addEventListener('input', (event) => {
+    if (!composing && !(event instanceof InputEvent && event.isComposing)) commitSearch();
+  });
+
   return el(
     'div',
     { className: 'kb-dict-layout' },
@@ -209,13 +249,8 @@ export function renderDictionaryScreen(props: DictionaryScreenProps): HTMLElemen
       el('div', { className: 'kb-row-between' }, el('h2', { className: 'kb-h2' }, 'ことば図鑑'), searchInput),
       collectionBar,
       topicBar,
-      summaryBar,
+      summary,
     ),
-    el(
-      'div',
-      { className: 'kb-dict-scroll kb-stack-sm' },
-      pageItems.length > 0 ? wordGrid : el('div', { className: 'kb-card' }, '条件に一致することばがありません。'),
-      totalPages > 1 ? pagination : null,
-    ),
+    resultsScroll,
   );
 }

@@ -21,16 +21,23 @@ import {
   type UnlockRecord,
 } from '@/progression/achievementEngine';
 import { DictionaryTracker } from '@/progression/dictionaryTracker';
+import { seriesRoundRecordKey, type SeriesProgressState } from '@/progression/seriesProgress';
 import { getEquippedStampFrameAsset } from '@/progression/stampFrameCatalog';
 import {
+  clearGrowthHistory,
   createDefaultProfileSettings,
   createProfileRepository,
+  INITIAL_RESET_GENERATION,
+  ResetGenerationError,
   TabLockError,
+  type AppProfileSnapshot,
+  type CommitFactsParams,
   type OnboardingStateRecord,
   type OnboardingStep,
   type ProfileRepository,
   type ProfileSettingsRecord,
   type ReadStateRecord,
+  type ResetScope,
   type RoundResultRecord,
   type TabLockToken,
 } from '@/progression/profileRepository';
@@ -41,7 +48,7 @@ import {
 } from '@/typing/courseGenerator';
 import { GameSession, type SessionSnapshot, type TutorialSessionCheckpoint } from '@/typing/gameSession';
 import { InputAdapter, type DeliveryKeyOption } from '@/typing/inputAdapter';
-import { WORDS_DATA } from '@/contracts/data';
+import { ROMAJI_RULES, WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
 import { NAV_ITEMS, renderNormalHeader, renderPlayHeader } from './components/header';
 import {
@@ -107,6 +114,7 @@ function createInitialOnboardingUiState(
   };
 }
 
+const AUTOSAVE_EVENT_PREFIX = 'autosave';
 const TUTORIAL_DRAFT_KEY = 'kotobabin:tutorialDraft';
 
 interface TutorialDraft {
@@ -144,6 +152,12 @@ export class AppController implements UIControllerActions {
   private unlocks: Record<string, UnlockRecord> = {};
   private readState: Record<string, ReadStateRecord> = {};
   private recentResults: RoundResultRecord[] = [];
+  private savedGrowthRecords: SeriesProgressState['records'] = {};
+  private roundRecordSaveFailed = false;
+  private roundResultReady: Promise<boolean> | null = null;
+  private replayRequest = 0;
+  private replayWaitTimer: number | null = null;
+  private replayWaitState: 'idle' | 'waiting' | 'retry' = 'idle';
   private paidEquipmentPurchaseCount = 0;
 
   private screen: AppScreen = 'HOME';
@@ -239,6 +253,7 @@ export class AppController implements UIControllerActions {
   private onboardingStampReadyAt = 0;
   private cityRevealIds: string[] = [];
   private cityRevealIndex = 0;
+  private resetInProgress: ResetScope | null = null;
   private pendingResetConfirm: 'records' | 'city_and_achievements' | 'settings' | null = null;
   private settingsNotice: string | null = null;
 
@@ -258,11 +273,11 @@ export class AppController implements UIControllerActions {
       resetGeneration: metadata.resetGeneration,
     };
 
-    const snapshot = await this.repository.loadAll();
+    const snapshot = await this.repository.loadAll({ includeEconomyCursors: false });
     this.settings = snapshot.profile;
     this.unlocks = snapshot.unlocks;
     this.readState = snapshot.readState;
-    this.recentResults = snapshot.results;
+    this.refreshSavedGrowth(snapshot);
     let tutorialDraft: TutorialDraft | null = null;
     try {
       const draft = JSON.parse(window.localStorage.getItem(TUTORIAL_DRAFT_KEY) ?? 'null') as TutorialDraft | null;
@@ -444,6 +459,7 @@ export class AppController implements UIControllerActions {
   }
 
   destroy(): void {
+    this.cancelReplayWait();
     window.removeEventListener('keydown', this.handleGlobalKeyDownBound);
     this.mountEl.removeEventListener('pointerdown', this.handlePointerUnlockBound);
     this.clearOnboardingArrivalTimer();
@@ -494,6 +510,7 @@ export class AppController implements UIControllerActions {
   }
 
   private handleTabLockLost(): void {
+    this.cancelReplayWait();
     if (this.tabLockLost) {
       return;
     }
@@ -505,6 +522,12 @@ export class AppController implements UIControllerActions {
   }
 
   async reacquireTabLock(): Promise<void> {
+    if (this.repository.backend === 'indexeddb') {
+      // The other owner might have saved new data. Reboot through init
+      // rather than grant write access to this tab’s old in-memory state.
+      window.history.go(0);
+      return;
+    }
     try {
       const meta = await this.repository.acquireTabLock(this.tabId);
       this.lock = {
@@ -546,7 +569,7 @@ export class AppController implements UIControllerActions {
 
     this.autoSaveTimer = window.setInterval(() => {
       if (this.screen !== 'PLAY' && !this.tabLockLost && !this.economy.activeSession) {
-        void this.persistCitySnapshot(`autosave-${++this.eventCounter}`);
+        void this.persistCitySnapshot(this.nextEconomyEventId(AUTOSAVE_EVENT_PREFIX));
       }
     }, 15000);
   }
@@ -602,10 +625,16 @@ export class AppController implements UIControllerActions {
       (this.screen !== 'RESULT' || this.resultRevealDone) && !this.welcomeBack;
   }
 
+  private isCurrentWrite(lock: TabLockToken): boolean {
+    return !this.tabLockLost && this.lock.tabId === lock.tabId &&
+      this.lock.writeEpoch === lock.writeEpoch && this.lock.resetGeneration === lock.resetGeneration;
+  }
+
   private async persistCitySnapshot(eventId: string, onboarding?: OnboardingStateRecord): Promise<boolean> {
-    if (this.tabLockLost) {
+    if (this.tabLockLost || this.resetInProgress === 'city_and_achievements') {
       return false;
     }
+    const writeLock = this.lock;
     try {
       const achievementSnapshot = this.cityAchievementSnapshot();
       const timestamp = Date.now();
@@ -623,7 +652,7 @@ export class AppController implements UIControllerActions {
       this.economy.persistent.records['paidEquipmentPurchaseCount'] = this.paidEquipmentPurchaseCount;
       const snap = this.economy.snapshot();
       const res = await this.repository.commitCityEconomy({
-        lock: this.lock,
+        lock: writeLock,
         cityId: snap.city_id,
         economyEventId: eventId,
         cityRecord: {
@@ -642,24 +671,21 @@ export class AppController implements UIControllerActions {
         } : {}),
         timestamp,
       });
-      this.lock = {
-        tabId: res.metadata.ownerTabId,
-        writeEpoch: res.metadata.writeEpoch,
-        resetGeneration: res.metadata.resetGeneration,
-      };
+      if (!this.isCurrentWrite(writeLock)) return false;
       if (res.evaluation) this.achievements.applyCitySnapshot(achievementSnapshot, timestamp);
       if (res.evaluation && (res.evaluation.newlyUnlockedAchievementIds.length > 0 || res.evaluation.newlyUnlockedRewardIds.length > 0)) {
-        const loaded = await this.repository.loadAll();
+        const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
+        if (!this.isCurrentWrite(writeLock) || loaded.metadata.resetGeneration !== writeLock.resetGeneration) return false;
         this.unlocks = loaded.unlocks;
         this.readState = loaded.readState;
-        const stamps = !this.onboardingUi.active && !eventId.startsWith('autosave-') &&
+        const stamps = !this.onboardingUi.active && !eventId.startsWith(`${AUTOSAVE_EVENT_PREFIX}:`) &&
           this.screen !== 'PLAY' && this.screen !== 'RESULT'
           ? featuredStampIds(res.evaluation.newlyUnlockedAchievementIds) : [];
         this.queueReveals([...stamps, ...rewardRevealIds(res.evaluation.newlyUnlockedRewardIds)]);
       }
       return true;
     } catch (err) {
-      if (err instanceof TabLockError) {
+      if (err instanceof TabLockError && this.isCurrentWrite(writeLock)) {
         this.handleTabLockLost();
       }
       return false;
@@ -684,6 +710,7 @@ export class AppController implements UIControllerActions {
   }
 
   navigate(screen: AppScreen): void {
+    this.cancelReplayWait();
     if (this.screen === 'PLAY' && screen !== 'PLAY') {
       return;
     }
@@ -855,6 +882,12 @@ export class AppController implements UIControllerActions {
     this.audio.playSe('audio_ui_click');
     this.difficultyPopupOpen = false;
     this.render();
+    this.focusHomeDistrict(this.selectedDistrictId);
+  }
+
+  private focusHomeDistrict(districtId: string): void {
+    const districtButtons = this.mountEl.querySelectorAll<HTMLButtonElement>('.kb-map-district-btn');
+    Array.from(districtButtons).find((button) => button.dataset.districtId === districtId)?.focus({ preventScroll: true });
   }
 
   startMainRoundWithCourse(courseId: CourseId): void {
@@ -865,7 +898,7 @@ export class AppController implements UIControllerActions {
 
   // Typing Session Lifecycle
   startMainRound(customSeed?: number): void {
-    if (!this.economy.districts[this.selectedDistrictId].open) {
+    if (this.resetInProgress || !this.economy.districts[this.selectedDistrictId].open) {
       return;
     }
     this.audio.playSe('audio_ui_click');
@@ -876,7 +909,44 @@ export class AppController implements UIControllerActions {
     this.launchSession('MAIN', 'READY', this.currentSeed, null);
   }
 
+  private cancelReplayWait(): void {
+    this.replayRequest++;
+    if (this.replayWaitTimer !== null) window.clearTimeout(this.replayWaitTimer);
+    this.replayWaitTimer = null;
+    this.replayWaitState = 'idle';
+  }
+
+  private async retrySameSeed(): Promise<void> {
+    if (this.screen !== 'RESULT' || this.tabLockLost || this.replayWaitState === 'waiting') return;
+    const seed = this.currentSeed;
+    if (!this.roundResultReady || this.replayWaitState === 'retry') {
+      this.startMainRound(seed);
+      return;
+    }
+
+    const request = ++this.replayRequest;
+    this.replayWaitState = 'waiting';
+    this.replayWaitTimer = window.setTimeout(() => {
+      this.cancelReplayWait();
+      this.replayWaitState = 'retry';
+      this.render();
+    }, 2500);
+    this.render();
+
+    // Only a confirmed typing record may enter the starting comparison snapshot.
+    const ready = await this.roundResultReady;
+    if (request !== this.replayRequest || this.screen !== 'RESULT' || this.tabLockLost) return;
+    if (ready) {
+      this.startMainRound(seed);
+    } else {
+      this.cancelReplayWait();
+      this.replayWaitState = 'retry';
+      this.render();
+    }
+  }
+
   startPractice(preferredWord?: Word): void {
+    if (this.resetInProgress) return;
     this.audio.playSe('audio_ui_click');
     this.onboardingUi.active = false;
     this.advanceEconomyToNow();
@@ -887,6 +957,7 @@ export class AppController implements UIControllerActions {
   }
 
   startTutorial(): void {
+    if (this.resetInProgress) return;
     this.clearTutorialDraft();
     this.clearOnboardingArrivalTimer();
     this.audio.playSe('audio_ui_click');
@@ -1063,12 +1134,19 @@ export class AppController implements UIControllerActions {
     this.render();
   }
 
+  private refreshSavedGrowth(snapshot: Pick<AppProfileSnapshot, 'results' | 'achievementProgress'>): void {
+    this.recentResults = snapshot.results;
+    // Keep the saved aggregate separate from optimistic in-session stamp updates.
+    this.savedGrowthRecords = snapshot.achievementProgress.series?.records ?? {};
+  }
+
   private launchSession(
     mode: 'MAIN' | 'PRACTICE' | 'TUTORIAL',
     launchTarget: 'READY' | 'PRACTICE' | 'TUTORIAL',
     seed: number,
     preferredWordId: string | null,
   ): void {
+    this.cancelReplayWait();
     this.clearInputCountdown();
     this.stopPlayTimer();
     this.inputAdapter?.detach();
@@ -1159,18 +1237,42 @@ export class AppController implements UIControllerActions {
       this.currentPlanId = `${this.selectedCourseId}:${seed}`;
     }
 
-    const matchingBest = this.recentResults.filter(
-      (r) => r.comparisonKey === this.currentComparisonKey && r.completed,
-    );
-    const bestScore =
-      matchingBest.length > 0 ? Math.max(...matchingBest.map((r) => r.score)) : null;
-    const bestSpeed =
-      matchingBest.length > 0 ? Math.max(...matchingBest.map((r) => r.canonicalKpm)) : null;
+    const guideEnabled = mode === 'TUTORIAL' || this.settings.guideDefault;
+    let bestScore: number | null = null;
+    let bestCanonicalLength: number | null = null;
+    if (mode === 'MAIN') {
+      const stored = this.savedGrowthRecords[seriesRoundRecordKey(
+        this.selectedCourseId, this.currentComparisonKey, ROMAJI_RULES.inputRuleVersion, guideEnabled,
+      )];
+      bestScore = stored?.score ?? null;
+      bestCanonicalLength = stored?.length ?? null;
+      // Legacy display rows have no reset provenance. After either history reset,
+      // use only the durable aggregate, rebuilt by eligible new round commits.
+      const legacyResults = this.lock.resetGeneration === INITIAL_RESET_GENERATION ? this.recentResults : [];
+      for (const result of legacyResults) {
+        if (
+          result.comparisonKey !== this.currentComparisonKey ||
+          result.ruleVersion !== ROMAJI_RULES.inputRuleVersion ||
+          !(result.timestamp >= this.settings.catalogStartedAt) ||
+          result.completed !== true ||
+          !(result.completedWordCount >= 10) ||
+          result.rescueUsed !== false ||
+          result.guideUsed !== guideEnabled
+        ) {
+          continue;
+        }
+        bestScore = bestScore === null ? result.score : Math.max(bestScore, result.score);
+        bestCanonicalLength = bestCanonicalLength === null
+          ? result.totalCanonicalLength
+          : Math.max(bestCanonicalLength, result.totalCanonicalLength);
+      }
+    }
 
     this.currentSessionContext = {
       orderKey: this.currentPlanId,
       comparisonBestScore: bestScore,
-      comparisonBestSpeed: bestSpeed,
+      comparisonBestCanonicalLength: bestCanonicalLength,
+      comparisonGuideUsed: guideEnabled,
       practiceQualifiedWordIds: this.dictionary.getMasteredWordIds(),
     };
     this.achievements.startSession(sessionId, mode, this.currentSessionContext);
@@ -1182,7 +1284,7 @@ export class AppController implements UIControllerActions {
       districtId,
       mode,
       wordProvider,
-      guideEnabled: mode === 'TUTORIAL' || this.settings.guideDefault,
+      guideEnabled,
       onFact: (fact) => this.handleSessionFact(fact),
     });
 
@@ -1202,10 +1304,12 @@ export class AppController implements UIControllerActions {
     }
     const deliveryKey: DeliveryKeyOption =
       this.settings.deliveryKey === 'Space' ? 'Space' : 'Enter';
+    const renderInputTransition = () => this.renderPlayTransition();
     this.inputAdapter = new InputAdapter({
       inputElement: this.playInputEl,
       session: this.session,
       deliveryKeys: [deliveryKey],
+      pauseOnEscape: this.session.currentMode !== 'PRACTICE',
       canCommitDelivery: () =>
         !(
           this.session?.currentMode === 'TUTORIAL' &&
@@ -1215,7 +1319,7 @@ export class AppController implements UIControllerActions {
         ),
       onKeyProcessed: (res) => {
         if (res.deadlineReached) {
-          this.render();
+          renderInputTransition();
           return;
         }
         if (res.accepted) {
@@ -1276,6 +1380,10 @@ export class AppController implements UIControllerActions {
         this.renderPlayInPlace();
       },
       onDeliveryAttempt: (res) => {
+        if (res.reason === 'deadline') {
+          renderInputTransition();
+          return;
+        }
         if (res.delivered) {
           this.applyDeliveredFeedback(res.bonus, res.cargoCount);
         } else if (res.reason === 'mid_word') {
@@ -1311,10 +1419,8 @@ export class AppController implements UIControllerActions {
       onImePause: () => {
         this.playFeedback.imePauseReason = true;
       },
-      onPause: () => {
-        this.stopPlayTimer();
-        this.render();
-      },
+      onPause: renderInputTransition,
+      onDeadlineReached: renderInputTransition,
     });
     this.inputAdapter.attach();
   }
@@ -1366,6 +1472,11 @@ export class AppController implements UIControllerActions {
         }
       }
     }, 100);
+  }
+
+  private renderPlayTransition(): void {
+    this.stopPlayTimer();
+    this.render();
   }
 
   private stopPlayTimer(): void {
@@ -1534,7 +1645,13 @@ export class AppController implements UIControllerActions {
       };
 
       this.lastMistakeWordIds = [...this.mistakeWordIds];
-      void this.commitSessionAndCity(roundRecord);
+      let resolveResultReady!: (ready: boolean) => void;
+      const resultReady = new Promise<boolean>((resolve) => { resolveResultReady = resolve; });
+      this.roundResultReady = resultReady;
+      void this.commitSessionAndCity(roundRecord, undefined, (ready) => {
+        if (this.roundResultReady === resultReady) this.roundResultReady = null;
+        resolveResultReady(ready);
+      });
 
       if (fact.completed) {
         const mergedNewIds = Array.from(
@@ -1671,18 +1788,22 @@ export class AppController implements UIControllerActions {
   private async commitSessionAndCity(
     roundResult: RoundResultRecord | undefined,
     onboardingCheckpoint?: OnboardingStateRecord,
+    resultReady?: (ready: boolean) => void,
   ): Promise<boolean> {
     if (this.tabLockLost) {
+      resultReady?.(false);
       return false;
     }
+    const writeLock = this.lock;
     const guide = this.onboardingUi;
     const factsToCommit = [...this.pendingFacts];
     const finalRewards = factsToCommit.some((fact) => fact.type === 'PracticeSessionEnded' ||
       fact.type === 'RoundFinished' && !fact.completed) ? [...this.sessionUnlockedRewardIds] : [];
     this.pendingFacts = [];
+    let factsSaved = false;
     try {
-      const res = await this.repository.commitTypingFacts({
-        lock: this.lock,
+      const res = await this.commitTypingBatch({
+        lock: writeLock,
         facts: factsToCommit,
         citySnapshot: this.cityAchievementSnapshot(),
         sessionContext: this.session && this.currentSessionContext && this.session.sessionId === factsToCommit[0]?.sessionId
@@ -1690,19 +1811,25 @@ export class AppController implements UIControllerActions {
           : undefined,
         roundResult,
       });
-      this.lock = {
-        tabId: res.metadata.ownerTabId,
-        writeEpoch: res.metadata.writeEpoch,
-        resetGeneration: res.metadata.resetGeneration,
-      };
-      const loaded = await this.repository.loadAll();
+      factsSaved = true;
+      if (!this.isCurrentWrite(writeLock)) {
+        resultReady?.(false);
+        return false;
+      }
+      const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
+      if (!this.isCurrentWrite(writeLock) || loaded.metadata.resetGeneration !== writeLock.resetGeneration) {
+        resultReady?.(false);
+        return false;
+      }
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
-      this.recentResults = loaded.results;
+      this.refreshSavedGrowth(loaded);
+      resultReady?.(true);
       const saved = await this.persistCitySnapshot(
         this.nextEconomyEventId('round-city'),
         this.onboardingUi === guide ? onboardingCheckpoint : undefined,
       );
+      if (!this.isCurrentWrite(writeLock)) return false;
       if (!saved) {
         this.pendingFacts.unshift(...factsToCommit);
         return false;
@@ -1714,11 +1841,34 @@ export class AppController implements UIControllerActions {
       if (!onboardingCheckpoint && this.session?.currentMode !== 'TUTORIAL') this.render();
       return true;
     } catch (err) {
-      this.pendingFacts.unshift(...factsToCommit);
+      resultReady?.(false);
+      // Never resurrect results/facts invalidated by a deliberate data reset.
+      if (!this.isCurrentWrite(writeLock)) return false;
+      if (!(err instanceof ResetGenerationError)) {
+        this.pendingFacts.unshift(...factsToCommit);
+      }
+      if (roundResult && !factsSaved) {
+        this.roundRecordSaveFailed = true;
+      }
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
+      } else if (roundResult && !factsSaved) {
+        this.render();
       }
       return false;
+    }
+  }
+
+  private async commitTypingBatch(params: CommitFactsParams) {
+    try {
+      return await this.repository.commitTypingFacts(params);
+    } catch (err) {
+      if (!params.roundResult || err instanceof TabLockError || err instanceof ResetGenerationError || this.tabLockLost) {
+        throw err;
+      }
+      // Facts and the round result are saved in one transaction. Replay the exact
+      // same session ID, fact sequences and lock; never adopt a newer write epoch.
+      return this.repository.commitTypingFacts(params);
     }
   }
 
@@ -1965,6 +2115,10 @@ export class AppController implements UIControllerActions {
       return;
     }
     const res = this.session.commitDelivery();
+    if (res.reason === 'deadline') {
+      this.renderPlayTransition();
+      return;
+    }
     if (res.delivered) {
       this.applyDeliveredFeedback(res.bonus, res.cargoCount);
       this.lastObservedCargoCount = this.session.getSnapshot().cargoCount;
@@ -2315,12 +2469,17 @@ export class AppController implements UIControllerActions {
   }
 
   cancelResetSave(): void {
-    if (this.pendingResetConfirm === null) {
-      return;
-    }
+    const scope = this.pendingResetConfirm;
+    if (scope === null) return;
     this.audio.playSe('audio_ui_click');
     this.pendingResetConfirm = null;
     this.render();
+    this.focusResetOpener(scope);
+  }
+
+  private focusResetOpener(scope: 'records' | 'city_and_achievements' | 'settings'): void {
+    const trigger = scope === 'city_and_achievements' ? 'city' : scope;
+    this.mountEl.querySelector<HTMLElement>(`[data-testid="settings-reset-${trigger}-btn"]`)?.focus({ preventScroll: true });
   }
 
   confirmResetSave(): void {
@@ -2332,31 +2491,44 @@ export class AppController implements UIControllerActions {
     this.resetSave(scope);
   }
 
-  resetSave(scope: 'records' | 'city_and_achievements' | 'settings'): void {
-    if (this.tabLockLost) {
+  resetSave(scope: ResetScope): void {
+    if (this.tabLockLost || this.resetInProgress) {
       return;
     }
-    if (scope === 'city_and_achievements') this.clearTutorialDraft();
     this.pendingResetConfirm = null;
     this.audio.playSe('audio_ui_click');
-    const prevTutorialCompleted = this.settings.tutorialCompleted;
-    const prevOnboarding = this.settings.onboarding ? { ...this.settings.onboarding } : undefined;
+    this.resetInProgress = scope;
     void this.repository.resetData(scope, this.lock).then(async (meta) => {
+      // Keep the resumable draft unless the reset transaction has committed.
+      if (scope === 'city_and_achievements') {
+        this.clearTutorialDraft();
+        this.pendingFacts = [];
+        this.economy = new CityEconomy(Date.now());
+        this.paidEquipmentPurchaseCount = 0;
+        this.achievements = new AchievementEngine();
+        this.dictionary = new DictionaryTracker();
+        this.unlocks = {};
+        this.readState = {};
+      } else if (scope === 'records') {
+        // A twice-failed round may still be queued as facts without its result.
+        // Keep word/delivery progress, but never replay its PB-producing finish.
+        this.pendingFacts = this.pendingFacts.filter((fact) => fact.type !== 'RoundFinished');
+        this.recentResults = [];
+        const snapshot = this.achievements.getSnapshot();
+        this.achievements = new AchievementEngine({ ...snapshot, progress: clearGrowthHistory(snapshot.progress) });
+      }
+      if (scope !== 'settings') this.savedGrowthRecords = {};
       this.lock = {
         tabId: meta.ownerTabId,
         writeEpoch: meta.writeEpoch,
         resetGeneration: meta.resetGeneration,
       };
-      const loaded = await this.repository.loadAll();
+      const loaded = await this.repository.loadAll({ includeEconomyCursors: false });
       this.settings = loaded.profile;
       this.unlocks = loaded.unlocks;
       this.readState = loaded.readState;
-      this.recentResults = loaded.results;
+      this.refreshSavedGrowth(loaded);
       if (scope === 'city_and_achievements') {
-        this.economy = new CityEconomy(Date.now());
-        this.paidEquipmentPurchaseCount = 0;
-        this.achievements = new AchievementEngine();
-        this.dictionary = new DictionaryTracker();
         this.settingsNotice = '街と手帳を初期化しました。';
       } else if (scope === 'settings') {
         this.fontScale = '1.0';
@@ -2376,17 +2548,15 @@ export class AppController implements UIControllerActions {
         });
         this.syncBgmTrack();
         this.applyAccessibilitySettings();
-        if (prevTutorialCompleted || prevOnboarding) {
-          const preserved: Partial<Omit<ProfileSettingsRecord, 'id'>> = {
-            tutorialCompleted: prevTutorialCompleted,
-            ...(prevOnboarding ? { onboarding: prevOnboarding } : {}),
-          };
-          await this.repository.saveProfile(preserved, this.lock);
-          this.settings = { ...this.settings, ...preserved };
-        }
         this.settingsNotice = '入力・表示・サウンドの設定を初期化しました。';
       } else {
-        this.settingsNotice = '直近記録を初期化しました。';
+        this.achievements = new AchievementEngine({
+          progress: loaded.achievementProgress,
+          unlocks: loaded.unlocks,
+          rewards: loaded.rewards,
+          factCursors: loaded.factCursors,
+        });
+        this.settingsNotice = '直近記録と成長比較の履歴を初期化しました。';
       }
       const hasPriorActivity =
         this.recentResults.length > 0 ||
@@ -2397,8 +2567,14 @@ export class AppController implements UIControllerActions {
     }).catch((err) => {
       if (err instanceof TabLockError) {
         this.handleTabLockLost();
+        return;
       }
-    });
+      if (this.screen === 'SETTINGS') {
+        this.settingsNotice = '初期化の結果を確認できませんでした。データの状態を確認してから、必要に応じてもう一度お試しください。';
+        this.render();
+        if (this.pendingResetConfirm === null) this.focusResetOpener(scope);
+      }
+    }).finally(() => { this.resetInProgress = null; });
   }
 
   dismissWelcomeBack(): void {
@@ -2495,11 +2671,18 @@ export class AppController implements UIControllerActions {
       );
     }
 
+    if (this.roundRecordSaveFailed && this.screen !== 'PLAY') {
+      shell.appendChild(
+        el('div', { className: 'kb-banner-warning', role: 'status', 'data-testid': 'round-save-warning' },
+          '成績の保存に失敗しました。再読み込みすると記録が残らない場合があります。'),
+      );
+    }
+
     if (this.tabLockLost) {
       const reacquireBtn = el(
         'button',
         { type: 'button', className: 'kb-btn-secondary' },
-        'このタブで再開する',
+        this.repository.backend === 'indexeddb' ? '保存済みの状態から開き直す' : 'このタブで再開する',
       );
       reacquireBtn.addEventListener('click', () => void this.reacquireTabLock());
       shell.appendChild(
@@ -2607,7 +2790,8 @@ export class AppController implements UIControllerActions {
                 onAdvanceReveal: () => this.advanceResultReveal(),
                 onSkipReveal: () => this.skipResultReveal(),
                 onReplayReveal: () => this.replayResultReveal(),
-                onRetrySameSeed: () => this.startMainRound(this.currentSeed),
+                replayWaitState: this.replayWaitState,
+                onRetrySameSeed: () => this.retrySameSeed(),
                 onRetryNewSeed: () => this.startMainRound(),
                 onReviewMistakes: () => {
                   const firstMistakeId = this.lastMistakeWordIds[0];
@@ -2742,6 +2926,9 @@ export class AppController implements UIControllerActions {
                 this.dictionaryState = { ...this.dictionaryState, ...patch };
                 this.render();
               },
+              onUpdateSearch: (search) => {
+                this.dictionaryState = { ...this.dictionaryState, search, page: 0 };
+              },
               onPracticeWord: (w) => this.startPractice(w),
             }),
           );
@@ -2829,7 +3016,12 @@ export class AppController implements UIControllerActions {
     const prevMainScroll = this.mountEl.querySelector<HTMLElement>('.kb-main > *')?.scrollTop ?? 0;
     const prevLeftScroll = this.mountEl.querySelector<HTMLElement>('.kb-home-left')?.scrollTop ?? 0;
 
+    const activeElement = document.activeElement;
+    const focusedHomeDistrictId = this.screen === 'HOME' && !this.difficultyPopupOpen
+      && activeElement instanceof HTMLButtonElement && activeElement.matches('.kb-map-district-btn')
+      && this.mountEl.contains(activeElement) ? activeElement.dataset.districtId : undefined;
     this.mountEl.replaceChildren(shell);
+    if (focusedHomeDistrictId) this.focusHomeDistrict(focusedHomeDistrictId);
     if (this.isOnboardingUpgrade) {
       shell.querySelector<HTMLElement>('[data-onboarding-heading]')?.focus({ preventScroll: true });
     }
@@ -2849,7 +3041,7 @@ export class AppController implements UIControllerActions {
 
   private handleGlobalKeyDown(e: KeyboardEvent): void {
     this.audio.unlock();
-    if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
+    if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
       return;
     }
 
@@ -2884,9 +3076,13 @@ export class AppController implements UIControllerActions {
         return;
       }
       if (state === 'PAUSED') {
+        if (e.key === 'Enter' && e.target instanceof HTMLButtonElement && e.target.closest('[data-testid="play-paused"]')) {
+          if (e.repeat) e.preventDefault();
+          return;
+        }
         if (e.key === 'Escape' || e.key === 'Enter') {
           e.preventDefault();
-          this.resumePlay();
+          if (!e.repeat) this.resumePlay();
         } else if (e.code === 'KeyR') {
           e.preventDefault();
           this.recheckImeFromPause();
@@ -2976,6 +3172,18 @@ export class AppController implements UIControllerActions {
       return;
     }
 
+    const difficultyModalOpen = this.screen === 'HOME' && this.difficultyPopupOpen;
+    const resetModalOpen = this.screen === 'SETTINGS' && this.pendingResetConfirm !== null;
+    if (difficultyModalOpen || resetModalOpen) {
+      // Modal-local keys must not become page shortcuts if focus is outside the dialog.
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        if (difficultyModalOpen) this.closeDifficultyPopup();
+        else this.cancelResetSave();
+      }
+      return;
+    }
+
     const navShortcut = NAV_ITEMS.find((item) => e.code === item.code || e.key.toUpperCase() === item.key);
     if (navShortcut) {
       e.preventDefault();
@@ -2983,17 +3191,18 @@ export class AppController implements UIControllerActions {
       return;
     }
     if (e.key === 'Escape') {
-      if (this.screen === 'SETTINGS' && this.pendingResetConfirm !== null) {
+      if (this.screen === 'RESULT') {
         e.preventDefault();
-        this.cancelResetSave();
+        // A held Escape that dismissed the reveal must not also leave the report.
+        if (e.repeat) return;
+        if (!this.resultRevealDone && getResultRevealIds(this.lastResult?.evaluation).length > 0) {
+          this.skipResultReveal();
+        } else {
+          this.navigate('HOME');
+        }
         return;
       }
-      if (this.screen === 'HOME' && this.difficultyPopupOpen) {
-        e.preventDefault();
-        this.closeDifficultyPopup();
-        return;
-      }
-      if (this.screen === 'HOME' && !this.difficultyPopupOpen && this.onboardingUi.active) {
+      if (this.screen === 'HOME' && this.onboardingUi.active) {
         e.preventDefault();
         this.skipOnboarding();
         return;
@@ -3010,9 +3219,7 @@ export class AppController implements UIControllerActions {
     if (this.screen === 'HOME') {
       if (e.key === 'Enter' && !(active instanceof HTMLButtonElement || active instanceof HTMLAnchorElement)) {
         e.preventDefault();
-        if (this.difficultyPopupOpen) {
-          this.startMainRound();
-        } else if (this.onboardingUi.active) {
+        if (this.onboardingUi.active) {
           if (this.onboardingUi.step === 'S1') {
             this.advanceOnboardingToDistrictSelect();
           }
@@ -3052,13 +3259,16 @@ export class AppController implements UIControllerActions {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           this.advanceResultReveal();
-        } else if (e.key === 'Escape') {
-          e.preventDefault();
-          this.skipResultReveal();
         }
         return;
       }
-      if (e.code === 'KeyH') {
+      if (
+        e.key === 'Enter' && this.lastResult &&
+        !(active instanceof HTMLButtonElement || active instanceof HTMLAnchorElement)
+      ) {
+        e.preventDefault();
+        if (!e.repeat) void this.retrySameSeed();
+      } else if (e.code === 'KeyH') {
         e.preventDefault();
         this.navigate('HOME');
       } else if (e.code === 'KeyU') {

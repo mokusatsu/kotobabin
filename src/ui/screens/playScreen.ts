@@ -481,7 +481,7 @@ function renderPausedCard(feedback: PlayUiFeedback, actions: UIControllerActions
 
   return el(
     'section',
-    { className: 'kb-card kb-play-paper', 'aria-label': '一時停止中' },
+    { className: 'kb-card kb-play-paper', 'aria-label': '一時停止中', 'data-testid': 'play-paused' },
     el('h2', { className: 'kb-h2' }, '一時停止中'),
     feedback.imePauseReason
       ? el(

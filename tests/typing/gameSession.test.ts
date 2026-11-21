@@ -435,6 +435,56 @@ describe('GameSession', () => {
 });
 
 describe('InputAdapter', () => {
+  it('does not steal focus, cancel a focused button, or score keys outside the typing input', () => {
+    const inputEl = document.createElement('input');
+    const button = document.createElement('button');
+    document.body.append(inputEl, button);
+    const session = new GameSession({ words: [makeWord('cat', 'ねこ')] });
+    const onDeliveryAttempt = vi.fn();
+    const adapter = new InputAdapter({ inputElement: inputEl, session, onDeliveryAttempt });
+    adapter.attach();
+    try {
+      button.focus();
+      for (const key of [' ', 'n']) {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        expect(button.dispatchEvent(event)).toBe(true);
+      }
+      expect(document.activeElement).toBe(button);
+      expect(session.currentState).toBe('READY');
+      expect(session.getSnapshot().typed).toBe('');
+      expect(onDeliveryAttempt).not.toHaveBeenCalled();
+    } finally {
+      adapter.detach();
+      inputEl.remove();
+      button.remove();
+    }
+  });
+
+  it('lets repeated browser shortcuts and Tab through, but suppresses repeated typing and delivery', () => {
+    const inputEl = document.createElement('input');
+    document.body.append(inputEl);
+    const session = new GameSession({ words: [makeWord('cat', 'ねこ')] });
+    const onDeliveryAttempt = vi.fn();
+    const adapter = new InputAdapter({ inputElement: inputEl, session, onDeliveryAttempt });
+    adapter.attach();
+    try {
+      inputEl.focus();
+      const repeat = (key: string, modifiers: KeyboardEventInit = {}) =>
+        inputEl.dispatchEvent(new KeyboardEvent('keydown', {
+          key, repeat: true, bubbles: true, cancelable: true, ...modifiers,
+        }));
+      expect(repeat('f', { ctrlKey: true })).toBe(true);
+      expect(repeat('Tab')).toBe(true);
+      expect(repeat('n')).toBe(false);
+      expect(repeat(' ')).toBe(false);
+      expect(session.currentState).toBe('READY');
+      expect(onDeliveryAttempt).not.toHaveBeenCalled();
+    } finally {
+      adapter.detach();
+      inputEl.remove();
+    }
+  });
+
   it('ignores repeat keys, handles Backspace notice, IME pause, and blur/visibility', () => {
     const inputEl = document.createElement('input');
     document.body.appendChild(inputEl);
@@ -454,6 +504,8 @@ describe('InputAdapter', () => {
       onPause,
     });
     adapter.attach();
+
+    inputEl.focus();
 
     // Repeat key ignored
     inputEl.dispatchEvent(

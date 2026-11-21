@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { IDBFactory } from 'fake-indexeddb';
+import { describe, expect, it, vi } from 'vitest';
+import { IDBFactory, IDBObjectStore } from 'fake-indexeddb';
 import type { WordCompletedFact } from '@/contracts/types';
 import { AchievementEngine } from '@/progression/achievementEngine';
 import {
@@ -30,6 +30,25 @@ function makeFact(seq: number, sessionId = 'session-1'): WordCompletedFact {
 }
 
 describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
+
+  it('preserves onboarding atomically when resetting settings and reopening', async () => {
+    const idb = new IDBFactory();
+    const repo = new IndexedDbProfileRepository({ dbName: 'settings-reset-atomic', indexedDB: idb });
+    const meta = await repo.init('tab');
+    const lock = { tabId: meta.ownerTabId, writeEpoch: meta.writeEpoch, resetGeneration: meta.resetGeneration };
+    const onboarding = { version: 1 as const, status: 'in_progress' as const, step: 'S4' as const, updatedAt: 123 };
+    await repo.saveProfile({ tutorialCompleted: true, onboarding, volume: 0.2 }, lock);
+    await repo.resetData('settings', lock);
+    repo.close(); // Simulate page termination immediately after the reset transaction commits.
+    const reopened = new IndexedDbProfileRepository({ dbName: 'settings-reset-atomic', indexedDB: idb });
+    await reopened.init('new-tab');
+    const { profile } = await reopened.loadAll();
+    expect(profile.tutorialCompleted).toBe(true);
+    expect(profile.onboarding).toEqual(onboarding);
+    expect(profile.volume).toBe(0.7);
+    reopened.close();
+  });
+
   it('keeps mastery and round delivery observations through partial commits and retry', async () => {
     const idb = new IDBFactory();
     const repo = new IndexedDbProfileRepository({ dbName: 'series-progress', indexedDB: idb });
@@ -175,6 +194,114 @@ describe('ProfileRepository (IndexedDB v4 & Memory fallback)', () => {
 
     const afterEcon = await repo.loadAll();
     expect(afterEcon.city?.state.coins).toBe(100);
+    repo.close();
+  });
+
+  it.each(['indexeddb', 'memory'])('skips economy cursor materialization for routine %s snapshots without weakening deduplication', async (backend) => {
+    const repo = backend === 'indexeddb'
+      ? new IndexedDbProfileRepository({ dbName: 'cursor-projection', indexedDB: new IDBFactory() })
+      : new MemoryProfileRepository();
+    const { writeEpoch, resetGeneration } = await repo.init('projection-tab');
+    const lock = { tabId: 'projection-tab', writeEpoch, resetGeneration };
+    const params = {
+      lock,
+      cityId: 'city-1',
+      economyEventId: 'auto-1',
+      cityRecord: {
+        id: 'current' as const,
+        cityId: 'city-1',
+        state: { coins: 100 },
+        revision: 1,
+        updatedAt: 1000,
+      },
+    };
+    await repo.commitTypingFacts({ lock, facts: [makeFact(1)] });
+    expect((await repo.commitCityEconomy(params)).applied).toBe(true);
+
+    const storeRead = vi.spyOn(IDBObjectStore.prototype, 'getAll');
+    const cursorBulkReads = () => storeRead.mock.contexts.filter(
+      (store) => (store as IDBObjectStore).name === 'economyCursors',
+    ).length;
+    try {
+      const projected = await repo.loadAll({ includeEconomyCursors: false });
+      expect(projected).not.toHaveProperty('economyCursors');
+      expect(cursorBulkReads()).toBe(0);
+      expect((await repo.commitCityEconomy({
+        ...params,
+        cityRecord: { ...params.cityRecord, state: { coins: 999 }, revision: 2 },
+      })).applied).toBe(false);
+
+      const { economyCursors, ...full } = await repo.loadAll();
+      expect(cursorBulkReads()).toBe(backend === 'indexeddb' ? 1 : 0);
+      expect(full).toEqual(projected);
+      expect(full.city?.state.coins).toBe(100);
+      expect(economyCursors['city-1:auto-1']).toMatchObject({ economyEventId: 'auto-1' });
+    } finally {
+      storeRead.mockRestore();
+      repo.close();
+    }
+  });
+
+  it.each(['indexeddb', 'memory'])('resets the growth baseline without losing earned progress (%s)', async (backend) => {
+    const indexedDB = new IDBFactory();
+    const open = () => new IndexedDbProfileRepository({ dbName: 'growth-reset', indexedDB });
+    let repo = backend === 'indexeddb' ? open() : new MemoryProfileRepository();
+    const { ownerTabId, writeEpoch, resetGeneration } = await repo.init('growth-tab');
+    let lock = { tabId: ownerTabId, writeEpoch, resetGeneration };
+    const run = (sessionId: string, length: number, score: number) => {
+      const comparisonKey = 'same-order-v1';
+      const result = {
+        sessionId, timestamp: length, comparisonKey, courseId: 'relaxed' as const,
+        planId: 'plan', ruleVersion: '1.0.0', wordIds: ['daily_r01'],
+        completed: true, completedWordCount: 10, correctKeyCount: length, mistakeCount: 0,
+        totalCanonicalLength: length, score, canonicalKpm: length * 2 / 3, rescueUsed: false,
+        guideUsed: true,
+      };
+      return repo.commitTypingFacts({
+        lock,
+        facts: [
+          { ...makeFact(1, sessionId), inputElapsedMs: 700 },
+          { ...result, type: 'RoundFinished', mode: 'MAIN', factSequence: 2, elapsedMs: 90_000,
+            districtId: 'residential', baseScore: score, deliveryBonus: 0, longestCleanStreak: 10, skips: 0 },
+        ],
+        roundResult: result,
+      });
+    };
+
+    expect((await run('old-first', 60, 100)).evaluation.recordUpdates).toEqual({ speed: false, score: false });
+    expect((await run('old-pb', 75, 150)).evaluation.recordUpdates).toEqual({ speed: true, score: true });
+    const before = await repo.loadAll();
+    expect(before.results).toHaveLength(2);
+    expect(before.unlocks['series-score_pb-1']).toBeDefined();
+    expect(Object.keys(before.rewards).length).toBeGreaterThan(0);
+    const resetMeta = await repo.resetData('records', lock);
+    expect(resetMeta.resetGeneration).toBe(lock.resetGeneration + 1);
+    if (backend === 'indexeddb') {
+      repo.close();
+      repo = open();
+      await repo.init();
+    }
+    const after = await repo.loadAll();
+    expect(after.results).toEqual([]);
+    const { series: oldSeries, ...oldProgress } = before.achievementProgress;
+    const { series: newSeries, ...newProgress } = after.achievementProgress;
+    expect(newProgress).toEqual(oldProgress);
+    expect(after.unlocks).toEqual(before.unlocks);
+    expect(after.rewards).toEqual(before.rewards);
+    expect(after.readState).toEqual(before.readState);
+    expect(after.factCursors).toEqual(before.factCursors);
+    expect(after.metadata.resetGeneration).toBe(resetMeta.resetGeneration);
+    await expect(run('old-pb', 75, 150)).rejects.toThrow(ResetGenerationError);
+    expect((await repo.loadAll()).results).toEqual([]);
+    lock = { ...lock, resetGeneration: resetMeta.resetGeneration };
+
+    expect((await run('new-first', 90, 200)).evaluation.recordUpdates).toEqual({ speed: false, score: false });
+    expect(newSeries).toEqual({ ...oldSeries, records: {} });
+    expect((await run('new-pb', 105, 250)).evaluation.recordUpdates).toEqual({ speed: true, score: true });
+    const latest = await repo.loadAll();
+    expect(Object.values(latest.achievementProgress.series!.records)).toEqual([
+      { length: 105, score: 250, speedUpdates: 1, scoreUpdates: 1 },
+    ]);
     repo.close();
   });
 

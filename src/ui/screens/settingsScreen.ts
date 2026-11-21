@@ -1,6 +1,7 @@
 import type { ProfileSettingsRecord } from '@/progression/profileRepository';
 import type { UIControllerActions } from '../types';
 import { el } from '../utils/dom';
+import { mountBlockingDialog } from '../utils/blockingDialog';
 
 export interface SettingsScreenProps {
   settings: ProfileSettingsRecord;
@@ -19,12 +20,12 @@ const RESET_CONFIRM_COPY: Record<
 > = {
   records: {
     title: '直近記録を初期化しますか？',
-    body: '保存されている直近リザルト（履歴）を削除します。街のレベル・資材・手帳・各種設定は残ります。',
+    body: '直近のリザルトと、同じ条件で得点や速さを比べるための履歴を削除します。獲得した切手と報酬、街、各種設定は残ります。',
     confirmLabel: '記録を初期化する',
   },
   city_and_achievements: {
     title: '街と手帳を初期化しますか？',
-    body: '街のレベル・資材・設備・配達手帳・直近記録を初期状態に戻します（各種設定とチュートリアル完了状態は残ります）。',
+    body: '街のレベル・資材・設備・配達手帳を初期状態に戻します。設定・チュートリアル完了状態・直近記録は残ります。',
     confirmLabel: '街と手帳を初期化する',
   },
   settings: {
@@ -225,29 +226,29 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
     );
     confirmBtn.addEventListener('click', () => actions.confirmResetSave());
 
-    const backdrop = el(
-      'div',
-      { className: 'kb-modal-backdrop' },
+    const dialog = el(
+      'dialog',
+      {
+        className: 'kb-modal-backdrop kb-blocking-dialog',
+        'aria-modal': 'true',
+        'aria-labelledby': 'kb-reset-confirm-title',
+        'aria-describedby': 'kb-reset-confirm-description',
+        'data-testid': 'settings-reset-confirm-dialog',
+      },
       el(
         'div',
-        {
-          className: 'kb-modal kb-card kb-stack-sm',
-          role: 'dialog',
-          'aria-modal': 'true',
-          'aria-labelledby': 'kb-reset-confirm-title',
-          'data-testid': 'settings-reset-confirm-dialog',
-        },
+        { className: 'kb-modal kb-card kb-stack-sm' },
         el('h2', { id: 'kb-reset-confirm-title', className: 'kb-h2' }, copy.title),
-        el('p', { className: 'kb-small' }, copy.body),
+        el('p', { id: 'kb-reset-confirm-description', className: 'kb-small' }, copy.body),
         el('div', { className: 'kb-row-end kb-row-gap' }, cancelBtn, confirmBtn),
       ),
     );
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        actions.cancelResetSave();
-      }
+    mountBlockingDialog(dialog, {
+      focusOrder: [cancelBtn, confirmBtn],
+      initialFocus: cancelBtn,
+      onDismiss: () => actions.cancelResetSave(),
     });
-    confirmModal = backdrop;
+    confirmModal = dialog;
   }
 
   return el('div', { className: 'kb-settings-screen' }, grid, confirmModal);

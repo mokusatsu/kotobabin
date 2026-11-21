@@ -92,15 +92,23 @@ export class AudioPlayer {
   }
 
   destroy(): void {
+    this.currentBgmTrack = 'none';
     this.pauseBgm();
     this.bgmAudio = null;
     this.bgmCache.clear();
+    for (const audio of this.cache.values()) {
+      if (!audio.paused) this.pauseAudio(audio);
+    }
     this.cache.clear();
   }
 
   private pauseBgm(): void {
+    if (this.bgmAudio) this.pauseAudio(this.bgmAudio);
+  }
+
+  private pauseAudio(audio: HTMLAudioElement): void {
     try {
-      this.bgmAudio?.pause();
+      audio.pause();
     } catch {
       // Ignore in headless environments
     }
@@ -129,7 +137,7 @@ export class AudioPlayer {
         nextAudio = new Audio(nextSrc);
         nextAudio.loop = true;
         nextAudio.addEventListener?.('ended', () => {
-          if (this.bgmEnabled && this.bgmAudio === nextAudio) {
+          if (this.bgmEnabled && this.currentBgmTrack === track && this.bgmAudio === nextAudio) {
             nextAudio.currentTime = 0;
             void nextAudio.play().catch(() => {
               // Ignore autoplay restriction errors
@@ -140,7 +148,7 @@ export class AudioPlayer {
       }
       nextAudio.loop = true;
       if (this.bgmAudio && this.bgmAudio !== nextAudio) {
-        this.bgmAudio.pause();
+        this.pauseAudio(this.bgmAudio);
       }
       this.bgmAudio = nextAudio;
       this.syncBgmVolume();

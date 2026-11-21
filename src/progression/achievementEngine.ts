@@ -178,7 +178,8 @@ export interface CityAchievementSnapshot {
 export interface SessionStartContext {
   orderKey?: string;
   comparisonBestScore?: number | null;
-  comparisonBestSpeed?: number | null;
+  comparisonBestCanonicalLength?: number | null;
+  comparisonGuideUsed?: boolean;
   practiceQualifiedWordIds?: string[];
 }
 
@@ -187,7 +188,8 @@ export interface ActiveSessionTracker {
   mode: SessionMode;
   orderKey?: string;
   comparisonBestScore: number | null;
-  comparisonBestSpeed: number | null;
+  comparisonBestCanonicalLength: number | null;
+  comparisonGuideUsed?: boolean;
   practiceQualifiedWordIds: Set<string>;
   completedWordIds: string[];
   completedWordsCount: number;
@@ -261,14 +263,14 @@ export function meetsSpeedThreshold(
 }
 
 /**
- * Integer cross-multiplication check for speed improvement over a comparison best KPM.
+ * Compare canonical lengths of two 90-second rounds without rounding their speeds.
  */
 export function meetsSpeedImprovement(
   totalCanonicalLength: number,
-  comparisonBestSpeed: number,
+  comparisonBestCanonicalLength: number,
   deltaKpm = 10,
 ): boolean {
-  return totalCanonicalLength * 60000 - comparisonBestSpeed * 90000 >= deltaKpm * 90000;
+  return (totalCanonicalLength - comparisonBestCanonicalLength) * 60000 >= deltaKpm * 90000;
 }
 
 export function createInitialAchievementProgress(): AchievementProgressState {
@@ -303,7 +305,8 @@ function createEmptySessionTracker(
     mode,
     orderKey: context?.orderKey,
     comparisonBestScore: context?.comparisonBestScore ?? null,
-    comparisonBestSpeed: context?.comparisonBestSpeed ?? null,
+    comparisonBestCanonicalLength: context?.comparisonBestCanonicalLength ?? null,
+    comparisonGuideUsed: context?.comparisonGuideUsed,
     practiceQualifiedWordIds,
     completedWordIds: [],
     completedWordsCount: 0,
@@ -941,9 +944,13 @@ export class AchievementEngine {
       unlockNormal('D03', `len=${fact.totalCanonicalLength}`);
     }
 
+    // If guide usage changes during a round, the starting comparison is no longer applicable.
+    const canCompare =
+      fact.completedWordCount >= 10 &&
+      (session.comparisonGuideUsed === undefined || session.comparisonGuideUsed === fact.guideUsed);
     const d04Absolute = fact.score >= 1000;
     const d04Improved =
-      fact.completedWordCount >= 10 &&
+      canCompare &&
       session.comparisonBestScore !== null &&
       fact.score > session.comparisonBestScore;
     if (d04Absolute || d04Improved) {
@@ -957,15 +964,15 @@ export class AchievementEngine {
 
     const d05Absolute = meetsSpeedThreshold(fact.totalCanonicalLength, 180);
     const d05Improved =
-      fact.completedWordCount >= 10 &&
-      session.comparisonBestSpeed !== null &&
-      meetsSpeedImprovement(fact.totalCanonicalLength, session.comparisonBestSpeed, 10);
+      canCompare &&
+      session.comparisonBestCanonicalLength !== null &&
+      meetsSpeedImprovement(fact.totalCanonicalLength, session.comparisonBestCanonicalLength, 10);
     if (d05Absolute || d05Improved) {
       unlockNormal(
         'D05',
         d05Absolute
           ? `len=${fact.totalCanonicalLength}`
-          : `len=${fact.totalCanonicalLength},best_speed=${session.comparisonBestSpeed}`,
+          : `len=${fact.totalCanonicalLength},best_len=${session.comparisonBestCanonicalLength}`,
       );
     }
 

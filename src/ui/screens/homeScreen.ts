@@ -10,6 +10,7 @@ import { renderCoachMark } from '../components/coachMark';
 import { getTutorialRevealIds, renderStampReveal, STAMP_REVEAL_DURATION_MS } from '../components/stampReveal';
 import type { OnboardingUiState, UIControllerActions } from '../types';
 import { assetImg, el, ensurePersistentAssetKeepalive } from '../utils/dom';
+import { mountBlockingDialog } from '../utils/blockingDialog';
 import {
   COURSE_DESCRIPTIONS,
   COURSE_LABELS,
@@ -531,10 +532,9 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
     cancelBtn.addEventListener('click', () => actions.closeDifficultyPopup());
 
     const backdrop = el(
-      'div',
+      'dialog',
       {
-        className: 'kb-modal-backdrop',
-        role: 'dialog',
+        className: 'kb-modal-backdrop kb-blocking-dialog',
         'aria-modal': 'true',
         'aria-labelledby': 'kb-launch-modal-title',
         'data-testid': 'difficulty-popup',
@@ -561,10 +561,10 @@ export function renderHomeScreen(props: HomeScreenProps): HTMLElement {
         cancelBtn,
       ),
     );
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        actions.closeDifficultyPopup();
-      }
+    mountBlockingDialog(backdrop, {
+      focusOrder: [closeBtn, ...courseButtons, cancelBtn],
+      initialFocus: courseButtons[COURSES.indexOf(selectedCourseId)] ?? courseButtons[0],
+      onDismiss: () => actions.closeDifficultyPopup(),
     });
     difficultyModal = backdrop;
   }
