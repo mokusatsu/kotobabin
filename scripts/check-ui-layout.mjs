@@ -538,12 +538,40 @@ async function scenario(scale) {
     await assertDeliveryProgressLayout();
     await inspect('main-dispatch-waiting', '.kb-play-paper');
     await typeWords(1);
+    const landingOffset = await page.evaluate(() => {
+      const parcel = document.querySelector('.kb-flying-parcel[data-cargo-stage="5"]');
+      const train = document.querySelector('[data-delivery-kind="full"]');
+      const wagon = train?.querySelector('.kb-world-courier-wagon');
+      const falling = parcel?.getAnimations().find((animation) => animation.animationName === 'kb-parcel-drop');
+      const travel = train?.getAnimations().find((animation) => animation.animationName === 'kb-world-deliver');
+      if (!falling || !travel || !wagon) throw new Error('Missing full wagon or last falling parcel');
+      falling.pause();
+      travel.pause();
+      falling.currentTime = Number(falling.effect.getTiming().duration) * 0.85;
+      travel.currentTime = 0;
+      const box = parcel.getBoundingClientRect();
+      const car = wagon.getBoundingClientRect();
+      window.__loadingReviewAnimations = [falling, travel];
+      return {
+        x: box.left + box.width / 2 - (car.left + car.width * 131 / 216),
+        y: box.top + box.height / 2 - (car.top + car.height * 43 / 160),
+      };
+    });
+    assert(Math.abs(landingOffset.x) < 1 && Math.abs(landingOffset.y) < 1, JSON.stringify(landingOffset));
+    await inspect('main-fifth-parcel-landing', '.kb-play-paper');
+    await page.evaluate(() => window.__loadingReviewAnimations.forEach((animation) => animation.play()));
     assert.match(await dispatchHint.innerText(), /通常便と追加便が出発/);
     assert.equal(await extraProgress.locator('.is-lit').count(), 5);
     await assertDeliveryProgressLayout();
     await inspect('main-double-dispatch', '.kb-play-paper');
-    await typeWords(4);
-    assert.equal(await extraProgress.locator('.is-lit').count(), 4);
+    await typeWords(1);
+    assert.match(await dispatchHint.innerText(), /追加便が出発/);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 5);
+    const extraWagon = page.locator('[data-delivery-kind="extra"] .kb-world-courier-wagon').last();
+    assert.match(await extraWagon.evaluate((el) => getComputedStyle(el).backgroundImage), /anim_wagon_stage1\.png/);
+    await inspect('main-extra-dispatch-next-word', '.kb-play-paper');
+    await typeWords(3);
+    assert.equal(await extraProgress.locator('.is-lit').count(), 5);
     await page.keyboard.press("'");
     assert.equal(await extraProgress.locator('.is-lit').count(), 0);
     assert.match(await dispatchHint.innerText(), /積載 4\/5/);

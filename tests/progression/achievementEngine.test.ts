@@ -598,9 +598,11 @@ describe('AchievementEngine & DictionaryTracker', () => {
         engine.applyFact(makeWordFact({
           sessionId: sid, factSequence: rSeq++, wordPosition: position, mistakes: 0,
         }));
+        const elapsedMs = position * 3_000;
         if (position % 5 === 0) {
-          const elapsedMs = position * 3_000;
           engine.applyFact(makeDeliveryFact(sid, rSeq++, 'full', position, elapsedMs));
+        }
+        if (position >= 5) {
           engine.applyFact(makeDeliveryFact(sid, rSeq++, 'extra', position, elapsedMs));
         }
       }
@@ -623,7 +625,7 @@ describe('AchievementEngine & DictionaryTracker', () => {
     for (const id of ['all_sizes', 'small_steps', 'back_steps', 'two_baskets', 'between_full', 'first_twenty_by_four']) {
       expect(engine.isUnlocked('series-' + id + '-1')).toBe(true);
     }
-    for (const [series, count] of [['manual_1', 40], ['manual_2', 16], ['manual_3', 12], ['manual_4', 12]] as const) {
+    for (const [series, count] of [['manual_1', 160], ['manual_2', 64], ['manual_3', 48], ['manual_4', 48]] as const) {
       expect(engine.getSeriesMetric(series)).toBe(count);
     }
     expect(engine.getLegacyUnlockedCount()).toBe(72);

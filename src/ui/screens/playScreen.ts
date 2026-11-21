@@ -72,6 +72,9 @@ function renderRomajiGuide(guide: string, typed: string): HTMLElement {
 
 const EXTRA_MARK_EMPTY_SRC = './assets/ui_icon/extra_delivery_mark_empty.webp';
 const EXTRA_MARK_LIT_SRC = './assets/ui_icon/extra_delivery_mark_lit.webp';
+// Centers of the top parcels in the 216 × 160 wagon frames.
+const WAGON_PARCEL_TARGET_Y = [83, 86, 65, 49, 43];
+const WAGON_PARCEL_TARGET_X = 131;
 
 const preloadedUrls = new Set<string>();
 
@@ -249,6 +252,9 @@ function syncPlayWorldBackdrop(
     container.prepend(worldBg);
   }
   worldBg.setAttribute('data-tutorial-mode', isTutorial ? 'true' : 'false');
+  const prevDeliverySeq = Number(worldBg.getAttribute('data-last-delivery-seq') ?? '0');
+  const hasNewDelivery = feedback.deliveryPopSeq > prevDeliverySeq;
+  const fullLoading = hasNewDelivery && feedback.fullDeliveryFlash;
 
   const destImgEl = worldBg.querySelector<HTMLImageElement>('.kb-world-dest-img');
   const versionedBuildingSrc = assetUrl(buildingSrc);
@@ -269,6 +275,10 @@ function syncPlayWorldBackdrop(
   const waitingWagonEl = worldBg.querySelector<HTMLElement>('[data-waiting-wagon]');
   const clampedCargo = Math.max(0, Math.min(5, cargoCount));
   const prevRenderedCargo = worldBg.getAttribute('data-rendered-cargo');
+  if (clampedCargo > 0) {
+    waitingVehicleEl?.classList.remove('is-departing');
+    stackWrapEl?.classList.remove('is-departing');
+  }
   if (stackImgEl && waitingWagonEl) {
     if (clampedCargo <= 0) {
       stackImgEl.style.display = '';
@@ -305,11 +315,16 @@ function syncPlayWorldBackdrop(
   const prevWordSeq = Number(worldBg.getAttribute('data-last-word-seq') ?? '0');
   if (feedback.wordPopSeq > prevWordSeq) {
     worldBg.setAttribute('data-last-word-seq', String(feedback.wordPopSeq));
-    if (loadingFxEl) {
+    const loadedCount = fullLoading ? MAX_CARGO_COUNT : clampedCargo;
+    const targetY = WAGON_PARCEL_TARGET_Y[loadedCount - 1];
+    if (loadingFxEl && targetY !== undefined) {
       const flying = assetImg('./assets/sprites/cargo.png', '', {
         decorative: true,
         className: 'kb-flying-parcel',
       });
+      flying.dataset.cargoStage = String(loadedCount);
+      flying.style.left = `${WAGON_PARCEL_TARGET_X * 100 / 216}%`;
+      flying.style.top = `${targetY * 100 / 160}%`;
       flying.addEventListener('animationend', () => flying.remove());
       loadingFxEl.appendChild(flying);
     }
@@ -322,12 +337,10 @@ function syncPlayWorldBackdrop(
   const courierLayer = worldBg.querySelector<HTMLElement>('[data-courier-layer]');
   const destEl = worldBg.querySelector<HTMLElement>('[data-world-dest]');
   const arriveLayer = worldBg.querySelector<HTMLElement>('[data-arrive-layer]');
-  const prevDeliverySeq = Number(worldBg.getAttribute('data-last-delivery-seq') ?? '0');
-  if (feedback.deliveryPopSeq > prevDeliverySeq && courierLayer) {
+  if (hasNewDelivery && courierLayer) {
     worldBg.setAttribute('data-last-delivery-seq', String(feedback.deliveryPopSeq));
     worldBg.removeAttribute('data-arrival-fx-played');
-    if (feedback.fullDeliveryFlash) {
-      loadingFxEl?.replaceChildren();
+    if (fullLoading) {
       for (const departing of [waitingVehicleEl, stackWrapEl]) {
         if (!departing) continue;
         departing.classList.remove('is-departing');
@@ -337,24 +350,24 @@ function syncPlayWorldBackdrop(
     }
 
     const dispatches = [
-      ...(feedback.fullDeliveryFlash ? ['通常便'] : []),
-      ...(feedback.extraDeliveryFlash ? ['追加便'] : []),
+      ...(fullLoading ? [{ name: '通常便', kind: 'full', cargoStage: 5, className: 'is-loading' }] : []),
+      ...(feedback.extraDeliveryFlash ? [{
+        name: '追加便', kind: 'extra', cargoStage: 1,
+        className: fullLoading ? 'is-extra is-following' : 'is-extra',
+      }] : []),
     ];
-    for (const [index, name] of dispatches.entries()) {
+    for (const { name, kind, cargoStage, className } of dispatches) {
       const courier = el(
         'div',
-        { className: 'kb-world-courier', 'aria-hidden': 'true' },
+        { className: `kb-world-courier ${className}`, 'data-delivery-kind': kind, 'aria-hidden': 'true' },
         el('span', { className: 'kb-world-courier-tag' }, name),
         el(
           'div',
           { className: 'kb-world-courier-train' },
-          name === '通常便'
-            ? createSpriteAnimEl('kb-world-courier-wagon', './assets/sprites/anim_wagon_stage5.png', 8)
-            : null,
+          createSpriteAnimEl('kb-world-courier-wagon', `./assets/sprites/anim_wagon_stage${cargoStage}.png`, 8),
           createSpriteAnimEl('kb-world-courier-sprite', courierSpriteSrc, 8),
         ),
       );
-      if (index > 0) courier.style.animationDelay = '160ms';
       courier.addEventListener('animationend', (event) => {
         if (event.target !== courier) return;
         courier.remove();
@@ -475,14 +488,14 @@ function renderExtraProgress(
     mark.addEventListener('animationend', () => mark.classList.remove('is-new'));
     return mark;
   }));
-  const current = snapshot.currentCleanStreak % MAX_CARGO_COUNT;
-  const complete = feedback.extraDeliveryFlash && snapshot.currentCleanStreak > 0 && current === 0;
-  const filled = complete ? MAX_CARGO_COUNT : current;
+  const filled = Math.min(snapshot.currentCleanStreak, MAX_CARGO_COUNT);
+  const complete = feedback.extraDeliveryFlash && filled === MAX_CARGO_COUNT;
   const before = Number(progress.getAttribute('aria-valuenow') ?? 0);
   progress.setAttribute('aria-valuenow', String(filled));
-  progress.setAttribute('aria-valuetext', complete
-    ? '5問連続成功。追加便が出発'
-    : `ノーミス ${filled}/${MAX_CARGO_COUNT}問。追加便まであと${MAX_CARGO_COUNT - filled}問`);
+  const progressText = filled === MAX_CARGO_COUNT
+    ? `${snapshot.currentCleanStreak}問連続成功。${complete ? '追加便が出発' : '次もノーミスで追加便'}`
+    : `ノーミス ${filled}/${MAX_CARGO_COUNT}問。追加便まであと${MAX_CARGO_COUNT - filled}問`;
+  progress.setAttribute('aria-valuetext', progressText);
   progress.classList.toggle('is-complete', complete);
   const emptySrc = assetUrl(EXTRA_MARK_EMPTY_SRC);
   const litSrc = assetUrl(EXTRA_MARK_LIT_SRC);
@@ -727,7 +740,7 @@ export function syncPlayScreen(
       guideCard = renderCoachMark({
         stepBadge: 'ステップ 4 / 9',
         title: '荷物が5個そろうと通常便が出発！',
-        body: 'ミスなしで5問続けると追加便も出ます。',
+        body: 'ミスなしの5問目から、続けて正解するたびに追加便も出ます。',
         pointerDirection: 'down',
         compactHeader: true,
         secondaryLabel: showSkipInCoach ? 'スキップしてホームへ' : undefined,

@@ -429,7 +429,7 @@ export class GameSession {
         this.longestCleanStreak = this.currentCleanStreak;
       }
       this.cleanDeliveryBase += wordBase;
-      if (this.currentCleanStreak % MAX_CARGO_COUNT === 0) {
+      if (this.currentCleanStreak >= MAX_CARGO_COUNT) {
         this.emitDelivery('extra', 0, this.cleanDeliveryBase, currentNow);
         this.cleanDeliveryBase = 0;
         extraDelivered = true;

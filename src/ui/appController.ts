@@ -1197,6 +1197,7 @@ export class AppController implements UIControllerActions {
           this.playFeedback.mistakeFlash = false;
           this.playFeedback.mistakeLabel = null;
           this.playFeedback.notice = null;
+          if (res.cargoLoaded) this.playFeedback.wordPopSeq += 1;
           if (res.autoDelivered || res.extraDelivered) {
             this.playFeedback.deliveryPopSeq += 1;
             this.playFeedback.fullDeliveryFlash = res.autoDelivered;
@@ -1205,8 +1206,7 @@ export class AppController implements UIControllerActions {
             this.audio.playSe(res.autoDelivered ? 'audio_dispatch_full' : 'audio_dispatch_medium');
             this.scheduleFeedbackClear();
           } else if (res.wordCompleted) {
-            if (res.cargoLoaded) this.playFeedback.wordPopSeq += 1;
-            else {
+            if (!res.cargoLoaded) {
               this.playFeedback.notice = 'この問題は積載なし';
               this.scheduleFeedbackClear();
             }
@@ -1356,7 +1356,7 @@ export class AppController implements UIControllerActions {
         this.onboardingUi.deliveryArrived = false;
         this.inputAdapter?.detach();
         this.clearOnboardingArrivalTimer();
-        const transitMs = this.settings.reduceMotion ? 150 : 760;
+        const transitMs = this.settings.reduceMotion ? 150 : 1260;
         this.onboardingArrivalTimer = window.setTimeout(() => {
           this.onboardingArrivalTimer = null;
           if (this.onboardingUi.active && this.screen === 'PLAY') this.handleOnboardingWagonLanded();

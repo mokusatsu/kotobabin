@@ -195,7 +195,7 @@ describe('Onboarding / Tutorial Integration', () => {
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('荷馬車が出発しました');
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.getAttribute('data-pointer')).toBe('none');
     expect(mount.querySelector('[data-world-dest-label]')?.textContent).toContain('在庫 0');
-    await flushUi(800);
+    await flushUi(1320);
     expect(mount.querySelector('[data-testid="onboarding-complete-card"]')).toBeNull();
     expect(mount.querySelector('[data-testid="onboarding-play-guide"]')?.textContent).toContain('住宅地に資材が到着しました');
     expect(mount.querySelector('[data-world-dest-label]')?.textContent).not.toContain('在庫 0');

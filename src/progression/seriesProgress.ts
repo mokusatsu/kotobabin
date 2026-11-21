@@ -238,7 +238,9 @@ export class SeriesProgress {
     if (full.length >= 3 && extraPositions.has(full[1].precedingWordPosition)) {
       this.peak('between_full', 1, unlock);
     }
-    if (extra[3]?.precedingWordPosition === 20) this.peak('first_twenty_by_four', 1, unlock);
+    if ([5, 10, 15, 20].every((position) => extraPositions.has(position))) {
+      this.peak('first_twenty_by_four', 1, unlock);
+    }
   }
 
   private updateBest(fact: RoundFinishedFact, orderKey: string, unlock: Unlock): RecordUpdates {

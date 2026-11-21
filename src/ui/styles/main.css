@@ -655,6 +655,12 @@ button:disabled {
 }
 
 .kb-play-world-stage {
+  --kb-wagon-width: 180px;
+  --kb-wagon-height: 133px;
+  --kb-wagon-left: -36px;
+  --kb-wagon-bottom: 4px;
+  --kb-wagon-load-hold: 330ms;
+  --kb-wagon-follow-delay: calc(var(--kb-wagon-load-hold) + 160ms);
   position: absolute;
   left: 0;
   right: 0;
@@ -726,8 +732,9 @@ button:disabled {
   justify-content: center;
 }
 
-.kb-world-loading-bay.is-hidden-bay {
-  display: none !important;
+.kb-world-loading-bay.is-hidden-bay .kb-world-cargo-stack-wrap,
+.kb-world-loading-bay.is-hidden-bay .kb-world-waiting-vehicle {
+  visibility: hidden;
 }
 
 .kb-world-waiting-vehicle {
@@ -755,7 +762,7 @@ button:disabled {
 
 .kb-world-waiting-vehicle.is-departing,
 .kb-world-cargo-stack-wrap.is-departing {
-  animation: kb-vehicle-depart-swap 2800ms cubic-bezier(0.22, 1, 0.36, 1) 1;
+  animation: kb-vehicle-depart-swap 950ms cubic-bezier(0.22, 1, 0.36, 1) 1;
 }
 
 @keyframes kb-vehicle-idle {
@@ -766,9 +773,9 @@ button:disabled {
 .kb-world-cargo-stack-wrap {
   position: absolute;
   left: 0;
-  bottom: 4px;
+  bottom: var(--kb-wagon-bottom);
   width: 144px;
-  height: 133px;
+  height: var(--kb-wagon-height);
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
@@ -785,9 +792,9 @@ button:disabled {
 }
 
 .kb-world-waiting-wagon {
-  width: 180px;
-  height: 133px;
-  margin-left: -36px;
+  width: var(--kb-wagon-width);
+  height: var(--kb-wagon-height);
+  margin-left: var(--kb-wagon-left);
   flex-shrink: 0;
   background-repeat: no-repeat;
   background-size: 800% 100%;
@@ -816,8 +823,12 @@ button:disabled {
 
 .kb-world-fx-layer {
   position: absolute;
-  inset: -90px -20px 0 -20px;
+  left: var(--kb-wagon-left);
+  bottom: var(--kb-wagon-bottom);
+  width: var(--kb-wagon-width);
+  height: var(--kb-wagon-height);
   pointer-events: none;
+  z-index: 3;
 }
 
 @keyframes kb-parcel-drop {
@@ -840,8 +851,7 @@ button:disabled {
 
 .kb-flying-parcel {
   position: absolute;
-  left: 55px;
-  bottom: 58px;
+  translate: -50% -50%;
   width: 34px;
   height: 34px;
   object-fit: contain;
@@ -959,16 +969,53 @@ button:disabled {
   animation-duration: 750ms;
 }
 
+.kb-world-courier.is-loading {
+  animation-delay: var(--kb-wagon-load-hold);
+}
+
+.kb-world-courier.is-loading .kb-world-courier-wagon {
+  animation-delay: var(--kb-wagon-load-hold);
+}
+
+.kb-world-courier.is-extra {
+  bottom: 44px;
+  animation-name: kb-world-extra-deliver;
+  animation-duration: 1900ms;
+}
+
+.kb-world-courier.is-following {
+  animation-delay: var(--kb-wagon-follow-delay);
+  opacity: 0;
+}
+
+@keyframes kb-world-extra-deliver {
+  from { left: 29%; opacity: 1; }
+  90% { left: 73%; opacity: 1; }
+  to { left: 78%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-play-world-stage {
+    --kb-wagon-load-hold: 0ms;
+    --kb-wagon-follow-delay: 0ms;
+  }
+}
+
+[data-reduced-motion='true'] .kb-play-world-stage {
+  --kb-wagon-load-hold: 0ms;
+  --kb-wagon-follow-delay: 0ms;
+}
+
 .kb-world-courier-train {
   display: flex;
   align-items: flex-end;
 }
 
 .kb-world-courier-wagon {
-  width: 180px;
-  height: 133px;
-  margin-left: -36px;
-  margin-bottom: 4px;
+  width: var(--kb-wagon-width);
+  height: var(--kb-wagon-height);
+  margin-left: var(--kb-wagon-left);
+  margin-bottom: var(--kb-wagon-bottom);
   margin-right: -18px;
   flex-shrink: 0;
   filter: drop-shadow(0 5px 8px rgba(32, 24, 16, 0.26));
@@ -983,6 +1030,22 @@ button:disabled {
   filter: drop-shadow(0 6px 10px rgba(32, 24, 16, 0.28));
   position: relative;
   z-index: 2;
+}
+
+.kb-world-courier.is-extra .kb-world-courier-wagon {
+  width: 144px;
+  height: 106px;
+  margin-inline: -29px -14px;
+}
+
+.kb-world-courier.is-extra .kb-world-courier-sprite {
+  width: 90px;
+  height: 90px;
+}
+
+.kb-world-courier.is-extra .kb-world-courier-tag {
+  border-color: var(--kb-color-primary);
+  color: var(--kb-color-primary);
 }
 
 .kb-world-courier-tag {

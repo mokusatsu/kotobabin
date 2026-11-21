@@ -162,12 +162,15 @@ describe('GameSession', () => {
       autoDelivered: true, extraDelivered: true, cargoLoaded: true, dispatchBonus: 500,
     });
 
-    typeWordClean(session, word.reading, 0);
+    expect(typeWordClean(session, word.reading, 0)).toMatchObject({
+      autoDelivered: false, extraDelivered: true, cargoLoaded: true, dispatchBonus: 50,
+    });
     for (const key of ['z', 'a', 'z', 'i', 'u', 'e', 'o']) session.handleKey(key, 0);
     expect(session.getSnapshot()).toMatchObject({ cargoCount: 1, completedWordCount: 12, mistakeCount: 5, baseScore: 600 });
     const shipments = session.facts.filter((fact) => fact.type === 'DeliveryCommitted');
     expect(shipments.map(({ reason, cargoCount, precedingWordPosition }) => [reason, cargoCount, precedingWordPosition]))
-      .toEqual([['full', 5, 5], ['full', 5, 10], ['extra', 0, 10]]);
+      .toEqual([['full', 5, 5], ['full', 5, 10], ['extra', 0, 10], ['extra', 0, 11]]);
+    expect(typeWordClean(session, word.reading, 0)?.extraDelivered).toBe(false);
   });
 
   it('gives identical score and cargo value for shi vs si', () => {
