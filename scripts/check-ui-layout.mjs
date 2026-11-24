@@ -147,6 +147,79 @@ async function scenario(scale) {
     const inspectEquipmentMap = async (phase) => {
       const selector = '.kb-town-panoramic-wrap .kb-city-map';
       const map = page.locator(selector);
+      if (await map.locator('.kb-river-canvas').count()) {
+        await page.waitForFunction(() => document.querySelector('.kb-town-panoramic-wrap [data-river-angle]'));
+        const inspectRiver = async (name) => {
+          const overlaps = await map.evaluate(el => {
+            const sites = [...el.querySelectorAll('[data-river-site]')];
+            return [...el.querySelectorAll('.kb-river-pin')].flatMap(pin => {
+              if (getComputedStyle(pin).visibility === 'hidden') return [];
+              const a = pin.getBoundingClientRect();
+              return sites.filter(site => {
+                const b = site.getBoundingClientRect();
+                return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+              }).map(site => [pin.textContent, site.dataset.riverSite]);
+            });
+          });
+          assert.deepEqual(overlaps, [], name);
+          await inspect(name, selector, true);
+        };
+        await inspectRiver(phase);
+        const turn = await map.getAttribute('data-river-angle');
+        const before = await map.locator('.kb-river-canvas').evaluate(c => c.toDataURL());
+        const selected = await map.locator('[aria-pressed="true"]').allTextContents();
+        const b = await map.boundingBox();
+        await page.mouse.move(b.x+b.width*0.35,b.y+b.height*0.25);
+        await page.mouse.down();
+        await page.mouse.move(b.x+b.width*0.60,b.y+b.height*0.25,{ steps:8 });
+        await page.mouse.up();
+        await page.clock.runFor(32);
+        assert.notEqual(await map.getAttribute('data-river-angle'),turn);
+        assert.notEqual(await map.locator('.kb-river-canvas').evaluate(c => c.toDataURL()),before);
+        assert.deepEqual(await map.locator('[aria-pressed="true"]').allTextContents(),selected);
+        await inspectRiver(`${phase}-rotated`);
+        const rotated = await map.getAttribute('data-river-angle');
+        await map.getByRole('button',{name:'左に回す'}).press('Enter');
+        await page.clock.runFor(32);
+        assert.notEqual(await map.getAttribute('data-river-angle'),rotated);
+        const slider = map.getByRole('slider', { name: '地図のズーム' });
+        const angle = await map.getAttribute('data-river-angle');
+        const site = map.locator('[data-river-site="central_hub"]');
+        const rotationButton = await map.getByRole('button', { name: '右に回す' }).boundingBox();
+        const bar = await slider.boundingBox();
+        assert(bar.y >= rotationButton.y + rotationButton.height && bar.height > bar.width);
+        const icons = map.locator('.kb-river-controls button img');
+        assert.equal(await icons.count(), 2);
+        assert(await icons.evaluateAll(async images => {
+          await Promise.all(images.map(img => img.decode()));
+          return images.every(img => {
+            const a = img.getBoundingClientRect(), b = img.parentElement.getBoundingClientRect();
+            return Math.abs(a.x + a.width / 2 - b.x - b.width / 2) < 1 &&
+              Math.abs(a.y + a.height / 2 - b.y - b.height / 2) < 1;
+          });
+        }));
+        await slider.press('Home');
+        await page.clock.runFor(32);
+        assert.equal(await slider.inputValue(), '75');
+        const small = await site.boundingBox();
+        await inspectRiver(`${phase}-zoom-min`);
+        // Drag the thumb from the bottom of the vertical track to the top.
+        const trackX = bar.x + bar.width / 2;
+        await page.mouse.move(trackX, bar.y + bar.height - 6);
+        await page.mouse.down();
+        await page.mouse.move(trackX, bar.y + 2, { steps: 8 });
+        await page.mouse.up();
+        await page.clock.runFor(32);
+        assert.equal(await slider.inputValue(), '400');
+        assert(Math.abs((await site.boundingBox()).width / small.width - 400 / 75) < 0.01);
+        assert.equal(await map.getAttribute('data-river-angle'), angle);
+        await inspectRiver(`${phase}-zoom-max`);
+        await slider.press('Home');
+        for (let step = 0; step < 5; step++) await slider.press('ArrowUp');
+        await page.clock.runFor(32);
+        assert.equal(await slider.inputValue(), '100');
+        return;
+      }
       const overlaps = await map.evaluate(async (element) => {
         const bounds = element.getBoundingClientRect();
         const canvas = document.createElement('canvas');
@@ -252,7 +325,17 @@ async function scenario(scale) {
       await page.keyboard.press(key);
       assert((await page.locator('.kb-nav-btn[aria-current="page"]').innerText()).includes(title));
       await inspect(`navigation-${key}`, '.kb-header', true);
-      if (key === 'j') await inspectEquipmentMap('equipment-map');
+      if (key === 'j') {
+        await inspectEquipmentMap('equipment-map');
+        for (const category of ['architecture','packaging','shops','crews','railway','synergy','research','scenery']) {
+          const opener = page.getByTestId(`town-tab-${category}`);
+          await opener.tap();
+          await page.getByTestId('equipment-dialog').waitFor();
+          await inspect(`equipment-dialog-${category}`, '.kb-equipment-dialog', true);
+          await page.getByTestId('equipment-close').tap();
+          assert(await opener.evaluate(button => button === document.activeElement));
+        }
+      }
     }
     assert(!(await page.locator('.kb-settings-screen').innerText()).includes('手動配達キー'));
     await inspect('settings-delivery-controls', '.kb-settings-screen', true);
@@ -498,6 +581,7 @@ async function scenario(scale) {
       result.issues.push(...beforeReload.issues);
       await page.reload({ waitUntil: 'networkidle' });
       await page.keyboard.press('j');
+      await page.getByTestId('town-tab-architecture').tap();
       await page.getByTestId('upgrade-district-btn').tap();
       await page.getByTestId('city-stamp-reveal').waitFor({ state: 'visible' });
       await inspect('city-unlock', 'dialog:modal', true);
@@ -519,6 +603,7 @@ async function scenario(scale) {
       await reveal.locator('.kb-reward-reveal-art').evaluate((img) => img.decode());
       await inspect('frame-count-award', 'dialog:modal', true);
       await page.getByTestId('city-stamp-reveal').getByTestId('gacha-skip-btn').tap();
+      await page.getByTestId('equipment-close').tap();
 
       await page.keyboard.press('k');
       const stampsTab = page.getByTestId('handbook-stamps-tab');
@@ -763,12 +848,14 @@ async function scenario(scale) {
             get.onsuccess = () => {
               const city = get.result;
               city.state.landscape = terrain;
+              const decoration = { riverside: 'mooring', highland: 'picnic', seaside: 'bunting' }[terrain];
+              city.state.decoration_levels = { [decoration]: terrain === 'seaside' ? 4 : 1 };
               city.state.city_arrived_micro = '100000000000';
               city.state.packaging_level = 15;
               city.state.research = { materials: 5, logistics: 5, commerce: 5 };
               city.state.synergies = ['sorting_network', 'joint_delivery', 'tourism_service'];
               for (const district of Object.values(city.state.districts)) {
-                Object.assign(district, { open: true, stage: 4, crews: 1, queue_micro: '0', stock_micro: '0' });
+                Object.assign(district, { open: true, stage: terrain === 'riverside' ? 5 : 4, crews: 1, queue_micro: '0', stock_micro: '0' });
               }
               city.state.districts.residential.stock_micro = '9000000000';
               store.put(city);
@@ -779,6 +866,7 @@ async function scenario(scale) {
         }), landscape);
         await page.reload({ waitUntil: 'networkidle' });
         await nextCity.getByRole('button', { name: '新しい街へ出発' }).waitFor();
+        await page.locator(`.kb-home-right [data-landscape="${landscape}"][data-river-angle]`).waitFor();
         const overlaps = await page.locator('.kb-home-right [data-map-building]').evaluateAll((buildings) => buildings.flatMap((building) => {
           const id = building.dataset.mapBuilding;
           const art = building.getBoundingClientRect();
@@ -788,9 +876,50 @@ async function scenario(scale) {
         assert.deepEqual(overlaps, [], `${landscape} district labels overlap their buildings`);
         await inspect(`map-developed-${landscape}`, '.kb-home-right', true);
         await page.locator('.kb-nav-btn').filter({ hasText: '街の設備' }).tap();
-        await page.locator('.kb-town-cat-tab').filter({ hasText: '荷づくり台' }).tap();
         await page.clock.runFor(40);
         await inspectEquipmentMap(`equipment-developed-${landscape}`);
+        const mapFrame = () => page.locator('.kb-city-map[data-river-angle] .kb-river-canvas').evaluate(canvas => canvas.toDataURL());
+        const moving = await mapFrame();
+        await page.clock.runFor(360);
+        assert(moving !== await mapFrame(), `${landscape} town life should move at a fixed camera angle`);
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.clock.runFor(200);
+        const still = await mapFrame();
+        await page.clock.runFor(600);
+        assert(still === await mapFrame(), `${landscape} town life should hold its pose with reduced motion`);
+        await page.emulateMedia({ reducedMotion: 'no-preference' });
+        await page.clock.runFor(600);
+        assert(still !== await mapFrame(), `${landscape} town life should resume when motion is enabled`);
+        await page.getByTestId('equipment-map-residential').tap();
+        const architecture = page.locator('.kb-equipment-dialog');
+        await architecture.getByText(/今の街並み/).waitFor();
+        if (landscape !== 'riverside') await architecture.getByText('Lv.5になると、広場の木の葉が風に舞う。').waitFor();
+        const models = architecture.getByRole('group', { name: '建築前後の比較' });
+        const frames = () => models.locator('canvas').evaluateAll(canvases => canvases.map(c => c.toDataURL()));
+        const turn = models.getByRole('button');
+        await page.waitForFunction(() => document.querySelector('.kb-building-turn:enabled'));
+        assert.deepEqual(await models.locator('figcaption').allTextContents(), landscape === 'riverside'
+          ? ['建築前　Lv.4', '完成　Lv.5'] : ['現在　Lv.4', '建築後　Lv.5']);
+        const firstPair = await frames();
+        await page.clock.runFor(480);
+        assert((await frames()).every((frame, i) => frame !== firstPair[i]), 'Both building models should rotate');
+        await turn.tap();
+        const pausedPair = await frames();
+        await page.clock.runFor(160);
+        assert((await frames()).every((frame, i) => frame === pausedPair[i]), 'Both models should pause together');
+        await turn.tap();
+        await inspect(`building-life-${landscape}`, '.kb-equipment-dialog', true);
+        await page.getByTestId('equipment-close').tap();
+        await page.getByTestId('town-tab-scenery').tap();
+        const choices = page.getByRole('group', {name:'景観アイテム'}).getByRole('button');
+        assert.equal(await choices.count(), 10);
+        await choices.nth(9).tap();
+        const placedLevel = landscape === 'seaside' ? 4 : 1;
+        await page.locator(`.kb-city-map[data-decoration-count="${placedLevel}"]`).waitFor();
+        assert((await page.getByTestId('decoration-shop').innerText()).includes(`Lv.${placedLevel} / 5`));
+        if (landscape === 'seaside') assert.match(await page.getByTestId('decoration-buy').innerText(), /1,050,000/);
+        await inspect(`decoration-placed-${landscape}`, '.kb-equipment-dialog', true);
+        await page.getByTestId('equipment-close').tap();
         await page.locator('.kb-nav-btn').filter({ hasText: 'ホーム' }).tap();
       }
 

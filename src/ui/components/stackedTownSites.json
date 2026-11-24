@@ -1,0 +1,12 @@
+{
+  "highland": {
+    "residential": [-76,-54], "market": [18,-70], "workshop": [85,-37],
+    "central_hub": [10,-10], "packaging": [-67,-5], "research": [79,12],
+    "synergy": [-42,29], "park": [-85,59], "station": [-8,68], "harbor": [72,65]
+  },
+  "seaside": {
+    "residential": [-65,-55], "market": [-86,0], "workshop": [38,-46],
+    "central_hub": [-19,-22], "packaging": [14,25], "research": [-108,-42],
+    "synergy": [-43,22], "park": [-90,58], "station": [-27,69], "harbor": [71,61]
+  }
+}

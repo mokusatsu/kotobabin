@@ -1,13 +1,12 @@
-import { CITY_CATALOG } from '@/contracts/data';
 import type { DistrictId, LandscapeId } from '@/contracts/types';
 import type { CityEconomy } from '@/economy/cityEconomy';
 import type { UpgradeCategory } from '../types';
 import { assetImg, el } from '../utils/dom';
+import { stackedTownScene } from './riversideMap';
 import {
   DISTRICT_NAME_MAP,
   DISTRICT_ORDER,
   formatMaterials,
-  getDistrictBuildingSprite,
 } from '../utils/format';
 
 export interface IntegratedFacilitiesOverlay {
@@ -31,58 +30,19 @@ export interface CityMapProps {
   overlayContent?: HTMLElement | null;
 }
 
-interface PatchRect {
-  leftPct: number;
-  topPct: number;
-  widthPct: number;
-  heightPct: number;
-  labelLeftPct: number;
-  labelTopPct: number;
-}
-
-const RIVERSIDE_PATCH_RECTS: Record<string, PatchRect> = {
-  residential: { leftPct: 5, topPct: 8, widthPct: 29, heightPct: 29, labelLeftPct: 19.5, labelTopPct: 37 },
-  market:      { leftPct: 44, topPct: 9, widthPct: 26, heightPct: 22, labelLeftPct: 57.5, labelTopPct: 31 },
-  workshop:    { leftPct: 68, topPct: 9, widthPct: 28, heightPct: 27, labelLeftPct: 82.5, labelTopPct: 36 },
-  central_hub: { leftPct: 55, topPct: 31, widthPct: 19, heightPct: 23, labelLeftPct: 64.5, labelTopPct: 54 },
-  packaging:   { leftPct: 21, topPct: 37, widthPct: 20, heightPct: 18, labelLeftPct: 31.5, labelTopPct: 55 },
-  research:    { leftPct: 74, topPct: 36, widthPct: 16, heightPct: 16, labelLeftPct: 82.0, labelTopPct: 52 },
-  synergy:     { leftPct: 15, topPct: 54, widthPct: 15, heightPct: 17, labelLeftPct: 22.5, labelTopPct: 71 },
-  park:        { leftPct: 5, topPct: 72, widthPct: 19, heightPct: 23, labelLeftPct: 14.5, labelTopPct: 93 },
-  station:     { leftPct: 36, topPct: 54, widthPct: 28, heightPct: 31, labelLeftPct: 50.0, labelTopPct: 85 },
-  harbor:      { leftPct: 74, topPct: 49, widthPct: 24, heightPct: 43, labelLeftPct: 86.0, labelTopPct: 90 },
-};
-
-const HIGHLAND_PATCH_RECTS: Record<string, PatchRect> = {
-  residential: { leftPct: 5, topPct: 7, widthPct: 27, heightPct: 23, labelLeftPct: 18.5, labelTopPct: 30 },
-  market:      { leftPct: 39, topPct: 9, widthPct: 29, heightPct: 21, labelLeftPct: 53.5, labelTopPct: 30 },
-  workshop:    { leftPct: 69, topPct: 9, widthPct: 28, heightPct: 27, labelLeftPct: 83.0, labelTopPct: 36 },
-  central_hub: { leftPct: 52, topPct: 25, widthPct: 20, heightPct: 25, labelLeftPct: 62.0, labelTopPct: 49 },
-  packaging:   { leftPct: 19, topPct: 29, widthPct: 22, heightPct: 18, labelLeftPct: 30.0, labelTopPct: 46 },
-  research:    { leftPct: 73, topPct: 34, widthPct: 20, heightPct: 21, labelLeftPct: 83.0, labelTopPct: 54 },
-  synergy:     { leftPct: 9, topPct: 44, widthPct: 21, heightPct: 19, labelLeftPct: 19.5, labelTopPct: 63 },
-  park:        { leftPct: 6, topPct: 66, widthPct: 26, heightPct: 27, labelLeftPct: 19.0, labelTopPct: 91 },
-  station:     { leftPct: 33, topPct: 52, widthPct: 31, heightPct: 29, labelLeftPct: 48.5, labelTopPct: 80 },
-  harbor:      { leftPct: 74, topPct: 56, widthPct: 24, heightPct: 36, labelLeftPct: 86.0, labelTopPct: 90 },
-};
-
-const SEASIDE_PATCH_RECTS: Record<string, PatchRect> = {
-  residential: { leftPct: 23, topPct: 15, widthPct: 22, heightPct: 22, labelLeftPct: 34.0, labelTopPct: 37 },
-  market:      { leftPct: 21, topPct: 38, widthPct: 16, heightPct: 16, labelLeftPct: 29.0, labelTopPct: 54 },
-  workshop:    { leftPct: 51, topPct: 28, widthPct: 16, heightPct: 19, labelLeftPct: 59.0, labelTopPct: 47 },
-  central_hub: { leftPct: 36, topPct: 34, widthPct: 16, heightPct: 18, labelLeftPct: 44.0, labelTopPct: 52 },
-  packaging:   { leftPct: 43, topPct: 48, widthPct: 16, heightPct: 16, labelLeftPct: 51.0, labelTopPct: 64 },
-  research:    { leftPct: 9, topPct: 26, widthPct: 14, heightPct: 15, labelLeftPct: 16.0, labelTopPct: 41 },
-  synergy:     { leftPct: 34, topPct: 53, widthPct: 13, heightPct: 16, labelLeftPct: 40.5, labelTopPct: 69 },
-  park:        { leftPct: 16, topPct: 48, widthPct: 16, heightPct: 19, labelLeftPct: 24.0, labelTopPct: 67 },
-  station:     { leftPct: 42, topPct: 59, widthPct: 20, heightPct: 18, labelLeftPct: 52.0, labelTopPct: 77 },
-  harbor:      { leftPct: 60, topPct: 64, widthPct: 28, heightPct: 30, labelLeftPct: 74.0, labelTopPct: 92 },
-};
-
-const PATCH_RECTS_BY_LANDSCAPE: Record<string, Record<string, PatchRect>> = {
-  riverside: RIVERSIDE_PATCH_RECTS,
-  highland: HIGHLAND_PATCH_RECTS,
-  seaside: SEASIDE_PATCH_RECTS,
+const DEFAULT_LABELS: Record<LandscapeId, Record<string, readonly [number, number]>> = {
+  riverside: {
+    residential: [19.5, 37], market: [57.5, 31], workshop: [82.5, 36], central_hub: [64.5, 54], packaging: [31.5, 55],
+    research: [82.0, 52], synergy: [22.5, 71], park: [14.5, 93], station: [50.0, 85], harbor: [86.0, 90],
+  },
+  highland: {
+    residential: [18.5, 30], market: [53.5, 30], workshop: [83.0, 36], central_hub: [62.0, 49], packaging: [30.0, 46],
+    research: [83.0, 54], synergy: [19.5, 63], park: [19.0, 91], station: [48.5, 80], harbor: [86.0, 90],
+  },
+  seaside: {
+    residential: [34.0, 37], market: [29.0, 54], workshop: [59.0, 47], central_hub: [44.0, 52], packaging: [51.0, 64],
+    research: [16.0, 41], synergy: [40.5, 69], park: [24.0, 67], station: [52.0, 77], harbor: [74.0, 92],
+  },
 };
 
 // Keep the home labels on the paths or open ground beside the illustrated districts.
@@ -108,20 +68,6 @@ const EQUIPMENT_MAP_LABELS: Record<LandscapeId, Record<string, readonly [number,
   },
 };
 
-function getBuildingSpriteSrc(facility: string, stage: number): string {
-  const clamped = Math.max(1, Math.min(5, Math.floor(stage)));
-  return `./assets/sprites/buildings/${facility}_stage${clamped}.png`;
-}
-
-function patchImg(src: string, alt: string, rect: PatchRect): HTMLImageElement {
-  const img = assetImg(src, alt, { className: 'kb-map-patch-img' });
-  img.style.left = `${rect.leftPct}%`;
-  img.style.top = `${rect.topPct}%`;
-  img.style.width = `${rect.widthPct}%`;
-  img.style.height = `${rect.heightPct}%`;
-  return img;
-}
-
 export function renderCityMap(props: CityMapProps): HTMLElement {
   const {
     economy,
@@ -134,129 +80,55 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
     highlightFacilityCategory = null,
     overlayContent = null,
   } = props;
-  const layout = CITY_CATALOG.map_layout;
-  const canvasW = layout.canvas.width; // 1600
-  const canvasH = layout.canvas.height; // 1000
-  const scale = layout.scale;
-  const srcAnchor = layout.source_anchor;
-  const displaySize = layout.display_size;
-
-  const patchRects = PATCH_RECTS_BY_LANDSCAPE[economy.landscape];
-  const isPatchComposited = Boolean(patchRects);
   const hasOnboardSpotlight = Boolean(highlightDistrictId || highlightFacilityCategory);
   const equipmentLabels = integratedFacilities ? EQUIPMENT_MAP_LABELS[economy.landscape] : null;
-  const labelPoint = (key: string, rect: PatchRect) =>
-    equipmentLabels?.[key] ?? [rect.labelLeftPct, rect.labelTopPct];
+  const labelPoint = (key: string) => (equipmentLabels ?? DEFAULT_LABELS[economy.landscape])[key];
   const mapContainer = el('div', {
-    className: `kb-city-map${reducedMotion ? ' is-reduced-motion' : ''}${isPatchComposited ? ' is-patch-composited' : ''}${hasOnboardSpotlight ? ' has-onboard-spotlight' : ''}`,
+    className: `kb-city-map${reducedMotion ? ' is-reduced-motion' : ''} is-patch-composited${hasOnboardSpotlight ? ' has-onboard-spotlight' : ''}`,
     role: 'region',
     'aria-label': '街の地図',
   });
-  const spotlightRect = patchRects?.[highlightDistrictId ?? highlightFacilityCategory ?? ''];
-  if (spotlightRect) {
-    const [x, y] = labelPoint(highlightDistrictId ?? highlightFacilityCategory ?? '', spotlightRect);
+  const spotlightPoint = labelPoint(highlightDistrictId ?? highlightFacilityCategory ?? '');
+  if (spotlightPoint) {
+    const [x, y] = spotlightPoint;
     mapContainer.style.setProperty('--kb-spotlight-x', `${x}%`);
     mapContainer.style.setProperty('--kb-spotlight-y', `${y}%`);
   }
 
-  // Layer 1: Terrain background
-  const terrainSrc = `./assets/raster/terrain_${economy.landscape}.jpg`;
-  const terrainLayer = el(
-    'div',
-    { className: 'kb-map-layer kb-map-terrain' },
-    assetImg(terrainSrc, '', {
-      decorative: true,
-      fallbackSrc: './assets/raster/terrain_riverside.jpg',
-    }),
-  );
-  mapContainer.appendChild(terrainLayer);
-
-  // Route SVG lines intentionally omitted: terrain artwork already depicts paths, bridges, and tracks.
-  const hubAnchor = layout.central_depot_anchor;
-
-  // Layer 3: Central hub
-  if (patchRects) {
-    const hubRect = patchRects.central_hub;
-    const [x, y] = labelPoint('central_hub', hubRect);
+  const scene = stackedTownScene(mapContainer, economy, hasOnboardSpotlight, reducedMotion);
+  {
+    const [x, y] = labelPoint('central_hub');
     const openDistricts = DISTRICT_ORDER.map((id) => economy.districts[id]).filter((d) => d.open);
     const avgStage =
       openDistricts.length > 0
         ? Math.max(1, Math.min(5, Math.round(openDistricts.reduce((s, d) => s + Math.max(1, d.stage), 0) / openDistricts.length)))
         : 1;
-    mapContainer.appendChild(
-      patchImg(getBuildingSpriteSrc('central_hub', avgStage), '中央集配所', hubRect),
-    );
-    mapContainer.appendChild(
-      el(
-        'div',
-        {
-          className: 'kb-map-hub kb-map-hub-pin-only',
-          style: `left: ${x}%; top: ${y}%;`,
-        },
-        el('span', { className: 'kb-map-hub-label' }, '中央集配所'),
-      ),
-    );
-  } else {
-    const hubEl = el(
+    const hubLabel = el(
       'div',
       {
-        className: 'kb-map-hub',
-        style: `left: ${(hubAnchor.x / canvasW) * 100}%; top: ${(hubAnchor.y / canvasH) * 100}%;`,
+        className: 'kb-map-hub kb-map-hub-pin-only',
+        style: `left: ${x}%; top: ${y}%;`,
       },
-      assetImg('./assets/sprites/city_hub.png', '中央集配所', { className: 'kb-map-hub-img' }),
       el('span', { className: 'kb-map-hub-label' }, '中央集配所'),
     );
-    mapContainer.appendChild(hubEl);
+    mapContainer.appendChild(hubLabel);
+    scene.add('central_hub', avgStage, hubLabel);
   }
 
   // Layers 4-12: Districts, Scaffolds, Shops, Overlays, Terminals, Vehicles, DOM controls, Focus
   for (const dId of DISTRICT_ORDER) {
     const district = economy.districts[dId];
-    const anchor = layout.anchors[dId];
-    const leftMap = anchor.x - srcAnchor.x * scale;
-    const topMap = anchor.y - srcAnchor.y * scale;
-    const leftPct = (leftMap / canvasW) * 100;
-    const topPct = (topMap / canvasH) * 100;
-    const widthPct = (displaySize.width / canvasW) * 100;
-    const heightPct = (displaySize.height / canvasH) * 100;
-
     const isSelected = selectedDistrictId === dId;
     const isOnboardTarget = highlightDistrictId === dId;
 
     // District visual box (Layers 4-8)
     const plotBox = el('div', {
       className: `kb-map-district-box${isSelected ? ' is-selected' : ''}${!district.open ? ' is-closed' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
-      style: `left: ${leftPct}%; top: ${topPct}%; width: ${widthPct}%; height: ${heightPct}%;`,
     });
-    let building: HTMLImageElement | null = null;
-
-    // Layer 4: District building / empty plot
-    if (patchRects) {
-      const rect = patchRects[dId];
-      if (district.stage >= 1 && rect && rect.widthPct > 0) {
-        building = patchImg(getBuildingSpriteSrc(dId, district.stage), `${DISTRICT_NAME_MAP[dId]} Lv.${district.stage}`, rect);
-        building.dataset.mapBuilding = dId;
-        mapContainer.appendChild(building);
-      }
-      if (rect) {
-        const [labelX, labelY] = separateDistrictLabels
-          ? HOME_DISTRICT_LABELS[economy.landscape][dId]
-          : labelPoint(dId, rect);
-        const edge = 'var(--kb-map-label-edge, 0px)';
-        const labelTop = `clamp(${edge}, ${labelY}%, calc(100% - ${edge}))`;
-        plotBox.setAttribute(
-          'style',
-          `left: ${labelX}%; top: ${labelTop}; width: auto; height: auto; transform: translate(-50%, -50%);`,
-        );
-      }
-    } else {
-      const buildingImg = assetImg(
-        getDistrictBuildingSprite(dId, district.stage),
-        `${DISTRICT_NAME_MAP[dId]} Lv.${district.stage}`,
-        { className: 'kb-map-building-img' },
-      );
-      plotBox.appendChild(buildingImg);
-    }
+    const [labelX, labelY] = separateDistrictLabels
+      ? HOME_DISTRICT_LABELS[economy.landscape][dId] : labelPoint(dId);
+    const edge = 'var(--kb-map-label-edge, 0px)';
+    plotBox.style.cssText = `left: ${labelX}%; top: clamp(${edge}, ${labelY}%, calc(100% - ${edge})); width: auto; height: auto; transform: translate(-50%, -50%);`;
 
     const nextStage = district.open && district.stage < 5 ? district.stage + 1 : null;
     const nextRequiredMicro =
@@ -307,6 +179,8 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
         className: `kb-map-district-btn${isSelected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}${equipmentLabels && canUpgrade ? ' is-upgrade-ready' : ''}`,
         'aria-pressed': isSelected ? 'true' : 'false',
         'data-district-id': dId,
+        'aria-haspopup': integratedFacilities ? 'dialog' : undefined,
+        'data-testid': integratedFacilities ? `equipment-map-${dId}` : undefined,
         title: equipmentLabels && canUpgrade ? `Lv.${nextStage}へアップグレード可能` : undefined,
       },
       el(
@@ -339,16 +213,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
           )
         : null,
     );
-    districtBtn.addEventListener('click', () => {
-      onSelectDistrict(dId);
-      if (integratedFacilities) {
-        integratedFacilities.onSelectCategory('architecture');
-      }
-    });
-    if ((separateDistrictLabels || equipmentLabels) && building) {
-      building.classList.add('is-selectable');
-      building.addEventListener('click', () => districtBtn.click());
-    }
+    districtBtn.addEventListener('click', () => onSelectDistrict(dId));
     if (isOnboardTarget) {
       plotBox.addEventListener('click', (e) => {
         if (e.target !== districtBtn && !districtBtn.contains(e.target as Node)) {
@@ -358,6 +223,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
     }
     plotBox.appendChild(districtBtn);
     mapContainer.appendChild(plotBox);
+    scene.add(dId, district.open ? district.stage : 0, plotBox, districtBtn, true);
   }
 
   // Optional Integrated Town Facilities placed on real ground spots of the panoramic map
@@ -365,58 +231,30 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
     const makeMapFacility = (
       cat: UpgradeCategory,
       patchKey: 'packaging' | 'research' | 'synergy',
-      fallbackLeftPct: number,
-      fallbackTopPct: number,
-      spriteSrc: string,
       label: string,
       sub: string,
       patchStage: number,
+      active: boolean,
     ): HTMLElement => {
       const selected = integratedFacilities.selectedCategory === cat;
       const isOnboardTarget = highlightFacilityCategory === cat;
-      if (patchRects) {
-        const rect = patchRects[patchKey];
-        const [x, y] = labelPoint(patchKey, rect);
-        const btn = el(
-          'button',
-          {
-            type: 'button',
-            className: `kb-map-facility-pin is-patch-pin${selected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
-            style: `left: ${x}%; top: ${y}%;`,
-            'aria-pressed': selected ? 'true' : 'false',
-            'data-testid': `town-node-${cat}`,
-          },
-          el('span', { className: 'kb-map-facility-label' }, `${label} ${sub}`),
-          isOnboardTarget ? el('span', {
-            className: 'kb-map-onboard-badge', 'data-testid': 'map-onboard-target-badge', 'aria-hidden': 'true',
-          }, '▼ ここを選択') : null,
-        );
-        btn.addEventListener('click', () => integratedFacilities.onSelectCategory(cat));
-        if (rect.widthPct > 0) {
-          const image = patchImg(getBuildingSpriteSrc(patchKey, patchStage), label, rect);
-          image.classList.add('is-selectable');
-          image.addEventListener('click', () => btn.click());
-          mapContainer.appendChild(image);
-        }
-        return btn;
-      }
-
+      const [x, y] = labelPoint(patchKey);
       const btn = el(
         'button',
         {
           type: 'button',
-          className: `kb-map-facility-pin${selected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
-          style: `left: ${fallbackLeftPct}%; top: ${fallbackTopPct}%;`,
+          className: `kb-map-facility-pin is-patch-pin${selected ? ' is-selected' : ''}${isOnboardTarget ? ' is-onboard-target' : ''}`,
+          style: `left: ${x}%; top: ${y}%;`,
           'aria-pressed': selected ? 'true' : 'false',
-          'data-testid': `town-node-${cat}`,
+          'data-testid': `town-node-${cat}`, 'aria-haspopup': 'dialog',
         },
-        assetImg(spriteSrc, label, { className: 'kb-map-facility-img' }),
         el('span', { className: 'kb-map-facility-label' }, `${label} ${sub}`),
         isOnboardTarget ? el('span', {
           className: 'kb-map-onboard-badge', 'data-testid': 'map-onboard-target-badge', 'aria-hidden': 'true',
         }, '▼ ここを選択') : null,
       );
       btn.addEventListener('click', () => integratedFacilities.onSelectCategory(cat));
+      scene.add(patchKey, patchStage, btn, btn, false, active ? patchStage : 0);
       return btn;
     };
 
@@ -426,12 +264,10 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
       makeMapFacility(
         'packaging',
         'packaging',
-        36,
-        48,
-        getBuildingSpriteSrc('packaging', pkgStage),
         '荷づくり台',
         `Lv.${pkgLv}`,
         pkgStage,
+        pkgLv > 0,
       ),
     );
 
@@ -441,12 +277,10 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
       makeMapFacility(
         'research',
         'research',
-        86,
-        43,
-        getBuildingSpriteSrc('research', resStage),
         '研究',
         `R${resRank}/${integratedFacilities.maxResearchRank}`,
         resStage,
+        resRank > 0,
       ),
     );
 
@@ -456,12 +290,10 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
       makeMapFacility(
         'synergy',
         'synergy',
-        29,
-        86,
-        getBuildingSpriteSrc('synergy', synStage),
         '連携',
         `${synCount}/3`,
         synStage,
+        synCount > 0,
       ),
     );
   }
@@ -469,6 +301,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
   if (overlayContent) {
     mapContainer.appendChild(overlayContent);
   }
+  scene.load();
 
   // Keep exact 1376:768 terrain aspect ratio without overflowing parent container on window resize
   if (typeof requestAnimationFrame !== 'undefined') {
@@ -490,6 +323,7 @@ export function renderCityMap(props: CityMapProps): HTMLElement {
         mapContainer.style.width = `${fittedW}px`;
         mapContainer.style.height = `${fittedH}px`;
       }
+      scene.refresh();
     };
     requestAnimationFrame(() => {
       syncSize();

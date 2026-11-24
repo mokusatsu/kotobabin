@@ -14,6 +14,7 @@ import {
   type PurchaseQuantity,
 } from '@/economy/cityEconomy';
 import { WorldClock } from '@/economy/worldClock';
+import { updateDecorationPurchase } from './components/decorationShop';
 import {
   AchievementEngine,
   CATALOG_ACHIEVEMENTS,
@@ -156,6 +157,9 @@ export class AppController implements UIControllerActions {
   private selectedDistrictId: DistrictId = 'residential';
   private difficultyPopupOpen = false;
   private selectedUpgradeCategory: UpgradeCategory = 'architecture';
+  private upgradeDialogOpen = false;
+  private upgradeOpener = '';
+  private selectedDecoration = 'flowerbed';
   private purchaseQuantity: PurchaseQuantity = 1;
   private selectedNewCityLandscape: LandscapeId = 'riverside';
 
@@ -542,16 +546,19 @@ export class AppController implements UIControllerActions {
   }
 
   private startTimers(): void {
+    let pendingCityRefresh = false;
     this.economyTickTimer = window.setInterval(() => {
       if (this.screen !== 'PLAY' && !this.tabLockLost) {
         const completedCount = this.advanceEconomyToNow();
+        if (completedCount > 0) pendingCityRefresh = true;
         const onboardingHome = this.screen === 'HOME' && this.onboardingUi.active;
         if (
-          !onboardingHome && this.cityRevealIds.length === 0 &&
-          (completedCount > 0 ||
+          !onboardingHome && this.cityRevealIds.length === 0 && !this.mountEl.querySelector('.is-map-gesturing') &&
+          (pendingCityRefresh ||
             (this.screen === 'HOME' && !this.difficultyPopupOpen) ||
             this.screen === 'DISTRICT_DETAIL')
         ) {
+          pendingCityRefresh = false;
           this.render();
         } else {
           this.updateHeaderStatsInPlace();
@@ -579,6 +586,8 @@ export class AppController implements UIControllerActions {
   }
 
   private updateHeaderStatsInPlace(): void {
+    const decorationBuy = this.mountEl.querySelector<HTMLButtonElement>('[data-testid="decoration-buy"]');
+    if (decorationBuy) updateDecorationPurchase(decorationBuy, this.economy);
     const coinsEl = this.mountEl.querySelector<HTMLElement>('[data-testid="header-coins"]');
     if (coinsEl) {
       coinsEl.textContent = `${formatCoins(this.economy.coinsMicro)} コイン`;
@@ -717,6 +726,7 @@ export class AppController implements UIControllerActions {
       }
     }
     this.screen = screen;
+    this.upgradeDialogOpen = false;
     this.difficultyPopupOpen = false;
     this.pendingResetConfirm = null;
     this.settingsNotice = null;
@@ -840,6 +850,10 @@ export class AppController implements UIControllerActions {
       return;
     }
     this.selectedDistrictId = districtId;
+    if (this.screen === 'UPGRADES') {
+      this.setUpgradeCategory('architecture');
+      return;
+    }
     this.render();
   }
 
@@ -1879,14 +1893,43 @@ export class AppController implements UIControllerActions {
       return;
     }
     this.audio.playSe('audio_ui_click');
+    this.upgradeOpener = document.activeElement?.getAttribute('data-testid') ?? '';
+    this.upgradeDialogOpen = true;
     this.selectedUpgradeCategory = category;
     this.render();
+  }
+
+  closeUpgradeDialog(): void {
+    if (this.isOnboardingUpgrade) {
+      this.onboardingUi.upgradeTargetSelected = false;
+      this.persistOnboardingState({ version: 1, status: 'in_progress', step: this.onboardingUi.step,
+        receipt: this.onboardingUi.receipt ?? undefined, updatedAt: Date.now(), upgradeTargetSelected: false });
+    }
+    this.upgradeDialogOpen = false;
+    this.render();
+    const opener = this.upgradeOpener ? this.mountEl.querySelector<HTMLElement>(`[data-testid="${this.upgradeOpener}"]`) : null;
+    (opener ?? this.mountEl.querySelector<HTMLElement>('.is-onboard-target button, button.is-onboard-target') ??
+      this.mountEl.querySelector<HTMLElement>(`[data-testid="town-tab-${this.selectedUpgradeCategory}"]`))?.focus({ preventScroll: true });
   }
 
   setPurchaseQuantity(qty: PurchaseQuantity): void {
     if (this.isOnboardingUpgrade) return;
     this.audio.playSe('audio_ui_click');
     this.purchaseQuantity = qty;
+    this.render();
+  }
+
+  selectDecoration(id: string): void {
+    this.selectedDecoration = id;
+  }
+
+  buyDecoration(id: string): void {
+    if (this.screen !== 'UPGRADES' || this.selectedUpgradeCategory !== 'scenery' || this.isOnboardingUpgrade || this.tabLockLost) return;
+    this.advanceEconomyToNow();
+    if (this.economy.buyDecoration(id, { economyEventId: this.nextEconomyEventId('decoration') })) {
+      this.audio.playSe('audio_upgrade_buy');
+      void this.persistCitySnapshot(this.nextEconomyEventId('persist-decoration'));
+    }
     this.render();
   }
 
@@ -2563,6 +2606,8 @@ export class AppController implements UIControllerActions {
               economy: this.economy,
               selectedDistrictId: this.selectedDistrictId,
               selectedCategory: this.selectedUpgradeCategory,
+              dialogOpen: this.upgradeDialogOpen && !this.canShowQueuedReveals() && !this.tabLockLost && !this.welcomeBack,
+              selectedDecoration: this.selectedDecoration,
               quantity: this.purchaseQuantity,
               onboardingStep: this.isOnboardingUpgrade ? onboardingStep : null,
               onboardingTargetSelected: this.onboardingUi.upgradeTargetSelected,
@@ -2770,10 +2815,20 @@ export class AppController implements UIControllerActions {
 
     const prevMainScroll = this.mountEl.querySelector<HTMLElement>('.kb-main > *')?.scrollTop ?? 0;
     const prevLeftScroll = this.mountEl.querySelector<HTMLElement>('.kb-home-left')?.scrollTop ?? 0;
-    const navFocus = document.activeElement?.closest('.kb-city-nav-btn, [data-testid="header-player-select"]');
+    const navFocus = document.activeElement?.closest('.kb-city-nav-btn, .kb-river-controls [data-testid], [data-testid="header-player-select"]');
+    const riverDistrictFocus = document.activeElement?.closest('.kb-riverside-map [data-district-id]')?.getAttribute('data-district-id');
     const navFocusId = navFocus?.getAttribute('data-testid');
 
+    const oldEquipment = document.activeElement?.closest('.kb-equipment-dialog');
+    const newEquipment = shell.querySelector<HTMLElement>('.kb-equipment-dialog');
+    if (oldEquipment && newEquipment) {
+      const index = Array.from(oldEquipment.querySelectorAll('button')).indexOf(document.activeElement as HTMLButtonElement);
+      if (index >= 0) newEquipment.dataset.focusIndex = String(index);
+    }
     this.mountEl.replaceChildren(shell);
+    if (riverDistrictFocus && this.screen === 'HOME' && !this.difficultyPopupOpen && !shell.querySelector('dialog[open]')) {
+      shell.querySelector<HTMLElement>(`.kb-riverside-map [data-district-id="${riverDistrictFocus}"]`)?.focus({ preventScroll: true });
+    }
     if (this.isOnboardingUpgrade) {
       shell.querySelector<HTMLElement>('[data-onboarding-heading]')?.focus({ preventScroll: true });
     }
@@ -2797,7 +2852,7 @@ export class AppController implements UIControllerActions {
   }
 
   private handleGlobalKeyDown(e: KeyboardEvent): void {
-    if (document.querySelector('.kb-player-dialog[open]')) return;
+    if (document.querySelector('.kb-player-dialog[open], .kb-equipment-dialog[open]')) return;
     this.audio.unlock();
     if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) {
       return;
@@ -3035,6 +3090,7 @@ export class AppController implements UIControllerActions {
           'railway',
           'crews',
           'research',
+          'scenery',
         ];
         const idx = cats.indexOf(this.selectedUpgradeCategory);
         const nextIdx =

@@ -32,7 +32,8 @@ export type UpgradeCategory =
   | 'shops'
   | 'railway'
   | 'synergy'
-  | 'research';
+  | 'research'
+  | 'scenery';
 
 export interface PlayUiFeedback {
   mistakeFlash: boolean;
@@ -110,6 +111,9 @@ export interface UIControllerActions {
   completeInputCheck(): void;
   cancelInputCheck(): void;
   setUpgradeCategory(category: UpgradeCategory): void;
+  closeUpgradeDialog(): void;
+  selectDecoration(id: string): void;
+  buyDecoration(id: string): void;
   setPurchaseQuantity(qty: PurchaseQuantity): void;
   buyEquipment(kind: EquipmentKind): void;
   buyRailway(districtId: DistrictId): void;

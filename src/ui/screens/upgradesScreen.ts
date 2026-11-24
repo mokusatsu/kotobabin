@@ -3,6 +3,9 @@ import type { DistrictId, ResearchId, SynergyId } from '@/contracts/types';
 import type { CityEconomy, EquipmentKind, PurchaseQuantity } from '@/economy/cityEconomy';
 import type { OnboardingStep, UIControllerActions, UpgradeCategory } from '../types';
 import { renderCityMap } from '../components/cityMap';
+import { buildingComparison } from '../components/buildingComparison';
+import { districtLife } from '../components/townLife';
+import { decorationShop } from '../components/decorationShop';
 import { renderCoachMark } from '../components/coachMark';
 import { CATALOG_ACHIEVEMENTS } from '@/progression/achievementEngine';
 import { assetImg, el } from '../utils/dom';
@@ -20,6 +23,8 @@ export interface UpgradesScreenProps {
   economy: CityEconomy;
   selectedDistrictId: DistrictId;
   selectedCategory: UpgradeCategory;
+  dialogOpen?: boolean;
+  selectedDecoration?: string;
   quantity: PurchaseQuantity;
   onboardingStep?: OnboardingStep | null;
   onboardingTargetSelected?: boolean;
@@ -34,6 +39,25 @@ const QUANTITIES: readonly { value: PurchaseQuantity; label: string }[] = [
   { value: 'max', label: '買えるだけ' },
 ];
 
+function equipmentDialog(title: string, content: HTMLElement, close: () => void, guided = false): HTMLDialogElement {
+  const dismiss = el('button', { type: 'button', className: 'kb-btn-secondary', 'data-testid': 'equipment-close' }, '閉じる');
+  dismiss.addEventListener('click', close);
+  const dialog = el('dialog', { className: `kb-card kb-equipment-dialog${guided ? ' is-onboard-action-dock' : ''}`,
+    'aria-labelledby': 'equipment-dialog-title', 'data-testid': 'equipment-dialog' },
+    el('div', { className: 'kb-equipment-heading' }, el('h2', { className: 'kb-h2', id: 'equipment-dialog-title', tabindex: -1 }, title), dismiss),
+    content);
+  dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  queueMicrotask(() => {
+    if (!dialog.isConnected) return;
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.open = true;
+    const previous = dialog.dataset.focusIndex;
+    const target = previous !== undefined ? dialog.querySelectorAll<HTMLButtonElement>('button')[Number(previous)] : null;
+    (target?.matches(':enabled') ? target : dialog.querySelector<HTMLElement>('h2'))?.focus({ preventScroll: true });
+  });
+  return dialog;
+}
+
 function formatRatio(r: { numerator: number; denominator: number }): string {
   return `${(r.numerator / r.denominator).toFixed(2)}倍`;
 }
@@ -42,12 +66,14 @@ function renderArchitectureDock(
   economy: CityEconomy,
   districtId: DistrictId,
   actions: UIControllerActions,
+  reducedMotion: boolean,
   guided = false,
 ): HTMLElement {
   const district = economy.districts[districtId];
   const dCfg = CITY_CATALOG.districts.find((d) => d.id === districtId)!;
   const stageEntry = dCfg.stage_entries.find((s) => s.stage === district.stage);
   const stageCfg = ECONOMY_CONFIG.development.stages.find((s) => s.stage === district.stage);
+  const preview = buildingComparison(economy.landscape, districtId, district.open ? district.stage : 0, reducedMotion);
 
   if (!district.open) {
     const totalStage = DISTRICT_ORDER.reduce((sum, id) => sum + economy.districts[id].stage, 0);
@@ -62,6 +88,7 @@ function renderArchitectureDock(
     return el(
       'div',
       { className: 'kb-town-dock-inner' },
+      preview,
       el(
         'div',
         { className: 'kb-town-dock-info' },
@@ -91,11 +118,7 @@ function renderArchitectureDock(
     const nextStage = district.stage + 1;
     const nextEntry = dCfg.stage_entries.find((s) => s.stage === nextStage);
     const nextStageCfg = ECONOMY_CONFIG.development.stages.find((s) => s.stage === nextStage);
-    const econDistCfg = ECONOMY_CONFIG.districts.find((d) => d.id === districtId);
-    const reqMatMicro =
-      nextStageCfg && econDistCfg
-        ? BigInt(nextStageCfg.base_materials_micro) * BigInt(econDistCfg.cost_multiplier)
-        : 0n;
+    const reqMatMicro = economy.developmentCost(districtId, nextStage).materialsMicro;
     const canUpgrade = district.stockMicro >= reqMatMicro;
     statusEl = el(
       'div',
@@ -120,11 +143,16 @@ function renderArchitectureDock(
   return el(
     'div',
     { className: 'kb-town-dock-inner' },
+    preview,
     el(
       'div',
       { className: 'kb-town-dock-info' },
       el('strong', {}, `${DISTRICT_NAME_MAP[districtId]} — 街並み Lv.${district.stage} / 5`),
+      !guided && district.stage > 0
+        ? el('div', { className: 'kb-small' }, `今の街並み：${districtLife[districtId][district.stage - 1][1]}。`) : null,
       statusEl,
+      !guided && district.stage < 5
+        ? el('div', { className: 'kb-small' }, `Lv.${district.stage + 1}になると、${districtLife[districtId][district.stage][1]}。`) : null,
     ),
     el('div', { className: 'kb-town-dock-actions' }, primaryControl),
   );
@@ -165,6 +193,7 @@ function renderEquipmentDock(
     quote.current < quote.cap
       ? economy.nextPriceCoins(kind, quote.current, kind === 'packaging' ? undefined : districtId)
       : 0;
+  const totalCoins = formatCoins(quote.total_cost_micro);
 
   const qtyButtons = el(
     'div',
@@ -217,8 +246,8 @@ function renderEquipmentDock(
     el(
       'span',
       {},
-      guided && canBuy ? `荷づくり台を増やす（${quote.total_cost_coins} コイン）` : canBuy
-        ? `${quote.count}個 購入する（${quote.total_cost_coins.toLocaleString('ja-JP')} コイン）`
+      guided && canBuy ? `荷づくり台を増やす（${totalCoins} コイン）` : canBuy
+        ? `${quote.count}個 購入する（${totalCoins} コイン）`
         : quote.limited_by_funds
           ? `コイン不足（1個 ${nextUnitCoins.toLocaleString('ja-JP')} コイン）`
           : lockReason ?? '購入できません',
@@ -228,7 +257,7 @@ function renderEquipmentDock(
 
   const costSummary =
     quote.count > 0
-      ? `購入数 ${quote.count}個・費用 ${quote.total_cost_coins.toLocaleString('ja-JP')} コイン`
+      ? `購入数 ${quote.count}個・費用 ${totalCoins} コイン`
       : quote.limited_by_funds
         ? `購入数 1個（コイン不足）・必要 ${nextUnitCoins.toLocaleString('ja-JP')} コイン`
         : lockReason ?? '';
@@ -445,6 +474,7 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
             type: 'button',
             className: `kb-pill-btn kb-town-dist-pill${selected ? ' is-selected' : ''}${!d.open ? ' is-locked' : ''}`,
             'aria-pressed': selected ? 'true' : 'false',
+            'aria-haspopup': 'dialog', 'data-testid': `equipment-district-${dId}`,
           },
           el('span', {}, DISTRICT_NAME_MAP[dId]),
           el('span', { className: 'kb-small kb-secondary' }, d.open ? `Lv.${d.stage}` : '未'),
@@ -511,16 +541,14 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
     if (!completed && !choosingTarget) {
       const dockContent = isBuilding && hasBuilding || !isBuilding && hasEquipment
         ? el('div', { className: 'kb-town-dock-actions' }, continueBtn)
-        : isBuilding ? renderArchitectureDock(economy, selectedDistrictId, actions, true)
+        : isBuilding ? renderArchitectureDock(economy, selectedDistrictId, actions, reducedMotion, true)
           : renderEquipmentDock('packaging', economy, selectedDistrictId, 1, actions, true);
       const controls = dockContent.classList.contains('kb-town-dock-actions')
         ? dockContent : dockContent.querySelector<HTMLElement>('.kb-town-dock-actions');
       controls?.classList.add('kb-onboarding-action-controls');
       if (guide) controls?.prepend(guide);
       controls?.querySelector('button:not(.kb-coach-skip-btn)')?.classList.add('kb-onboard-action-target');
-      actionDock = el('section', {
-        className: 'kb-card kb-town-action-dock is-onboard-action-dock', 'aria-label': '設備の操作パネル',
-      }, dockContent);
+      actionDock = equipmentDialog(isBuilding ? '住宅地の建築' : '荷づくり台', dockContent, () => actions.closeUpgradeDialog(), true);
     }
     let completionDialog: HTMLDialogElement | null = null;
     if (completed) {
@@ -579,20 +607,20 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
     { id: 'railway', label: `鉄道 (${district.railway ? '済' : '未'})` },
     { id: 'synergy', label: `連携 (${synergyCount}/3)` },
     { id: 'research', label: `研究 (R${totalResearchRank}/${maxResearchRank})` },
+    { id: 'scenery', label: '景観' },
   ];
 
   const categoryTabs = el(
     'div',
-    { className: 'kb-town-cat-tabs', role: 'tablist', 'aria-label': '施設カテゴリ' },
+    { className: 'kb-town-cat-tabs', role: 'group', 'aria-label': '施設カテゴリ' },
     ...categoryDefs.map((c) => {
       const selected = selectedCategory === c.id;
       const btn = el(
         'button',
         {
           type: 'button',
-          role: 'tab',
-          'aria-selected': selected ? 'true' : 'false',
-          className: `kb-pill-btn kb-town-cat-tab${selected ? ' is-selected' : ''}`,
+          'aria-haspopup': 'dialog',
+          className: `kb-pill-btn kb-town-cat-tab${selected && props.dialogOpen ? ' is-selected' : ''}`,
           'data-testid': `town-tab-${c.id}`,
         },
         el('span', {}, c.label),
@@ -603,26 +631,26 @@ export function renderUpgradesScreen(props: UpgradesScreenProps): HTMLElement {
     }),
   );
 
-  // Bottom Action Dock Content
+  const screen = el('div', { className: 'kb-upgrades-world' }, districtBar, stageCanvas,
+    el('section', { className: 'kb-card kb-equipment-launchers', 'aria-label': '街の設備' }, categoryTabs));
+  if (!props.dialogOpen) return screen;
   let dockContent: HTMLElement;
   if (selectedCategory === 'architecture') {
-    dockContent = renderArchitectureDock(economy, selectedDistrictId, actions);
+    dockContent = renderArchitectureDock(economy, selectedDistrictId, actions, reducedMotion);
   } else if (selectedCategory === 'packaging' || selectedCategory === 'crews' || selectedCategory === 'shops') {
     dockContent = renderEquipmentDock(selectedCategory, economy, selectedDistrictId, quantity, actions);
   } else if (selectedCategory === 'railway') {
     dockContent = renderRailwayDock(economy, selectedDistrictId, actions);
   } else if (selectedCategory === 'synergy') {
     dockContent = renderSynergyDock(economy, actions);
+  } else if (selectedCategory === 'scenery') {
+    dockContent = decorationShop(economy, props.selectedDecoration ?? '', reducedMotion,
+      id => actions.selectDecoration(id), id => actions.buyDecoration(id));
   } else {
     dockContent = renderResearchDock(economy, actions);
   }
 
-  const actionDock = el(
-    'section',
-    { className: 'kb-card kb-town-action-dock', 'aria-label': '設備の操作パネル' },
-    categoryTabs,
-    dockContent,
-  );
-
-  return el('div', { className: 'kb-upgrades-world' }, districtBar, stageCanvas, actionDock);
+  const title = categoryDefs.find(category => category.id === selectedCategory)!.label;
+  screen.append(equipmentDialog(title, dockContent, () => actions.closeUpgradeDialog()));
+  return screen;
 }

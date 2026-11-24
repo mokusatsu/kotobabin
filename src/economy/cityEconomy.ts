@@ -23,6 +23,7 @@ import {
   type Rational,
 } from './math';
 import { calculateOfflineProgress } from './worldClock';
+import { DECORATIONS, decorationCost } from './decorations';
 
 export type EquipmentKind = 'packaging' | 'crews' | 'shops';
 export type PurchaseQuantity = 1 | 10 | 'max';
@@ -153,6 +154,7 @@ export interface CityEconomySnapshot {
   coins_micro: string;
   city_arrived_micro: string;
   packaging_level: number;
+  decoration_levels?: Record<string, number>;
   blueprints: number;
   research: Record<ResearchId, number>;
   synergies: SynergyId[];
@@ -207,7 +209,7 @@ export interface CityEconomySnapshot {
 
 type ArchivedCity = Pick<CityEconomySnapshot,
   'city_id' | 'landscape' | 'coins_micro' | 'city_arrived_micro' | 'packaging_level' |
-  'synergies' | 'districts' | 'active_session' | 'last_session_summary' | 'used_session_ids' |
+  'decoration_levels' | 'synergies' | 'districts' | 'active_session' | 'last_session_summary' | 'used_session_ids' |
   'fact_ledger' | 'economy_event_ledger' | 'construction_history'
 >;
 
@@ -218,6 +220,7 @@ function archiveCity(state: CityEconomySnapshot): ArchivedCity {
   } = state;
   return {
     city_id, landscape, coins_micro, city_arrived_micro, packaging_level, synergies, districts,
+    decoration_levels: state.decoration_levels ?? {},
     active_session, last_session_summary, used_session_ids, fact_ledger, economy_event_ledger, construction_history,
   };
 }
@@ -257,6 +260,7 @@ export class CityEconomy {
   coinsMicro = 0n;
   cityArrivedMicro = 0n;
   packagingLevel = 0;
+  decorationLevels: Record<string, number> = {};
   blueprints = ECONOMY_CONFIG.initial.blueprints;
 
   research: Record<ResearchId, number> = {
@@ -303,6 +307,7 @@ export class CityEconomy {
     const cfg = this.config.initial;
     this.coinsMicro = BigInt(cfg.coins_micro);
     this.packagingLevel = cfg.packaging_level;
+    this.decorationLevels = {};
     this.cityArrivedMicro = 0n;
     this.synergies = new Set();
     this.activeSession = null;
@@ -1129,6 +1134,23 @@ export class CityEconomy {
     };
   }
 
+  buyDecoration(id: string, options?: OperationOptions): boolean {
+    this.eventTime(options?.atMs);
+    const event = this.checkEconomyEventId(options?.economyEventId, { op: 'buyDecoration', id });
+    if (event.isDuplicate) return false;
+    this.requireIdle();
+    const item = DECORATIONS[this.landscape].find(entry => entry.id === id);
+    if (!item) throw new EconomyError('unknown decoration for this landscape');
+    const level = this.decorationLevels[id] ?? 0;
+    if (level >= item.spots.length) return false;
+    const price = BigInt(decorationCost(item, level)) * this.unit;
+    if (this.coinsMicro < price) return false;
+    this.coinsMicro -= price;
+    this.decorationLevels[id] = level + 1;
+    this.commitEconomyEventId(event.key, event.fingerprint);
+    return true;
+  }
+
   buySynergy(synergyId: SynergyId, options?: OperationOptions): { applied: boolean; reason?: string } {
     this.eventTime(options?.atMs);
     const ev = this.checkEconomyEventId(options?.economyEventId, {
@@ -1223,7 +1245,8 @@ export class CityEconomy {
     if (!destination) throw new EconomyError('city is not unlocked');
     const state = this.snapshot();
     const otherCities = [...this.archivedCities.values()].filter((city) => city.city_id !== cityId);
-    return CityEconomy.fromSnapshot({ ...state, ...destination, archived_cities: [...otherCities, archiveCity(state)] });
+    return CityEconomy.fromSnapshot({ ...state, ...destination, decoration_levels: destination.decoration_levels,
+      archived_cities: [...otherCities, archiveCity(state)] });
   }
 
   newCityPreview(researchKind?: ResearchId): {
@@ -1398,6 +1421,7 @@ export class CityEconomy {
       coins_micro: this.coinsMicro.toString(),
       city_arrived_micro: this.cityArrivedMicro.toString(),
       packaging_level: this.packagingLevel,
+      ...(Object.keys(this.decorationLevels).length ? { decoration_levels: { ...this.decorationLevels } } : {}),
       blueprints: this.blueprints,
       research: { ...this.research },
       synergies: [...this.synergies].sort(),
@@ -1457,6 +1481,11 @@ export class CityEconomy {
     model.blueprints = requireInt(state.blueprints, 'blueprints', 0);
     model.cityId = state.city_id;
     model.landscape = state.landscape;
+    for (const item of DECORATIONS[model.landscape]) {
+      const level = requireInt(state.decoration_levels?.[item.id] ?? 0, item.id, 0);
+      if (level > item.spots.length) throw new EconomyError('invalid decoration level');
+      if (level) model.decorationLevels[item.id] = level;
+    }
     model.coinsMicro = parseMicro(state.coins_micro, 'coins_micro');
     model.cityArrivedMicro = parseMicro(state.city_arrived_micro, 'city_arrived_micro');
     model.research = { ...state.research };

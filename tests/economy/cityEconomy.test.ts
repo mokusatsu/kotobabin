@@ -16,6 +16,55 @@ import {
   isqrt,
 } from '@/economy/cityEconomy';
 import { milestoneFactor } from '@/economy/math';
+import { DECORATIONS, decorationCost, placedDecorations } from '@/economy/decorations';
+
+describe('city decorations', () => {
+  it('charges once per level and fills five distinct spots for each local item', () => {
+    for (const landscape of ['riverside', 'highland', 'seaside'] as const) {
+      const city = new CityEconomy();
+      city.landscape = landscape;
+      expect(DECORATIONS[landscape]).toHaveLength(10);
+      for (const item of DECORATIONS[landscape]) {
+        expect(city.buyDecoration(item.id)).toBe(false);
+        for (let level = 0; level < 5; level++) {
+          const expectedCoins = item.basePrice * [1, 2, 100, 2_000, 30_000][level];
+          expect(decorationCost(item, level)).toBe(expectedCoins);
+          city.coinsMicro = BigInt(expectedCoins) * MICRO - 1n;
+          expect(city.buyDecoration(item.id)).toBe(false);
+          city.coinsMicro += 1n;
+          const event = { economyEventId: `${item.id}-${level}` };
+          expect(city.buyDecoration(item.id, event)).toBe(true);
+          expect(city.buyDecoration(item.id, event)).toBe(false);
+          expect(city.coinsMicro).toBe(0n);
+          expect(city.decorationLevels[item.id]).toBe(level + 1);
+        }
+        city.coinsMicro = 10_000_000n * MICRO;
+        expect(city.buyDecoration(item.id)).toBe(false);
+        expect(city.coinsMicro).toBe(10_000_000n * MICRO);
+        city.coinsMicro = 0n;
+      }
+      const placed = placedDecorations(landscape, city.decorationLevels);
+      expect(new Set(placed.map(p => `${p.x},${p.y}`)).size).toBe(50);
+      expect(CityEconomy.fromSnapshot(city.snapshot()).decorationLevels).toEqual(city.decorationLevels);
+    }
+  });
+
+  it('keeps purchases in their city when visiting an older save without decorations', () => {
+    const city = new CityEconomy();
+    for (const d of Object.values(city.districts)) Object.assign(d, { stage: 3, open: true, crews: 1 });
+    city.cityArrivedMicro = 100_000n * MICRO;
+    city.startNewCity({ confirmed: true, landscape: 'seaside' });
+    const old = city.snapshot();
+    delete old.archived_cities![0].decoration_levels;
+    const current = CityEconomy.fromSnapshot(old);
+    current.coinsMicro = 100n * MICRO;
+    expect(current.buyDecoration('parasol')).toBe(true);
+    expect(() => current.buyDecoration('duckhouse')).toThrow();
+    const first = current.visitCity('city-1');
+    expect(first.decorationLevels).toEqual({});
+    expect(first.visitCity('city-2').decorationLevels).toEqual({ parasol: 1 });
+  });
+});
 
 function makeWordFact(
   sessionId: string,

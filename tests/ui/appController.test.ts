@@ -188,6 +188,8 @@ describe('AppController UI integration', () => {
     // District upgrades are available on the equipment screen.
     controller.quitPlayToHome();
     controller.navigate('UPGRADES');
+    expect(mount.querySelector('[data-testid="upgrade-district-btn"]')).toBeNull();
+    mount.querySelector<HTMLButtonElement>('[data-testid="town-tab-architecture"]')!.click();
     expect(mount.querySelector<HTMLButtonElement>('[data-testid="upgrade-district-btn"]')?.disabled).toBe(true);
     expect(mount.textContent).toContain('建築 (Lv.0/5)');
     expect(mount.textContent).not.toContain('段0');
