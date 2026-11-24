@@ -49,9 +49,6 @@ function renderArchitectureDock(
   const stageEntry = dCfg.stage_entries.find((s) => s.stage === district.stage);
   const stageCfg = ECONOMY_CONFIG.development.stages.find((s) => s.stage === district.stage);
 
-  const detailBtn = el('button', { type: 'button', className: 'kb-btn-secondary' }, '全Lvと詳細を見る');
-  detailBtn.addEventListener('click', () => actions.navigate('DISTRICT_DETAIL'));
-
   if (!district.open) {
     const totalStage = DISTRICT_ORDER.reduce((sum, id) => sum + economy.districts[id].stage, 0);
     const canOpen = totalStage >= dCfg.opening_stage_sum;
@@ -75,7 +72,7 @@ function renderArchitectureDock(
           `開通条件: 全地区Lv合計 ${dCfg.opening_stage_sum} 以上（現在 ${totalStage}）`,
         ),
       ),
-      el('div', { className: 'kb-town-dock-actions' }, openBtn, detailBtn),
+      el('div', { className: 'kb-town-dock-actions' }, openBtn),
     );
   }
 
@@ -129,7 +126,7 @@ function renderArchitectureDock(
       el('strong', {}, `${DISTRICT_NAME_MAP[districtId]} — 街並み Lv.${district.stage} / 5`),
       statusEl,
     ),
-    el('div', { className: 'kb-town-dock-actions' }, primaryControl, guided ? null : detailBtn),
+    el('div', { className: 'kb-town-dock-actions' }, primaryControl),
   );
 }
 
