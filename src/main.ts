@@ -1,6 +1,6 @@
 import './ui/styles/tokens.css';
 import './ui/styles/main.css';
-import { addPlayer, DEFAULT_PLAYER, listPlayers, playerStorageKey, type LocalPlayer } from './progression/playerRegistry';
+import { addPlayer, DEFAULT_PLAYER, listPlayers, playerStorageKey, renamePlayer, type LocalPlayer } from './progression/playerRegistry';
 import { IndexedDbProfileRepository, PROFILE_DB_NAME } from './progression/profileRepository';
 import { AppController } from './ui/appController';
 import { renderPlayerSelector } from './ui/screens/playerSelector';
@@ -63,10 +63,16 @@ async function boot(mountEl: HTMLElement): Promise<void> {
   }
 
   const launch = async (player: LocalPlayer, requirePersistent: boolean) => {
+    const activePlayer = { ...player };
     const controller = new AppController(mountEl, {
-      player,
+      player: activePlayer,
+      rename: async (name) => {
+        const renamed = await renamePlayer(activePlayer.id, name);
+        activePlayer.name = renamed.name;
+        players = players.map((entry) => entry.id === renamed.id ? renamed : entry);
+      },
       hasMultiplePlayers: () => players.length > 1,
-      openSelector: (save, close, playersChanged) => openSelector(player, save, close, playersChanged),
+      openSelector: (save, close, playersChanged) => openSelector(activePlayer, save, close, playersChanged),
       requirePersistent,
     });
     try {

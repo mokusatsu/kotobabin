@@ -947,6 +947,7 @@ async function scenario(scale) {
       await page.getByTestId('new-city-depart').tap();
       await page.getByTestId('city-stamp-reveal').getByTestId('gacha-skip-btn').tap();
       assert.equal(await townNumber.innerText(), '第2の街');
+      assert.equal(await nextCityBar.getAttribute('aria-valuemax'), '120000');
       assert.equal(await nextTown.count(), 0);
       await assertOutsideMap(previousTown, 'left');
       await inspect('map-city-previous', '.kb-home-right', true);
@@ -1003,6 +1004,32 @@ async function scenario(scale) {
     await assertPlayerTitle(page.locator('.kb-header'), 'プレイヤー1', playerTitle);
     await page.locator('.kb-nav-btn').filter({ hasText: '設定' }).tap();
     await assertPlayerTitle(page.locator('.kb-settings-screen'), 'プレイヤー1', playerTitle);
+    const renameButton = page.getByTestId('settings-player-rename');
+    const nameDialog = page.getByTestId('player-name-dialog');
+    const nameInput = nameDialog.getByLabel('プレイヤー名');
+    const closeRename = async () => {
+      await nameDialog.waitFor({ state: 'hidden' });
+      await page.waitForFunction(() => document.activeElement?.getAttribute('data-testid') === 'settings-player-rename');
+    };
+    await renameButton.press('Enter');
+    assert.equal(await nameInput.inputValue(), 'プレイヤー1');
+    assert(await nameInput.evaluate((field) => field === document.activeElement));
+    await inspect('settings-player-rename', 'dialog:modal', true);
+    await nameInput.fill('キャンセル確認');
+    await page.keyboard.press('Escape');
+    await closeRename();
+    await assertPlayerTitle(page.locator('.kb-settings-screen'), 'プレイヤー1', playerTitle);
+    await renameButton.tap();
+    await nameInput.fill('   ');
+    await nameInput.press('Enter');
+    await nameDialog.getByRole('status').filter({ hasText: '名前を入力してください。' }).waitFor();
+    const firstPlayerName = 'ことば配達係';
+    await nameInput.fill(` ${firstPlayerName} `);
+    await nameInput.press('Enter');
+    await closeRename();
+    await assertPlayerTitle(page.locator('.kb-header'), firstPlayerName, playerTitle);
+    await assertPlayerTitle(page.locator('.kb-settings-screen'), firstPlayerName, playerTitle);
+    await inspect('settings-player-renamed', '.kb-settings-screen', true);
     const settingsPlayerSelect = page.getByTestId('settings-player-select');
     const headerPlayer = page.getByTestId('header-player-select');
     assert.equal(await headerPlayer.count(), 0);
@@ -1031,9 +1058,9 @@ async function scenario(scale) {
     const secondPlayer = playerDialog.getByRole('button', { name: 'プレイヤーB', exact: true });
     await secondPlayer.getByText('切手 0枚', { exact: true }).waitFor();
     assert.equal(await headerPlayer.count(), 1);
-    const firstPlayer = playerDialog.getByRole('button', { name: 'プレイヤー1', exact: true });
+    const firstPlayer = playerDialog.getByRole('button', { name: firstPlayerName, exact: true });
     await firstPlayer.getByText(/切手 [1-9]\d*枚/).waitFor();
-    await assertPlayerTitle(firstPlayer, 'プレイヤー1', playerTitle);
+    await assertPlayerTitle(firstPlayer, firstPlayerName, playerTitle);
     assert.equal(await secondPlayer.locator('.kb-title-chip').count(), 0);
     assert(await firstPlayer.evaluate((button) => {
       const [name, achievements] = button.children;
@@ -1042,6 +1069,14 @@ async function scenario(scale) {
     await inspect('settings-player-modal-with-achievements', 'dialog.kb-player-dialog:modal', true);
     await playerDialog.getByRole('button', { name: '戻る', exact: true }).tap();
     await assertBackToSettings();
+    await renameButton.tap();
+    await nameInput.fill('プレイヤーB');
+    await nameDialog.getByRole('button', { name: '保存' }).tap();
+    await nameDialog.getByRole('status').filter({ hasText: '同じ名前のプレイヤーがいます' }).waitFor();
+    await inspect('settings-player-rename-duplicate', 'dialog:modal', true);
+    await nameDialog.getByRole('button', { name: 'キャンセル' }).tap();
+    await closeRename();
+    await assertPlayerTitle(page.locator('.kb-settings-screen'), firstPlayerName, playerTitle);
 
     assert(await headerPlayer.evaluate((button) => {
       const settings = button.nextElementSibling;
@@ -1065,10 +1100,10 @@ async function scenario(scale) {
     await page.reload({ waitUntil: 'domcontentloaded' });
     await selector.getByRole('button', { name: 'プレイヤーB', exact: true }).waitFor();
     assert.equal(await page.locator('.kb-home-screen').count(), 0);
-    await assertPlayerTitle(selector.getByRole('button', { name: 'プレイヤー1', exact: true }), 'プレイヤー1', playerTitle);
+    await assertPlayerTitle(selector.getByRole('button', { name: firstPlayerName, exact: true }), firstPlayerName, playerTitle);
     await page.evaluate((value) => document.documentElement.style.setProperty('--kb-font-scale', value), scale);
     await inspect('player-selector-reopened', '.kb-player-selector', true);
-    await selector.getByRole('button', { name: 'プレイヤー1', exact: true }).press('Enter');
+    await selector.getByRole('button', { name: firstPlayerName, exact: true }).press('Enter');
     await page.getByTestId('map-next-city').waitFor();
     assert.equal(await page.getByTestId('onboarding-next-btn').count(), 0);
 
@@ -1087,6 +1122,7 @@ async function scenario(scale) {
     };
     const activity = await downloadActivity();
     assert.equal(activity.player.id, 0);
+    assert.equal(activity.player.name, firstPlayerName);
     const round = activity.playHistory.find(({ fact }) => fact.type === 'RoundFinished' && fact.mode === 'MAIN');
     assert(round?.fact.logContext?.cityId && round.occurredAt > 1_000_000_000_000);
     const firstStamp = activity.unlockHistory.find(({ achievementId }) => achievementId === 'A01');

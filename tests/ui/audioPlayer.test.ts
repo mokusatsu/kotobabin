@@ -57,6 +57,44 @@ describe('AudioPlayer', () => {
     globalThis.Audio = originalAudio;
   });
 
+  it('cycles through 20 audio_key variants sequentially and reuses cached elements', () => {
+    const player = new AudioPlayer();
+    player.setPreferences({ seEnabled: true, bgmEnabled: false, volume: 0.6 });
+
+    for (let i = 0; i < 21; i++) {
+      player.playSe('audio_key');
+    }
+
+    expect(created).toHaveLength(20);
+    expect(created[0].src).toMatch(/^\.\/assets\/sound_effect\/audio_key_01\.wav\?v=/);
+    expect(created[19].src).toMatch(/^\.\/assets\/sound_effect\/audio_key_20\.wav\?v=/);
+  });
+
+  it('resolves and clamps 10 audio_dispatch_extra stages and cancels delayed SE', async () => {
+    const player = new AudioPlayer();
+    player.setPreferences({ seEnabled: true, bgmEnabled: false, volume: 0.6 });
+
+    player.playSe('audio_dispatch_extra', { stage: 0 });
+    player.playSe('audio_dispatch_extra', { stage: 5 });
+    player.playSe('audio_dispatch_extra', { stage: 99 });
+
+    expect(created).toHaveLength(3);
+    expect(created[0].src).toMatch(/^\.\/assets\/sound_effect\/audio_dispatch_extra_01\.wav\?v=/);
+    expect(created[1].src).toMatch(/^\.\/assets\/sound_effect\/audio_dispatch_extra_05\.wav\?v=/);
+    expect(created[2].src).toMatch(/^\.\/assets\/sound_effect\/audio_dispatch_extra_10\.wav\?v=/);
+
+    player.playSe('audio_dispatch_extra', { stage: 3, delayMs: 15 });
+    expect(created).toHaveLength(3);
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    expect(created).toHaveLength(4);
+    expect(created[3].src).toMatch(/^\.\/assets\/sound_effect\/audio_dispatch_extra_03\.wav\?v=/);
+
+    player.playSe('audio_dispatch_extra', { stage: 4, delayMs: 15 });
+    player.cancelScheduledSe();
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    expect(created).toHaveLength(4);
+  });
+
   it('plays SE with configured volume and skips when disabled or volume is 0', () => {
     const player = new AudioPlayer();
     player.setPreferences({ seEnabled: true, bgmEnabled: false, volume: 0.6 });

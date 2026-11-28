@@ -91,8 +91,7 @@ export function renderDistrictDetailScreen(props: DistrictDetailScreenProps): HT
 
   // Railway 4-condition checklist (coins only)
   const railCfg = ECONOMY_CONFIG.railway;
-  const dCfg = ECONOMY_CONFIG.districts.find((d) => d.id === selectedDistrictId)!;
-  const railCoins = BigInt(railCfg.base_coins) * BigInt(dCfg.cost_multiplier) * economy.unit;
+  const railCoins = economy.railwayCostMicro(selectedDistrictId);
   const railChecks = [
     { label: '地区が開通済み', ok: district.open },
     { label: `開発Lv.${railCfg.minimum_stage} 以上（現在 Lv.${district.stage}）`, ok: district.stage >= railCfg.minimum_stage },

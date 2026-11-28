@@ -492,6 +492,7 @@
     ]
   },
   "new_city": {
+    "cost_growth": { "numerator": 6, "denominator": 5 },
     "minimum_stage_each_district": 3,
     "minimum_arrived_micro": "100000000000",
     "reward_unit_blueprints": 3,

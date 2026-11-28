@@ -147,6 +147,38 @@ describe('GameSession', () => {
     expect(restored.facts[1]?.factSequence).toBe(2);
   });
 
+  it('tracks extraStage across 10 escalating levels, caps at 10, and resets after a mistake', () => {
+    const word = makeWord('w_stage', 'あいうえお');
+    const session = new GameSession({ words: [word], now: () => 0 });
+
+    for (let i = 1; i <= 4; i++) {
+      const res = typeWordClean(session, word.reading, 0);
+      expect(res).toMatchObject({ extraDelivered: false });
+      expect(res?.extraStage).toBeUndefined();
+    }
+
+    for (let stage = 1; stage <= 10; stage++) {
+      const res = typeWordClean(session, word.reading, 0);
+      expect(res).toMatchObject({ extraDelivered: true, extraStage: stage });
+    }
+
+    const capped = typeWordClean(session, word.reading, 0);
+    expect(capped).toMatchObject({ extraDelivered: true, extraStage: 10 });
+
+    session.handleKey('z', 0);
+    const broken = typeWordClean(session, word.reading, 0);
+    expect(broken).toMatchObject({ extraDelivered: false });
+    expect(broken?.extraStage).toBeUndefined();
+
+    for (let i = 1; i <= 4; i++) {
+      expect(typeWordClean(session, word.reading, 0)).toMatchObject({ extraDelivered: false });
+    }
+    expect(typeWordClean(session, word.reading, 0)).toMatchObject({
+      extraDelivered: true,
+      extraStage: 1,
+    });
+  });
+
   it('loads burst mistakes at one position and ships regular and extra deliveries independently', () => {
     const word = makeWord('w5', 'あいうえお');
     const session = new GameSession({ words: [word], now: () => 0 });

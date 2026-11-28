@@ -48,6 +48,7 @@ import { InputAdapter } from '@/typing/inputAdapter';
 import { WORDS_DATA } from '@/contracts/data';
 import { AudioPlayer } from './components/audioPlayer';
 import { NAV_ITEMS, PLAYER_SHORTCUT, renderNormalHeader, renderPlayHeader } from './components/header';
+import { openPlayerNameDialog } from './screens/playerNameDialog';
 import {
   featuredStampIds, getResultRevealIds, getTutorialRevealIds, renderStampReveal, rewardRevealIds, STAMP_REVEAL_DURATION_MS,
 } from './components/stampReveal';
@@ -123,6 +124,7 @@ interface TutorialDraft {
 
 interface PlayerContext {
   player: LocalPlayer;
+  rename: (name: string) => Promise<void>;
   hasMultiplePlayers: () => boolean;
   openSelector: (save: () => Promise<void>, close: () => void, playersChanged: () => void) => void;
   requirePersistent: boolean;
@@ -954,6 +956,7 @@ export class AppController implements UIControllerActions {
   skipOnboarding(): void {
     this.clearTutorialDraft();
     this.clearOnboardingArrivalTimer();
+    this.audio.cancelScheduledSe();
     this.audio.playSe('audio_ui_click');
     this.stopPlayTimer();
     this.inputAdapter?.detach();
@@ -1245,7 +1248,15 @@ export class AppController implements UIControllerActions {
             this.playFeedback.fullDeliveryFlash = res.autoDelivered;
             this.playFeedback.extraDeliveryFlash = Boolean(res.extraDelivered);
             this.playFeedback.lastDeliveryBonus = res.dispatchBonus ?? 0;
-            this.audio.playSe(res.autoDelivered ? 'audio_dispatch_full' : 'audio_dispatch_medium');
+            if (res.autoDelivered) {
+              this.audio.playSe('audio_dispatch_full');
+            }
+            if (res.extraDelivered) {
+              this.audio.playSe('audio_dispatch_extra', {
+                stage: res.extraStage ?? 1,
+                delayMs: res.autoDelivered ? 430 : 0,
+              });
+            }
             this.scheduleFeedbackClear();
           } else if (res.wordCompleted) {
             if (!res.cargoLoaded) {
@@ -1441,6 +1452,7 @@ export class AppController implements UIControllerActions {
     }
 
     if (fact.type === 'RoundFinished') {
+      this.audio.cancelScheduledSe();
       this.advanceEconomyToNow();
       const economySummary = this.economy.endSession({ atMs: this.economy.clockMs });
       const citySnap = this.cityAchievementSnapshot();
@@ -1766,6 +1778,7 @@ export class AppController implements UIControllerActions {
     if (!this.session || (this.onboardingUi.active && this.onboardingUi.deliveryInTransit)) {
       return;
     }
+    this.audio.cancelScheduledSe();
     this.session.pause();
     this.stopPlayTimer();
     this.audio.playSe('audio_pause');
@@ -1808,6 +1821,7 @@ export class AppController implements UIControllerActions {
   quitPlayToHome(): void {
     this.clearInputCountdown();
     this.clearOnboardingArrivalTimer();
+    this.audio.cancelScheduledSe();
     this.audio.playSe('audio_ui_click');
     this.stopPlayTimer();
     this.inputAdapter?.detach();
@@ -2269,6 +2283,17 @@ export class AppController implements UIControllerActions {
     }, () => {
       this.mountEl.querySelector<HTMLElement>(`[data-testid="${triggerId}"]`)?.focus({ preventScroll: true });
     }, () => this.render());
+  }
+
+  private editPlayerName(): void {
+    const context = this.playerContext;
+    if (!context) return;
+    openPlayerNameDialog(context.player.name, async (name) => {
+      await context.rename(name);
+      this.render();
+    }, () => {
+      this.mountEl.querySelector<HTMLElement>('[data-testid="settings-player-rename"]')?.focus({ preventScroll: true });
+    });
   }
 
   exportSaveJson(): void {
@@ -2739,6 +2764,7 @@ export class AppController implements UIControllerActions {
               player: this.playerContext && this.repository.backend === 'indexeddb' ? {
                 name: this.playerContext.player.name,
                 titleName: this.getUnlockedTitleName(this.settings.equippedTitleId),
+                editName: () => this.editPlayerName(),
                 choose: () => this.openPlayerSelection('settings-player-select'),
               } : undefined,
               pendingResetScope: this.pendingResetConfirm,

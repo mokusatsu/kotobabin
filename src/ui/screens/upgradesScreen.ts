@@ -191,8 +191,8 @@ function renderEquipmentDock(
   const quote = economy.quotePurchase(kind, quantity, kind === 'packaging' ? null : districtId);
   const nextUnitCoins =
     quote.current < quote.cap
-      ? economy.nextPriceCoins(kind, quote.current, kind === 'packaging' ? undefined : districtId)
-      : 0;
+      ? economy.equipmentPriceCoins(kind, quote.current, kind === 'packaging' ? undefined : districtId)
+      : 0n;
   const totalCoins = formatCoins(quote.total_cost_micro);
 
   const qtyButtons = el(
@@ -293,8 +293,7 @@ function renderRailwayDock(
 ): HTMLElement {
   const district = economy.districts[districtId];
   const cfg = ECONOMY_CONFIG.railway;
-  const dCfg = ECONOMY_CONFIG.districts.find((d) => d.id === districtId)!;
-  const coinCost = BigInt(cfg.base_coins) * BigInt(dCfg.cost_multiplier) * economy.unit;
+  const coinCost = economy.railwayCostMicro(districtId);
   const allMet =
     district.open &&
     !district.railway &&
@@ -339,7 +338,7 @@ function renderSynergyDock(economy: CityEconomy, actions: UIControllerActions): 
     const owned = economy.synergies.has(syn.id as SynergyId);
     const reqEntries = Object.entries(syn.requires) as [DistrictId, number][];
     const reqMet = reqEntries.every(([dId, reqStage]) => economy.districts[dId].stage >= reqStage);
-    const costMicro = BigInt(syn.cost_coins) * economy.unit;
+    const costMicro = economy.cityPrice(BigInt(syn.cost_coins)) * economy.unit;
     const canBuy = !owned && reqMet && economy.coinsMicro >= costMicro;
     const reqText = reqEntries.map(([dId, reqStage]) => `${DISTRICT_NAME_MAP[dId]} Lv.${reqStage}`).join('・');
 

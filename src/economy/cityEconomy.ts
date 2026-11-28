@@ -835,6 +835,18 @@ export class CityEconomy {
     return { applied: true, generatedMicro: '0', districtId };
   }
 
+  get cityNumber(): number {
+    return Number(this.cityId.slice('city-'.length));
+  }
+
+  // Base amounts are whole coins or materials. Round once per purchase,
+  // from the original city price, even when returning to an older city.
+  cityPrice(base: bigint, cityNumber = this.cityNumber): bigint {
+    const growth = this.config.new_city.cost_growth;
+    const exponent = BigInt(cityNumber - 1);
+    return ceilDiv(base * BigInt(growth.numerator) ** exponent, BigInt(growth.denominator) ** exponent);
+  }
+
   developmentCost(
     districtId: DistrictId,
     targetStage: number,
@@ -846,7 +858,7 @@ export class CityEconomy {
     }
     const mult = BigInt(dCfg.cost_multiplier);
     return {
-      materialsMicro: BigInt(sCfg.base_materials_micro) * mult,
+      materialsMicro: this.cityPrice(BigInt(sCfg.base_materials_micro) * mult / this.unit) * this.unit,
       coinsMicro: 0n,
     };
   }
@@ -855,7 +867,7 @@ export class CityEconomy {
     this.requireIdle();
     const residential = this.requireDistrict('residential');
     const firstBuildingCost = this.developmentCost('residential', 1).materialsMicro;
-    const firstEquipmentCost = BigInt(this.nextPriceCoins('packaging', 0)) * this.unit;
+    const firstEquipmentCost = this.equipmentPriceCoins('packaging', 0) * this.unit;
     const materialsMicro = residential.stage === 0 && residential.stockMicro < firstBuildingCost
       ? ceilDiv(firstBuildingCost - residential.stockMicro, this.unit) * this.unit
       : 0n;
@@ -952,6 +964,10 @@ export class CityEconomy {
   }
 
   nextPriceCoins(kind: EquipmentKind, current: number, districtId?: DistrictId): number {
+    return Number(this.equipmentPriceCoins(kind, current, districtId));
+  }
+
+  equipmentPriceCoins(kind: EquipmentKind, current: number, districtId?: DistrictId): bigint {
     requireInt(current, 'current', 0);
     const cfg = this.config.equipment[kind];
     if (current >= cfg.maximum || (kind === 'crews' && current < 1)) {
@@ -968,7 +984,7 @@ export class CityEconomy {
     const exponent = current + p.exponent_offset;
     const num = BigInt(p.base_coins) * mult * powBigInt(BigInt(p.growth_numerator), exponent);
     const den = powBigInt(BigInt(p.growth_denominator), exponent);
-    return Number(ceilDiv(num, den));
+    return this.cityPrice(ceilDiv(num, den));
   }
 
   quotePurchase(
@@ -1008,19 +1024,19 @@ export class CityEconomy {
     const requested = quantity === 'max' ? cap - current : quantity;
     const limit = Math.min(requested, cap - current);
     let count = 0;
-    let total = 0;
+    let total = 0n;
     const prices: number[] = [];
     for (let offset = 0; offset < limit; offset++) {
-      const p = this.nextPriceCoins(kind, current + offset, districtId ?? undefined);
-      if (BigInt(total + p) * this.unit > this.coinsMicro) {
+      const p = this.equipmentPriceCoins(kind, current + offset, districtId ?? undefined);
+      if ((total + p) * this.unit > this.coinsMicro) {
         break;
       }
-      prices.push(p);
+      prices.push(Number(p));
       total += p;
       count += 1;
     }
     const after = current + count;
-    const totalMicro = BigInt(total) * this.unit;
+    const totalMicro = total * this.unit;
 
     const quote: PurchaseQuote = {
       kind,
@@ -1032,7 +1048,7 @@ export class CityEconomy {
       after,
       cap,
       prices_coins: prices,
-      total_cost_coins: total,
+      total_cost_coins: Number(total),
       total_cost_micro: totalMicro.toString(),
       limited_by_cap: requested > cap - current,
       limited_by_funds: count < limit,
@@ -1101,6 +1117,11 @@ export class CityEconomy {
     return { ...quote, applied: true };
   }
 
+  railwayCostMicro(districtId: DistrictId): bigint {
+    const mult = BigInt(this.districtConfigMap.get(districtId)!.cost_multiplier);
+    return this.cityPrice(BigInt(this.config.railway.base_coins) * mult) * this.unit;
+  }
+
   buyRailway(
     districtId: DistrictId,
     options?: OperationOptions,
@@ -1119,8 +1140,7 @@ export class CityEconomy {
     if (!d.open || d.railway || d.stage < cfg.minimum_stage || d.crews < cfg.minimum_crews) {
       throw new EconomyError('railway prerequisites are not met');
     }
-    const mult = BigInt(this.districtConfigMap.get(districtId)!.cost_multiplier);
-    const coins = BigInt(cfg.base_coins) * mult * this.unit;
+    const coins = this.railwayCostMicro(districtId);
     if (this.coinsMicro < coins) {
       throw new EconomyError('railway needs enough coins');
     }
@@ -1143,7 +1163,7 @@ export class CityEconomy {
     if (!item) throw new EconomyError('unknown decoration for this landscape');
     const level = this.decorationLevels[id] ?? 0;
     if (level >= item.spots.length) return false;
-    const price = BigInt(decorationCost(item, level)) * this.unit;
+    const price = this.cityPrice(BigInt(decorationCost(item, level))) * this.unit;
     if (this.coinsMicro < price) return false;
     this.coinsMicro -= price;
     this.decorationLevels[id] = level + 1;
@@ -1170,7 +1190,7 @@ export class CityEconomy {
         throw new EconomyError('synergy stage prerequisites are not met');
       }
     }
-    const coins = BigInt(cfg.cost_coins) * this.unit;
+    const coins = this.cityPrice(BigInt(cfg.cost_coins)) * this.unit;
     if (this.coinsMicro < coins) {
       throw new EconomyError('insufficient coins for synergy');
     }
@@ -1235,7 +1255,7 @@ export class CityEconomy {
   }
 
   adjacentCity(direction: -1 | 1): string | null {
-    const city = `city-${Number(this.cityId.slice('city-'.length)) + direction}`;
+    const city = `city-${this.cityNumber + direction}`;
     return this.archivedCities.has(city) ? city : null;
   }
 
@@ -1254,6 +1274,7 @@ export class CityEconomy {
     stage_requirement_met: boolean;
     reward_blueprints: number;
     arrived_micro: string;
+    required_arrived_micro: string;
     next_reward_threshold_micro: string;
     remaining_to_next_reward_micro: string;
     next_reward_blueprints: number;
@@ -1269,6 +1290,7 @@ export class CityEconomy {
   } {
     const cfg = this.config.new_city;
     const threshold = BigInt(cfg.minimum_arrived_micro);
+    const required = this.cityPrice(threshold / this.unit) * this.unit;
     const level = isqrt(this.cityArrivedMicro / threshold);
     const reward = cfg.reward_unit_blueprints * Number(level);
     const nextLevel = level + 1n;
@@ -1276,15 +1298,16 @@ export class CityEconomy {
     const readyStages = Object.values(this.districts).every(
       (d) => d.stage >= cfg.minimum_stage_each_district,
     );
-    const baseFirst = BigInt(this.stageConfigMap.get(1)!.base_materials_micro) / this.unit;
+    const baseFirst = this.cityPrice(BigInt(this.stageConfigMap.get(1)!.base_materials_micro) / this.unit, this.cityNumber + 1);
     const matMult = this.researchMultiplier('materials');
     const firstBuilding = reduceRational(baseFirst * matMult.denominator, matMult.numerator);
 
     const result: ReturnType<CityEconomy['newCityPreview']> = {
-      eligible: this.adjacentCity(1) === null && readyStages && this.cityArrivedMicro >= threshold,
+      eligible: this.adjacentCity(1) === null && readyStages && this.cityArrivedMicro >= required,
       stage_requirement_met: readyStages,
       reward_blueprints: reward,
       arrived_micro: this.cityArrivedMicro.toString(),
+      required_arrived_micro: required.toString(),
       next_reward_threshold_micro: nextThreshold.toString(),
       remaining_to_next_reward_micro: (nextThreshold - this.cityArrivedMicro).toString(),
       next_reward_blueprints: cfg.reward_unit_blueprints * Number(nextLevel),

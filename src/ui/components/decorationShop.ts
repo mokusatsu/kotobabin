@@ -49,7 +49,7 @@ export function updateDecorationPurchase(button: HTMLButtonElement, economy: Cit
     if (button.textContent !== 'Lv.5 配置完了') button.textContent = 'Lv.5 配置完了';
     return;
   }
-  const price = BigInt(decorationCost(item, level));
+  const price = economy.cityPrice(BigInt(decorationCost(item, level)));
   const affordable = economy.coinsMicro >= price * economy.unit;
   button.disabled = !affordable;
   const amount = price.toLocaleString('ja-JP');

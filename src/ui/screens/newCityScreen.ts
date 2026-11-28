@@ -17,7 +17,7 @@ const LANDSCAPES: readonly LandscapeId[] = ['riverside', 'seaside', 'highland'];
 export function renderNewCityScreen(props: NewCityScreenProps): HTMLElement {
   const { economy, selectedLandscape, onSelectLandscape, actions } = props;
   const preview = economy.newCityPreview();
-  const { minimum_arrived_micro, minimum_stage_each_district } = ECONOMY_CONFIG.new_city;
+  const { minimum_stage_each_district } = ECONOMY_CONFIG.new_city;
 
   const backBtn = el(
     'button',
@@ -84,7 +84,7 @@ export function renderNewCityScreen(props: NewCityScreenProps): HTMLElement {
           'div',
           {},
           el('dt', {}, 'この街に届いた資材'),
-          el('dd', {}, `${formatMaterials(preview.arrived_micro)} / ${formatMaterials(minimum_arrived_micro)} 資材`),
+          el('dd', {}, `${formatMaterials(preview.arrived_micro)} / ${formatMaterials(preview.required_arrived_micro)} 資材`),
         ),
       ),
       el('div', { className: 'kb-stack-xs' }, el('h3', { className: 'kb-h3', id: 'kb-new-city-landscape-title' }, '地形を選ぶ'), landscapeCards),

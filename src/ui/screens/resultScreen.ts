@@ -247,8 +247,8 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
   );
 
   const distState = economy.districts[snapshot.districtId];
-  const nextPackCoins = economy.nextPriceCoins('packaging', economy.packagingLevel);
-  const packNeedCoins = Math.max(0, nextPackCoins - Math.floor(Number(economy.coinsMicro / 1_000_000n)));
+  const packNeedCoins = economy.packagingLevel < economy.config.equipment.packaging.maximum
+    ? economy.equipmentPriceCoins('packaging', economy.packagingLevel) - economy.coinsMicro / economy.unit : null;
   const nextDistStage = distState.stage < 5 ? distState.stage + 1 : null;
   const nextDistReqMicro =
     nextDistStage !== null ? economy.developmentCost(snapshot.districtId, nextDistStage).materialsMicro : 0n;
@@ -257,7 +257,8 @@ export function renderResultScreen(props: ResultScreenProps): HTMLElement {
     ? `${DISTRICT_NAME_MAP[snapshot.districtId]} Lv.${nextDistStage} へアップグレード可能です！`
     : nextDistStage !== null
       ? `次の目標: ${DISTRICT_NAME_MAP[snapshot.districtId]} Lv.${nextDistStage}まで あと ${formatWholeMaterials(nextDistReqMicro - distState.stockMicro)} 資材`
-      : packNeedCoins === 0
+      : packNeedCoins === null ? '地区と荷づくり台の開発が完了しました。'
+      : packNeedCoins <= 0n
         ? `次の目標: 「街の設備」で荷づくり台 Lv.${economy.packagingLevel + 1} を購入できます！`
         : `次の目標: 荷づくり台 Lv.${economy.packagingLevel + 1} まであと ${packNeedCoins} コイン`;
 

@@ -9,7 +9,7 @@ export interface SettingsScreenProps {
   highContrast: boolean;
   fontScale: '1.0' | '1.15' | '1.3';
   storageBackend: 'indexeddb' | 'memory';
-  player?: { name: string; titleName: string | null; choose: () => void };
+  player?: { name: string; titleName: string | null; editName: () => void; choose: () => void };
   pendingResetScope: 'records' | 'city_and_achievements' | 'settings' | null;
   settingsNotice: string | null;
   actions: UIControllerActions;
@@ -120,6 +120,11 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
     'プレイヤーを選ぶ',
   ) : null;
   if (player && playerBtn) playerBtn.addEventListener('click', player.choose);
+  const editNameBtn = player ? el('button', {
+    type: 'button', className: 'kb-btn-secondary', 'data-testid': 'settings-player-rename', 'aria-haspopup': 'dialog',
+    'aria-describedby': 'kb-settings-current-player',
+  }, '名前を変更') : null;
+  if (editNameBtn && player) editNameBtn.addEventListener('click', player.editName);
 
   const grid = el(
     'div',
@@ -168,11 +173,12 @@ export function renderSettingsScreen(props: SettingsScreenProps): HTMLElement {
         el('h3', { className: 'kb-h3' }, 'データ保存状態'),
         player ? el(
           'div', { className: 'kb-row-between' },
-          renderPlayerName(player.name, player.titleName), playerBtn,
+          renderPlayerName(player.name, player.titleName, 'kb-settings-current-player'),
+          el('div', { className: 'kb-row-wrap' }, editNameBtn, playerBtn),
         ) : null,
         el(
           'p',
-          { className: 'kb-small' },
+          { className: 'kb-small kb-settings-storage-description' },
           storageBackend === 'indexeddb'
             ? 'このブラウザーに自動保存されています。'
             : '現在メモリ保存のみで動作中です（再読み込みするとデータは失われます）。',

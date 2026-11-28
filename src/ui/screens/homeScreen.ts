@@ -207,8 +207,9 @@ function renderOnboardingStampReveal(
 }
 
 function renderNextCityProgress(economy: CityEconomy, actions: UIControllerActions): HTMLElement {
-  const { minimum_arrived_micro, minimum_stage_each_district: minStage } = ECONOMY_CONFIG.new_city;
-  const target = BigInt(minimum_arrived_micro);
+  const { minimum_stage_each_district: minStage } = ECONOMY_CONFIG.new_city;
+  const preview = economy.newCityPreview();
+  const target = BigInt(preview.required_arrived_micro);
   const arrived = economy.cityArrivedMicro;
   const districts = Object.values(economy.districts);
   const readyDistricts = districts.filter((district) => district.stage >= minStage).length;
@@ -238,7 +239,7 @@ function renderNextCityProgress(economy: CityEconomy, actions: UIControllerActio
   );
 
   const canVisitNext = economy.adjacentCity(1) !== null;
-  const canDepart = economy.newCityPreview().eligible;
+  const canDepart = preview.eligible;
   const details = el(
     'button',
     { type: 'button', className: canDepart ? 'kb-btn-primary' : 'kb-btn-secondary', 'data-testid': 'home-next-city-details' },

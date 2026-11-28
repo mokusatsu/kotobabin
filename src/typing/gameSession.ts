@@ -59,6 +59,7 @@ export interface KeyHandleResult {
   wordCompleted: boolean;
   autoDelivered: boolean;
   extraDelivered?: boolean;
+  extraStage?: number;
   cargoLoaded?: boolean;
   dispatchBonus?: number;
   deadlineReached: boolean;
@@ -423,6 +424,7 @@ export class GameSession {
     if (autoDelivered) this.commitCargo('full', currentNow);
 
     let extraDelivered = false;
+    let extraStage: number | undefined;
     if (this.wordMistakes === 0) {
       this.currentCleanStreak += 1;
       if (this.currentCleanStreak > this.longestCleanStreak) {
@@ -433,6 +435,7 @@ export class GameSession {
         this.emitDelivery('extra', 0, this.cleanDeliveryBase, currentNow);
         this.cleanDeliveryBase = 0;
         extraDelivered = true;
+        extraStage = Math.min(10, this.currentCleanStreak - MAX_CARGO_COUNT + 1);
       }
     }
 
@@ -444,6 +447,7 @@ export class GameSession {
       wordCompleted: true,
       autoDelivered,
       extraDelivered,
+      ...(extraStage !== undefined ? { extraStage } : {}),
       cargoLoaded,
       dispatchBonus: this.deliveryBonus - previousBonus,
       deadlineReached: false,

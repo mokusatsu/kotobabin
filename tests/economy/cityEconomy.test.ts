@@ -554,4 +554,36 @@ describe('CityEconomy invariants', () => {
     expect(returned.lifetime.citiesRestarted).toBe(1);
     expect(returned.visitCity('city-1').coinsMicro).toBe(43n * MICRO);
   });
+
+  it('scales local spending and the departure threshold by the visited city number', () => {
+    const city = new CityEconomy();
+    for (const target of [100_000, 120_000]) {
+      for (const district of Object.values(city.districts)) Object.assign(district, { open: true, stage: 3, crews: 1 });
+      city.cityArrivedMicro = BigInt(target) * MICRO - 1n;
+      expect(() => city.startNewCity({ confirmed: true })).toThrow(/requirements/);
+      city.cityArrivedMicro++;
+      expect(city.startNewCity({ confirmed: true, landscape: 'riverside' }).earned_blueprints).toBe(3);
+    }
+    expect(city.newCityPreview().required_arrived_micro).toBe((144_000n * MICRO).toString());
+    expect(city.developmentCost('residential', 1).materialsMicro).toBe(44n * MICRO);
+    city.districts.residential.stockMicro = 44n * MICRO;
+    city.upgradeDistrict('residential');
+    expect(city.districts.residential.stockMicro).toBe(0n);
+    city.coinsMicro = (72n + 85n) * MICRO;
+    expect(city.purchase('packaging', 'max').count).toBe(2);
+    expect(city.coinsMicro).toBe(0n);
+    expect(city.nextPriceCoins('shops', 1, 'residential')).toBe(42);
+    expect(city.nextPriceCoins('crews', 1, 'residential')).toBe(58);
+    city.coinsMicro = (22n + 4320n + 1440n) * MICRO;
+    expect(city.buyDecoration('flowerbed')).toBe(true);
+    Object.assign(city.districts.residential, { stage: 3, crews: 10 });
+    Object.assign(city.districts.market, { open: true, stage: 2, crews: 1 });
+    expect(city.buyRailway('residential').paid_coins_micro).toBe((4320n * MICRO).toString());
+    city.buySynergy('joint_delivery');
+    expect(city.coinsMicro).toBe(0n);
+    expect(city.buyResearch('commerce').cost_blueprints).toBe(1);
+    const saved = CityEconomy.fromSnapshot(city.snapshot());
+    expect(saved.visitCity('city-2').developmentCost('residential', 1).materialsMicro).toBe(36n * MICRO);
+    expect(saved.visitCity('city-1').nextPriceCoins('packaging', 0)).toBe(50);
+  });
 });

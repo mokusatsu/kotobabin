@@ -126,6 +126,10 @@ button:disabled {
   min-width: 0;
 }
 
+.kb-player-form > .kb-player-name-actions {
+  flex: 0 0 auto;
+}
+
 .kb-player-form input {
   min-width: 0;
   min-height: var(--kb-target-min);
@@ -3745,6 +3749,10 @@ dialog.kb-stamp-reveal-dialog {
 .kb-settings-grid .kb-card {
   padding: 14px 18px;
   gap: 6px;
+}
+
+.kb-settings-storage-description {
+  margin: 0;
 }
 
 .kb-settings-grid .kb-toggle-row {

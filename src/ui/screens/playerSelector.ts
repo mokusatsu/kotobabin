@@ -1,4 +1,4 @@
-import type { LocalPlayer } from '@/progression/playerRegistry';
+import { MAX_PLAYER_NAME_LENGTH, type LocalPlayer } from '@/progression/playerRegistry';
 import { renderPlayerName } from '../components/playerName';
 import { assetImg, el } from '../utils/dom';
 
@@ -12,7 +12,7 @@ interface PlayerSelectorProps {
 
 export function renderPlayerSelector(props: PlayerSelectorProps): HTMLElement {
   const { players, onChoose, onAdd, onClose, readPlayerSummary } = props;
-  const name = el('input', { id: 'kb-new-player-name', type: 'text', maxlength: 20, required: true, autocomplete: 'off' });
+  const name = el('input', { id: 'kb-new-player-name', type: 'text', maxlength: MAX_PLAYER_NAME_LENGTH, required: true, autocomplete: 'off' });
   const status = el('p', { className: 'kb-player-status kb-small', role: 'status' });
   const screen = el('section', { className: 'kb-card kb-stack-md', 'aria-labelledby': 'kb-player-selector-title', 'data-testid': 'player-selector' });
   const back = onClose ? el('button', { type: 'button', className: 'kb-btn-secondary' }, '戻る') : null;

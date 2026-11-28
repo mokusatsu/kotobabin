@@ -12,6 +12,12 @@
   </head>
   <body class="kb-debug-page">
     <div id="debug-app"></div>
-    <script type="module" src="/src/debug/debugMain.ts"></script>
+    <script type="module">
+      if (import.meta.env) {
+        import('../src/debug/debugMain.ts');
+      } else {
+        location.replace('../dist/debug/' + location.search + location.hash);
+      }
+    </script>
   </body>
 </html>
